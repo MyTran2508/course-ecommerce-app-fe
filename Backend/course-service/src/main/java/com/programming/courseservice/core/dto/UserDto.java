@@ -1,8 +1,7 @@
-package com.programming.userservice.core.dto;
+package com.programming.courseservice.core.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data

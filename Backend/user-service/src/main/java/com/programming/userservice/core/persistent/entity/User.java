@@ -59,6 +59,6 @@ public class User extends BaseModel {
     private Set<Role> roles;
 
     @ManyToOne(targetEntity = Location.class)
-    @JoinColumn(name = "location_id", nullable = false, foreignKey = @ForeignKey(name = "fk_users_location"))
+    @JoinColumn(name = "location_id", foreignKey = @ForeignKey(name = "fk_users_location"))
     private Location location;
 }

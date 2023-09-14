@@ -18,8 +18,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @MappedSuperclass
-@DynamicUpdate
-@DynamicInsert
 public class BaseModel {
     @Id
     private String id;

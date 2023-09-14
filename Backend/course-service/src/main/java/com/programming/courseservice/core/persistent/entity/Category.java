@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +24,8 @@ import java.util.Set;
                 @Index(columnList = "name", name = "idx_categories_name")
         }
 )
+@DynamicUpdate
+@DynamicInsert
 public class Category extends BaseModel {
     @Column(nullable = false, length = 64)
     private String name;
