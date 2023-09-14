@@ -1,6 +1,6 @@
-package com.main.ocean.common.model;
+package com.main.progamming.common.model;
 
-import com.main.ocean.common.util.SystemUtil;
+import com.main.progamming.common.util.SystemUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,12 +9,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @MappedSuperclass
+@DynamicUpdate
+@DynamicInsert
 public class BaseModel {
     @Id
     private String id;
@@ -22,9 +27,7 @@ public class BaseModel {
     private String creator;
     private Long updated;
     private String modifier;
-    private Short status;
     private Boolean removed;
-
     @PrePersist
     private void ensureId() {
         this.setId(UUID.randomUUID().toString());
@@ -38,5 +41,13 @@ public class BaseModel {
     private void setUpdated() {
         this.setModifier(SystemUtil.getCurrentUsername());
         this.setUpdated(System.currentTimeMillis());
+    }
+
+    protected boolean equal(BaseModel baseModel) {
+        return this.id == baseModel.getId();
+    }
+
+    protected String getKeyDesc() {
+        return this.id;
     }
 }

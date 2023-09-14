@@ -1,7 +1,7 @@
-package com.main.ocean.common.response;
+package com.main.progamming.common.response;
 
-import com.main.ocean.common.message.StatusCode;
-import com.main.ocean.common.message.StatusMessage;
+import com.main.progamming.common.message.StatusCode;
+import com.main.progamming.common.message.StatusMessage;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

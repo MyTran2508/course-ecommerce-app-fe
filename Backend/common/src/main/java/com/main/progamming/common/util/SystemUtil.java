@@ -1,10 +1,9 @@
-package com.main.ocean.common.util;
+package com.main.progamming.common.util;
 
 
-//public class SystemUtil {
-//
-//    public static String getCurrentUsername() {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        return auth.getName();
-//    }
-//}
+public class SystemUtil {
+
+    public static String getCurrentUsername() {
+        return "N/A";
+    }
+}

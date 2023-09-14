@@ -1,4 +1,4 @@
-package com.main.ocean.common.response;
+package com.main.progamming.common.response;
 
 import lombok.Data;
 

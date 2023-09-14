@@ -1,4 +1,4 @@
-package com.main.ocean.common.dto;
+package com.main.progamming.common.dto;
 
 import lombok.Data;
 

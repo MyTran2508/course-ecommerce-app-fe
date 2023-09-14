@@ -1,48 +1,36 @@
-package com.main.ocean.common.controller;
+package com.main.progamming.common.controller;
 
-
-import com.main.ocean.common.dto.SearchKeywordDto;
-import com.main.ocean.common.response.DataResponse;
-import com.main.ocean.common.response.ListResponse;
-import com.main.ocean.common.util.ApiResources;
+import com.main.progamming.common.dto.ChangeStatusDto;
+import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ListResponse;
+import com.main.progamming.common.util.ApiResources;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-public interface BaseApi<E, Q, R> {
-
-
+public interface BaseApi<E,D> {
     @PostMapping(ApiResources.ADD)
-    DataResponse<R> add(@RequestBody Q objectDTO);
-
-
-    @PostMapping(ApiResources.ADD_ALL)
-    DataResponse<R> addAll(@RequestBody List<Q> objectDTO);
+    public DataResponse<E> add(@Valid @RequestBody D objectDTO);
 
     @PutMapping(ApiResources.UPDATE)
-    DataResponse<R> update(@RequestBody Q objectDTO,
-                           @PathVariable("key") String key);
+    public DataResponse<E> update(@Valid @RequestBody D objectDTO, @PathVariable("id") String id);
 
     @GetMapping(ApiResources.GET_BY_ID)
-    public DataResponse<R> getById(@RequestParam String id);
+    public DataResponse<E> getById(@RequestParam String id);
 
     @PutMapping(ApiResources.DELETE)
-    public DataResponse<R> delete(@PathVariable("id") String id);
+    public DataResponse<E> delete(@PathVariable("id") String id);
 
     @GetMapping(ApiResources.GET_ALL)
-    public ListResponse<R> getAll();
-
+    public ListResponse<E> getAll();
 
     @GetMapping(ApiResources.GET_BY_IDS)
-    public ListResponse<R> getByIds(@RequestParam String ids);
+    public ListResponse<E> getByIds(@RequestParam String ids);
 
     @GetMapping(ApiResources.GET_ALL_BY_KEYWORD)
     public ListResponse<E> getAllByKeyword(@RequestParam String keyword);
 
     @PostMapping(ApiResources.SEARCH_BY_KEYWORD)
-    public ListResponse<R> searchByKeyword(@Valid @RequestBody SearchKeywordDto searchKeywordDto);
-
-    @GetMapping(ApiResources.GET_ALL_BY_PAGE)
-    public ListResponse<R> getAllByPage(@RequestParam("page") int page, @RequestParam("size") int size);
+    public ListResponse<E> searchByKeyword(@Valid @RequestBody SearchKeywordDto searchKeywordDto);
 }

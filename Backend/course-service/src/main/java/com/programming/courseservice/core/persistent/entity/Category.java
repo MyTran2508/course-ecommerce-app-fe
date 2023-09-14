@@ -1,4 +1,4 @@
-package com.programming.courseservice.entity;
+package com.programming.courseservice.core.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;

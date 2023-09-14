@@ -1,4 +1,4 @@
-package com.programming.userservice.core.dto.role;
+package com.programming.userservice.core.dto;
 
 public class RoleDto {
 }

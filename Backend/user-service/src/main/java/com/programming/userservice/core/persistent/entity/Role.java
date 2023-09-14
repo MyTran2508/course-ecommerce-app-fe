@@ -1,6 +1,6 @@
 package com.programming.userservice.core.persistent.entity;
 
-import com.main.ocean.common.model.BaseModel;
+import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +23,6 @@ public class Role extends BaseModel {
     private String name;
     @Column(length = 512)
     private String description;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",

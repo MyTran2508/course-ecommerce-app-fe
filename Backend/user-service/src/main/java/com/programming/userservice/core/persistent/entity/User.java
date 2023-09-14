@@ -1,6 +1,6 @@
 package com.programming.userservice.core.persistent.entity;
 
-import com.main.ocean.common.model.BaseModel;
+import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +19,9 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email", name = "uq_users_email"),
                 @UniqueConstraint(columnNames = "username", name = "uq_users_username")
+        },
+        indexes = {
+                @Index(columnList = "location_id", name = "idx_user_location_id")
         }
 )
 @DynamicInsert
@@ -54,4 +57,8 @@ public class User extends BaseModel {
         inverseForeignKey = @ForeignKey(name = "fk_users_roles_roles")
     )
     private Set<Role> roles;
+
+    @ManyToOne(targetEntity = Location.class)
+    @JoinColumn(name = "location_id", nullable = false, foreignKey = @ForeignKey(name = "fk_users_location"))
+    private Location location;
 }

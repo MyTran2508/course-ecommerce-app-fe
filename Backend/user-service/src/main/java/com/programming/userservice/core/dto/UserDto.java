@@ -1,4 +1,4 @@
-package com.programming.userservice.core.dto.user;
+package com.programming.userservice.core.dto;
 
-public class UserRequest {
+public class UserDto {
 }

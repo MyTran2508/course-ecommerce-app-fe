@@ -1,11 +1,11 @@
-package com.main.ocean.common.model;
+package com.main.progamming.common.model;
 
-public interface BaseMapper<E, Q, R>{
-    R entityToDto(E entity);
+public interface BaseMapper<E, D>{
+    D entityToDto(E entity);
 
-    E dtoToEntity(Q dto);
+    E dtoToEntity(D dto);
 
-    void entityToDto(E entity, R dto);
+    void entityToDto(E entity, D dto);
 
-    void dtoToEntity(Q dto, E entity);
+    void dtoToEntity(D dto, E entity);
 }

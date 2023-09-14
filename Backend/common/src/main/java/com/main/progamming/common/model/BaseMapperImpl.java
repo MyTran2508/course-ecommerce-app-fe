@@ -1,34 +1,39 @@
-package com.main.ocean.common.model;
+package com.main.progamming.common.model;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
-public abstract class BaseMapperImpl<E, Q, R> implements BaseMapper<E, Q, R> {
-    private  final ModelMapper modelMapper;
 
-    @Override
-    public R entityToDto(E entity) {
-        return modelMapper.map(entity, getResponseClass());
+public abstract class BaseMapperImpl<E, D> implements BaseMapper<E, D> {
+    protected ModelMapper modelMapper;
+    @Autowired
+    public BaseMapperImpl(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        this.modelMapper.getConfiguration().setAmbiguityIgnored(true);
     }
     @Override
-    public E dtoToEntity(Q dto) {
+    public D entityToDto(E entity) {
+        return modelMapper.map(entity, getDtoClass());
+    }
+
+    @Override
+    public E dtoToEntity(D dto) {
         return modelMapper.map(dto, getEntityClass());
     }
 
     @Override
-    public void entityToDto(E entity, R dto) {
+    public void entityToDto(E entity, D dto) {
         modelMapper.map(entity, dto);
     }
     @Override
-    public void dtoToEntity(Q dto, E entity) {
+    public void dtoToEntity(D dto, E entity) {
         modelMapper.map(dto, entity);
     }
 
     protected abstract Class<E> getEntityClass();
 
-    protected abstract Class<Q> getRequestClass();
-
-    protected abstract Class<R> getResponseClass();
+    protected abstract Class<D> getDtoClass();
 }

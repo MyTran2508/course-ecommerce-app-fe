@@ -1,15 +1,14 @@
-package com.main.ocean.common.service;
+package com.main.progamming.common.service;
 
-import com.main.ocean.common.dto.ChangeStatusDto;
-import com.main.ocean.common.dto.SearchKeywordDto;
-import com.main.ocean.common.message.StatusCode;
-import com.main.ocean.common.message.StatusMessage;
-import com.main.ocean.common.model.BaseMapper;
-import com.main.ocean.common.model.BaseModel;
-import com.main.ocean.common.repository.BaseRepository;
-import com.main.ocean.common.response.DataResponse;
-import com.main.ocean.common.response.ListResponse;
-import com.main.ocean.common.response.ResponseMapper;
+import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.message.StatusCode;
+import com.main.progamming.common.message.StatusMessage;
+import com.main.progamming.common.model.BaseMapper;
+import com.main.progamming.common.model.BaseModel;
+import com.main.progamming.common.repository.BaseRepository;
+import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ListResponse;
+import com.main.progamming.common.response.ResponseMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -84,19 +83,6 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     @SuppressWarnings("unchecked")
     public ListResponse<E> getAll() {
         return ResponseMapper.toListResponseSuccess(getBaseRepository().findAll());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public DataResponse<E> changeStatus(ChangeStatusDto changeStatusDto) {
-        Optional<E> optional = getBaseRepository().findById(changeStatusDto.getId());
-        if (optional.isPresent()) {
-            E entity = optional.get();
-            entity.setStatus(changeStatusDto.getStatus());
-            getBaseRepository().save(entity);
-            return ResponseMapper.toDataResponseSuccess(entity);
-        }
-        return ResponseMapper.toDataResponse(null, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
     }
 
 
