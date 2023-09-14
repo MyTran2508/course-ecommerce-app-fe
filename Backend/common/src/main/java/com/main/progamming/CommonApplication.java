@@ -1,4 +1,4 @@
-package com.main.ocean;
+package com.main.progamming;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
