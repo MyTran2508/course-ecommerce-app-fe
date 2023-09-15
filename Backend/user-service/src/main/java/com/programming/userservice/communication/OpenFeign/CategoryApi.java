@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "course-service")
 public interface CategoryApi {
-    @GetMapping("api/category/get-by-id")
+    @GetMapping("api/courses/categories/get-by-id")
     DataResponse<CategoryDto> getCategoryById(@RequestParam String id);
 }

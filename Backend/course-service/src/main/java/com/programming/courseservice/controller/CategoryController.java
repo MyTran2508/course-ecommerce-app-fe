@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/courses/categories")
 @RequiredArgsConstructor
 public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     private final CategoryService categoryService;
@@ -30,7 +30,6 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     public ListResponse<CategoryDto> getAll() {
         return super.getAll();
     }
-
     @Override
     public DataResponse<CategoryDto> getById(String id) {
         return super.getById(id);
