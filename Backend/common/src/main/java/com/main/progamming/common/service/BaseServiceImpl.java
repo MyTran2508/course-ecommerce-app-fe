@@ -1,6 +1,8 @@
 package com.main.progamming.common.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.DataAlreadyExistException;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
@@ -16,90 +18,98 @@ import org.springframework.data.domain.Pageable;
 import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseService<E, D> {
     protected abstract BaseRepository<E> getBaseRepository();
-
     protected abstract BaseMapper<E, D> getBaseMapper();
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public DataResponse<D> create(D dto) {
+        try {
+            E entity = getBaseMapper().dtoToEntity(dto);
+            getBaseRepository().save(entity);
+            return ResponseMapper.toDataResponseSuccess(entity);
+        } catch (NoSuchElementException e) {
+            throw new DataAlreadyExistException("Data already exist");
+        }
+    }
 
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public DataResponse<E> create(D dto) {
-        E entity = getBaseMapper().dtoToEntity(dto);
+    public DataResponse<D> update(String id, D dto) {
+        Optional<E> optional = getBaseRepository().findById(id);
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
+        E entity = optional.get();
+        getBaseMapper().dtoToEntity(dto, entity);
+        entity.setId(id);
         getBaseRepository().save(entity);
-        return ResponseMapper.toDataResponseSuccess(entity);
+        return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
     }
 
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public DataResponse<E> update(String id, D dto) {
+    public DataResponse<D> delete(String id) {
         Optional<E> optional = getBaseRepository().findById(id);
-        if (optional.isPresent()) {
-            E entity = optional.get();
-            getBaseMapper().dtoToEntity(dto, entity);
-            entity.setId(id);
-            getBaseRepository().save(entity);
-            return ResponseMapper.toDataResponseSuccess(entity);
+        if (optional.isEmpty()) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
         }
-        return ResponseMapper.toDataResponse(null, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
+        E entity = optional.get();
+        entity.setRemoved(true);
+        getBaseRepository().save(entity);
+        return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
     }
 
     @Override
-    @Transactional
     @SuppressWarnings("unchecked")
-    public DataResponse<E> delete(String id) {
+    public DataResponse<D> getById(String id) {
         Optional<E> optional = getBaseRepository().findById(id);
-        if (optional.isPresent()) {
-            E entity = optional.get();
-            entity.setRemoved(true);
-            getBaseRepository().save(entity);
-            return ResponseMapper.toDataResponseSuccess(entity);
-        }
-        return ResponseMapper.toDataResponse(null, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
+        return optional.map(value -> ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(value)))
+                .orElseGet(() -> ResponseMapper.toDataResponse(null, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public DataResponse<E> getById(String id) {
-        Optional<E> optional = getBaseRepository().findById(id);
-        return optional.map(ResponseMapper::toDataResponseSuccess).orElseGet(() -> ResponseMapper.toDataResponse(null, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ListResponse<E> getByIds(String ids) {
+    public ListResponse<D> getByIds(String ids) {
         String[] arr = ids.trim().split(",");
         if (arr.length > 0) {
             List<String> listIds = Arrays.asList(arr);
-            return ResponseMapper.toListResponseSuccess(getBaseRepository().findAllById(listIds));
+            return ResponseMapper.toListResponseSuccess(getBaseRepository().findAllById(listIds)
+                    .stream().map(value -> getBaseMapper().entityToDto(value)).collect(Collectors.toList()));
         }
         return ResponseMapper.toListResponseSuccess(null);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ListResponse<E> getAll() {
-        return ResponseMapper.toListResponseSuccess(getBaseRepository().findAll());
+    public ListResponse<D> getAll() {
+        return ResponseMapper.toListResponseSuccess(
+                getBaseRepository().findAll()
+                        .stream().map(value -> getBaseMapper().entityToDto(value)).collect(Collectors.toList()));
     }
 
 
     @Override
     @SuppressWarnings("unchecked")
-    public ListResponse<E> getAllByKeyword(String keyword) {
+    public ListResponse<D> getAllByKeyword(String keyword) {
         return ResponseMapper.toListResponseSuccess(getListSearchResults(keyword));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ListResponse<E> searchByKeyword(SearchKeywordDto searchKeywordDto) {
+    public ListResponse<D> searchByKeyword(SearchKeywordDto searchKeywordDto) {
         Pageable pageable = PageRequest.of(searchKeywordDto.getPageIndex(), searchKeywordDto.getPageSize());
         return ResponseMapper.toPagingResponseSuccess(getPageResults(searchKeywordDto, pageable));
     }
 
-    protected abstract Page<E> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable);
+    protected abstract Page<D> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable);
 
-    protected abstract List<E> getListSearchResults(String keyword);
+    protected abstract List<D> getListSearchResults(String keyword);
 }

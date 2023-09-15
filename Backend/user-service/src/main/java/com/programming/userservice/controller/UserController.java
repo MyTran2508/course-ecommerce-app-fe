@@ -22,7 +22,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     }
 
     @Override
-    public ListResponse<User> getAll() {
+    public ListResponse<UserDto> getAll() {
         return super.getAll();
     }
 }

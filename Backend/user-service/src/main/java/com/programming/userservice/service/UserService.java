@@ -20,26 +20,20 @@ import java.util.List;
 public class UserService extends BaseServiceImpl<User, UserDto> {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
-
     @Override
     protected BaseRepository<User> getBaseRepository() {
         return userRepository;
     }
-
     @Override
     protected BaseMapper<User, UserDto> getBaseMapper() {
         return userMapper;
     }
-
     @Override
-    protected Page<User> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
+    protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         return null;
     }
-
     @Override
-    protected List<User> getListSearchResults(String keyword) {
+    protected List<UserDto> getListSearchResults(String keyword) {
         return null;
     }
-
-
 }

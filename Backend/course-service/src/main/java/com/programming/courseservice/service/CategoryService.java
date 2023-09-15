@@ -29,11 +29,12 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
         return categoryMapper;
     }
     @Override
-    protected Page<Category> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
+    protected Page<CategoryDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         return null;
     }
+
     @Override
-    protected List<Category> getListSearchResults(String keyword) {
+    protected List<CategoryDto> getListSearchResults(String keyword) {
         return null;
     }
 }
