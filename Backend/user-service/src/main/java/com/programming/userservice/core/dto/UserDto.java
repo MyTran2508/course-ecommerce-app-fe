@@ -16,4 +16,5 @@ public class UserDto {
     private String lastName;
     private String telephone;
     private String photos;
+    private CategoryDto categoryDto;
 }
