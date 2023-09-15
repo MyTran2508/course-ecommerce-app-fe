@@ -11,6 +11,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="course-service" />
         <module name="api-gateway" />
+        <module name="config-server" />
         <module name="user-service" />
         <module name="common" />
         <module name="eureka-server" />
@@ -24,6 +25,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="common" options="-parameters" />
+      <module name="config-server" options="-parameters" />
       <module name="course-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="ocean" options="-parameters" />
