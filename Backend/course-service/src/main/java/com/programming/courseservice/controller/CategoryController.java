@@ -22,14 +22,17 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     protected BaseService<Category, CategoryDto> getBaseService() {
         return categoryService;
     }
-
     @Override
     public DataResponse<CategoryDto> add(CategoryDto objectDTO) {
         return super.add(objectDTO);
     }
-
     @Override
     public ListResponse<CategoryDto> getAll() {
         return super.getAll();
+    }
+
+    @Override
+    public DataResponse<CategoryDto> getById(String id) {
+        return super.getById(id);
     }
 }

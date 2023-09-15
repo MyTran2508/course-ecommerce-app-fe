@@ -10,8 +10,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="course-service" />
-        <module name="common" />
         <module name="user-service" />
+        <module name="common" />
+        <module name="eureka-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -22,6 +23,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="common" options="-parameters" />
       <module name="course-service" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
       <module name="ocean" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>

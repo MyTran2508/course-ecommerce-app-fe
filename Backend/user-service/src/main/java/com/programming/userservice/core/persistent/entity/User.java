@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -19,9 +20,6 @@ import java.util.Set;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email", name = "uq_users_email"),
                 @UniqueConstraint(columnNames = "username", name = "uq_users_username")
-        },
-        indexes = {
-                @Index(columnList = "location_id", name = "idx_user_location_id")
         }
 )
 @DynamicInsert
@@ -58,7 +56,6 @@ public class User extends BaseModel {
     )
     private Set<Role> roles;
 
-    @ManyToOne(targetEntity = Location.class)
-    @JoinColumn(name = "location_id", foreignKey = @ForeignKey(name = "fk_users_location"))
-    private Location location;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    Set<Address> addresses = new HashSet<>();
 }
