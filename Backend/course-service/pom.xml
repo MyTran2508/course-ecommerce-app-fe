@@ -7,9 +7,9 @@
 		<groupId>com.programming</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>com.programming</groupId>
+<!--	<groupId>com.programming</groupId>-->
 	<artifactId>course-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+<!--	<version>0.0.1-SNAPSHOT</version>-->
 	<name>course-service</name>
 	<description>Spring Boot project as course service</description>
 	<properties>

@@ -5,8 +5,12 @@ import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 
+import java.util.List;
+
 public interface BaseService<E, D> {
     DataResponse<D> create(D dto);
+
+    DataResponse<D> addAll(List<D> listDto);
 
     DataResponse<D> update(String id, D dto);
 

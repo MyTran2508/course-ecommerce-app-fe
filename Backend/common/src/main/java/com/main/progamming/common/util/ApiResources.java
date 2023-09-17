@@ -2,7 +2,7 @@ package com.main.progamming.common.util;
 
 public interface ApiResources {
     public static final String ADD = "add";
-
+    public static final String ADD_ALL = "add-all";
     public static final String UPDATE = "update/{id}";
 
     public static final String GET_BY_ID = "get-by-id";

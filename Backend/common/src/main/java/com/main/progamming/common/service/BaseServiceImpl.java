@@ -39,6 +39,31 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     }
 
     @Override
+    public DataResponse<D> addAll(List<D> listDto) {
+        try {
+            int count = 0;
+            for(D dto: listDto) {
+                E newEntity = getBaseMapper().dtoToEntity(dto);
+                E oldEntity = newEntity.getId() == null ? null : getBaseRepository().findById(newEntity.getId()).orElse(null);
+
+                if (oldEntity == null) {
+                    getBaseRepository().save(newEntity);
+                    count++;
+                }
+
+                if (oldEntity != null && !oldEntity.equals(newEntity)) {
+                    getBaseMapper().dtoToEntity(dto, oldEntity);
+                    getBaseRepository().save(oldEntity);
+                    count++;
+                }
+            }
+            return ResponseMapper.toDataResponseSuccess(count + " updated successfully!!");
+        } catch (NoSuchElementException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        }
+    }
+
+    @Override
     @Transactional
     @SuppressWarnings("unchecked")
     public DataResponse<D> update(String id, D dto) {

@@ -55,7 +55,6 @@ public class User extends BaseModel {
         inverseForeignKey = @ForeignKey(name = "fk_users_roles_roles")
     )
     private Set<Role> roles;
-
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    Set<Address> addresses = new HashSet<>();
+    private Set<Address> addresses;
 }

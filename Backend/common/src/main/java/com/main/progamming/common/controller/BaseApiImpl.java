@@ -9,6 +9,8 @@ import com.main.progamming.common.util.ApiResources;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 public abstract class BaseApiImpl<E, D> implements BaseApi<E, D> {
     protected abstract BaseService<E, D> getBaseService();
@@ -17,6 +19,12 @@ public abstract class BaseApiImpl<E, D> implements BaseApi<E, D> {
     @PostMapping(ApiResources.ADD)
     public DataResponse<D> add(D objectDTO) {
         return this.getBaseService().create(objectDTO);
+    }
+
+    @Override
+    @PostMapping(ApiResources.ADD_ALL)
+    public DataResponse<D> addAll(List<D> listDto) {
+        return this.getBaseService().addAll(listDto);
     }
 
     @Override

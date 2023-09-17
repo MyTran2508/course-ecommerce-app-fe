@@ -8,11 +8,14 @@ import com.main.progamming.common.util.ApiResources;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 public interface BaseApi<E,D> {
     @PostMapping(ApiResources.ADD)
     public DataResponse<D> add(@Valid @RequestBody D objectDTO);
-
+    @PostMapping(ApiResources.ADD_ALL)
+    public DataResponse<D> addAll(@RequestBody List<D> listDto);
     @PutMapping(ApiResources.UPDATE)
     public DataResponse<D> update(@Valid @RequestBody D objectDTO, @PathVariable("id") String id);
 
