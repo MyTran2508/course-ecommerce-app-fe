@@ -32,5 +32,5 @@ public class Category extends BaseModel {
     @Column(length = 512)
     private String description;
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
-    Set<Topic> topics = new HashSet<>();
+    private Set<Topic> topics;
 }

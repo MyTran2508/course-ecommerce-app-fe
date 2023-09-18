@@ -19,6 +19,8 @@ public class Content extends BaseModel {
     @OneToMany(mappedBy = "content", fetch = FetchType.EAGER)
     private Set<Section> sections;
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "document_id", nullable = false, foreignKey = @ForeignKey(name = "fk_contents_description"))
+    @JoinColumn(name = "description_id", nullable = false, foreignKey = @ForeignKey(name = "fk_contents_description"))
     private Description description;
+    @OneToOne(mappedBy = "content", fetch = FetchType.LAZY)
+    private Course course;
 }

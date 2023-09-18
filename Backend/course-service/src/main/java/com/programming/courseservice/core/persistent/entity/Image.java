@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CollectionIdJdbcTypeCode;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,4 +23,7 @@ public class Image extends BaseModel {
     private String url;
     @Column(name = "is_default_image", columnDefinition = "bit default 0 not null")
     private boolean isDefaultImage;
+    @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "fk_images_course"))
+    private Course course;
 }

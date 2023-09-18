@@ -29,7 +29,7 @@ public abstract class BaseApiImpl<E, D> implements BaseApi<E, D> {
 
     @Override
     @PutMapping(ApiResources.UPDATE)
-    public DataResponse<D> update(@Valid @RequestBody D objectDTO, @PathVariable("id") String id) {
+    public DataResponse<D> update(@RequestBody D objectDTO, @PathVariable("id") String id) {
         return this.getBaseService().update(id, objectDTO);
     }
 

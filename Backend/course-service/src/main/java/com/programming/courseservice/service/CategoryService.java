@@ -32,7 +32,6 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
     protected Page<CategoryDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         return null;
     }
-
     @Override
     protected List<CategoryDto> getListSearchResults(String keyword) {
         return null;
