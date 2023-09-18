@@ -12,13 +12,17 @@ import jakarta.persistence.PreUpdate;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @MappedSuperclass
-public class BaseModel {
+public class BaseModel implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @Id
     private String id;
     private Long created;
@@ -27,7 +31,7 @@ public class BaseModel {
     private String modifier;
     private Boolean removed;
     @PrePersist
-    private void ensureId() {
+    protected void ensureId() {
         this.setId(UUID.randomUUID().toString());
         this.setCreated(System.currentTimeMillis());
         this.setUpdated(System.currentTimeMillis());
@@ -36,15 +40,10 @@ public class BaseModel {
     }
 
     @PreUpdate
-    private void setUpdated() {
+    protected void setUpdated() {
         this.setModifier(SystemUtil.getCurrentUsername());
         this.setUpdated(System.currentTimeMillis());
     }
-
-    protected boolean equal(BaseModel baseModel) {
-        return this.id == baseModel.getId();
-    }
-
     protected String getKeyDesc() {
         return this.id;
     }

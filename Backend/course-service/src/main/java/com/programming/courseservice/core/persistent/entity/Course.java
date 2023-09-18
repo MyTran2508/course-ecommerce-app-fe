@@ -14,7 +14,7 @@ import java.util.Set;
 @Table(
         name = "courses",
         indexes = {
-                @Index(columnList = "user_id", name = "idx_contents_user_id")
+                @Index(columnList = "user_id", name = "idx_courses_user_id")
         }
 )
 @Data
@@ -32,4 +32,6 @@ public class Course extends BaseModel {
     private Content content;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "course")
     private Set<Image> images;
+    @Column(name = "user_id")
+    private String userId;
 }

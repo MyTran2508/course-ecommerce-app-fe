@@ -9,6 +9,7 @@ import com.programming.userservice.core.dto.CategoryDto;
 import com.programming.userservice.core.dto.UserDto;
 import com.programming.userservice.core.persistent.entity.User;
 import com.programming.userservice.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(
+        name = "User Service - User Controller",
+        description = "User Controller Exposes Rest APIs for User-Service"
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users/user")

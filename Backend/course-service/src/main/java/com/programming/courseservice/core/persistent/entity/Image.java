@@ -10,13 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
-        name = "images",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "name", name = "uq_levels_name")
-        },
-        indexes = {
-                @Index(columnList = "name", name = "idx_levels_name")
-        }
+        name = "images"
 )
 public class Image extends BaseModel {
     @Column(nullable = false)
