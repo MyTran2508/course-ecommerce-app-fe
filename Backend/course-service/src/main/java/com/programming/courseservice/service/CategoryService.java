@@ -19,9 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -53,13 +53,31 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
             throw new ResourceNotFoundException(id + " does not exists in DB");
         }
         Category category = optionalCategory.get();
-        categoryMapper.dtoToEntity(dto, category);
-        category.getTopics().clear();
-        for (TopicDto topicDto: dto.getTopics()) {
-            category.getTopics().add(topicMapper.dtoToEntity(topicDto));
-        }
+        category.setName(dto.getName());
+        category.setDescription(dto.getDescription());
+        category.setNewTopics(setNewTopics(category, dto.getTopics()));
         category.setId(id);
         categoryRepository.save(category);
         return ResponseMapper.toDataResponseSuccess("Success");
+    }
+
+    public List<Topic> setNewTopics(Category category, List<TopicDto> topicDtos) {
+        List<Topic> results = new ArrayList<>();
+        List<Topic> topicsInDb = category.getTopics();
+        for (TopicDto topicDto: topicDtos) {
+            Topic topic;
+            if(topicDto.getId() != null) {
+                topic = topicsInDb.stream()
+                        .filter(value -> value.getId().equals(topicDto.getId()))
+                        .findFirst()
+                        .get();
+                topicMapper.dtoToEntity(topicDto, topic);
+            } else {
+                topic = topicMapper.dtoToEntity(topicDto);
+            }
+            topic.setCategory(category);
+            results.add(topic);
+        }
+        return results;
     }
 }

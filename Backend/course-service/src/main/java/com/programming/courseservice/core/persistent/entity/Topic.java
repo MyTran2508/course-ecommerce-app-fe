@@ -38,7 +38,7 @@ public class Topic extends BaseModel {
     public String toString() {
         return "Topic{" +
                 "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+                ", description=" + description + '}'
+        + super.toString();
     }
 }

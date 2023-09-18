@@ -34,7 +34,7 @@ public class Category extends BaseModel {
     @Column(length = 512)
     private String description;
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Topic> topics = new ArrayList<Topic>();
+    private List<Topic> topics = new ArrayList<>();
     @Override
     protected void ensureId() {
         for (Topic topic: topics) {
@@ -49,5 +49,11 @@ public class Category extends BaseModel {
             topic.setCategory(this);
         }
         super.setUpdated();
+    }
+    public void setNewTopics(List<Topic> topics) {
+        this.topics.clear();
+        if(topics != null) {
+            this.topics.addAll(topics);
+        }
     }
 }
