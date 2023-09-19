@@ -55,4 +55,8 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     public DataResponse<CategoryDto> getByName(@PathVariable String name) {
         return categoryService.getByName(name);
     }
+    @Override
+    public DataResponse<CategoryDto> setRemoved(String id) {
+        return super.setRemoved(id);
+    }
 }

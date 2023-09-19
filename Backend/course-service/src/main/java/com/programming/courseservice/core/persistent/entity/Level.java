@@ -1,6 +1,7 @@
 package com.programming.courseservice.core.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.courseservice.core.persistent.enumrate.LevelName;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,8 +21,9 @@ import lombok.NoArgsConstructor;
         }
 )
 public class Level extends BaseModel {
-    @Column(length = 32, nullable = false)
-    private String name;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
+    private LevelName name;
     @Column(length = 512)
     private String description;
 }

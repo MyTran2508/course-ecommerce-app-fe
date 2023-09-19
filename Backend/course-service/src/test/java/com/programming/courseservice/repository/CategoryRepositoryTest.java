@@ -135,4 +135,28 @@ public class CategoryRepositoryTest {
         assertThat(updatedCategory.getDescription()).isEqualTo("IT Software description (1)");
         System.out.println(updatedCategory);
     }
+    // JUnit test for set removed operation
+    @Test
+    @DisplayName("JUnit test for set removed operation")
+    public void givenCategoryObject_whenSetRemoved_thenReturnCategoryObject() {
+        // given - preconditions or setup
+        Category category = Category.builder()
+                .name("IT Software")
+                .description("IT Software description")
+                .build();
+        Topic topic1 = new Topic("Java", "Java description");
+        Topic topic2 = new Topic("C#", "C# description");
+        List<Topic> topics = new ArrayList<>();
+        topics.add(topic1);
+        topics.add(topic2);
+        category.setTopics(topics);
+        categoryRepository.save(category);
+        // when - action or behaviour that we are going test
+        Category savedCategory = categoryRepository.findById(category.getId()).orElse(null);
+        savedCategory.setRemoved(true);
+        Category updatedCategory = categoryRepository.save(savedCategory);
+        // then - verify the output
+        assertThat(updatedCategory).isNotNull();
+        assertThat(updatedCategory.getRemoved()).isTrue();
+    }
 }
