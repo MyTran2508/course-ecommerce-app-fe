@@ -41,4 +41,9 @@ public class Topic extends BaseModel {
                 ", description=" + description + '}'
         + super.toString();
     }
+
+    public Topic(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }

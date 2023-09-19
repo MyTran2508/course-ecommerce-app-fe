@@ -45,7 +45,6 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
     protected List<CategoryDto> getListSearchResults(String keyword) {
         return null;
     }
-
     @Override
     public DataResponse<CategoryDto> update(String id, CategoryDto dto) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
@@ -60,7 +59,6 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
         categoryRepository.save(category);
         return ResponseMapper.toDataResponseSuccess("Success");
     }
-
     public List<Topic> setNewTopics(Category category, List<TopicDto> topicDtos) {
         List<Topic> results = new ArrayList<>();
         List<Topic> topicsInDb = category.getTopics();
@@ -79,5 +77,12 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
             results.add(topic);
         }
         return results;
+    }
+    public DataResponse<CategoryDto> getByName(String name) {
+        Optional<Category> optionalCategory = categoryRepository.findByName(name);
+        if(optionalCategory.isEmpty()) {
+            throw new ResourceNotFoundException("Category with name " + name + " does not exists in DB");
+        }
+        return ResponseMapper.toDataResponseSuccess(optionalCategory.get());
     }
 }

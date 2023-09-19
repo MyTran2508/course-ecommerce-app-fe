@@ -10,7 +10,10 @@ import com.programming.courseservice.service.CategoryService;
 import com.programming.courseservice.util.constant.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,5 +49,10 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     @ShowOpenAPI
     public DataResponse<CategoryDto> getById(String id) {
         return super.getById(id);
+    }
+    @ShowOpenAPI
+    @GetMapping("/get-by-name/{name}")
+    public DataResponse<CategoryDto> getByName(@PathVariable String name) {
+        return categoryService.getByName(name);
     }
 }

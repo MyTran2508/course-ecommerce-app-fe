@@ -25,6 +25,7 @@ import java.util.Set;
 )
 @Getter
 @Setter
+@Builder
 @DynamicUpdate
 @DynamicInsert
 @ToString
