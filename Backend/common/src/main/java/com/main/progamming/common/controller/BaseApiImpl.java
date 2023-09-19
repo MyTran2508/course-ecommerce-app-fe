@@ -39,8 +39,14 @@ public abstract class BaseApiImpl<E, D> implements BaseApi<E, D> {
     }
 
     @Override
+    @PutMapping(ApiResources.REMOVED)
+    public DataResponse<D> setRemoved(@PathVariable("id") String id) {
+        return this.getBaseService().setRemoved(id);
+    }
+
+    @Override
     @PutMapping(ApiResources.DELETE)
-    public DataResponse<D> delete(@PathVariable("id") String id) {
+    public DataResponse<String> delete(@PathVariable("id") String id) {
         return this.getBaseService().delete(id);
     }
 

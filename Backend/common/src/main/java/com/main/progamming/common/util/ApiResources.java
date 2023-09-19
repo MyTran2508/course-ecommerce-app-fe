@@ -7,6 +7,8 @@ public interface ApiResources {
 
     public static final String GET_BY_ID = "get-by-id";
 
+    public static final String REMOVED = "removed/{id}";
+
     public static final String DELETE = "delete/{id}";
 
     public static final String GET_ALL = "get-all";

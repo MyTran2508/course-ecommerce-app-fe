@@ -82,7 +82,7 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public DataResponse<D> delete(String id) {
+    public DataResponse<D> setRemoved(String id) {
         Optional<E> optional = getBaseRepository().findById(id);
         if (optional.isEmpty()) {
             throw new ResourceNotFoundException(id + " does not exists in DB");
@@ -91,6 +91,18 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
         entity.setRemoved(true);
         getBaseRepository().save(entity);
         return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
+    }
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public DataResponse<String> delete(String id) {
+        Optional<E> optional = getBaseRepository().findById(id);
+        if(optional.isEmpty()) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
+        getBaseRepository().deleteById(id);
+        return ResponseMapper.toDataResponseSuccess("Delete category id: " + id + " successfully");
     }
 
     @Override

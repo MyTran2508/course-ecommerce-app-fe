@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @DataJpaTest
@@ -119,7 +120,10 @@ public class CategoryRepositoryTest {
                 .build();
         Topic topic1 = new Topic("Java", "Java description");
         Topic topic2 = new Topic("C#", "C# description");
-        category.setTopics(List.of(topic1, topic2));
+        List<Topic> topics = new ArrayList<>();
+        topics.add(topic1);
+        topics.add(topic2);
+        category.setTopics(topics);
         categoryRepository.save(category);
         // when - action or behaviour that we are going test
         Category savedCategory = categoryRepository.findById(category.getId()).get();

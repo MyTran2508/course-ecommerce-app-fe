@@ -14,7 +14,9 @@ public interface BaseService<E, D> {
 
     DataResponse<D> update(String id, D dto);
 
-    DataResponse<D> delete(String id);
+    DataResponse<D> setRemoved(String id);
+
+    DataResponse<String> delete(String id);
 
     DataResponse<D> getById(String id);
 

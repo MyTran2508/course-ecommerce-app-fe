@@ -22,8 +22,11 @@ public interface BaseApi<E,D> {
     @GetMapping(ApiResources.GET_BY_ID)
     public DataResponse<D> getById(@RequestParam String id);
 
+    @PutMapping(ApiResources.REMOVED)
+    public DataResponse<D> setRemoved(@PathVariable("id") String id);
+
     @PutMapping(ApiResources.DELETE)
-    public DataResponse<D> delete(@PathVariable("id") String id);
+    public DataResponse<String> delete(@PathVariable("id") String id);
 
     @GetMapping(ApiResources.GET_ALL)
     public ListResponse<D> getAll();
