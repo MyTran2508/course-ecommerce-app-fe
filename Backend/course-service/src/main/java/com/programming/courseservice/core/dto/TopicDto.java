@@ -2,6 +2,7 @@ package com.programming.courseservice.core.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TopicDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -18,4 +20,9 @@ public class TopicDto implements Serializable {
     @NotEmpty(message = "TopicName is required")
     private String name;
     private String description;
+
+    public TopicDto(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 }

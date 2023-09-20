@@ -32,7 +32,7 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
         try {
             E entity = getBaseMapper().dtoToEntity(dto);
             getBaseRepository().save(entity);
-            return ResponseMapper.toDataResponseSuccess(entity);
+            return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
         } catch (NoSuchElementException e) {
             throw new DataAlreadyExistException("Data already exist");
         }

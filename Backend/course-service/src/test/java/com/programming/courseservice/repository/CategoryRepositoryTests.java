@@ -11,9 +11,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
-public class CategoryRepositoryTest {
+public class CategoryRepositoryTests {
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -158,5 +159,46 @@ public class CategoryRepositoryTest {
         // then - verify the output
         assertThat(updatedCategory).isNotNull();
         assertThat(updatedCategory.getRemoved()).isTrue();
+    }
+
+    // JUnit test for delete category operation
+    @Test
+    @DisplayName("JUnit test for delete category operation")
+    public void givenCategoryObject_whenDelete_thenDeletedCategory() {
+        // given - preconditions or setup
+        Category category = Category.builder()
+                .name("IT Software")
+                .description("IT Software description")
+                .build();
+        Topic topic1 = new Topic("Java", "Java description");
+        List<Topic> topics = new ArrayList<>();
+        topics.add(topic1);
+        category.setTopics(topics);
+        categoryRepository.save(category);
+        // when - action or behaviour that we are going test
+        categoryRepository.deleteById(category.getId());
+        Optional<Category> optionalCategory = categoryRepository.findById(category.getId());
+        // then - verify the output
+        assertThat(optionalCategory).isEmpty();
+    }
+
+    // JUnit test for get category by name operation
+    @Test
+    @DisplayName("JUnit test for get category by name operation")
+    public void given_when_then() {
+        // given - preconditions or setup
+        Category category = Category.builder()
+                .name("IT Software")
+                .description("IT Software description")
+                .build();
+        Topic topic1 = new Topic("Java", "Java description");
+        List<Topic> topics = new ArrayList<>();
+        topics.add(topic1);
+        category.setTopics(topics);
+        categoryRepository.save(category);
+        // when - action or behaviour that we are going test
+        Optional<Category> optionalCategory = categoryRepository.findByName(category.getName());
+        // then - verify the output
+        assertThat(optionalCategory).isPresent();
     }
 }

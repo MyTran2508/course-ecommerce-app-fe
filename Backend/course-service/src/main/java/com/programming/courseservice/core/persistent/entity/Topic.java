@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -31,9 +33,9 @@ public class Topic extends BaseModel {
     private String description;
     @ManyToOne(targetEntity = Category.class)
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_topics_categories"))
-    @JsonIgnore
     private Category category;
-
+    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
+    private List<Course> courses;
     @Override
     public String toString() {
         return "Topic{" +
@@ -41,7 +43,6 @@ public class Topic extends BaseModel {
                 ", description=" + description + '}'
         + super.toString();
     }
-
     public Topic(String name, String description) {
         this.name = name;
         this.description = description;

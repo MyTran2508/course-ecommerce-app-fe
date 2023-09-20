@@ -22,16 +22,19 @@ import java.util.Set;
 @NoArgsConstructor
 public class Course extends BaseModel {
     @ManyToOne(targetEntity = Level.class)
-    @JoinColumn(name = "level_id", foreignKey = @ForeignKey(name = "fk_contents_level"))
+    @JoinColumn(name = "level_id", foreignKey = @ForeignKey(name = "fk_courses_level"))
     private Level level;
     @ManyToOne(targetEntity = Language.class)
-    @JoinColumn(name = "language_id", foreignKey = @ForeignKey(name = "fk_contents_language"))
+    @JoinColumn(name = "language_id", foreignKey = @ForeignKey(name = "fk_courses_language"))
     private Language language;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "content_id", nullable = false, foreignKey = @ForeignKey(name = "fk_courses_content"))
     private Content content;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "course")
     private Set<Image> images;
+    @ManyToOne(targetEntity = Topic.class)
+    @JoinColumn(name = "topic_id", foreignKey = @ForeignKey(name = "fk_course_topic"))
+    private Topic topic;
     @Column(name = "user_id")
     private String userId;
 }
