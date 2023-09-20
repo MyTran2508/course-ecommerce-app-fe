@@ -58,4 +58,8 @@ public class BaseModel implements Serializable {
                 ", removed=" + removed +
                 '}';
     }
+
+    public BaseModel(String id) {
+        this.id = id;
+    }
 }

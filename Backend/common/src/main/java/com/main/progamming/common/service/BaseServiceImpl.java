@@ -11,6 +11,7 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,9 +34,11 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
             E entity = getBaseMapper().dtoToEntity(dto);
             getBaseRepository().save(entity);
             return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
-        } catch (NoSuchElementException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DataAlreadyExistException("Data already exist");
         }
+
+
     }
 
     @Override
@@ -58,7 +61,7 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
                 }
             }
             return ResponseMapper.toDataResponseSuccess(count + " updated successfully!!");
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) {
             throw new ResourceNotFoundException(e.getMessage());
         }
     }
