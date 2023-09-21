@@ -2,6 +2,7 @@ package com.programming.courseservice.service;
 
 import com.main.progamming.common.error.exception.DataAlreadyExistException;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
+import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.programming.courseservice.core.dto.CategoryDto;
@@ -26,10 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
@@ -115,5 +113,58 @@ public class CategoryServiceTests {
         assertThat(response).isNotNull();
         assertThat(response.getData()).isNotNull();
         assertThat(response.getData()).hasSize(2);
+    }
+
+    // JUnit test for get all category method (negative scenario)
+    @Test
+    @DisplayName("JUnit test for get all category method (negative scenario)")
+    public void givenEmptyEmployeeList_whenGetAll_thenReturnEmptyList() {
+        // given - preconditions or setup
+        when(categoryRepository.findAll()).thenReturn(Collections.emptyList());
+        // when - action or behaviour that we are going test
+        ListResponse<CategoryDto> response = categoryService.getAll();
+        // then - verify the output
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isNull();
+    }
+
+    // JUnit test for get category by id method
+    @Test
+    @DisplayName("JUnit test for get category by id method")
+    public void givenCategoryObject_whenGetById_thenCategoryObject() {
+        // given - preconditions or setup
+        Category category = new Category("1", "IT Software", "IT Software Description");
+        when(categoryRepository.findById("1")).thenReturn(Optional.of(category));
+
+        CategoryDto categoryDto = new CategoryDto("1", "IT Software", "IT Software Description", null);
+        when(categoryMapper.entityToDto(category)).thenReturn(categoryDto);
+        // when - action or behaviour that we are going test
+        DataResponse<CategoryDto> response = categoryService.getById("1");
+        // then - verify the output
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(StatusCode.REQUEST_SUCCESS);
+        assertThat(response.getData()).isNotNull();
+        assertThat(response.getData().getId()).isEqualTo("1"); // Đảm bảo id của CategoryDto đúng
+    }
+
+    // JUnit test for update category method
+    @Test
+    @DisplayName("JUnit test for update category method")
+    public void givenCategoryDto_whenUpdateCategory_thenReturnCategoryDto() {
+        // given - preconditions or setup
+        String categoryId = "1";
+        Category category = new Category("1", "IT Software", "IT Software Description");
+        when(categoryRepository.findById("1")).thenReturn(Optional.of(category));
+        CategoryDto categoryDto = new CategoryDto("1", "IT Software update", "IT Software Description update", null);
+
+        when(categoryRepository.save(category)).thenReturn(category);
+        when(categoryMapper.entityToDto(category)).thenReturn(categoryDto);
+        // when - action or behaviour that we are going test
+        DataResponse<CategoryDto> response = categoryService.update(categoryId, categoryDto);
+        // then - verify the output
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(StatusCode.REQUEST_SUCCESS);
+        assertThat(response.getData().getName()).isEqualTo("IT Software update");
+        System.out.println(response.getData());
     }
 }

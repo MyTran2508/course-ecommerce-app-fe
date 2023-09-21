@@ -56,12 +56,14 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
         category.setDescription(dto.getDescription());
         category.setNewTopics(setNewTopics(category, dto.getTopics()));
         category.setId(id);
-        categoryRepository.save(category);
-        return ResponseMapper.toDataResponseSuccess("Success");
+        Category updatedCategory = categoryRepository.save(category);
+        return ResponseMapper.toDataResponseSuccess(categoryMapper.entityToDto(updatedCategory));
     }
     public List<Topic> setNewTopics(Category category, List<TopicDto> topicDtos) {
         List<Topic> results = new ArrayList<>();
         List<Topic> topicsInDb = category.getTopics();
+        if(topicDtos == null)
+            return null;
         for (TopicDto topicDto: topicDtos) {
             Topic topic;
             if(topicDto.getId() != null) {
