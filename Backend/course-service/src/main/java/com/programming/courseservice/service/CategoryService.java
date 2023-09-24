@@ -85,6 +85,7 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
         if(optionalCategory.isEmpty()) {
             throw new ResourceNotFoundException("Category with name " + name + " does not exists in DB");
         }
-        return ResponseMapper.toDataResponseSuccess(optionalCategory.get());
+        Category category = optionalCategory.get();
+        return ResponseMapper.toDataResponseSuccess(categoryMapper.entityToDto(category));
     }
 }

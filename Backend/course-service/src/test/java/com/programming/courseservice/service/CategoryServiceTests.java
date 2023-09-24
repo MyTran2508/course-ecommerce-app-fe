@@ -18,6 +18,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -166,5 +168,51 @@ public class CategoryServiceTests {
         assertThat(response.getStatusCode()).isEqualTo(StatusCode.REQUEST_SUCCESS);
         assertThat(response.getData().getName()).isEqualTo("IT Software update");
         System.out.println(response.getData());
+    }
+
+    // JUnit test for getByName throw exception method
+    @Test
+    @DisplayName("JUnit test for getByName throw exception method")
+    public void givenCategoryName_whenGetByName_thenThrowsException() {
+        // given - preconditions or setup
+        String categoryName = "IT Software";
+        when(categoryRepository.findByName(categoryName)).thenReturn(Optional.empty());
+        // when - action or behaviour that we are going test
+        Throwable throwException = catchThrowable(() -> categoryService.getByName(categoryName));
+        // then - verify the output
+        assertThat(throwException).isInstanceOf(ResourceNotFoundException.class);
+        assertThat(throwException.getMessage()).isEqualTo("Category with name " + categoryName + " does not exists in DB");
+    }
+
+    // JUnit test for getByName method
+    @Test
+    @DisplayName("JUnit test for getByName method")
+    public void givenCategoryName_whenFindByName_thenReturnCategoryDto() {
+        // given - preconditions or setup
+        String categoryName = "IT Software";
+        Category category = new Category("1", "IT Software", "IT Software Description");
+        CategoryDto categoryDto = new CategoryDto("1", "IT Software", "IT Software Description", null);
+        when(categoryRepository.findByName(categoryName)).thenReturn(Optional.of(category));
+        when(categoryMapper.entityToDto(category)).thenReturn(categoryDto);
+        // when - action or behaviour that we are going test
+        DataResponse<CategoryDto> response = categoryService.getByName(categoryName);
+        // then - verify the output
+        System.out.println(response.getData());
+        assertThat(response).isNotNull();
+        assertThat(response.getData()).isEqualTo(categoryDto);
+    }
+
+    // JUnit test for getByName method throws exception
+    @Test
+    @DisplayName("JUnit test for getByName method throws exception")
+    public void givenNonExistingCategoryName_whenFindByName_thenThrowsException() {
+        // given - preconditions or setup
+        String nonExistingCategoryName = "NonExistingCategoryName";
+        when(categoryRepository.findByName(nonExistingCategoryName)).thenReturn(Optional.empty());
+        // when - action or behaviour that we are going test
+        Throwable throwException = catchThrowable(() -> categoryService.getByName(nonExistingCategoryName));
+        // then - verify the output
+        assertThat(throwException).isInstanceOf(ResourceNotFoundException.class);
+        assertThat(throwException.getMessage()).isEqualTo("Category with name " + nonExistingCategoryName + " does not exists in DB");
     }
 }
