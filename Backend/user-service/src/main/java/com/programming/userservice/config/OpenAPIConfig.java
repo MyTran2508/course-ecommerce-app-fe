@@ -1,6 +1,6 @@
 package com.programming.userservice.config;
 
-import com.programming.userservice.util.constant.ShowOpenAPI;
+import com.programming.userservice.util.annotation.ShowOpenAPI;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

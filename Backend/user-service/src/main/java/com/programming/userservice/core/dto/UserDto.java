@@ -2,6 +2,8 @@ package com.programming.userservice.core.dto;
 
 import lombok.*;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,5 +16,5 @@ public class UserDto {
     private String lastName;
     private String telephone;
     private String photos;
-    private CategoryDto categoryDto;
+    private Set<RoleDto> roles;
 }

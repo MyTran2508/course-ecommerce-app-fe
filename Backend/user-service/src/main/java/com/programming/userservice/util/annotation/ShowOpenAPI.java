@@ -1,4 +1,4 @@
-package com.programming.userservice.util.constant;
+package com.programming.userservice.util.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

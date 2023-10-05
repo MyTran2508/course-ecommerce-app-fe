@@ -3,6 +3,8 @@ package com.programming.userservice.service;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
+import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.userservice.core.dto.UserDto;
 import com.programming.userservice.core.mapper.UserMapper;
@@ -35,5 +37,9 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     @Override
     protected List<UserDto> getListSearchResults(String keyword) {
         return null;
+    }
+    public DataResponse<UserDto> getUserByUsername(String username) {
+        UserDto userDto = userMapper.entityToDto(userRepository.findByUserName(username));
+        return ResponseMapper.toDataResponseSuccess(userDto);
     }
 }
