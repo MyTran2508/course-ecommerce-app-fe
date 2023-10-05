@@ -16,7 +16,7 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authManager;
     @PostMapping("/token")
-    public String getToken(UserCredential userCredential) {
+    public String getToken(@RequestBody UserCredential userCredential) {
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(userCredential.getUserName(), userCredential.getPassword()));
         if(authentication.isAuthenticated()) {
             return authService.generateToken(userCredential.getUserName());
