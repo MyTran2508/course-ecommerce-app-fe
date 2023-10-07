@@ -32,4 +32,8 @@ public class Role extends BaseModel {
             inverseForeignKey = @ForeignKey(name = "fk_users_roles_users")
     )
     private Set<User> users;
+
+    public Role(String name) {
+        this.name = name;
+    }
 }

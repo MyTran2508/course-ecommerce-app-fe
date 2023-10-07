@@ -2,6 +2,7 @@ package com.main.progamming.common.error.advice;
 
 import com.main.progamming.common.error.exception.DataAlreadyExistException;
 import com.main.progamming.common.error.exception.DataNotFoundException;
+import com.main.progamming.common.error.exception.NotPermissionException;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
@@ -31,5 +32,12 @@ public class ThrowsExceptionHandler {
         DataResponse<?> errorResponse = ResponseMapper.toDataResponse(e.getMessage(),
                 StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(NotPermissionException.class)
+    public ResponseEntity<DataResponse<?>> handleNotPermissionException(final RuntimeException e) {
+        DataResponse<?> errorResponse = ResponseMapper.toDataResponse(e.getMessage(),
+                StatusCode.NOT_PERMISSION, StatusMessage.NOT_PERMISSION);
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }

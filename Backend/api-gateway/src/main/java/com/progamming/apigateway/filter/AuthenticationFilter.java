@@ -31,6 +31,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 }
                 try {
                     jwtUtil.validateToken(authHeader);
+                    System.out.println("Valid");
                 } catch (Exception e) {
                     throw new NotPermissionException("invalid access");
                 }

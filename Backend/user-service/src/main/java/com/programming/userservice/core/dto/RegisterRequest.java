@@ -1,17 +1,13 @@
 package com.programming.userservice.core.dto;
 
-import com.programming.userservice.core.persistent.entity.Role;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
-
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class UserDto {
+@NoArgsConstructor
+public class RegisterRequest {
     private String password;
     private String email;
     private String username;
@@ -19,5 +15,4 @@ public class UserDto {
     private String lastName;
     private String telephone;
     private String photos;
-    private Set<Role> roles;
 }
