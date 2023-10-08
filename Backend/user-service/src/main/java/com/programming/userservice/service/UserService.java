@@ -7,13 +7,12 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.userservice.core.dto.RegisterRequest;
-import com.programming.userservice.core.persistent.entity.Role;
-import com.programming.userservice.core.persistent.enumrate.RoleUser;
+import com.programming.userservice.domain.persistent.entity.Role;
+import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.security.jwt.JwtService;
-import com.programming.userservice.core.dto.UserDto;
-import com.programming.userservice.core.mapper.UserMapper;
-import com.programming.userservice.core.persistent.entity.User;
+import com.programming.userservice.domain.dto.UserDto;
+import com.programming.userservice.domain.mapper.UserMapper;
+import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -49,7 +48,6 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         UserDto userDto = userMapper.entityToDto(userRepository.findByUserName(username));
         return ResponseMapper.toDataResponseSuccess(userDto);
     }
-
     public String generateToken(String username) {
         return jwtService.generateToken(username);
     }

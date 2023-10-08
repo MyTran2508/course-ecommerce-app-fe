@@ -1,7 +1,7 @@
 package com.programming.userservice.security.config;
 
 import com.main.progamming.common.error.exception.DataNotFoundException;
-import com.programming.userservice.core.persistent.entity.User;
+import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

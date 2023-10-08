@@ -1,8 +1,8 @@
-package com.programming.userservice.core.mapper;
+package com.programming.userservice.domain.mapper;
 
 import com.main.progamming.common.model.BaseMapperImpl;
-import com.programming.userservice.core.dto.UserDto;
-import com.programming.userservice.core.persistent.entity.User;
+import com.programming.userservice.domain.dto.UserDto;
+import com.programming.userservice.domain.persistent.entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 

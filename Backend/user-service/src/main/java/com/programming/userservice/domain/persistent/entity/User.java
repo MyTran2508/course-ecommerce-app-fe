@@ -1,4 +1,4 @@
-package com.programming.userservice.core.persistent.entity;
+package com.programming.userservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Data

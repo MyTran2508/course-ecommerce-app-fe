@@ -1,4 +1,4 @@
-package com.programming.userservice.core.persistent.enumrate;
+package com.programming.userservice.domain.persistent.enumrate;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

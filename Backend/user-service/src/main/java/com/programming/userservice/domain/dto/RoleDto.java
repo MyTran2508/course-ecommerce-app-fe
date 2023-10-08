@@ -1,5 +1,6 @@
-package com.programming.userservice.core.dto;
+package com.programming.userservice.domain.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDto {
+    @NotEmpty(message = "Id is required")
     private String id;
+    @NotEmpty(message = "Name is required")
     private String name;
 }
