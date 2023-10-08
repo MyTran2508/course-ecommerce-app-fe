@@ -13,6 +13,25 @@ export default function Home() {
     delaySpeed: 3000,
     deleteSpeed: 20,
   });
+
+  const renderItem = () => {
+    return (
+      <div className="flex flex-wrap">
+        <div className="w-1/4 gap-3">
+          <CourseCard />
+        </div>
+        <div className="w-1/4 gap-3">
+          <CourseCard />
+        </div>
+        <div className="w-1/4 gap-3">
+          <CourseCard />
+        </div>
+        <div className="w-1/4 gap-3">
+          <CourseCard />
+        </div>
+      </div>
+    );
+  };
   return (
     <main className=" max-w-screen-2xl w-full mx-auto flex-col">
       <section className="nav-padding w-full flex-center">
@@ -26,8 +45,8 @@ export default function Home() {
         </div>
       </section>
       <div>
-        <h3 className="text-2xl font-bold">Khóa Học Mới</h3>
-        <CourseCard />
+        <h3 className="text-2xl font-bold ml-6">Khóa Học Mới</h3>
+        {renderItem()}
       </div>
     </main>
   );

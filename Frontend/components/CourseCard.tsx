@@ -26,8 +26,8 @@ function CourseCard() {
         <div className="h-fit w-full">
           <Image
             src={test[0].image}
-            className="h-full rounded-md object-cover"
-            width={384}
+            className="h-full w-full rounded-md object-cover"
+            width={380}
             height={440}
             alt={test[0].title}
           />
@@ -39,15 +39,14 @@ function CourseCard() {
       <CardContent className=" mt-4 p-0 flex-between">
         <div className="flex-start">
           <BsPeopleFill className="text-2xl mr-2" />
-          <div className="text-2xl font-normal">
+          <div className="text-xl font-normal">
             {test[0].members.toLocaleString()}
           </div>
         </div>
-        <div className="flex-end mr-5">
-          <div className="text-3xl font-normal">
+        <div className="flex-end mr-2">
+          <div className="text-xl font-normal">
             {test[0].price.toLocaleString()} đ{" "}
           </div>
-          <BiMoneyWithdraw className="text-3xl" />
         </div>
         {/* <div className="flex-center body-medium gap-1.5 text-white">
           <Image src="/downloads.svg" width={20} height={20} alt="download" />
