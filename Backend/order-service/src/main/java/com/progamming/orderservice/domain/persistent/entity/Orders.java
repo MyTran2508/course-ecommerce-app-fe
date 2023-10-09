@@ -1,8 +1,8 @@
-package com.progamming.orderservice.domain.persistent;
+package com.progamming.orderservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
-import com.progamming.orderservice.domain.enumrate.OrderStatus;
-import com.progamming.orderservice.domain.enumrate.ShippingMethod;
+import com.progamming.orderservice.domain.persistent.enumrate.OrderStatus;
+import com.progamming.orderservice.domain.persistent.enumrate.ShippingMethod;
 import jakarta.persistence.*;
 import lombok.*;
 

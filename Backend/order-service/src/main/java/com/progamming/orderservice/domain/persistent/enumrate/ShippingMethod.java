@@ -1,4 +1,4 @@
-package com.progamming.orderservice.domain.enumrate;
+package com.progamming.orderservice.domain.persistent.enumrate;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

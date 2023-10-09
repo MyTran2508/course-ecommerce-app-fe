@@ -1,4 +1,4 @@
-package com.progamming.orderservice.domain.persistent;
+package com.progamming.orderservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
