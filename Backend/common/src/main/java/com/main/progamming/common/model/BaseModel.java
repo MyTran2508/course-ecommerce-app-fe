@@ -45,18 +45,6 @@ public class BaseModel implements Serializable {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "BaseModel{" +
-                "id='" + id + '\'' +
-                ", created=" + created +
-                ", creator='" + creator + '\'' +
-                ", updated=" + updated +
-                ", modifier='" + modifier + '\'' +
-                ", removed=" + removed +
-                '}';
-    }
-
     public BaseModel(String id) {
         this.id = id;
     }

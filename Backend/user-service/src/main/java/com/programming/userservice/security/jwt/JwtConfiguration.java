@@ -20,7 +20,6 @@ public class JwtConfiguration {
     public String getAuthorizationHeader() {
         return AUTHORIZATION;
     }
-
     public String getUserAgent() {
         return USER_AGENT;
     }

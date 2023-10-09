@@ -14,11 +14,15 @@ import com.programming.userservice.domain.dto.UserDto;
 import com.programming.userservice.domain.mapper.UserMapper;
 import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.repository.UserRepository;
+import com.programming.userservice.util.EmailUtil;
+import com.programming.userservice.util.OtpUtil;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +32,8 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final OtpUtil otpUtil;
+    private final EmailUtil emailUtil;
     @Override
     protected BaseRepository<User> getBaseRepository() {
         return userRepository;
@@ -52,14 +58,19 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         return jwtService.generateToken(username);
     }
     public DataResponse<String> register(UserDto userDto) {
+        if(userRepository.findByUserName(userDto.getUsername()) == null) {
+            throw new DataAlreadyExistException("User already exists");
+        }
         try {
+            String otp = otpUtil.generateOtp();
+            emailUtil.sendOtpEmail(userDto.getEmail(), otp);
             User user = userMapper.dtoToEntity(userDto);
             Role role = new Role(RoleUser.USER.getValue());
             user.setRoles(Set.of(role));
             userRepository.save(user);
             return ResponseMapper.toDataResponseSuccess("Enroll in user successfully");
-        } catch (Exception e) {
-            throw new DataAlreadyExistException("Email or usernamee already exists");
+        } catch (MessagingException e) {
+            throw new DataAlreadyExistException("Unable to send otp please try again");
         }
     }
 }

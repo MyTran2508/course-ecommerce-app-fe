@@ -5,15 +5,13 @@ import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
-import com.programming.courseservice.core.dto.CategoryDto;
-import com.programming.courseservice.core.dto.TopicDto;
-import com.programming.courseservice.core.mapper.CategoryMapper;
-import com.programming.courseservice.core.persistent.entity.Category;
-import com.programming.courseservice.core.persistent.entity.Topic;
+import com.programming.courseservice.domain.dto.CategoryDto;
+import com.programming.courseservice.domain.dto.TopicDto;
+import com.programming.courseservice.domain.mapper.CategoryMapper;
+import com.programming.courseservice.domain.persistent.entity.Category;
 import com.programming.courseservice.repository.CategoryRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.antlr.stringtemplate.language.Cat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTests {

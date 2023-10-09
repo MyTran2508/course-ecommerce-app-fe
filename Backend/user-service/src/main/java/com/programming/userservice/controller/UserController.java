@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users/user")
 public class UserController extends BaseApiImpl<User, UserDto> {
     private final UserService userService;
-    private final CategoryApi categoryApi;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     @Override
