@@ -10,7 +10,7 @@ import { iconMap } from "@/utils/map";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
-  { href: "/signUp", label: "Sign Up", icon: "BsFillPenFill" },
+  { href: "/signup", label: "Sign Up", icon: "BsFillPenFill" },
 ];
 
 function Navbar() {
@@ -35,6 +35,9 @@ function Navbar() {
           <CustomButton
             title="SignUp"
             containerStyles="bg-white-500  border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+            handleClick={() => {
+              router.push("/signup");
+            }}
           ></CustomButton>
         </div>
         <div className="text-3xl inline-flex lg:hidden">

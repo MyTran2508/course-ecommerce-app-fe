@@ -1,10 +1,10 @@
 "use client";
-import LoginForm from "@/components/form/LoginForm";
+import SignUpForm from "@/components/form/SignUpForm";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { IoChevronBackCircleSharp } from "react-icons/io5";
 
-function PageLogin() {
+function PageSignUp() {
   const route = useRouter();
   return (
     <div className=" bg-blue-100 border-6 p-2">
@@ -18,10 +18,10 @@ function PageLogin() {
         <p className="">Back to Home</p>
       </div>
       <div className="flex justify-center mt-10 h-screen">
-        <LoginForm />
+        <SignUpForm />
       </div>
     </div>
   );
 }
 
-export default PageLogin;
+export default PageSignUp;

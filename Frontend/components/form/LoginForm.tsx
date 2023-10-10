@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +17,8 @@ import * as z from "zod";
 import { FiLogIn } from "react-icons/fi";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import CustomButton from "../CustomButton";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z
@@ -31,6 +33,7 @@ const formSchema = z.object({
 });
 
 function LoginForm() {
+  const route = useRouter();
   const [openEye, setOpenEye] = useState(false);
 
   const toggle = () => {
@@ -38,6 +41,7 @@ function LoginForm() {
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
+    shouldUnregister: true,
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
@@ -53,7 +57,7 @@ function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-1/2 h-4/5 bg-gray-100 rounded-3xl xl:flex"
+        className="w-1/2 h-4/5 xs:h-3/5 xs:w-4/5 min-h-[400px] bg-gray-100 rounded-3xl xl:flex"
       >
         <div className="h-1/2 p-5 my-1 w-full lg:w-1/2 2xs:text-[10px] xl:text-sm ">
           <div className="font-mono mb-2 flex-center flex-col ">
@@ -122,10 +126,13 @@ function LoginForm() {
           />
           <div className="text-[12px] mt-2 flex-between xs:text-[10px]">
             <p>Dont have an account?</p>
-            <CustomButton
-              title="Register"
-              containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
-            />
+            <Link href={"/signup"}>
+              <CustomButton
+                title="Register"
+                type="button"
+                containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
+              />
+            </Link>
           </div>
         </div>
         <div className="w-1/2 lg:block hidden">

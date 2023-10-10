@@ -16,17 +16,17 @@ export default function Home() {
 
   const renderItem = () => {
     return (
-      <div className="flex flex-wrap">
-        <div className="w-1/4 gap-3">
+      <div className="grid xl:grid-cols-4 gap-2">
+        <div>
           <CourseCard />
         </div>
-        <div className="w-1/4 gap-3">
+        <div>
           <CourseCard />
         </div>
-        <div className="w-1/4 gap-3">
+        <div>
           <CourseCard />
         </div>
-        <div className="w-1/4 gap-3">
+        <div>
           <CourseCard />
         </div>
       </div>

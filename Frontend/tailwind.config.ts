@@ -9,7 +9,7 @@ module.exports = {
 	],
   theme: {
     screens: {
-       '2xs': { min: '300px' },
+       '2xs': { min: '300px',max:'574px' },
         'xs': { max: '575px' }, // Mobile (iPhone 3 - iPhone XS Max).
         'sm': { min: '576px', max: '897px' }, // Mobile (matches max: iPhone 11 Pro Max landscape @ 896px).
         'md': { min: '898px', max: '1199px' }, // Tablet (matches max: iPad Pro @ 1112px).
@@ -29,7 +29,8 @@ module.exports = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         "banner": "url('/banner.jpg')",
-        "login":"url('/login.jpg')"
+        "login": "url('/login.jpg')",
+        "signup":"url('/signup.jpg')"
       },
       colors: {
         border: "hsl(var(--border))",
