@@ -33,7 +33,7 @@ public class Role extends BaseModel {
     )
     private Set<User> users;
 
-    public Role(String name) {
-        this.name = name;
+    public Role(String id) {
+        super(id);
     }
 }

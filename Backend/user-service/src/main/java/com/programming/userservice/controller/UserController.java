@@ -14,6 +14,7 @@ import com.programming.userservice.util.annotation.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -61,6 +62,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     }
 
     @PostMapping("/login")
+    @ShowOpenAPI
     public String login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         if(authentication.isAuthenticated()) {
@@ -70,12 +72,23 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         }
     }
 
+    @PostMapping("send-otp")
+    @ShowOpenAPI
+    public DataResponse<String> sendOtp(@RequestParam String email,
+                                        @RequestBody @Valid UserDto userDto) {
+        return userService.sendOtp(email, userDto);
+    }
+
     @PostMapping("/register")
-    public DataResponse<String> register(@RequestBody @Valid UserDto userDto) {
-        return userService.register(userDto);
+    @ShowOpenAPI
+    public DataResponse<String> register(@RequestBody @Valid UserDto userDto,
+                                         @RequestParam String email,
+                                         @RequestParam Integer otp) {
+        return userService.register(userDto, email, otp);
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<UserDto> setRemoved(String id) {
         return super.setRemoved(id);
     }
