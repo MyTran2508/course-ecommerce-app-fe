@@ -1,4 +1,4 @@
-package com.programming.courseservice.util.constant;
+package com.programming.courseservice.util.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -22,7 +22,7 @@ public class StorageController {
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
-        byte[] data = storageS3.downloadFile(fileName);
+        byte[] data = storageS3.downloadFile(S3Constrant.pathFolderLecture + fileName);
         ByteArrayResource resource = new ByteArrayResource(data);
         return ResponseEntity.ok()
                 .contentLength(data.length)
@@ -33,6 +33,6 @@ public class StorageController {
 
     @DeleteMapping("/delete/{fileName}")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
-        return new ResponseEntity<>(storageS3.deleteFile(fileName), HttpStatus.OK);
+        return new ResponseEntity<>(storageS3.deleteFile(S3Constrant.pathFolderLecture + fileName), HttpStatus.OK);
     }
 }
