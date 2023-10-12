@@ -16,7 +16,7 @@ const links = [
 function Navbar() {
   const router = useRouter();
   return (
-    <div className="shadow-md bg-white w-full h-20 border-b-1 border-gray-500 text-black">
+    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-10">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-4">
         <Link href={"/"} className="text-2xl uppercase">
           E-LEANING

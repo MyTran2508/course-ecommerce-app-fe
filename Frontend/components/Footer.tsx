@@ -3,7 +3,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="flex justify-between border-t-2 p-2 max-md:flex-col ">
+    <footer className="flex justify-between border-t-2 p-2 max-md:flex-col mb-2 xs:text-[8px] xs:mb-10 ">
       <p>Copy right @ 2023 | ALL Right Reserved</p>
       <div className="flex gap-x-10">
         <Link href={"/"}>Terms & Conditions</Link>

@@ -39,10 +39,7 @@ const formSchema = z.object({
   phone: z.string().refine((value) => phoneNumberRegExp.test(value), {
     message: "Invalid phone number",
   }),
-  address_line: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must have than 8 character(s)"),
+  address_line: z.string(),
   ward: z.string().min(1),
   province: z.string().min(1),
 });

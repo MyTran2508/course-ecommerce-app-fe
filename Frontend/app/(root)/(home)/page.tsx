@@ -16,7 +16,7 @@ export default function Home() {
 
   const renderItem = () => {
     return (
-      <div className="grid xl:grid-cols-4 gap-2">
+      <div className="grid xl:grid-cols-4 gap-2 md:grid-cols-2">
         <div>
           <CourseCard />
         </div>

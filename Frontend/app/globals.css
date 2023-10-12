@@ -127,6 +127,9 @@
   .no-focus {
     @apply focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
   }
+  .font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
 }
 
 @layer base {
