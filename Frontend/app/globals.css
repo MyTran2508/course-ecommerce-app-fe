@@ -8,6 +8,27 @@
 }
 
 @layer utilities {
+  .group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+.group-hover\:transform {
+  transform: translate(-50%, -50%);
+}
+
+  .custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d3d0cf;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #E5E7EB;
+  border-radius: 10px;
+}
   .paddle-checkout {
     @apply min-h-screen w-full py-10 md:py-20 lg:w-1/2;
   }
@@ -81,7 +102,7 @@
   }
 
   .nav-padding {
-    @apply pt-[98px];
+    @apply pt-[50px];
   }
 
   .paddings {

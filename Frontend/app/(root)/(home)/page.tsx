@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <main className=" max-w-screen-2xl w-full mx-auto flex-col">
       <section className="nav-padding w-full flex-center">
-        <div className="flex-center relative bg-banner bg-center bg-cover rounded-xl min-h-[200px] w-11/12 flex-col mb-8">
+        <div className="flex-center relative bg-banner bg-center bg-cover rounded-xl min-h-[300px] w-11/12 flex-col mb-8">
           <h1 className="sm:heading1 heading2 text-center text-white">
             EXPERT LEARNING
           </h1>
