@@ -1,27 +1,22 @@
 "use client";
 import Link from "next/link";
 import React, { Fragment } from "react";
-import CustomButton from "./ui/CustomButton";
+import CustomButton from "./CustomButton";
 import SearchBar from "./SearchBar";
 import { AiOutlineMenu } from "react-icons/ai";
-import { BiLogIn } from "react-icons/bi";
-import { BsFillPenFill } from "react-icons/bs";
-import { IconType } from "react-icons";
 import { Menu, Transition } from "@headlessui/react";
+import { useRouter } from "next/navigation";
+import { iconMap } from "@/utils/map";
 
-const iconMap: { [key: string]: IconType } = {
-  BiLogIn: BiLogIn,
-  BsFillPenFill: BsFillPenFill,
-  /* Thêm các mappings cho các biểu tượng (icons) khác */
-};
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
-  { href: "/signUp", label: "Sign Up", icon: "BsFillPenFill" },
+  { href: "/signup", label: "Sign Up", icon: "BsFillPenFill" },
 ];
 
 function Navbar() {
+  const router = useRouter();
   return (
-    <div className="shadow-md bg-white w-full h-20 border-b-1 border-gray-500 text-black">
+    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-10">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-4">
         <Link href={"/"} className="text-2xl uppercase">
           E-LEANING
@@ -29,14 +24,20 @@ function Navbar() {
         <div className="hidden lg:inline-flex">
           <SearchBar />
         </div>
-        <div className="hidden lg:inline-flex gap-3">
+        <div className="hidden lg:inline-flex gap-3 ">
           <CustomButton
             title="Login"
-            containerStyles="bg-white-500 border-b-4 border-orange-500 hover:bg-blue-200 text-black font-bold py-2 px-4 rounded duration-1000"
+            containerStyles="bg-white-500 border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+            handleClick={() => {
+              router.push("/login");
+            }}
           ></CustomButton>
           <CustomButton
             title="SignUp"
-            containerStyles="bg-white-500  border-b-4 border-orange-500 hover:bg-blue-200 text-black font-bold py-2 px-4 rounded duration-1000"
+            containerStyles="bg-white-500  border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+            handleClick={() => {
+              router.push("/signup");
+            }}
           ></CustomButton>
         </div>
         <div className="text-3xl inline-flex lg:hidden">
@@ -61,9 +62,11 @@ function Navbar() {
                       href={link.href}
                       className="ui-active:bg-violet-500 ui-active:text-white ui-not-active:bg-white ui-not-active:text-black group flex w-full items-center rounded-md px-2 py-2 text-sm"
                     >
-                      {React.createElement(iconMap[link.icon], {
-                        className: "mr-2",
-                      })}
+                      {link.icon &&
+                        iconMap[link.icon] &&
+                        React.createElement(iconMap[link.icon], {
+                          className: "mr-2",
+                        })}
                       {link.label}
                     </Menu.Item>
                   ))}
