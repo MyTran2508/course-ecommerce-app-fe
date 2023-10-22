@@ -7,8 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -45,18 +43,6 @@ public class BaseModel implements Serializable {
     }
     protected String getKeyDesc() {
         return this.id;
-    }
-
-    @Override
-    public String toString() {
-        return "BaseModel{" +
-                "id='" + id + '\'' +
-                ", created=" + created +
-                ", creator='" + creator + '\'' +
-                ", updated=" + updated +
-                ", modifier='" + modifier + '\'' +
-                ", removed=" + removed +
-                '}';
     }
 
     public BaseModel(String id) {

@@ -1,7 +1,7 @@
 package com.programming.userservice.repository;
 
 import com.main.progamming.common.repository.BaseRepository;
-import com.programming.userservice.core.persistent.entity.User;
+import com.programming.userservice.domain.persistent.entity.User;
 import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends BaseRepository<User> {

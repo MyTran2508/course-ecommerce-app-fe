@@ -1,6 +1,6 @@
 package com.programming.courseservice.config;
 
-import com.programming.courseservice.util.constant.ShowOpenAPI;
+import com.programming.courseservice.util.annotation.ShowOpenAPI;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

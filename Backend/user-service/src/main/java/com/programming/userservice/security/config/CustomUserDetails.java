@@ -1,6 +1,6 @@
 package com.programming.userservice.security.config;
 
-import com.programming.userservice.core.persistent.entity.User;
+import com.programming.userservice.domain.persistent.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

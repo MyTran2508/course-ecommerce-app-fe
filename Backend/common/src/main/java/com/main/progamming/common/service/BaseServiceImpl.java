@@ -17,6 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
+
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,15 +33,9 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     @Transactional
     @SuppressWarnings("unchecked")
     public DataResponse<D> create(D dto) {
-        try {
-            E entity = getBaseMapper().dtoToEntity(dto);
-            getBaseRepository().save(entity);
-            return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
-        } catch (DataIntegrityViolationException e) {
-            throw new DataAlreadyExistException("Data already exist");
-        }
-
-
+        E entity = getBaseMapper().dtoToEntity(dto);
+        getBaseRepository().save(entity);
+        return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
     }
 
     @Override

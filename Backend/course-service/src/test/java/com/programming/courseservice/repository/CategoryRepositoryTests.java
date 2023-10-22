@@ -1,7 +1,7 @@
 package com.programming.courseservice.repository;
 
-import com.programming.courseservice.core.persistent.entity.Category;
-import com.programming.courseservice.core.persistent.entity.Topic;
+import com.programming.courseservice.domain.persistent.entity.Category;
+import com.programming.courseservice.domain.persistent.entity.Topic;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;

@@ -41,6 +41,7 @@ public class AuthConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/user/login",
                                         "/api/users/user/register",
+                                        "/api/users/user/send-otp",
                                         "/api/users/user/get-by-username/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**")

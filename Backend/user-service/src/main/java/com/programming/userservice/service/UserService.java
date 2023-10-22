@@ -2,19 +2,21 @@ package com.programming.userservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataAlreadyExistException;
+import com.main.progamming.common.message.StatusCode;
+import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.userservice.core.dto.RegisterRequest;
-import com.programming.userservice.core.persistent.entity.Role;
-import com.programming.userservice.core.persistent.enumrate.RoleUser;
+import com.programming.userservice.domain.persistent.entity.Role;
+import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.security.jwt.JwtService;
-import com.programming.userservice.core.dto.UserDto;
-import com.programming.userservice.core.mapper.UserMapper;
-import com.programming.userservice.core.persistent.entity.User;
+import com.programming.userservice.domain.dto.UserDto;
+import com.programming.userservice.domain.mapper.UserMapper;
+import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.repository.UserRepository;
+import com.programming.userservice.util.OtpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final OtpUtil otpUtil;
     @Override
     protected BaseRepository<User> getBaseRepository() {
         return userRepository;
@@ -49,11 +52,13 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         UserDto userDto = userMapper.entityToDto(userRepository.findByUserName(username));
         return ResponseMapper.toDataResponseSuccess(userDto);
     }
-
     public String generateToken(String username) {
         return jwtService.generateToken(username);
     }
-    public DataResponse<String> register(UserDto userDto) {
+    public DataResponse<String> register(UserDto userDto, String email, Integer otp) {
+        if (!otpUtil.validateOTP(email, otp)) {
+            return ResponseMapper.toDataResponse("Otp is not correct", StatusCode.NOT_IMPLEMENTED, StatusMessage.NOT_IMPLEMENTED);
+        }
         try {
             User user = userMapper.dtoToEntity(userDto);
             Role role = new Role(RoleUser.USER.getValue());
@@ -61,7 +66,20 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
             userRepository.save(user);
             return ResponseMapper.toDataResponseSuccess("Enroll in user successfully");
         } catch (Exception e) {
-            throw new DataAlreadyExistException("Email or usernamee already exists");
+            System.out.println(e.getMessage());
+            throw new DataAlreadyExistException("User or email already exists");
+        }
+    }
+
+    public DataResponse<String> sendOtp(String email, UserDto userDto) {
+        if(userRepository.findByUserName(userDto.getUsername()) != null) {
+            throw new DataAlreadyExistException("User already exists");
+        }
+        if(otpUtil.generateOtp(email)) {
+            return ResponseMapper.toDataResponseSuccess("Send otp to " + email + " successfully");
+        } else {
+            String messageError = "An error occurred while generating and sending OTP";
+            return ResponseMapper.toDataResponse(messageError, StatusCode.NOT_IMPLEMENTED, StatusMessage.NOT_IMPLEMENTED);
         }
     }
 }
