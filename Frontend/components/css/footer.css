@@ -1,0 +1,342 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+footer {
+    background-color: #140B5C;
+    width: 100%;
+    margin-top: 20px;
+    bottom: 0;
+    left: 0;
+    position: relative;
+}
+
+footer::after {
+    content: '';
+    left: 0;
+    top: 100px;
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: #fff;
+}
+
+footer .content {
+    max-width: 1300px;
+    margin: auto;
+    padding: 30px 20px 20px 20px;
+}
+
+footer .content .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+footer .content .logo-details {
+    text-align: center;
+    display: flex;
+    align-items: center; 
+}
+footer .content .logo {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    color: #fff;
+    margin-right: 12px;
+}
+
+footer .content .logo_name {
+    color: #fff;
+    font-size: 32px;
+}
+
+.media-icons {
+    display: flex;
+    align-items: center;
+}
+.media-icons a {
+    width: 40px;
+    height: 40px;
+    background-color: #333;
+    border-radius: 20px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease;
+}
+
+.media-icons .icon {
+    width: 18px;
+    height: 18px;
+    color: #fff;
+    background-color: transparent;
+}
+
+.media-icons a:nth-child(1) {
+    background-color: #4267B2;
+}
+
+.media-icons a:nth-child(1):hover {
+    background-color: #fff;
+}
+
+.media-icons a:nth-child(1):hover .icon {
+    color: #4267B2;
+}
+
+.media-icons a:nth-child(2) {
+    background-color: #1DA1F2;
+}
+
+.media-icons a:nth-child(2):hover {
+    background-color: #fff;
+}
+
+.media-icons a:nth-child(2):hover .icon {
+    color: #1DA1F2;
+}
+
+.media-icons a:nth-child(3) {
+    background-color: #E1306C;
+}
+
+.media-icons a:nth-child(3):hover {
+    background-color: #fff;
+}
+
+.media-icons a:nth-child(3):hover .icon {
+    color: #E1306C;
+}
+
+.media-icons a:nth-child(4) {
+    background-color: #0077B5;
+}
+
+.media-icons a:nth-child(4):hover {
+    background-color: #fff;
+}
+
+.media-icons a:nth-child(4):hover .icon {
+    color: #0077B5;
+}
+
+.media-icons a:nth-child(5) {
+    background-color: #FF0000;
+}
+
+.media-icons a:nth-child(5):hover {
+    background-color: #fff;
+}
+
+.media-icons a:nth-child(5):hover .icon {
+    color: #FF0000;
+}
+
+footer .link-boxes {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+footer .link-boxes .box {
+    flex-basis: (100% / 4 - 10px);
+    color: #fff;
+}
+
+footer .link-boxes .box li {
+    font-size: 16px;
+    font-weight: 300;
+    padding: 5px 0;
+    transition: 0.3s all ease;
+}
+
+footer .link-boxes .box li:hover {
+    text-decoration: underline;
+}
+
+footer .link-boxes .box .link-name:hover {
+    text-decoration: none;
+}
+
+
+footer .link-boxes .box .link-name {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+footer .link-boxes .box .link-name::after {
+    content: '';
+    width: 30%;
+    height: 2px;
+    background-color: #fff;
+    bottom: 0px;
+    left: 0;
+    position: absolute;
+}
+
+
+footer .link-boxes .box-input {
+    flex-basis: 24%;
+}
+
+footer .link-boxes .box-input input {
+    padding: 14px 20px;
+    outline: none;
+    border: 1px solid #fff;
+    color: #fff;
+    width: 100%;
+    font-size: 18px;
+    background-color: transparent;
+    border-radius: 4px;
+    margin: 4px 0;
+}
+
+footer .link-boxes .box-input input::placeholder {
+    color: #fff;
+}
+
+footer .link-boxes .box-input button {
+    background-color: #fff;
+    color: #140B5C;
+    padding: 8px 0;
+    width: 100%;
+    font-weight: 500;
+    font-size: 20px;
+    border-radius: 4px;
+    opacity: 0.85;
+    transition: 0.4s all ease;
+}
+
+footer .link-boxes .box-input button:hover {
+    opacity: 1;
+}
+
+/* Policy footer */
+
+.policy {
+    width: 100%;
+    margin: auto;
+    background-color: #1DA1F2;
+}
+
+.policy .policy-details {
+    max-width: 1300px;
+    margin: auto;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.policy .policy-details span {
+    flex:  1;
+}
+
+.policy .policy-details a {
+    padding: 0 8px;
+    transition: 0.4 ease;
+    font-weight: 500;
+}
+
+.policy .policy-details a:hover {
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    footer .link-boxes .box-input {
+        flex-basis: 60%;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 700px) {
+    .media-icons .icon {
+        height: 15px;
+        width: 15px;
+    }
+
+    .media-icons a {
+        width: 30px;
+        height: 30px;
+        margin: 0 7px;
+    }
+
+    footer .content .logo {
+        width: 26px;
+        height: 26px;
+    }
+
+    footer .content .logo_name {
+        font-size: 26px;
+    }
+
+    .policy .policy-details span {
+        font-size: 12px;
+    }
+
+    .policy .policy-details a {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    footer .link-boxes .box {
+        flex-basis: calc(50% - 10px);
+    }
+
+    footer .link-boxes .box:nth-child(3) {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    footer::after {
+        top: 120px;
+    }
+    footer .content .top {
+        flex-direction: column;
+    }
+
+    footer .content .logo {
+        width: 16px;
+        height: 16px;
+    }
+
+    footer .content .logo-details span {
+        font-size: 16px;
+    }
+
+    footer .content .logo-details {
+        margin-bottom: 10px;
+    }
+
+    footer .content .link-boxes li {
+        font-size: 12px;
+    }
+
+    footer .content .link-boxes .box-input button{
+        font-size: 14px;
+    }
+
+    footer .policy .policy-details span {
+        font-size: 8px;
+    }
+
+    footer .policy .policy-details a {
+        font-size: 8px;
+    }
+
+    footer .link-boxes .box-input input {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+}
