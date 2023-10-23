@@ -29,7 +29,7 @@ footer::after {
 footer .content {
     max-width: 1300px;
     margin: auto;
-    padding: 30px 20px 20px 20px;
+    padding: 30px 20px 30px 20px;
 }
 
 footer .content .top {
@@ -226,7 +226,7 @@ footer .link-boxes .box-input button:hover {
 .policy {
     width: 100%;
     margin: auto;
-    background-color: #1DA1F2;
+    background-color: #0F0844;
 }
 
 .policy .policy-details {
@@ -238,17 +238,20 @@ footer .link-boxes .box-input button:hover {
 }
 
 .policy .policy-details span {
+    color: #fff;
     flex:  1;
 }
 
 .policy .policy-details a {
+    color: #fff;
     padding: 0 8px;
     transition: 0.4 ease;
     font-weight: 500;
+    opacity: 0.8;
 }
 
 .policy .policy-details a:hover {
-    color: #fff;
+    opacity: 1;
 }
 
 @media (max-width: 900px) {
