@@ -52,8 +52,9 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         UserDto userDto = userMapper.entityToDto(userRepository.findByUserName(username));
         return ResponseMapper.toDataResponseSuccess(userDto);
     }
-    public String generateToken(String username) {
-        return jwtService.generateToken(username);
+    public DataResponse<String> generateToken(String username) {
+        String token = jwtService.generateToken(username);
+        return ResponseMapper.toDataResponseSuccess(token);
     }
     public DataResponse<String> register(UserDto userDto, String email, Integer otp) {
         if (!otpUtil.validateOTP(email, otp)) {

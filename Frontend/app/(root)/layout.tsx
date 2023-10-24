@@ -7,7 +7,8 @@ function layout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Navbar />
-      <Providers>{children}</Providers>
+      {children}
+      {/* <Providers>{children}</Providers> */}
       <Footer />
     </div>
   );

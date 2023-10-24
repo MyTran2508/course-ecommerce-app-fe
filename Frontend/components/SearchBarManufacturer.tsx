@@ -1,4 +1,4 @@
-import { SearchManufacturerProps } from "@/types";
+import { SearchManufacturerProps } from "@/types/ComponentProps";
 import { Combobox, Transition } from "@headlessui/react";
 import React, { Fragment, useState } from "react";
 import { BiSearchAlt } from "react-icons/bi";

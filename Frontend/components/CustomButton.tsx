@@ -1,4 +1,4 @@
-import { CustomButtonProps } from "@/types";
+import { CustomButtonProps } from "@/types/ComponentProps";
 import { iconMap } from "@/utils/map";
 import React from "react";
 

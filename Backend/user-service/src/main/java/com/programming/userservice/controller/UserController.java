@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
         description = "User Controller Exposes Rest APIs for User-Service"
 )
 @RestController
+@CrossOrigin("*")
 @RequiredArgsConstructor
 @RequestMapping("/api/users/user")
 public class UserController extends BaseApiImpl<User, UserDto> {
@@ -63,7 +64,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @PostMapping("/login")
     @ShowOpenAPI
-    public String login(@RequestBody @Valid LoginRequest loginRequest) {
+    public DataResponse<String> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         if(authentication.isAuthenticated()) {
             return userService.generateToken(loginRequest.getUsername());

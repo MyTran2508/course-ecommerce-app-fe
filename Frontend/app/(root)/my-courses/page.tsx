@@ -7,8 +7,8 @@ import { BiSolidMessageSquareAdd } from "react-icons/bi";
 function MyCourses() {
   return (
     <div className="container mt-20">
-      <div className="font-bold text-2xl"> Khóa Học Của Tôi</div>
-      <div className="grid grid-cols-4">
+      <div className="font-bold text-2xl xs:text-[10px]"> Khóa Học Của Tôi</div>
+      <div className="grid grid-cols-4 xs:grid-cols-1">
         <CourseCard myCourse={true} />
         <CourseCard myCourse={true} />
         <div>

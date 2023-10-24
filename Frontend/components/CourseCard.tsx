@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
-import { CourseCardProps } from "@/types";
+import { CourseCardProps } from "@/types/ComponentProps";
 import { BiMoneyWithdraw } from "react-icons/bi";
 import { BsPeopleFill } from "react-icons/bs";
 
@@ -46,7 +46,7 @@ function CourseCard(props: any) {
           </div>
         </div>
 
-        <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left">
+        <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left xs:text-[10px]">
           {test[0].title}
         </CardTitle>
       </CardHeader>
