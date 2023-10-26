@@ -1,11 +1,15 @@
 "use client";
 import LoginForm from "@/components/form/LoginForm";
+import { useAppSelector } from "@/redux/hooks";
+import { useLoginUserMutation } from "@/redux/services/authApi";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { IoChevronBackCircleSharp } from "react-icons/io5";
 
 function PageLogin() {
   const route = useRouter();
+  const token = useAppSelector((state) => state.authReducer.token);
+  console.log(token);
   return (
     <div className=" bg-blue-100 border-6 p-2">
       <div className="flex justify-start items-center gap-2 font-normal">

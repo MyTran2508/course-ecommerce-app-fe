@@ -19,38 +19,62 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import CustomButton from "../CustomButton";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-const formSchema = z.object({
-  email: z
-    .string()
-    .min(10, "Email must contain at least 10 character(s)")
-    .max(30)
-    .email(),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must have than 8 character(s)"),
-});
+import { useLoginUserMutation } from "@/redux/services/authApi";
+import { LoginRequest } from "@/types/login.type";
+import { toast } from "react-toastify";
+import { DataResponse } from "@/types/dataResponse.type";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/features/authSlice";
+import showToast from "@/utils/showToast";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { formSchemaLogin } from "@/utils/formSchema";
 
 function LoginForm() {
+  const formSchema = formSchemaLogin;
   const route = useRouter();
   const [openEye, setOpenEye] = useState(false);
+  const [loginUser, loginUserResults] = useLoginUserMutation();
+  const dispatch = useAppDispatch();
 
   const toggle = () => {
     setOpenEye(!openEye);
+  };
+
+  const handleLogin = async (data: LoginRequest) => {
+    await loginUser(data)
+      .unwrap()
+      .then((fulfilled) => {
+        handleSaveToken(fulfilled, data.username);
+      });
+  };
+
+  const handleSaveToken = (dataResult: DataResponse, user: string) => {
+    if (dataResult?.statusCode === 200) {
+      const token = dataResult.data;
+      const auth = {
+        user: user,
+        token: token,
+      };
+      dispatch(setUser(auth));
+      showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
+
+      route.push("/");
+    } else {
+      showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
+    }
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: undefined,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    handleLogin(values);
   }
 
   return (
@@ -68,12 +92,12 @@ function LoginForm() {
           <div className="mb-2 ">
             <FormField
               control={form.control}
-              name="email"
+              name="username"
               render={({ field }) => (
                 <FormItem className="mb-3">
                   <FormLabel className="text-black">Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="email" {...field}></Input>
+                    <Input placeholder="username" {...field}></Input>
                   </FormControl>
                   <FormMessage className="text-[10px]" />
                 </FormItem>

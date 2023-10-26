@@ -46,7 +46,7 @@ public class EmailUtil {
         mailMessage.setText(messageOTP);
         try
         {
-            emailSender.send(mailMessage);
+//            emailSender.send(mailMessage);
             return true;
         }
         catch (Exception e) {
