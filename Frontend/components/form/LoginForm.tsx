@@ -25,16 +25,12 @@ import { toast } from "react-toastify";
 import { DataResponse } from "@/types/dataResponse.type";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/authSlice";
-
-const formSchema = z.object({
-  username: z.string().min(1),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must have than 8 character(s)"),
-});
+import showToast from "@/utils/showToast";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { formSchemaLogin } from "@/utils/formSchema";
 
 function LoginForm() {
+  const formSchema = formSchemaLogin;
   const route = useRouter();
   const [openEye, setOpenEye] = useState(false);
   const [loginUser, loginUserResults] = useLoginUserMutation();
@@ -60,22 +56,11 @@ function LoginForm() {
         token: token,
       };
       dispatch(setUser(auth));
-
-      toast.success("Đăng Nhập Thành Công", {
-        position: "top-right",
-        autoClose: 1200,
-        theme: "dark",
-        className: "w-[400px]",
-      });
+      showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
 
       route.push("/");
     } else {
-      toast.error("Đăng Nhập Không Thành Công", {
-        position: "top-right",
-        autoClose: 1200,
-        theme: "dark",
-        className: "w-[400px]",
-      });
+      showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
     }
   };
 

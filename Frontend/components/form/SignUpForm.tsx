@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,51 +16,104 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { BsPencilSquare } from "react-icons/bs";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { HiOutlineArrowUpTray } from "react-icons/hi2";
 import CustomButton from "../CustomButton";
 import { useRouter } from "next/navigation";
+import { User } from "@/types/user.type";
+import {
+  useRegisterUserMutation,
+  useValidateOTPMutation,
+} from "@/redux/services/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { DataResponse } from "@/types/dataResponse.type";
+import { toast } from "react-toastify";
+import { Action, StatusCode, ToastStatus } from "@/utils/resources";
+import showToast from "@/utils/showToast";
+import { formSchemaSignUp, validationSchemaSignUp } from "@/utils/formSchema";
 
-const phoneNumberRegExp = /^0\d{9}$/;
-
-const formSchema = z.object({
-  username: z.string().min(5, "Username must contain at least 5 character(s)"),
-  email: z
-    .string()
-    .min(10, "Email must contain at least 10 character(s)")
-    .max(30)
-    .email(),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must have than 8 character(s)"),
-  re_password: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must have than 8 character(s)"),
-  phone: z.string().refine((value) => phoneNumberRegExp.test(value), {
-    message: "Invalid phone number",
-  }),
-  address_line: z.string(),
-  ward: z.string().min(1),
-  province: z.string().min(1),
-});
-
-const validationSchema = z
-  .object({
-    username: formSchema.shape.username,
-    email: formSchema.shape.email,
-    password: formSchema.shape.password,
-    re_password: formSchema.shape.re_password,
-  })
-  .strict()
-  .refine((data) => data.password === data.re_password, {
-    path: ["re_password"],
-    message: "Passwords do not match",
-  });
+const formSchema = formSchemaSignUp;
+const validationSchema = validationSchemaSignUp;
+const initialUser: Omit<User, "id"> = {
+  username: "",
+  password: "",
+  address: {
+    addressLine: "",
+    postalCode: null,
+    defaultAddress: true,
+  },
+  photos: "",
+  telephone: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+};
 
 function SignUpForm() {
+  const route = useRouter();
   const [openEye, setOpenEye] = useState(false);
   const [changPage, setChangePage] = useState(false);
   const [changeSchema, setChangeSchema] = useState(false);
+  const [newUser, setNewUser] = useState<Omit<User, "id">>(initialUser);
+  const [isUserExisted, setUserExisted] = useState(false);
+  const [isSendOTP, setSendOTP] = useState(false);
+  const [otp, setOTP] = useState<string[]>(Array(length).fill(""));
+  const inputsOTP = useRef<HTMLInputElement[]>(Array(length).fill(null));
+  const [registerUser, registerUserResult] = useRegisterUserMutation();
+  const [validationOTP, validationOTPResult] = useValidateOTPMutation();
+
+  const handleRegister = async (newUser: Omit<User, "id">) => {
+    await registerUser(newUser)
+      .unwrap()
+      .then((fulfilled) => {
+        console.log(fulfilled);
+        handleToast(fulfilled, Action.SENT_OTP);
+      });
+  };
+
+  const handleValidateOTP = async () => {
+    const OTP: string = otp.join("");
+    await validationOTP({ data: newUser, otp: OTP })
+      .unwrap()
+      .then((fulfilled) => {
+        handleToast(fulfilled, Action.REGISTER);
+      });
+
+    setOTP(Array(6).fill(""));
+  };
+
+  const handleChangeInputOTP = (
+    index: number,
+    e: ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+
+    if (value && index < inputsOTP.current.length - 1) {
+      inputsOTP.current[index + 1].focus();
+    }
+    const newOTP = [...otp];
+    newOTP[index] = value;
+    setOTP(newOTP);
+  };
+  // useEffect(() => {}, [newUser]);
+
+  const handleToast = (dataResult: DataResponse, action: string) => {
+    if (dataResult?.statusCode === StatusCode.REQUEST_SUCCESS) {
+      showToast(ToastStatus.SUCCESS, dataResult?.data);
+
+      if (action === Action.SENT_OTP) {
+        setSendOTP(true);
+      } else if (action === Action.REGISTER) {
+        route.push("/login");
+      }
+    } else {
+      if (action === Action.SENT_OTP) {
+        setUserExisted(true);
+        handleChangeForm();
+      }
+
+      showToast(ToastStatus.ERROR, dataResult?.data);
+    }
+  };
 
   const toggle = () => {
     setOpenEye(!openEye);
@@ -80,10 +133,8 @@ function SignUpForm() {
       password,
       re_password,
     });
-    console.log(values);
 
     if (validationResult.success) {
-      console.log(values);
       handleChangeForm();
     }
   };
@@ -96,7 +147,34 @@ function SignUpForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const {
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+      telephone,
+      addressLine,
+      photos,
+    } = values;
+
+    const newUser: Omit<User, "id"> = {
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+      telephone,
+      photos,
+      address: {
+        addressLine,
+        postalCode: null,
+        defaultAddress: true,
+      },
+    };
+
+    setNewUser(newUser);
+    handleRegister(newUser);
   }
 
   return (
@@ -110,207 +188,273 @@ function SignUpForm() {
             <div className="text-xl mb-2 "> SignUp</div>
             <p>Create Account So Easy!!!</p>
           </div>
-          {changPage === false ? (
-            <div className="mb-2">
-              <FormField
-                key={"username"}
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem className="mb-1 ">
-                    <FormLabel className="text-black xl:text-xs ">
-                      Username
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-black xl:text-xs h-7"
-                        placeholder="username"
-                        {...field}
-                      ></Input>
-                    </FormControl>
-                    <FormMessage className="text-[10px]"></FormMessage>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                key={"email"}
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="mb-1 ">
-                    <FormLabel className="text-black xl:text-xs ">
-                      Email
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-black xl:text-xs h-7"
-                        placeholder="email"
-                        {...field}
-                      ></Input>
-                    </FormControl>
-                    <FormMessage className="text-[10px]" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                key={"password"}
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="mb-1 ">
-                    <FormLabel className="text-black xl:text-xs">
-                      Password
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <div className="absolute text-xl right-1 cursor-pointer mt-1">
-                          {openEye === false ? (
-                            <AiOutlineEyeInvisible onClick={toggle} />
-                          ) : (
-                            <AiOutlineEye onClick={toggle} />
-                          )}
-                        </div>
-                        <Input
-                          className="text-black xl:text-xs h-7"
-                          type={openEye === false ? "password" : "text"}
-                          placeholder="password"
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-[10px]" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                key={"re_password"}
-                control={form.control}
-                name="re_password"
-                render={({ field }) => (
-                  <FormItem className="mb-2">
-                    <FormLabel className="text-black xl:text-xs h-7">
-                      Re-Password
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-black xl:text-xs h-7"
-                        type={openEye === false ? "password" : "text"}
-                        placeholder="password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-[10px]" />
-                  </FormItem>
-                )}
-              />
-              <div className="text-[12px] mt-2 flex justify-end xs:text-[10px]">
-                <CustomButton
-                  title="Next"
-                  type="summit"
-                  containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
-                  handleClick={() => handleNext(form.getValues())}
-                />
-              </div>
-            </div>
-          ) : (
-            <div>
-              <FormField
-                key={"phone"}
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem className="mb-1 ">
-                    <FormLabel className="text-black xl:text-xs h-7">
-                      Phone
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-black xl:text-xs h-7"
-                        placeholder="phone"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-[10px]" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                key={"address_line"}
-                control={form.control}
-                name="address_line"
-                render={({ field }) => (
-                  <FormItem className="mb-1 ">
-                    <FormLabel className="text-black xl:text-xs h-7">
-                      Address Line
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-black xl:text-xs h-7"
-                        placeholder="address line"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-[10px]" />
-                  </FormItem>
-                )}
-              />
+          {isSendOTP === false ? (
+            <>
+              {changPage === false ? (
+                <div className="mb-2">
+                  <FormField
+                    key={"username"}
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem className="mb-1 ">
+                        <FormLabel className="text-black xl:text-xs ">
+                          Username
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className={
+                              isUserExisted
+                                ? "text-red xl:text-xs h-7 border-red-600 border-spacing-10"
+                                : "text-black xl:text-xs h-7"
+                            }
+                            placeholder="username"
+                            {...field}
+                          ></Input>
+                        </FormControl>
+                        <FormMessage className="text-[10px]"></FormMessage>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    key={"email"}
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="mb-1 ">
+                        <FormLabel className="text-black xl:text-xs ">
+                          Email
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="text-black xl:text-xs h-7"
+                            placeholder="email"
+                            {...field}
+                          ></Input>
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    key={"password"}
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className="mb-1 ">
+                        <FormLabel className="text-black xl:text-xs">
+                          Password
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <div className="absolute text-xl right-1 cursor-pointer mt-1">
+                              {openEye === false ? (
+                                <AiOutlineEyeInvisible onClick={toggle} />
+                              ) : (
+                                <AiOutlineEye onClick={toggle} />
+                              )}
+                            </div>
+                            <Input
+                              className="text-black xl:text-xs h-7"
+                              type={openEye === false ? "password" : "text"}
+                              placeholder="password"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    key={"re_password"}
+                    control={form.control}
+                    name="re_password"
+                    render={({ field }) => (
+                      <FormItem className="mb-2">
+                        <FormLabel className="text-black xl:text-xs h-7">
+                          Re-Password
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="text-black xl:text-xs h-7"
+                            type={openEye === false ? "password" : "text"}
+                            placeholder="password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="text-[12px] mt-2 flex justify-end xs:text-[10px]">
+                    <CustomButton
+                      title="Next"
+                      type="summit"
+                      containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
+                      handleClick={() => handleNext(form.getValues())}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex-between gap-2">
+                    <FormField
+                      key={"firstName"}
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem className="mb-1 ">
+                          <FormLabel className="text-black xl:text-xs h-7">
+                            First Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="text-black xl:text-xs h-7"
+                              placeholder="First Name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      key={"lastName"}
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem className="mb-1 ">
+                          <FormLabel className="text-black xl:text-xs h-7">
+                            Last Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              className="text-black xl:text-xs h-7"
+                              placeholder="Last Name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    key={"phone"}
+                    control={form.control}
+                    name="telephone"
+                    render={({ field }) => (
+                      <FormItem className="mb-1 ">
+                        <FormLabel className="text-black xl:text-xs h-7">
+                          Phone
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="text-black xl:text-xs h-7"
+                            placeholder="phone"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    key={"addressLine"}
+                    control={form.control}
+                    name="addressLine"
+                    render={({ field }) => (
+                      <FormItem className="mb-1 ">
+                        <FormLabel className="text-black xl:text-xs h-7">
+                          Address Line
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="text-black xl:text-xs h-7"
+                            placeholder="address line"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
 
-              <FormField
-                key="ward"
-                control={form.control}
-                name="ward"
-                render={({ field }) => (
-                  <FormItem className="mb-1 ">
-                    <FormLabel className="text-black xl:text-xs h-7">
-                      Ward
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-black xl:text-xs h-7"
-                        placeholder="ward"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-[10px]" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                key={"province"}
-                control={form.control}
-                name="province"
-                render={({ field }) => (
-                  <FormItem className="mb-1 ">
-                    <FormLabel className="text-black xl:text-xs h-7">
-                      Province
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="text-black xl:text-xs h-7"
-                        placeholder="province"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-[10px]" />
-                  </FormItem>
-                )}
-              />
-              <Button
-                type="submit"
-                className="hover:scale-110 transition duration-700 gap-2 mt-1 w-full h-7"
-              >
-                <BsPencilSquare />
-                Register
-              </Button>
-              <div className="text-[12px] mt-2 flex-end xs:text-[10px]">
-                <CustomButton
-                  title="Back"
-                  containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
-                  handleClick={() => {
-                    handleChangeForm();
-                  }}
-                />
+                  <FormField
+                    key="photos"
+                    control={form.control}
+                    name="photos"
+                    render={({ field }) => (
+                      <FormItem className="mb-1 ">
+                        <FormLabel className="text-black xl:text-xs h-7">
+                          Avatar
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            className="text-black xl:text-xs h-7"
+                            placeholder="url image"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button
+                    type="submit"
+                    className="hover:scale-110 transition duration-700 gap-2 mt-1 w-full h-7"
+                  >
+                    <BsPencilSquare />
+                    Register
+                  </Button>
+                  <div className="text-[12px] mt-2 flex-end xs:text-[10px]">
+                    <CustomButton
+                      title="Back"
+                      containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
+                      handleClick={() => {
+                        handleChangeForm();
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex justify-center h-full flex-col">
+              <div className="flex-center text-md mb-6">
+                Please enter the OTP
               </div>
+              <div className="flex flex-center gap-2">
+                {[...Array(6)].fill(null).map((_, index) => (
+                  <Input
+                    key={index}
+                    ref={(el) => (inputsOTP.current[index] = el!)}
+                    maxLength={1}
+                    inputMode="numeric"
+                    className="border-none border-b-2 w-[40px] text-center"
+                    value={otp[index]}
+                    onChange={(e) => handleChangeInputOTP(index, e)}
+                  />
+                ))}
+              </div>
+              <div className="flex justify-end">
+                <div
+                  className="bg-gray-100 w-[100px] mt-2 text-[10px] text-black hover:text-orange-600 underline hover:cursor-pointer"
+                  onClick={() => handleRegister(newUser)}
+                >
+                  Re-sent OTP
+                </div>
+              </div>
+              <Button
+                type="button"
+                className="hover:scale-110 transition duration-700 gap-2 w-full h-7 mt-8"
+                onClick={() => handleValidateOTP()}
+              >
+                <HiOutlineArrowUpTray />
+                Sent
+              </Button>
             </div>
           )}
         </div>

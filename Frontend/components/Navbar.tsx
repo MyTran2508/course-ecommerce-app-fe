@@ -11,6 +11,8 @@ import { useAppDispatch } from "@/redux/hooks";
 import { setUser, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
 import { toast } from "react-toastify";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
+import showToast from "@/utils/showToast";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -30,12 +32,7 @@ function Navbar() {
   const handleLogout = () => {
     dispatch(logout());
     setLogout(true);
-    toast.success("Đăng Xuất Thành Công", {
-      position: "top-right",
-      autoClose: 1200,
-      theme: "dark",
-      className: "w-[400px]",
-    });
+    showToast(ToastStatus.SUCCESS, ToastMessage.LOGOUT_SUCCESS);
   };
 
   return (
@@ -131,7 +128,7 @@ function Navbar() {
                   <Menu.Button>
                     <AiOutlineMenu />
                   </Menu.Button>
-                  <Menu.Items className="absolute right-0 mt-10 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <Menu.Items className="absolute right-0 mt-10 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-30">
                     <div className="px-1 py-1">
                       <Transition
                         enter="transition ease-out duration-100"

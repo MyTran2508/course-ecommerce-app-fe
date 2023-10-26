@@ -1,0 +1,1 @@
+export const phoneNumberRegExp = /^0\d{9}$/;
