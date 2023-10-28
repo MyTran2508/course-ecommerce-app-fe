@@ -1,11 +1,11 @@
-package com.programming.courseservice.util;
+package com.programming.courseservice.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
-import com.programming.courseservice.util.constant.S3Constrant;
+import com.programming.courseservice.util.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Service
-public class StorageS3 {
+public class StorageS3Service {
     @Value("${application.bucket.name}")
     private String bucketName;
     @Autowired

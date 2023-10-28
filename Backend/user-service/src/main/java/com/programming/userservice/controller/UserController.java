@@ -5,21 +5,22 @@ import com.main.progamming.common.error.exception.NotPermissionException;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
-import com.programming.userservice.communication.OpenFeign.CategoryApi;
-import com.programming.userservice.domain.dto.LoginRequest;
-import com.programming.userservice.domain.dto.UserDto;
+import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.persistent.entity.User;
+import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.service.UserService;
 import com.programming.userservice.util.annotation.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @Tag(
         name = "User Service - User Controller",
@@ -52,13 +53,18 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @Override
     @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<UserDto> add(@Valid UserDto objectDTO) {
         objectDTO.setPassword(passwordEncoder.encode(objectDTO.getPassword()));
         return super.add(objectDTO);
     }
 
     @Override
+    @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
+        RoleDto role = new RoleDto(RoleUser.USER.getValue());
+        objectDTO.setRoles(Set.of(role));
         return super.update(objectDTO, id);
     }
 
@@ -73,24 +79,44 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         }
     }
 
-    @PostMapping("send-otp")
+    @PostMapping("/register/send-otp")
     @ShowOpenAPI
-    public DataResponse<String> sendOtp(@RequestParam String email,
+    public DataResponse<String> sendOtpRegister(@RequestParam String email,
                                         @RequestBody @Valid UserDto userDto) {
-        return userService.sendOtp(email, userDto);
+        return userService.sendOtpRegister(email, userDto);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register/verify-save")
     @ShowOpenAPI
-    public DataResponse<String> register(@RequestBody @Valid UserDto userDto,
+    public DataResponse<String> verifyAndSaveRegister(@RequestBody @Valid UserDto userDto,
                                          @RequestParam String email,
                                          @RequestParam Integer otp) {
-        return userService.register(userDto, email, otp);
+        return userService.verifyAndSaveRegister(userDto, email, otp);
     }
 
     @Override
     @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<UserDto> setRemoved(String id) {
         return super.setRemoved(id);
+    }
+
+    @ShowOpenAPI
+    @PutMapping("/change-password/{id}")
+    public DataResponse<String> changePassword(@PathVariable("id") String id,
+                                               @RequestBody ChangePasswordRequest changePasswordRequest) {
+        return userService.changePassword(id, changePasswordRequest);
+    }
+
+    @ShowOpenAPI
+    @PostMapping("/forget-password/send-otp")
+    public DataResponse<String> sendOtpForgetPass(@RequestParam("email") String email) {
+        return userService.sendOtpForgetPass(email);
+    }
+
+    @ShowOpenAPI
+    @PostMapping("/forget-password/verify")
+    public DataResponse<String> verifyAndSaveForgetPass(@RequestBody ForgetPasswordRequest forgetPasswordRequest) {
+        return userService.verifyAndSaveForgetPass(forgetPasswordRequest);
     }
 }

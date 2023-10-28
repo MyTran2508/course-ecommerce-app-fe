@@ -13,4 +13,7 @@ public class RoleDto {
     private String id;
     @NotEmpty(message = "Name is required")
     private String name;
+
+    public RoleDto(String value) {
+    }
 }

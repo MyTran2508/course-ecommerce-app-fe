@@ -11,6 +11,7 @@ import com.programming.courseservice.util.annotation.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,12 +32,16 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     }
     @Override
     @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> add(@Valid CategoryDto categoryDto) {
+        System.out.println("Vao day");
         return super.add(categoryDto);
     }
     @Override
     @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> update(@Valid CategoryDto categoryDto, String id) {
+        System.out.println("Vao day");
         return super.update(categoryDto, id);
     }
     @Override
@@ -55,6 +60,7 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
         return categoryService.getByName(name);
     }
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> setRemoved(String id) {
         return super.setRemoved(id);
     }

@@ -129,7 +129,11 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     public ListResponse<D> getAll() {
         return ResponseMapper.toListResponseSuccess(
                 getBaseRepository().findAll()
-                        .stream().map(value -> getBaseMapper().entityToDto(value)).collect(Collectors.toList()));
+                        .stream().map(value ->
+                        {
+                            System.out.println(value);
+                            return getBaseMapper().entityToDto(value);
+                        }).collect(Collectors.toList()));
     }
 
 

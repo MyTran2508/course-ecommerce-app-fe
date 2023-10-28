@@ -1,10 +1,9 @@
 package com.programming.userservice.util;
 
 import com.programming.userservice.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.programming.userservice.util.constant.TypeMessage;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class OtpUtil {
@@ -19,20 +18,19 @@ public class OtpUtil {
         this.userRepository = userRepository;
     }
 
-
-    public boolean generateOtp(String email) {
+    @Transactional
+    public boolean generateOtp(String email, TypeMessage typeMessage) {
 
         // Create a message to return the status
         String message;
-
         try {
             // generate otp
             Integer otpValue = otpGenerator.generateOTP(email);
 
             // send generated e-mail
-            return emailUtil.sendSimpleMessage(email, otpValue);
+            return emailUtil.sendSimpleEmail(email, otpValue, typeMessage);
         } catch (Exception e) {
-            return true;
+            return false;
         }
     }
 
@@ -43,6 +41,7 @@ public class OtpUtil {
      * @param otpNumber - provided OTP number
      * @return String message
      */
+    @Transactional
     public boolean validateOTP(String key, Integer otpNumber) {
         // Create a message to return the status
         boolean isValid = false;

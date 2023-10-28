@@ -2,7 +2,11 @@ package com.programming.userservice.repository;
 
 import com.main.progamming.common.repository.BaseRepository;
 import com.programming.userservice.domain.persistent.entity.User;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 public interface UserRepository extends BaseRepository<User> {
     @Query("select u from User u where u.username = ?1 and u.email = ?2")
@@ -10,4 +14,11 @@ public interface UserRepository extends BaseRepository<User> {
 
     @Query("select u from User u where u.username = ?1")
     User findByUserName(String username);
+
+    Optional<User> findByEmail(String email);
+
+    @Transactional
+    @Modifying
+    @Query("Update User u set u.password = :newPassword WHERE u.id = :id")
+    void changePassword(String id, String newPassword);
 }

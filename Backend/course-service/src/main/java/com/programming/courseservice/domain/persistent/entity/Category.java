@@ -23,7 +23,6 @@ import java.util.List;
 )
 @Getter
 @Setter
-@Builder
 @DynamicUpdate
 @DynamicInsert
 @ToString
