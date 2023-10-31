@@ -26,7 +26,6 @@ import {
 } from "@/redux/services/authApi";
 import { useAppDispatch } from "@/redux/hooks";
 import { DataResponse } from "@/types/dataResponse.type";
-import { toast } from "react-toastify";
 import { Action, StatusCode, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { formSchemaSignUp, validationSchemaSignUp } from "@/utils/formSchema";

@@ -21,7 +21,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLoginUserMutation } from "@/redux/services/authApi";
 import { LoginRequest } from "@/types/login.type";
-import { toast } from "react-toastify";
 import { DataResponse } from "@/types/dataResponse.type";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/authSlice";

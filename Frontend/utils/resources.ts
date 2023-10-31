@@ -19,7 +19,10 @@ export enum ToastStatus {
 }
 
 export enum ToastMessage {
-  LOGIN_SUCCESS = 'Đăng Nhập Thành Công',
-  LOGIN_FAIL = 'Đăng Nhập Không Thành Công',
-  LOGOUT_SUCCESS = 'Đăng Xuất Thành Công'
+  LOGIN_SUCCESS = 'Login Success',
+  LOGIN_FAIL = 'Login Fail',
+  LOGOUT_SUCCESS = 'Logout Success',
+  NOT_SELECT_PAYMENT = "Please select a payment method",
+  ADD_CART_SUCCESS = "Add Cart Success",
+  DELETE_CART_SUCCESS = "Delete Cart Success"
 }

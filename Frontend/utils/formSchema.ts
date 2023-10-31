@@ -45,3 +45,22 @@ export const formSchemaLogin = z.object({
     .min(1, "Password is required")
     .min(8, "Password must have than 8 character(s)"),
 });
+
+export const formSchemaPersonal = z.object({
+  username: formSchemaSignUp.shape.username,
+  email: formSchemaSignUp.shape.email,
+  firstName: formSchemaSignUp.shape.firstName,
+  lastName: formSchemaSignUp.shape.lastName,
+  addressLine: formSchemaSignUp.shape.addressLine,
+  telephone: formSchemaSignUp.shape.telephone,
+  photos: formSchemaSignUp.shape.photos
+}).strict()
+
+export const formSchemaResetPassword = z.object({
+  old_password: formSchemaSignUp.shape.password,
+  new_password: formSchemaSignUp.shape.password,
+  re_password: formSchemaSignUp.shape.re_password
+}).strict().refine((data) => data.new_password === data.re_password, {
+  path: ["re_password"],
+  message: "Passwords do not match",
+})

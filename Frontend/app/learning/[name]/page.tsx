@@ -59,14 +59,17 @@ function PageLearning() {
         <div className="w-9/12 custom-scrollbar overflow-y-scroll h-[550px]">
           <DiscussionSheet />
           <div>
-            <iframe
-              src={
-                "https://www.youtube.com/embed/IIvoiO7Zujk?si=jJqBmT7ejuw3LK8P" +
-                "?modestbranding=1&autohide=1&showinfo=0&controls=0&rel=0&iv_load_policy=3&frameborder=2"
-              }
-              className="w-full h-full min-h-[500px] "
-              allow="autoplay; encrypted-media"
-            ></iframe>
+            <div>
+              <video
+                controls
+                src={
+                  "http://localhost:8081/api/courses/download/1698332371869_002%20What%20are%20Microservices%20Really%20All%20About.mp4"
+                }
+                className="w-full h-full min-h-[500px] "
+                autoPlay
+              />
+            </div>
+
             <div className="text-xl font-bold mt-2 ml-4">
               Giới Thiệu Khóa Học
             </div>

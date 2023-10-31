@@ -7,12 +7,12 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { iconMap } from "@/utils/map";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setUser, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
-import { toast } from "react-toastify";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
+import { FiShoppingCart } from "react-icons/fi";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -22,6 +22,7 @@ const links = [
 function Navbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.cartReducer);
   const [isLogout, setLogout] = useState(false);
   let user = JSON.parse(localStorage.getItem("user") || "{}");
 
@@ -35,8 +36,12 @@ function Navbar() {
     showToast(ToastStatus.SUCCESS, ToastMessage.LOGOUT_SUCCESS);
   };
 
+  const handleChangeRouteCart = () => {
+    router.push("/cart");
+  };
+
   return (
-    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-10">
+    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-20 shadow-md">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-4">
         <Link href={"/"} className="text-2xl uppercase">
           E-LEANING
@@ -49,6 +54,15 @@ function Navbar() {
             <div className="flex-center gap-10">
               <div className="xs:hidden">
                 <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
+              </div>
+              <div
+                className="flex relative hover:cursor-pointer"
+                onClick={() => handleChangeRouteCart()}
+              >
+                <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
+                  {cart.length}
+                </span>
+                <FiShoppingCart className="text-2xl" />
               </div>
               <div>
                 <Menu>
@@ -89,7 +103,7 @@ function Navbar() {
                             <hr className="my-4 w-full" />
                           </div>
                           <div>
-                            <Link href={"/"}>Trang Cá Nhân </Link>
+                            <Link href={"/user/personal"}>Trang Cá Nhân </Link>
                             <hr className="my-4" />
                           </div>
                           <div
