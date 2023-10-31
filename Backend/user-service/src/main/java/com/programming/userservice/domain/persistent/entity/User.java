@@ -5,9 +5,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.awt.print.Book;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -23,6 +26,7 @@ import java.util.Set;
 )
 @DynamicInsert
 @DynamicUpdate
+@ToString(callSuper = true)
 public class User extends BaseModel {
     @Column(nullable = false)
     private String password;
@@ -49,4 +53,18 @@ public class User extends BaseModel {
     private Set<Role> roles;
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Address> addresses;
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+
+        return Objects.equals(this.getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId() != null ? getId().hashCode() : 0;
+    }
 }

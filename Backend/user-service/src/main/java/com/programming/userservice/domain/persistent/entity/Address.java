@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(
@@ -17,6 +19,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@ToString(callSuper = true)
+@SuperBuilder(toBuilder = true)
 public class Address extends BaseModel {
     @Column(name = "address_line", length = 255)
     private String addressLine;
@@ -26,8 +30,9 @@ public class Address extends BaseModel {
     private boolean defaultAddress;
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_addresses_users"))
+    @ToString.Exclude
     private User user;
     @ManyToOne(targetEntity = Location.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id", foreignKey = @ForeignKey(name = "fk_addresses_location"))
-    private Location location;
+    private Location location = Location.builder().build();
 }
