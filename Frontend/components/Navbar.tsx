@@ -8,11 +8,14 @@ import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { iconMap } from "@/utils/map";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setUser, logout } from "@/redux/features/authSlice";
+import { setCredential, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { FiShoppingCart } from "react-icons/fi";
+import { useGetByUserNameQuery } from "@/redux/services/userApi";
+import { User } from "@/types/user.type";
+import { setUser } from "@/redux/features/userSlice";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -24,11 +27,19 @@ function Navbar() {
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state) => state.cartReducer);
   const [isLogout, setLogout] = useState(false);
+  const [userData, setUserData] = useState<User>();
   let user = JSON.parse(localStorage.getItem("user") || "{}");
+  const { data, isLoading, isSuccess } = useGetByUserNameQuery(user.user);
 
   useEffect(() => {
-    dispatch(setUser(user));
-  }, []);
+    dispatch(setCredential(user));
+    if (isSuccess) {
+      dispatch(setUser(data.data as User));
+      setUserData(data.data as User);
+      // const avt = (data.data as User).photos;
+      // setAvatar(avt);
+    }
+  }, [data]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -68,7 +79,7 @@ function Navbar() {
                 <Menu>
                   <Menu.Button>
                     <Image
-                      src={"/banner.jpg"}
+                      src={userData ? userData.photos : "/banner.jpg"}
                       width={400}
                       height={400}
                       className="w-12 h-12 rounded-full ml-2"
@@ -87,13 +98,13 @@ function Navbar() {
                       >
                         <div className="flex-center gap-4">
                           <Image
-                            src={"/banner.jpg"}
+                            src={userData ? userData.photos : "/banner.jpg"}
                             width={400}
                             height={400}
                             alt="avt"
                             className="w-16 h-16 rounded-full"
                           />
-                          <h4> Trần Chí Mỹ</h4>
+                          <h4> {userData ? userData.firstName : ""}</h4>
                         </div>
                         <hr className="my-4" />
 

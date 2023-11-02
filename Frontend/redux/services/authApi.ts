@@ -1,13 +1,13 @@
 import { DataResponse } from "@/types/dataResponse.type";
 import { LoginRequest } from "@/types/login.type";
 import { User } from "@/types/user.type";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQuery } from "../baseQuery";
 
-export const userApi = createApi({
-  reducerPath: "userApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8082",
-  }),
+export const authApi = createApi({
+  reducerPath: "authApi",
+  baseQuery: baseQuery,
+  tagTypes:['User'],
   endpoints: (builder) => ({
     loginUser: builder.mutation<DataResponse, LoginRequest>({
       query: (body: LoginRequest) => {
@@ -21,7 +21,7 @@ export const userApi = createApi({
     registerUser: builder.mutation<DataResponse, Omit<User, "id">>({
       query: (body: Omit<User, "id">) => {
         return {
-          url: "api/users/user/send-otp",
+          url: "api/users/user/register/send-otp",
           method: "POST",
           body,
           params: {
@@ -36,7 +36,7 @@ export const userApi = createApi({
     >({
       query: ({ data, otp }) => {
         return {
-          url: "api/users/user/register",
+          url: "api/users/user/register/verify-save",
           method: "POST",
           body: data,
           params: {
@@ -46,6 +46,12 @@ export const userApi = createApi({
         };
       },
     }),
+    // getByUserName: builder.query<DataResponse, string>({
+    //   query: (username) => `api/users/user/get-by-username/${username}`,
+    //   providesTags() {
+    //     return [{ type: 'User', id: "user" }]
+    //   }
+    // }),
   }),
 });
 
@@ -53,4 +59,5 @@ export const {
   useLoginUserMutation,
   useRegisterUserMutation,
   useValidateOTPMutation,
-} = userApi;
+  // useGetByUserNameQuery,
+} = authApi;

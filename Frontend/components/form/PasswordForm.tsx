@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { User } from "@/types/user.type";
 import Image from "next/image";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+// import { useGetByUserNameQuery } from "@/redux/services/authApi";
 
 const formSchema = formSchemaResetPassword;
 

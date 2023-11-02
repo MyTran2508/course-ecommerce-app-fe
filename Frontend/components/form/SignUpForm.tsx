@@ -35,11 +35,13 @@ const validationSchema = validationSchemaSignUp;
 const initialUser: Omit<User, "id"> = {
   username: "",
   password: "",
-  address: {
-    addressLine: "",
-    postalCode: null,
-    defaultAddress: true,
-  },
+  addresses: [
+    {
+      addressLine: "",
+      postalCode: null,
+      defaultAddress: true,
+    },
+  ],
   photos: "",
   telephone: "",
   firstName: "",
@@ -97,7 +99,7 @@ function SignUpForm() {
 
   const handleToast = (dataResult: DataResponse, action: string) => {
     if (dataResult?.statusCode === StatusCode.REQUEST_SUCCESS) {
-      showToast(ToastStatus.SUCCESS, dataResult?.data);
+      showToast(ToastStatus.SUCCESS, dataResult?.data as string);
 
       if (action === Action.SENT_OTP) {
         setSendOTP(true);
@@ -110,7 +112,7 @@ function SignUpForm() {
         handleChangeForm();
       }
 
-      showToast(ToastStatus.ERROR, dataResult?.data);
+      showToast(ToastStatus.ERROR, dataResult?.data as string);
     }
   };
 
@@ -165,11 +167,13 @@ function SignUpForm() {
       lastName,
       telephone,
       photos,
-      address: {
-        addressLine,
-        postalCode: null,
-        defaultAddress: true,
-      },
+      addresses: [
+        {
+          addressLine,
+          postalCode: null,
+          defaultAddress: true,
+        },
+      ],
     };
 
     setNewUser(newUser);

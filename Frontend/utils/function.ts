@@ -18,3 +18,12 @@ export const convertVNDtoUSD = (moneyVND: number) => {
 
     return parseFloat(convertedAmount);
 }
+
+export const isURLValid = (url: string) => {
+  try {
+    new URL(url);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { phoneNumberRegExp } from "./regex";
+import { phoneNumberRegExp, urlRegex } from "./regex";
 
 export const formSchemaSignUp = z.object({
   username: z.string().min(6, "Username must contain at least 6 character(s)"),
@@ -22,7 +22,9 @@ export const formSchemaSignUp = z.object({
   firstName: z.string(),
   lastName: z.string(),
   addressLine: z.string(),
-  photos: z.string(),
+  photos: z.string().refine((value) => urlRegex.test(value), {
+    message: "Invalid Url"
+  }),
 });
 
 export const validationSchemaSignUp = z

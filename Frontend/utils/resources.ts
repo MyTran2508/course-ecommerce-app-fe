@@ -24,5 +24,6 @@ export enum ToastMessage {
   LOGOUT_SUCCESS = 'Logout Success',
   NOT_SELECT_PAYMENT = "Please select a payment method",
   ADD_CART_SUCCESS = "Add Cart Success",
-  DELETE_CART_SUCCESS = "Delete Cart Success"
+  DELETE_CART_SUCCESS = "Delete Cart Success",
+  IMAGE_NOT_FOUND = "Avatar not found"
 }

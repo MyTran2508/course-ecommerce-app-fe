@@ -23,7 +23,7 @@ import { useLoginUserMutation } from "@/redux/services/authApi";
 import { LoginRequest } from "@/types/login.type";
 import { DataResponse } from "@/types/dataResponse.type";
 import { useAppDispatch } from "@/redux/hooks";
-import { setUser } from "@/redux/features/authSlice";
+import { setCredential } from "@/redux/features/authSlice";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { formSchemaLogin } from "@/utils/formSchema";
@@ -49,12 +49,12 @@ function LoginForm() {
 
   const handleSaveToken = (dataResult: DataResponse, user: string) => {
     if (dataResult?.statusCode === 200) {
-      const token = dataResult.data;
+      const token = dataResult.data as string;
       const auth = {
         user: user,
         token: token,
       };
-      dispatch(setUser(auth));
+      dispatch(setCredential(auth));
       showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
 
       route.push("/");

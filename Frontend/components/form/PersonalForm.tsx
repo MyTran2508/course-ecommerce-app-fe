@@ -15,21 +15,41 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { User } from "@/types/user.type";
 import Image from "next/image";
+import { useAppDispatch } from "@/redux/hooks";
+import { useUpdateUserMutation } from "@/redux/services/userApi";
+import { isURLValid } from "@/utils/function";
 
 const formSchema = formSchemaPersonal;
 
 interface PersonalProps {
-  userInfor: Omit<User, "password" | "re_password">;
+  userInfor: Omit<User, "re_password">;
 }
+
+const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
+  return {
+    username: value.username,
+    email: value.email,
+    firstName: value.firstName,
+    lastName: value.lastName,
+    photos: value.photos,
+    telephone: value.telephone,
+    addressLine: value.addresses[0]?.addressLine,
+  };
+};
 
 function PersonalForm(props: PersonalProps) {
   const { userInfor } = props;
   const [allowInput, setAllowInput] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [imageError, setImageError] = useState(false);
+  const [defaultValueForm, setDefaultValueFrom] = useState(
+    handleSetDefaultValueFrom(userInfor)
+  );
+  const dispatch = useAppDispatch();
+  const [updateUser, updateUserResult] = useUpdateUserMutation();
 
-  const handleImageError = () => {
-    setImageError(true);
+  const handleImageError = (type: boolean) => {
+    setImageError(type);
   };
 
   useEffect(() => {
@@ -38,28 +58,58 @@ function PersonalForm(props: PersonalProps) {
     }
   }, [allowInput]);
 
+  useEffect(() => {
+    setDefaultValueFrom(handleSetDefaultValueFrom(userInfor));
+    handleImageError(false);
+  }, [userInfor]);
+
   const handleClickEdit = () => {
+    setAllowInput(!allowInput);
+    form.clearErrors();
+  };
+
+  const handleClickCancel = () => {
     setAllowInput(!allowInput);
     form.reset();
     form.clearErrors();
   };
 
+  const handleUpdateUser = async (
+    data: Omit<User, "re_password" | "password">
+  ) => {
+    await updateUser(data)
+      .unwrap()
+      .then((fulfilled) => {
+        setAllowInput(!allowInput);
+        console.log(fulfilled);
+      });
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: userInfor.username,
-      email: userInfor.email,
-      firstName: userInfor.firstName,
-      lastName: userInfor.lastName,
-      photos: userInfor.photos,
-      telephone: userInfor.telephone,
-      addressLine: userInfor.address.addressLine,
-    },
+    defaultValues: defaultValueForm,
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("đã zô");
-    console.log(values);
+    const updateUser: Omit<User, "re_password" | "password"> = {
+      id: userInfor.id,
+      username: userInfor.username,
+      email: userInfor.email,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      telephone: values.telephone,
+      photos: values.photos,
+      addresses: [
+        {
+          addressLine: values.addressLine,
+          postalCode: null,
+          defaultAddress: null,
+        },
+      ],
+    };
+
+    console.log(updateUser);
+    handleUpdateUser(updateUser);
   }
   return (
     <div>
@@ -91,7 +141,7 @@ function PersonalForm(props: PersonalProps) {
                   <Button
                     className=" bg-none rounded-3xl w-max"
                     type="button"
-                    onClick={() => handleClickEdit()}
+                    onClick={() => handleClickCancel()}
                   >
                     Hủy
                   </Button>
@@ -254,11 +304,11 @@ function PersonalForm(props: PersonalProps) {
                 ) : (
                   <Fragment>
                     <Image
-                      src={"/123"}
+                      src={userInfor.photos}
                       width={100}
                       height={100}
                       alt=""
-                      onError={() => handleImageError()}
+                      onError={() => handleImageError(true)}
                       className="w-20 h-20 rounded-full"
                     />
                   </Fragment>
