@@ -13,12 +13,19 @@ import java.util.Set;
         name = "courses",
         indexes = {
                 @Index(columnList = "user_id", name = "idx_courses_user_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "name", name = "uq_course_name")
         }
 )
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Course extends BaseModel {
+    private String name;
+    @Column(name = "sub_title")
+    private String subTitle;
+    private Double price;
     @ManyToOne(targetEntity = Level.class)
     @JoinColumn(name = "level_id", foreignKey = @ForeignKey(name = "fk_courses_level"))
     private Level level;

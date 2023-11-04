@@ -69,6 +69,13 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         return super.update(objectDTO, id);
     }
 
+    @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/update-admin")
+    public DataResponse<UserDto> updateUserForAdmin(@Valid UserDto userDto, String id) {
+        return userService.update(id, userDto);
+    }
+
     @PostMapping("/login")
     @ShowOpenAPI
     public DataResponse<String> login(@RequestBody @Valid LoginRequest loginRequest) {

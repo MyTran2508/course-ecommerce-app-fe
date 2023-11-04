@@ -3,6 +3,7 @@ package com.programming.userservice.service;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataAlreadyExistException;
 import com.main.progamming.common.error.exception.DataNotFoundException;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
@@ -132,5 +133,10 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         user.setPassword(passwordEncoder.encode(forgetPasswordRequest.getNewPassword()));
         userRepository.save(user);
         return ResponseMapper.toDataResponseSuccess("Update password successfully");
+    }
+
+    @Override
+    public DataResponse<UserDto> update(String id, UserDto dto) {
+        return super.update(id, dto);
     }
 }

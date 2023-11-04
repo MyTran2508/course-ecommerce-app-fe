@@ -1,5 +1,6 @@
 package com.programming.courseservice.domain.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentDto {
+public class LevelDto {
     private String id;
     private String name;
-    private String url;
+    private String description;
 }
