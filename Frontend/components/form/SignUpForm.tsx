@@ -22,16 +22,16 @@ import { useRouter } from "next/navigation";
 import { User } from "@/types/user.type";
 import {
   useRegisterUserMutation,
-  useValidateOTPMutation,
+  useVerifyRegisterOTPMutation,
 } from "@/redux/services/authApi";
 import { useAppDispatch } from "@/redux/hooks";
-import { DataResponse } from "@/types/dataResponse.type";
+import { DataResponse } from "@/types/response.type";
 import { Action, StatusCode, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
-import { formSchemaSignUp, validationSchemaSignUp } from "@/utils/formSchema";
+import { formSignUpSchema, validationSignUpSchema } from "@/utils/formSchema";
 
-const formSchema = formSchemaSignUp;
-const validationSchema = validationSchemaSignUp;
+const formSchema = formSignUpSchema;
+const validationSchema = validationSignUpSchema;
 const initialUser: Omit<User, "id"> = {
   username: "",
   password: "",
@@ -60,7 +60,7 @@ function SignUpForm() {
   const [otp, setOTP] = useState<string[]>(Array(length).fill(""));
   const inputsOTP = useRef<HTMLInputElement[]>(Array(length).fill(null));
   const [registerUser, registerUserResult] = useRegisterUserMutation();
-  const [validationOTP, validationOTPResult] = useValidateOTPMutation();
+  const [validationOTP, validationOTPResult] = useVerifyRegisterOTPMutation();
 
   const handleRegister = async (newUser: Omit<User, "id">) => {
     await registerUser(newUser)

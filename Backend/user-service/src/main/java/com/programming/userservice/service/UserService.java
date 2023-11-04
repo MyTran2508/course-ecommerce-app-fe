@@ -100,6 +100,8 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), userOptional.get().getPassword())) {
             String newPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
             userRepository.changePassword(id, newPassword);
+        } else {
+            throw new DataNotFoundException(id + " password not correct");
         }
         return ResponseMapper.toDataResponseSuccess("Update password successfully");
     }

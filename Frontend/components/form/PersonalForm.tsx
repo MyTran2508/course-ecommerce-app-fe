@@ -1,4 +1,4 @@
-import { formSchemaPersonal } from "@/utils/formSchema";
+import { formPersonalSchema } from "@/utils/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { Fragment, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,7 +19,7 @@ import { useAppDispatch } from "@/redux/hooks";
 import { useUpdateUserMutation } from "@/redux/services/userApi";
 import { isURLValid } from "@/utils/function";
 
-const formSchema = formSchemaPersonal;
+const formSchema = formPersonalSchema;
 
 interface PersonalProps {
   userInfor: Omit<User, "re_password">;
