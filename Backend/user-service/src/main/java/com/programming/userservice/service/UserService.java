@@ -49,7 +49,8 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     }
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        return null;
+        return userRepository.searchUser(searchKeywordDto.getKeyword().trim(), pageable)
+                .map(user -> userMapper.entityToDto(user));
     }
     @Override
     protected List<UserDto> getListSearchResults(String keyword) {

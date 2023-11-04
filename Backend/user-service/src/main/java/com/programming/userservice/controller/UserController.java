@@ -1,6 +1,7 @@
 package com.programming.userservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
+import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.NotPermissionException;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
@@ -118,5 +119,11 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PostMapping("/forget-password/verify")
     public DataResponse<String> verifyAndSaveForgetPass(@RequestBody ForgetPasswordRequest forgetPasswordRequest) {
         return userService.verifyAndSaveForgetPass(forgetPasswordRequest);
+    }
+
+    @Override
+    @ShowOpenAPI
+    public ListResponse<UserDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
+        return super.searchByKeyword(searchKeywordDto);
     }
 }
