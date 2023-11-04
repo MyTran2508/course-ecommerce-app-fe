@@ -36,8 +36,6 @@ function Navbar() {
     if (isSuccess) {
       dispatch(setUser(data.data as User));
       setUserData(data.data as User);
-      // const avt = (data.data as User).photos;
-      // setAvatar(avt);
     }
   }, [data]);
 

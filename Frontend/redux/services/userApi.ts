@@ -1,6 +1,7 @@
+import { ChangePasswordRequest } from './../../types/request.type';
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithToken } from "../baseQuery";
-import { DataResponse } from "@/types/dataResponse.type";
+import { DataResponse } from "@/types/response.type";
 import { User } from "@/types/user.type";
 
 export const userApi = createApi({
@@ -24,9 +25,19 @@ export const userApi = createApi({
       },
       invalidatesTags: (error, data) => [{ type: 'User', id: "user" }]
     }),
-  }),
+    changePassword: builder.mutation<DataResponse, ChangePasswordRequest >({
+      query: (data) => {
+        return {
+          url: `api/users/user/change-password/${data.userId}`,
+          method: "PUT",
+          body: data
+        }
+      }
+    })
+  }), 
 });
 
 export const { useUpdateUserMutation,
-  useGetByUserNameQuery
+  useGetByUserNameQuery,
+  useChangePasswordMutation
 } = userApi;

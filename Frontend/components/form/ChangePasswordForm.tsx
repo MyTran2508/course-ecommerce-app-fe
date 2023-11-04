@@ -1,6 +1,6 @@
-import { formSchemaResetPassword } from "@/utils/formSchema";
+import { formResetPasswordSchema } from "@/utils/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
@@ -16,14 +16,22 @@ import { Button } from "../ui/button";
 import { User } from "@/types/user.type";
 import Image from "next/image";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-// import { useGetByUserNameQuery } from "@/redux/services/authApi";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { ChangePasswordRequest } from "@/types/request.type";
+import { useChangePasswordMutation } from "@/redux/services/userApi";
+import { DataResponse } from "@/types/response.type";
+import showToast from "@/utils/showToast";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
 
-const formSchema = formSchemaResetPassword;
+const formSchema = formResetPasswordSchema;
 
 function PasswordForm() {
   const [allowInput, setAllowInput] = useState(false);
   const [openEye, setOpenEye] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const userId = useAppSelector((state) => state.userReducer.id);
+
+  const [changePassword] = useChangePasswordMutation();
 
   const toggle = () => {
     setOpenEye(!openEye);
@@ -41,13 +49,37 @@ function PasswordForm() {
     form.clearErrors();
   };
 
+  const handleChangePassword = async (data: ChangePasswordRequest) => {
+    await changePassword(data)
+      .unwrap()
+      .then((fulfilled) => {
+        handleToast(fulfilled);
+      });
+  };
+
+  const handleToast = (dataResult: DataResponse) => {
+    if (dataResult?.statusCode === 200) {
+      showToast(ToastStatus.SUCCESS, ToastMessage.CHANGE_PASSWORD_SUCCESS);
+    } else {
+      showToast(ToastStatus.ERROR, ToastMessage.CHANGE_PASSWORD_FAIL);
+    }
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
     defaultValues: {},
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    const changePasswordRequest: ChangePasswordRequest = {
+      userId: userId,
+      newPassword: values.new_password,
+      oldPassword: values.old_password,
+    };
+
+    handleChangePassword(changePasswordRequest);
   }
 
   return (

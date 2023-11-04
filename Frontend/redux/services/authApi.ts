@@ -1,5 +1,5 @@
-import { DataResponse } from "@/types/dataResponse.type";
-import { LoginRequest } from "@/types/login.type";
+import { DataResponse } from "@/types/response.type";
+import { ForgotPasswordRequest, LoginRequest } from "@/types/request.type";
 import { User } from "@/types/user.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQuery } from "../baseQuery";
@@ -30,7 +30,7 @@ export const authApi = createApi({
         };
       },
     }),
-    validateOTP: builder.mutation<
+    verifyRegisterOTP: builder.mutation<
       DataResponse,
       { data: Omit<User, "id">; otp: string }
     >({
@@ -46,18 +46,34 @@ export const authApi = createApi({
         };
       },
     }),
-    // getByUserName: builder.query<DataResponse, string>({
-    //   query: (username) => `api/users/user/get-by-username/${username}`,
-    //   providesTags() {
-    //     return [{ type: 'User', id: "user" }]
-    //   }
-    // }),
+    forgotPassword: builder.mutation<DataResponse, string>({
+      query: (email) => {
+        return {
+          url: "api/users/user/forget-password/send-otp",
+          method: "POST",
+          params: {
+            email
+          }
+        }
+      }
+    }),
+     
+    verifyForgotPasswordOTP : builder.mutation<DataResponse, ForgotPasswordRequest >({
+      query: (data) => {
+        return {
+          url: "api/users/user/forget-password/verify",
+          method: "POST",
+          body: data
+        }
+      }
+    })
   }),
 });
 
 export const {
   useLoginUserMutation,
   useRegisterUserMutation,
-  useValidateOTPMutation,
-  // useGetByUserNameQuery,
+  useVerifyRegisterOTPMutation,
+  useVerifyForgotPasswordOTPMutation,
+  useForgotPasswordMutation
 } = authApi;
