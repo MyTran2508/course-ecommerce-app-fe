@@ -1,0 +1,32 @@
+@import "variables";
+
+.dropdown {
+  position: relative;
+  .dropdown-select {
+  }
+
+  .dropdown-main {
+    position: absolute;
+    top: 150%;
+    left: -20%;
+    background-color: #;
+    display: flex;
+
+    .dropdown-list {
+      width: 300px;
+      padding: 10px;
+      .dropdown-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 16px;
+        padding: 10px 20px;
+
+        span {
+          font-size: 18px;
+          flex: 1;
+        }
+      }
+    }
+  }
+}

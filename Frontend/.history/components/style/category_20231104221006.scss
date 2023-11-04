@@ -1,0 +1,15 @@
+.dropdown {
+  position: relative;
+
+  &__options {
+    position: absolute;
+    bottom: -100%;
+    left: 0;
+    background-color: red;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
