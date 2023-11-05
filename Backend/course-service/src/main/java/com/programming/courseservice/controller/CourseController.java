@@ -8,7 +8,9 @@ import com.programming.courseservice.domain.dto.CourseDto;
 import com.programming.courseservice.domain.dto.SearchCourseDto;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.service.CourseService;
+import com.programming.courseservice.util.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +28,27 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<CourseDto> getById(String id) {
         return super.getById(id);
     }
 
+    @Override
+    @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+    public DataResponse<CourseDto> add(CourseDto objectDTO) {
+        return super.add(objectDTO);
+    }
+
+    @Override
+    @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
+    public DataResponse<CourseDto> update(CourseDto objectDTO, String id) {
+        return super.update(objectDTO, id);
+    }
 
     @GetMapping("/newest/{topic-id}/{size}")
+    @ShowOpenAPI
     public ListResponse<List<CourseDto>> getNewestCourse(@PathVariable("topic-id") String topicId, @PathVariable("size") Integer size) {
         return courseService.getNewestCourse(topicId, size);
     }
