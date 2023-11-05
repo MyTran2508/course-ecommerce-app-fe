@@ -1,15 +1,14 @@
 package com.programming.courseservice.domain.persistent.enumrate;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum LevelName {
-    Beginner {
-        public String toString() { return "Beginner"; }
-    },
-    Intermediate {
-        public String toString() { return "Intermediate"; }
-    },
-    Expert {
-        public String toString() { return "Expert"; }
-    },
-    ALL_LEVEL {
-        public String toString() { return "ALL Level"; }
-    }
+    BEGINNER("Beginner"),
+    INTERMEDIATE("Intermediate"),
+    EXPERT("Expert"),
+    ALL_LEVEL("All Level");
+    private final String value;
 }

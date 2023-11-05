@@ -22,5 +22,5 @@ public class CourseDto {
     private LevelDto level;
     private LanguageDto language;
     private Set<ImageDto> images;
-    private String userId;
+    private String authorName;
 }

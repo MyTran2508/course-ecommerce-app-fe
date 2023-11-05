@@ -3,6 +3,7 @@ package com.programming.courseservice.domain.persistent.entity;
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -26,6 +27,7 @@ import java.util.List;
 @DynamicUpdate
 @DynamicInsert
 @ToString
+@SuperBuilder(toBuilder = true)
 public class Category extends BaseModel {
     @Column(nullable = false, length = 64)
     private String name;
