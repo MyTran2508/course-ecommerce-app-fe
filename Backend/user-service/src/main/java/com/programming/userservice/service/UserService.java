@@ -3,6 +3,7 @@ package com.programming.userservice.service;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataAlreadyExistException;
 import com.main.progamming.common.error.exception.DataNotFoundException;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
@@ -24,9 +25,14 @@ import com.programming.userservice.util.constant.TypeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,6 +45,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     private final JwtService jwtService;
     private final OtpUtil otpUtil;
     private final PasswordEncoder passwordEncoder;
+    private final StorageService storageService;
     @Override
     protected BaseRepository<User> getBaseRepository() {
         return userRepository;
@@ -49,7 +56,8 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     }
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        return null;
+        return userRepository.searchUser(searchKeywordDto.getKeyword().trim(), pageable)
+                .map(user -> userMapper.entityToDto(user));
     }
     @Override
     protected List<UserDto> getListSearchResults(String keyword) {
@@ -131,5 +139,31 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         user.setPassword(passwordEncoder.encode(forgetPasswordRequest.getNewPassword()));
         userRepository.save(user);
         return ResponseMapper.toDataResponseSuccess("Update password successfully");
+    }
+
+    @Override
+    public DataResponse<UserDto> update(String id, UserDto dto) {
+        return super.update(id, dto);
+    }
+
+    public ResponseEntity<?> getAvatar(String username) {
+        byte[] image = storageService.loadImageFromFileSystem(username);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(image);
+    }
+
+    public DataResponse<String> uploadAvatar(String username, MultipartFile file) {
+        User user = userRepository.findByUserName(username);
+        if(user == null) {
+            throw new DataNotFoundException(username + " doesn't exists in db");
+        }
+        String filePath = storageService.uploadImageToFileSystem(file);
+        if(filePath.isEmpty()) {
+            return ResponseMapper.toDataResponse("File is invalid", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+        }
+        user.setPhotos(filePath);
+        userRepository.save(user);
+        return ResponseMapper.toDataResponseSuccess("Upload avatar succcessfully");
     }
 }

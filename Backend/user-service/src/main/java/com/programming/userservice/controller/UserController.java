@@ -1,6 +1,7 @@
 package com.programming.userservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
+import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.NotPermissionException;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
@@ -8,18 +9,24 @@ import com.main.progamming.common.service.BaseService;
 import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
+import com.programming.userservice.service.StorageService;
 import com.programming.userservice.service.UserService;
 import com.programming.userservice.util.annotation.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Set;
 
 @Tag(
@@ -34,6 +41,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final StorageService storageService;
     @Override
     protected BaseService<User, UserDto> getBaseService() {
         return userService;
@@ -66,6 +74,13 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         RoleDto role = new RoleDto(RoleUser.USER.getValue());
         objectDTO.setRoles(Set.of(role));
         return super.update(objectDTO, id);
+    }
+
+    @ShowOpenAPI
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/update-admin")
+    public DataResponse<UserDto> updateUserForAdmin(@Valid UserDto userDto, String id) {
+        return userService.update(id, userDto);
     }
 
     @PostMapping("/login")
@@ -118,5 +133,24 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PostMapping("/forget-password/verify")
     public DataResponse<String> verifyAndSaveForgetPass(@RequestBody ForgetPasswordRequest forgetPasswordRequest) {
         return userService.verifyAndSaveForgetPass(forgetPasswordRequest);
+    }
+
+    @Override
+    @ShowOpenAPI
+    public ListResponse<UserDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
+        return super.searchByKeyword(searchKeywordDto);
+    }
+
+    @ShowOpenAPI
+    @GetMapping("/photos/{username}")
+    public ResponseEntity<?> getAvatar(@PathVariable("username") String username)  {
+        return userService.getAvatar(username);
+    }
+
+    @ShowOpenAPI
+    @PostMapping("/photos/{username}")
+    public DataResponse<String> uploadAvatar(@PathVariable("username") String username,
+                                          @RequestParam("image")MultipartFile file) {
+        return userService.uploadAvatar(username, file);
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Sort;
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -146,8 +147,22 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     @Override
     @SuppressWarnings("unchecked")
     public ListResponse<D> searchByKeyword(SearchKeywordDto searchKeywordDto) {
-        Pageable pageable = PageRequest.of(searchKeywordDto.getPageIndex(), searchKeywordDto.getPageSize());
-        return ResponseMapper.toPagingResponseSuccess(getPageResults(searchKeywordDto, pageable));
+        Sort sort = null;
+        if(searchKeywordDto.getSortBy() != null && !searchKeywordDto.getSortBy().isEmpty()) {
+            if(searchKeywordDto.getIsDecrease())
+                sort = Sort.by(searchKeywordDto.getSortBy()).descending();
+            else {
+                sort = Sort.by(searchKeywordDto.getSortBy()).ascending();
+            }
+        }
+
+        if(sort != null) {
+            return ResponseMapper.toPagingResponseSuccess(getPageResults(searchKeywordDto,
+                    PageRequest.of(searchKeywordDto.getPageIndex(), searchKeywordDto.getPageSize(), sort)));
+        }
+
+        return ResponseMapper.toPagingResponseSuccess(getPageResults(searchKeywordDto,
+                PageRequest.of(searchKeywordDto.getPageIndex(), searchKeywordDto.getPageSize())));
     }
 
     protected abstract Page<D> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable);
