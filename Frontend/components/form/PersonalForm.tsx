@@ -99,6 +99,7 @@ function PersonalForm(props: PersonalProps) {
       lastName: values.lastName,
       telephone: values.telephone,
       photos: values.photos,
+      roles: null,
       addresses: [
         {
           addressLine: values.addressLine,

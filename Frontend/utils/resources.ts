@@ -1,3 +1,4 @@
+import { User } from './../types/user.type';
 export enum Action {
   SENT_OTP = 'SENT_OTP',
   REGISTER = 'REGISTER',
@@ -28,6 +29,12 @@ export enum ToastMessage {
   DELETE_CART_SUCCESS = "Xóa Sản Phẩm Thành Công",
   CHANGE_PASSWORD_SUCCESS = "Đổi Mật Khẩu Thành Công",
   CHANGE_PASSWORD_FAIL = "Mật Khẩu Không Chính Xác"
+}
+
+export enum Role {
+  USER = "USER",
+  ADMIN = "ADMIN",
+  MANAGER = "MANAGER"
 }
 
 export enum ApiResource {

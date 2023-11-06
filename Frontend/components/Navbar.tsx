@@ -29,7 +29,7 @@ function Navbar() {
   const [isLogout, setLogout] = useState(false);
   const [userData, setUserData] = useState<User>();
   let user = JSON.parse(localStorage.getItem("user") || "{}");
-  const { data, isLoading, isSuccess } = useGetByUserNameQuery(user.user);
+  const { data, isLoading, isSuccess } = useGetByUserNameQuery(user.username);
 
   useEffect(() => {
     dispatch(setCredential(user));
@@ -42,6 +42,7 @@ function Navbar() {
   const handleLogout = () => {
     dispatch(logout());
     setLogout(true);
+    router.push("/");
     showToast(ToastStatus.SUCCESS, ToastMessage.LOGOUT_SUCCESS);
   };
 
@@ -59,7 +60,7 @@ function Navbar() {
           <SearchBar />
         </div>
         <div className="">
-          {user?.user ? (
+          {user?.username ? (
             <div className="flex-center gap-10">
               <div className="xs:hidden">
                 <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>

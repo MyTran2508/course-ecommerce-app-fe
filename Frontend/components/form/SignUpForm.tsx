@@ -42,6 +42,7 @@ const initialUser: Omit<User, "id"> = {
       defaultAddress: true,
     },
   ],
+  roles: null,
   photos: "",
   telephone: "",
   firstName: "",
@@ -167,6 +168,7 @@ function SignUpForm() {
       lastName,
       telephone,
       photos,
+      roles: null,
       addresses: [
         {
           addressLine,

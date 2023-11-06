@@ -7,9 +7,14 @@ export interface User{
     lastName: string
     telephone: string
     photos: string,
+    roles: Role[] | null
     addresses : Address []
 }
 
+export interface Role {
+    id: string,
+    name: string
+}
 export interface Address {
     addressLine: string,
     postalCode: string | null,

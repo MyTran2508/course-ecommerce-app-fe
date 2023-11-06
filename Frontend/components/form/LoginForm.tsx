@@ -51,7 +51,7 @@ function LoginForm() {
     if (dataResult?.statusCode === 200) {
       const token = dataResult.data as string;
       const auth = {
-        user: user,
+        username: user,
         token: token,
       };
       dispatch(setCredential(auth));
