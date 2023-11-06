@@ -22,25 +22,26 @@ import { useRouter } from "next/navigation";
 import { User } from "@/types/user.type";
 import {
   useRegisterUserMutation,
-  useValidateOTPMutation,
+  useVerifyRegisterOTPMutation,
 } from "@/redux/services/authApi";
 import { useAppDispatch } from "@/redux/hooks";
-import { DataResponse } from "@/types/dataResponse.type";
-import { toast } from "react-toastify";
+import { DataResponse } from "@/types/response.type";
 import { Action, StatusCode, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
-import { formSchemaSignUp, validationSchemaSignUp } from "@/utils/formSchema";
+import { formSignUpSchema, validationSignUpSchema } from "@/utils/formSchema";
 
-const formSchema = formSchemaSignUp;
-const validationSchema = validationSchemaSignUp;
+const formSchema = formSignUpSchema;
+const validationSchema = validationSignUpSchema;
 const initialUser: Omit<User, "id"> = {
   username: "",
   password: "",
-  address: {
-    addressLine: "",
-    postalCode: null,
-    defaultAddress: true,
-  },
+  addresses: [
+    {
+      addressLine: "",
+      postalCode: null,
+      defaultAddress: true,
+    },
+  ],
   photos: "",
   telephone: "",
   firstName: "",
@@ -59,7 +60,7 @@ function SignUpForm() {
   const [otp, setOTP] = useState<string[]>(Array(length).fill(""));
   const inputsOTP = useRef<HTMLInputElement[]>(Array(length).fill(null));
   const [registerUser, registerUserResult] = useRegisterUserMutation();
-  const [validationOTP, validationOTPResult] = useValidateOTPMutation();
+  const [validationOTP, validationOTPResult] = useVerifyRegisterOTPMutation();
 
   const handleRegister = async (newUser: Omit<User, "id">) => {
     await registerUser(newUser)
@@ -98,7 +99,7 @@ function SignUpForm() {
 
   const handleToast = (dataResult: DataResponse, action: string) => {
     if (dataResult?.statusCode === StatusCode.REQUEST_SUCCESS) {
-      showToast(ToastStatus.SUCCESS, dataResult?.data);
+      showToast(ToastStatus.SUCCESS, dataResult?.data as string);
 
       if (action === Action.SENT_OTP) {
         setSendOTP(true);
@@ -111,7 +112,7 @@ function SignUpForm() {
         handleChangeForm();
       }
 
-      showToast(ToastStatus.ERROR, dataResult?.data);
+      showToast(ToastStatus.ERROR, dataResult?.data as string);
     }
   };
 
@@ -166,11 +167,13 @@ function SignUpForm() {
       lastName,
       telephone,
       photos,
-      address: {
-        addressLine,
-        postalCode: null,
-        defaultAddress: true,
-      },
+      addresses: [
+        {
+          addressLine,
+          postalCode: null,
+          defaultAddress: true,
+        },
+      ],
     };
 
     setNewUser(newUser);

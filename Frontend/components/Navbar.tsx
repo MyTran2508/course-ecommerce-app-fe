@@ -1,18 +1,23 @@
 "use client";
 import Link from "next/link";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, use, useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import SearchBar from "./SearchBar";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { iconMap } from "@/utils/map";
-import { useAppDispatch } from "@/redux/hooks";
-import { setUser, logout } from "@/redux/features/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setCredential, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
-import { toast } from "react-toastify";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
+import { FiShoppingCart } from "react-icons/fi";
+import { useGetByUserNameQuery } from "@/redux/services/userApi";
+import { User } from "@/types/user.type";
+import { setUser } from "@/redux/features/userSlice";
+import { AiOutlineRight } from "react-icons/ai";
+import "./style/category.scss";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -22,12 +27,19 @@ const links = [
 function Navbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.cartReducer);
   const [isLogout, setLogout] = useState(false);
+  const [userData, setUserData] = useState<User>();
   let user = JSON.parse(localStorage.getItem("user") || "{}");
+  const { data, isLoading, isSuccess } = useGetByUserNameQuery(user.user);
 
   useEffect(() => {
-    dispatch(setUser(user));
-  }, []);
+    dispatch(setCredential(user));
+    if (isSuccess) {
+      dispatch(setUser(data.data as User));
+      setUserData(data.data as User);
+    }
+  }, [data]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -35,12 +47,18 @@ function Navbar() {
     showToast(ToastStatus.SUCCESS, ToastMessage.LOGOUT_SUCCESS);
   };
 
+  const handleChangeRouteCart = () => {
+    router.push("/cart");
+  };
+
   return (
-    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-10">
-      <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-4">
-        <Link href={"/"} className="text-2xl uppercase">
-          E-LEANING
+    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-20 shadow-md">
+      <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16">
+        <Link href={"/"} className="text-2xl flex items-center">
+          <h1 className="uppercase font-medium">E-LEANING</h1>
+          <Category />
         </Link>
+
         <div className="hidden lg:inline-flex">
           <SearchBar />
         </div>
@@ -50,11 +68,20 @@ function Navbar() {
               <div className="xs:hidden">
                 <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
               </div>
+              <div
+                className="flex relative hover:cursor-pointer"
+                onClick={() => handleChangeRouteCart()}
+              >
+                <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
+                  {cart.length}
+                </span>
+                <FiShoppingCart className="text-2xl" />
+              </div>
               <div>
                 <Menu>
                   <Menu.Button>
                     <Image
-                      src={"/banner.jpg"}
+                      src={userData ? userData.photos : "/banner.jpg"}
                       width={400}
                       height={400}
                       className="w-12 h-12 rounded-full ml-2"
@@ -73,13 +100,13 @@ function Navbar() {
                       >
                         <div className="flex-center gap-4">
                           <Image
-                            src={"/banner.jpg"}
+                            src={userData ? userData.photos : "/banner.jpg"}
                             width={400}
                             height={400}
                             alt="avt"
                             className="w-16 h-16 rounded-full"
                           />
-                          <h4> Trần Chí Mỹ</h4>
+                          <h4> {userData ? userData.firstName : ""}</h4>
                         </div>
                         <hr className="my-4" />
 
@@ -89,7 +116,7 @@ function Navbar() {
                             <hr className="my-4 w-full" />
                           </div>
                           <div>
-                            <Link href={"/"}>Trang Cá Nhân </Link>
+                            <Link href={"/user/personal"}>Trang Cá Nhân </Link>
                             <hr className="my-4" />
                           </div>
                           <div
@@ -165,5 +192,75 @@ function Navbar() {
     </div>
   );
 }
+
+const Category = () => {
+  const [isOpenCategory, setOpenCategory] = useState(false);
+  const [isOpenTopics, setOpenTopics] = useState(false);
+  return (
+    <div className="dropdown ml-6">
+      <button
+        className="dropdown-select text-lg"
+        onMouseEnter={() => setOpenCategory(true)}
+        onMouseLeave={() => setOpenCategory(false)}
+      >
+        Categories
+      </button>
+      {isOpenCategory && (
+        <div
+          className="dropdown-main"
+          onMouseEnter={() => setOpenCategory(true)}
+          onMouseLeave={() => setOpenCategory(false)}
+        >
+          <ul className="dropdown-list">
+            <Item
+              itemName="Backend"
+              hasIcon={true}
+              setOpenTopics={setOpenTopics}
+            />
+            <Item
+              itemName="Frontend"
+              hasIcon={true}
+              setOpenTopics={setOpenTopics}
+            />
+            <Item
+              itemName="Testing"
+              hasIcon={true}
+              setOpenTopics={setOpenTopics}
+            />
+            <Item
+              itemName="Mobile"
+              hasIcon={true}
+              setOpenTopics={setOpenTopics}
+            />
+          </ul>
+          {isOpenTopics && (
+            <ul
+              className="dropdown-list dropdown-list--topics"
+              onMouseEnter={() => setOpenTopics(true)}
+              onMouseLeave={() => setOpenTopics(false)}
+            >
+              <h3>Popular Topics</h3>
+              <Item itemName="Java" hasIcon={false} />
+              <Item itemName="PHP" hasIcon={false} />
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const Item = ({ itemName, hasIcon, setOpenTopics }: any) => {
+  return (
+    <li
+      className="dropdown-item"
+      onMouseEnter={() => setOpenTopics(true)}
+      onMouseLeave={() => setOpenTopics(false)}
+    >
+      <span>{itemName}</span>
+      {hasIcon && <AiOutlineRight />}
+    </li>
+  );
+};
 
 export default Navbar;

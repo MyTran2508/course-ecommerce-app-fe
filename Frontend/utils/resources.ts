@@ -1,6 +1,7 @@
 export enum Action {
   SENT_OTP = 'SENT_OTP',
-  REGISTER = 'REGISTER'
+  REGISTER = 'REGISTER',
+  FORGOT_PASSWORD = 'FORGOT_PASSWORD'
 }
 
 export enum StatusCode {
@@ -20,6 +21,15 @@ export enum ToastStatus {
 
 export enum ToastMessage {
   LOGIN_SUCCESS = 'Đăng Nhập Thành Công',
-  LOGIN_FAIL = 'Đăng Nhập Không Thành Công',
-  LOGOUT_SUCCESS = 'Đăng Xuất Thành Công'
+  LOGIN_FAIL = 'Đăng Nhập Thất Bại',
+  LOGOUT_SUCCESS = "Đăng Xuất Thành Công",
+  NOT_SELECT_PAYMENT = "Vui Lòng Chọn Phương Thức Thanh Toán",
+  ADD_CART_SUCCESS = "Thêm Sản Phẩm Thành Công",
+  DELETE_CART_SUCCESS = "Xóa Sản Phẩm Thành Công",
+  CHANGE_PASSWORD_SUCCESS = "Đổi Mật Khẩu Thành Công",
+  CHANGE_PASSWORD_FAIL = "Mật Khẩu Không Chính Xác"
 }
+
+export enum ApiResource {
+
+} 

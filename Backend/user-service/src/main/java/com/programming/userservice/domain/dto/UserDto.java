@@ -12,10 +12,12 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 public class UserDto {
-    @NotEmpty(message = "Password is required")
+    private String id;
+//    @NotEmpty(message = "Password is required")
     @Size(min = 2, max = 32, message = "Password must be between 2 and 32 characters")
     private String password;
     @Email(message = "Invalid email address")
+    @NotEmpty(message = "Email is required")
     private String email;
     @NotEmpty(message = "Username is required")
     @Size(min = 6, message = "Username must be at least 6 characters")

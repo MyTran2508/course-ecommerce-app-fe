@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Set;
 
@@ -18,12 +19,13 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "name", name = "uq_role_name")
         }
 )
+@ToString(callSuper = true)
 public class Role extends BaseModel {
     @Column(nullable = false, length = 64)
     private String name;
     @Column(length = 512)
     private String description;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
@@ -31,6 +33,7 @@ public class Role extends BaseModel {
             foreignKey = @ForeignKey(name = "fk_users_roles_roles"),
             inverseForeignKey = @ForeignKey(name = "fk_users_roles_users")
     )
+    @ToString.Exclude
     private Set<User> users;
 
     public Role(String id) {

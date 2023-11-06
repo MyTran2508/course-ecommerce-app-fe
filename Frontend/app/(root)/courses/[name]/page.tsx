@@ -8,9 +8,17 @@ import { GoVideo, GoInfinity } from "react-icons/go";
 import { HiOutlineFilm } from "react-icons/hi";
 import { GrCertificate } from "react-icons/gr";
 import { v4 as uuidv4 } from "uuid";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Cart } from "@/types/cart.type";
+import { addToCart } from "@/redux/features/cartSlice";
+import showToast from "@/utils/showToast";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
 
 function CoursePage() {
   const [isOpenAllContent, setOpenAllContent] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const carts = useAppSelector((state) => state.cartReducer);
+
   const handleClickOpenAllContent = () => {
     setOpenAllContent(!isOpenAllContent);
   };
@@ -22,6 +30,22 @@ function CoursePage() {
         <DisclosureCourseContent openAll={isOpenAllContent} key={uuidv4()} />
       </div>
     );
+  };
+
+  const handleAddToCart = () => {
+    const cartExample: Cart = {
+      id: uuidv4().toString(),
+      image: "https://www.udemy.com/staticx/udemy/images/v9/hpp-paypal.svg",
+      nameCourse: " Khóa Học JavaScript",
+      sections: 11,
+      totalLength: 1111,
+      lectures: 11,
+      price: 300000,
+      checked: false,
+    };
+
+    dispatch(addToCart(cartExample));
+    showToast(ToastStatus.SUCCESS, ToastMessage.ADD_CART_SUCCESS);
   };
   return (
     <div className="xl:flex m-2 mt-10 gap-2 font-roboto">
@@ -74,6 +98,7 @@ function CoursePage() {
               <CustomButton
                 title="Add To Card"
                 containerStyles="bg-orange-600 rounded-3xl py-2 px-4 xs:fixed xs:bottom-0 xs:w-full xs:mb-0 xs:rounded-sm xs:ml-[-5px]"
+                handleClick={() => handleAddToCart()}
               />
             </div>
             <div className="flex-start text-sm flex-col">

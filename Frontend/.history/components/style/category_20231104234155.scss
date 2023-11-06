@@ -1,0 +1,11 @@
+@import "variables";
+
+.dropdown {
+  position: relative;
+  .dropdown-select {
+  }
+
+  .dropdown-main {
+    position: absolute;
+  }
+}

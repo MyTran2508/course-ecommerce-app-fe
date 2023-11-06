@@ -21,8 +21,8 @@ import lombok.NoArgsConstructor;
         }
 )
 public class Level extends BaseModel {
-    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private LevelName name;
     @Column(length = 512)
     private String description;

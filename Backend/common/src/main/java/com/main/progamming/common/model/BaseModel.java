@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -17,6 +18,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @MappedSuperclass
+@SuperBuilder(toBuilder = true)
+@ToString
 public class BaseModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

@@ -20,17 +20,16 @@ import CustomButton from "../CustomButton";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLoginUserMutation } from "@/redux/services/authApi";
-import { LoginRequest } from "@/types/login.type";
-import { toast } from "react-toastify";
-import { DataResponse } from "@/types/dataResponse.type";
+import { LoginRequest } from "@/types/request.type";
+import { DataResponse } from "@/types/response.type";
 import { useAppDispatch } from "@/redux/hooks";
-import { setUser } from "@/redux/features/authSlice";
+import { setCredential } from "@/redux/features/authSlice";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
-import { formSchemaLogin } from "@/utils/formSchema";
+import { formLoginSchema } from "@/utils/formSchema";
 
 function LoginForm() {
-  const formSchema = formSchemaLogin;
+  const formSchema = formLoginSchema;
   const route = useRouter();
   const [openEye, setOpenEye] = useState(false);
   const [loginUser, loginUserResults] = useLoginUserMutation();
@@ -50,12 +49,12 @@ function LoginForm() {
 
   const handleSaveToken = (dataResult: DataResponse, user: string) => {
     if (dataResult?.statusCode === 200) {
-      const token = dataResult.data;
+      const token = dataResult.data as string;
       const auth = {
         user: user,
         token: token,
       };
-      dispatch(setUser(auth));
+      dispatch(setCredential(auth));
       showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
 
       route.push("/");
@@ -97,7 +96,11 @@ function LoginForm() {
                 <FormItem className="mb-3">
                   <FormLabel className="text-black">Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="username" {...field}></Input>
+                    <Input
+                      placeholder="username"
+                      className="h-8"
+                      {...field}
+                    ></Input>
                   </FormControl>
                   <FormMessage className="text-[10px]" />
                 </FormItem>
@@ -111,7 +114,7 @@ function LoginForm() {
                   <FormLabel className="text-black">Password</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <div className="absolute text-2xl right-1 cursor-pointer mt-2">
+                      <div className="absolute text-2xl right-1 cursor-pointer mt-1">
                         {openEye === false ? (
                           <AiOutlineEyeInvisible onClick={toggle} />
                         ) : (
@@ -121,6 +124,7 @@ function LoginForm() {
                       <Input
                         type={openEye === false ? "password" : "text"}
                         placeholder="password"
+                        className="h-8"
                         {...field}
                       />
                     </div>
@@ -129,6 +133,12 @@ function LoginForm() {
                 </FormItem>
               )}
             />
+            <Link
+              href={"forget-password"}
+              className="hover:cursor-pointer text-[10px] underline flex-end"
+            >
+              Quên mật khẩu
+            </Link>
           </div>
           <Button
             type="submit"

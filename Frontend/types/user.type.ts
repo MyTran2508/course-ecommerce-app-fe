@@ -7,7 +7,7 @@ export interface User{
     lastName: string
     telephone: string
     photos: string,
-    address : Address
+    addresses : Address []
 }
 
 export interface Address {
