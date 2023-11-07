@@ -23,4 +23,5 @@ public class CourseDto {
     private LanguageDto language;
     private Set<ImageDto> images;
     private String authorName;
+    private TopicDto topic;
 }

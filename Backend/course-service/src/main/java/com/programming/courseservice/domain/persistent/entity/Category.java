@@ -33,30 +33,43 @@ public class Category extends BaseModel {
     private String name;
     @Column(length = 512)
     private String description;
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Topic> topics = new ArrayList<>();
+
+    public void setTopicsAll(List<Topic> newTopics) {
+        this.topics.clear();
+
+        if(newTopics != null) {
+            this.topics.addAll(newTopics);
+        }
+    }
+
     @Override
     protected void ensureId() {
-        for (Topic topic: topics) {
-            topic.setCategory(this);
+        if(topics != null && topics.isEmpty()) {
+            for (Topic topic: topics) {
+                topic.setCategory(this);
+            }
         }
+
+
         super.ensureId();
     }
-
-    @Override
-    protected void setUpdated() {
-        for (Topic topic: topics) {
-            topic.setCategory(this);
-        }
-        super.setUpdated();
-    }
-    public void setNewTopics(List<Topic> topics) {
-        this.topics.clear();
-        if(topics != null) {
-            this.topics.addAll(topics);
-        }
-    }
-
+//
+//    @Override
+//    protected void setUpdated() {
+//        for (Topic topic: topics) {
+//            topic.setCategory(this);
+//        }
+//        super.setUpdated();
+//    }
+//    public void setNewTopics(List<Topic> topics) {
+//        this.topics.clear();
+//        if(topics != null) {
+//            this.topics.addAll(topics);
+//        }
+//    }
+//
     public Category(String id, String name, String description) {
         super(id);
         this.name = name;

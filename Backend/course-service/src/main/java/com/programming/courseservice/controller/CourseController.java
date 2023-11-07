@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,6 +39,14 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     public DataResponse<CourseDto> add(CourseDto objectDTO) {
         return super.add(objectDTO);
+    }
+
+    @ShowOpenAPI
+    @PutMapping("/images/{courseId}/{defaultUrl}")
+    public DataResponse<String> uploadImages(@RequestParam("files") MultipartFile[] files,
+                                             @PathVariable("courseId") String courseId,
+                                             @PathVariable("defaultUrl") Integer defaultUrl) {
+        return courseService.uploadImages(files, courseId, defaultUrl);
     }
 
     @Override
@@ -68,4 +77,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         return courseService.getFiltedCourse(searchCourseDto);
     }
 
+    @GetMapping("/images/{courseId}")
+    public List<byte[]> getImages(@PathVariable("courseId") String courseId) {
+        return courseService.getImages(courseId);
+    }
 }

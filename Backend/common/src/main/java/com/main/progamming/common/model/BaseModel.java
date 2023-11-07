@@ -34,7 +34,6 @@ public class BaseModel implements Serializable {
     protected void ensureId() {
         this.setId(UUID.randomUUID().toString());
         this.setCreated(System.currentTimeMillis());
-        this.setUpdated(System.currentTimeMillis());
         this.setCreator(SystemUtil.getCurrentUsername());
         this.setRemoved(false);
     }

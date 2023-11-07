@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+import java.util.Set;
 
 @Entity
 @Data
@@ -19,7 +23,12 @@ import lombok.NoArgsConstructor;
                 @Index(columnList = "name", name = "idx_languages_name")
         }
 )
+@ToString(callSuper = true)
 public class Language extends BaseModel {
     @Column(length = 32, nullable = false)
     private String name;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "language", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private Set<Course> courses;
 }

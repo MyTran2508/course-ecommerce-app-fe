@@ -36,21 +36,23 @@ INSERT IGNORE INTO `lectures`(id, created, creator, modifier, removed, updated, 
        VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 'Course Structure and Project', 'https://', '0'),
         ('1', 1688521765499, 'admin', 'admin', 0, null, 'Watch Before You Start!', 'https://', '0'),
         ('2', 1688521765499, 'admin', 'admin', 0, null, 'A Brief Introduction to JavaScript', 'https://', '1'),
-        ('3', 1688521765499, 'admin', 'admin', 0, null, 'Linking a JavaScript File', 'https://', '1'),
+        ('3', 1688521765499, 'admin', 'admin', 0, null, 'Linking a JavaScript File', 'https://', '1');
+
+
+INSERT IGNORE INTO `description`(id, created, creator, modifier, removed, updated, details, requirements, target_consumers)
+       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 'No coding experience is necessary to take this course! I take you from beginner to expert!\\nAny computer and OS will work — Windows, macOS or Linux. We will set up your text editor the course.', 'JavaScript is the most popular programming language in the world. It powers the entire modern web. It provides millions of high-paying jobs all over the world.\\nThat''s why you want to learn JavaScript too. And you came to the right place!', 'Take this course if you want to gain a true and deep understanding of JavaScript\\nTake this course if you already know JavaScript and are looking for an advanced course. This course includes expert topics!');
+
+INSERT IGNORE INTO `images`(id, created, creator, modifier, removed, updated, is_default_image, url, course_id)
+       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 1, 'https://', 0);
+
+
+INSERT IGNORE INTO `contents`(id, created, creator, modifier, removed, updated, description_id)
+       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, '0'),
+        ('1', 1688521765499, 'admin', 'admin', 0, null, '0');
 
 INSERT IGNORE INTO `sections`(id, created, creator, modifier, removed, updated, `name`, content_id)
        VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 'Welcome welcome', '0'),
-        ('1', 1688521765499, 'admin', 'admin', 0, null, 'Javascript Foundamentals', '0'),
+        ('1', 1688521765499, 'admin', 'admin', 0, null, 'Javascript Foundamentals', '0');
 
-INSERT IGNORE INTO `content`(id, created, creator, modifier, removed, updated, description_id)
-       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, '0'),
-        ('1', 1688521765499, 'admin', 'admin', 0, null, '0'),
-
-INSERT IGNORE INTO `description`(id, created, creator, modifier, removed, updated, details, requirements, target_consumers)
-       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 'No coding experience is necessary to take this course! I take you from beginner to expert!\\nAny computer and OS will work — Windows, macOS or Linux. We will set up your text editor the course.', 'JavaScript is the most popular programming language in the world. It powers the entire modern web. It provides millions of high-paying jobs all over the world.\\nThat''s why you want to learn JavaScript too. And you came to the right place!', 'Take this course if you want to gain a true and deep understanding of JavaScript\\nTake this course if you already know JavaScript and are looking for an advanced course. This course includes expert topics!'),
-
-INSERT IGNORE INTO `images`(id, created, creator, modifier, removed, updated, is_default_image, url, course_id)
-       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 1, 'https://', 0),
-
-INSERT IGNORE INTO `courses`(id, created, creator, modifier, removed, updated, author_name, `name`, price, sub_title, content_id, language_id, level_id, topic_id)
-       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 1, 'https://', 0),
+-- INSERT IGNORE INTO `courses`(id, created, creator, modifier, removed, updated, author_name, `name`, price, sub_title, content_id, language_id, level_id, topic_id)
+--        VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 1, 'https://', 0);

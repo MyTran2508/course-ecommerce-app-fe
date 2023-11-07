@@ -2,14 +2,14 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
@@ -18,9 +18,10 @@ import java.util.Set;
 public class Content extends BaseModel {
     @OneToMany(mappedBy = "content", fetch = FetchType.EAGER)
     private Set<Section> sections;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "description_id", nullable = false, foreignKey = @ForeignKey(name = "fk_contents_description"))
-    private Description description;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "description_id", foreignKey = @ForeignKey(name = "fk_contents_description"))
+    private Description description = new Description();
     @OneToOne(mappedBy = "content", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Course course;
 }

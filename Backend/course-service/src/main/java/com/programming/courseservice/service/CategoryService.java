@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,42 +47,61 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
     protected List<CategoryDto> getListSearchResults(String keyword) {
         return null;
     }
+
     @Override
     @Transactional
-    public DataResponse<CategoryDto> update(String id, CategoryDto dto) {
+    public DataResponse<CategoryDto> update(String id, CategoryDto categoryDto) {
         Optional<Category> optionalCategory = categoryRepository.findById(id);
         if (optionalCategory.isEmpty()) {
             throw new ResourceNotFoundException(id + " does not exists in DB");
         }
         Category category = optionalCategory.get();
-        category.setName(dto.getName());
-        category.setDescription(dto.getDescription());
-        category.setNewTopics(setNewTopics(category, dto.getTopics()));
-        category.setId(id);
+        List<Topic> topics = categoryDto.getTopics().stream()
+                .map(topicDto -> topicMapper.dtoToEntity(topicDto))
+                .collect(Collectors.toList());
+        category.setTopicsAll(topics);
+        category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
+        category.getTopics().forEach(System.out::println);
         Category updatedCategory = categoryRepository.save(category);
         return ResponseMapper.toDataResponseSuccess(categoryMapper.entityToDto(updatedCategory));
     }
-    public List<Topic> setNewTopics(Category category, List<TopicDto> topicDtos) {
-        List<Topic> results = new ArrayList<>();
-        List<Topic> topicsInDb = category.getTopics();
-        if(topicDtos == null)
-            return null;
-        for (TopicDto topicDto: topicDtos) {
-            Topic topic;
-            if(topicDto.getId() != null) {
-                topic = topicsInDb.stream()
-                        .filter(value -> value.getId().equals(topicDto.getId()))
-                        .findFirst()
-                        .get();
-                topicMapper.dtoToEntity(topicDto, topic);
-            } else {
-                topic = topicMapper.dtoToEntity(topicDto);
-            }
-            topic.setCategory(category);
-            results.add(topic);
-        }
-        return results;
-    }
+//    @Override
+//    @Transactional
+//    public DataResponse<CategoryDto> update(String id, CategoryDto dto) {
+//        Optional<Category> optionalCategory = categoryRepository.findById(id);
+//        if (optionalCategory.isEmpty()) {
+//            throw new ResourceNotFoundException(id + " does not exists in DB");
+//        }
+//        Category category = optionalCategory.get();
+//        category.setName(dto.getName());
+//        category.setDescription(dto.getDescription());
+//        category.setNewTopics(setNewTopics(category, dto.getTopics()));
+//        category.setId(id);
+//        Category updatedCategory = categoryRepository.save(category);
+//        return ResponseMapper.toDataResponseSuccess(categoryMapper.entityToDto(updatedCategory));
+//    }
+//    public List<Topic> setNewTopics(Category category, List<TopicDto> topicDtos) {
+//        List<Topic> results = new ArrayList<>();
+//        List<Topic> topicsInDb = category.getTopics();
+//        if(topicDtos == null)
+//            return null;
+//        for (TopicDto topicDto: topicDtos) {
+//            Topic topic;
+//            if(topicDto.getId() != null) {
+//                topic = topicsInDb.stream()
+//                        .filter(value -> value.getId().equals(topicDto.getId()))
+//                        .findFirst()
+//                        .get();
+//                topicMapper.dtoToEntity(topicDto, topic);
+//            } else {
+//                topic = topicMapper.dtoToEntity(topicDto);
+//            }
+//            topic.setCategory(category);
+//            results.add(topic);
+//        }
+//        return results;
+//    }
     public DataResponse<CategoryDto> getByName(String name) {
         Optional<Category> optionalCategory = categoryRepository.findByName(name);
         if(optionalCategory.isEmpty()) {
