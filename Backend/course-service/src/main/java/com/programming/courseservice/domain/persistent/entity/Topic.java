@@ -7,16 +7,16 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
+@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamicUpdate
-@DynamicInsert
 @Table(
-        name = "topics",
+        name = "topic",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"name"}, name = "uq_topics_name")
         },
@@ -28,22 +28,30 @@ import java.util.List;
 public class Topic extends BaseModel {
     @Column(nullable = false, length = 256)
     private String name;
+
     @Column(length = 512)
     private String description;
-    @ManyToOne(targetEntity = Category.class)
-    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_topics_categories"))
-    private Category category;
+
     @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<Course> courses;
-    @Override
-    public String toString() {
-        return "Topic{" +
-                "name='" + name + '\'' +
-                ", description=" + description + '}'
-        + super.toString();
-    }
+
     public Topic(String name, String description) {
         this.name = name;
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        Topic user = (Topic) o;
+
+        return Objects.equals(this.getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId() != null ? getId().hashCode() : 0;
     }
 }

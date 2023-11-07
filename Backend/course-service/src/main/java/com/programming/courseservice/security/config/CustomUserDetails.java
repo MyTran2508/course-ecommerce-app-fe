@@ -15,7 +15,7 @@ public class CustomUserDetails implements UserDetails {
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public CustomUserDetails(String username, String password, Set<RoleDto> roles) {
+    public CustomUserDetails(String username, String password, List<RoleDto> roles) {
         this.username = username;
         this.password = password;
         this.authorities = roles

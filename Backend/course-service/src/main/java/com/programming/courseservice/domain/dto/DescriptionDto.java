@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageDto {
+public class DescriptionDto {
     private String id;
-    private String url;
-    private boolean isDefaultImage;
+    private String requirements;
+    private String details;
+    private String targetConsumers;
 }

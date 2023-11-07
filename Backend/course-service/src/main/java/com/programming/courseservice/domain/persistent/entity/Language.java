@@ -2,12 +2,15 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
@@ -19,6 +22,7 @@ import lombok.NoArgsConstructor;
                 @Index(columnList = "name", name = "idx_languages_name")
         }
 )
+@ToString(callSuper = true)
 public class Language extends BaseModel {
     @Column(length = 32, nullable = false)
     private String name;

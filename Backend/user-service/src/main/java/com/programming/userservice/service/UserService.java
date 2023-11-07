@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -79,7 +80,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
             User user = userMapper.dtoToEntity(userDto);
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             Role role = new Role(RoleUser.USER.getValue());
-            user.setRoles(Set.of(role));
+            user.setRoles(List.of(role));
             userRepository.save(user);
             return ResponseMapper.toDataResponseSuccess("Enroll in user successfully");
         } catch (Exception e) {
@@ -148,9 +149,14 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
     public ResponseEntity<?> getAvatar(String username) {
         byte[] image = storageService.loadImageFromFileSystem(username);
+        if(image == null) {
+            return ResponseEntity.ok("Error");
+        }
+        String imageBase64 = Base64.getEncoder().encodeToString(image);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(image);
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(imageBase64);
     }
 
     public DataResponse<String> uploadAvatar(String username, MultipartFile file) {

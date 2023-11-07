@@ -2,12 +2,12 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@ToString
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
@@ -21,5 +21,6 @@ public class Description extends BaseModel {
     @Column(name = "target_consumers", length = 1000)
     private String targetConsumers;
     @OneToOne(mappedBy = "description")
+    @ToString.Exclude
     private Content content;
 }

@@ -35,6 +35,7 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     @SuppressWarnings("unchecked")
     public DataResponse<D> create(D dto) {
         E entity = getBaseMapper().dtoToEntity(dto);
+        System.out.println(entity);
         getBaseRepository().save(entity);
         return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
     }
@@ -75,6 +76,7 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
         E entity = optional.get();
         getBaseMapper().dtoToEntity(dto, entity);
         entity.setId(id);
+        System.out.println(entity);
         getBaseRepository().save(entity);
         return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
     }

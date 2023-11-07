@@ -1,10 +1,7 @@
-package com.programming.userservice.service;
+package com.programming.courseservice.service;
 
-import com.main.progamming.common.error.exception.DataNotFoundException;
-import com.programming.userservice.domain.persistent.entity.User;
-import com.programming.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,13 +11,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import org.apache.commons.io.FileUtils;
-
 @Service
 @RequiredArgsConstructor
 public class StorageService {
-    private final UserRepository userRepository;
-    private String FOLDER_PATH = Paths.get("./data-app/user/photos/").toAbsolutePath().toString();
+    private String FOLDER_PATH = Paths.get("./data-app/course/images/").toAbsolutePath().toString();
     private String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif"};
 
     public boolean isFileImage(MultipartFile file) {
@@ -33,12 +27,9 @@ public class StorageService {
     }
 
     public String uploadImageToFileSystem(MultipartFile file) {
-        String filePath=FOLDER_PATH + "/" +file.getOriginalFilename();
+        String filePath = FOLDER_PATH + "/" +file.getOriginalFilename();
         System.out.println(filePath);
         try {
-            if(!isFileImage(file)) {
-                return "";
-            }
             // auto create directory if it doesn't exist
             File folder = new File(FOLDER_PATH);
             if (!folder.exists()) {
@@ -52,16 +43,21 @@ public class StorageService {
         }
     }
 
-    public byte[] loadImageFromFileSystem(String usename) {
-        User user = userRepository.findByUserName(usename);
-        if(user == null || user.getPhotos() == null || user.getPhotos().isEmpty()) {
-            return null;
-        }
-        String filePath= user.getPhotos();
-        try {
-            return Files.readAllBytes(new File(filePath).toPath());
-        } catch (IOException e) {
-            return "Not Found".getBytes();
-        }
+    public void deleteFileFromSystem(String filePath) {
+        File file = new File(filePath);
+        file.delete();
     }
+
+//    public byte[] loadImageFromFileSystem(String usename) {
+//        User user = userRepository.findByUserName(usename);
+//        if(user == null || user.getPhotos() == null || user.getPhotos().isEmpty()) {
+//            return null;
+//        }
+//        String filePath= user.getPhotos();
+//        try {
+//            return Files.readAllBytes(new File(filePath).toPath());
+//        } catch (IOException e) {
+//            return "Not Found".getBytes();
+//        }
+//    }
 }

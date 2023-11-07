@@ -20,9 +20,7 @@ import java.util.UUID;
 @MappedSuperclass
 @SuperBuilder(toBuilder = true)
 @ToString
-public class BaseModel implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class BaseModel {
     @Id
     private String id;
     private Long created;
@@ -30,11 +28,11 @@ public class BaseModel implements Serializable {
     private Long updated;
     private String modifier;
     private Boolean removed;
+
     @PrePersist
     protected void ensureId() {
         this.setId(UUID.randomUUID().toString());
         this.setCreated(System.currentTimeMillis());
-        this.setUpdated(System.currentTimeMillis());
         this.setCreator(SystemUtil.getCurrentUsername());
         this.setRemoved(false);
     }

@@ -1,33 +1,29 @@
 package com.programming.courseservice.domain.persistent.entity;
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(
-        name = "sections"
+        name = "section"
 )
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Section extends BaseModel {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER)
-    private Set<Lecture> lectures;
+    @OneToMany(targetEntity = Lecture.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_lecture_section"))
+    private List<Lecture> lectures;
 
-    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER)
-    private Set<Document> documents;
-
-    @ManyToOne(targetEntity = Content.class)
-    @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_sections_content"))
-    @ToString.Exclude
-    private Content content;
+    @OneToMany(targetEntity = Document.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_document_section"))
+    private List<Document> documents;
 }

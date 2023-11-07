@@ -9,10 +9,14 @@ import com.programming.courseservice.domain.dto.SearchCourseDto;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.service.CourseService;
 import com.programming.courseservice.util.annotation.ShowOpenAPI;
+import com.programming.courseservice.util.constant.S3Constrant;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,6 +42,25 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     public DataResponse<CourseDto> add(CourseDto objectDTO) {
         return super.add(objectDTO);
+    }
+
+
+    @ShowOpenAPI
+    @PostMapping("/images")
+    public DataResponse<String> uploadCourseImage(@RequestParam("file") MultipartFile file) {
+        return courseService.uploadCourseImage(file);
+    }
+
+    @ShowOpenAPI
+    @GetMapping("/download")
+    public ResponseEntity<ByteArrayResource> loadFile(@RequestParam("path") String path) {
+        return courseService.loadFile(path);
+    }
+
+    @ShowOpenAPI
+    @PostMapping("/videos")
+    public DataResponse<String> uploadCourseVideo(@RequestParam("file") MultipartFile file) {
+        return courseService.uploadCourseVideo(file);
     }
 
     @Override
@@ -67,5 +90,4 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     public ListResponse<CourseDto> getFiltedCourse(@RequestBody SearchCourseDto searchCourseDto) {
         return courseService.getFiltedCourse(searchCourseDto);
     }
-
 }

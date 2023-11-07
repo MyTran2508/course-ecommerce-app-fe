@@ -22,9 +22,6 @@ export const formSignUpSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   addressLine: z.string(),
-  photos: z.string().refine((value) => urlRegex.test(value), {
-    message: "Invalid Url"
-  }),
 });
 
 export const validationSignUpSchema = z
@@ -55,7 +52,7 @@ export const formPersonalSchema = z.object({
   lastName: formSignUpSchema.shape.lastName,
   addressLine: formSignUpSchema.shape.addressLine,
   telephone: formSignUpSchema.shape.telephone,
-  photos: formSignUpSchema.shape.photos
+  photos: z.string()
 }).strict()
 
 export const formResetPasswordSchema = z.object({

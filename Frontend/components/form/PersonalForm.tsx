@@ -15,9 +15,13 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { User } from "@/types/user.type";
 import Image from "next/image";
-import { useAppDispatch } from "@/redux/hooks";
-import { useUpdateUserMutation } from "@/redux/services/userApi";
-import { isURLValid } from "@/utils/function";
+import {
+  useGetAvatarQuery,
+  useUploadImageMutation,
+  useUpdateUserMutation,
+} from "@/redux/services/userApi";
+import showToast from "@/utils/showToast";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
 
 const formSchema = formPersonalSchema;
 
@@ -31,7 +35,7 @@ const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
     email: value.email,
     firstName: value.firstName,
     lastName: value.lastName,
-    photos: value.photos,
+    photos: "",
     telephone: value.telephone,
     addressLine: value.addresses[0]?.addressLine,
   };
@@ -45,8 +49,14 @@ function PersonalForm(props: PersonalProps) {
   const [defaultValueForm, setDefaultValueFrom] = useState(
     handleSetDefaultValueFrom(userInfor)
   );
-  const dispatch = useAppDispatch();
+  const [file, setFile] = useState<File>();
+  const [currentAvatar, setCurrentAvatar] = useState();
+
+  const [updateAvatar] = useUploadImageMutation();
   const [updateUser, updateUserResult] = useUpdateUserMutation();
+  const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
+    userInfor.username
+  );
 
   const handleImageError = (type: boolean) => {
     setImageError(type);
@@ -61,7 +71,9 @@ function PersonalForm(props: PersonalProps) {
   useEffect(() => {
     setDefaultValueFrom(handleSetDefaultValueFrom(userInfor));
     handleImageError(false);
-  }, [userInfor]);
+    setCurrentAvatar(avatarData);
+    console.log(currentAvatar);
+  }, [userInfor, avatarData]);
 
   const handleClickEdit = () => {
     setAllowInput(!allowInput);
@@ -75,14 +87,29 @@ function PersonalForm(props: PersonalProps) {
   };
 
   const handleUpdateUser = async (
-    data: Omit<User, "re_password" | "password">
+    data: Omit<User, "re_password" | "password" | "roles" | "photos">
   ) => {
-    await updateUser(data)
-      .unwrap()
-      .then((fulfilled) => {
-        setAllowInput(!allowInput);
-        console.log(fulfilled);
+    let updateSuccess = true;
+
+    await Promise.all([
+      updateUser(data).unwrap(),
+      file ? updateAvatar({ username: data.username, image: file }) : null,
+    ])
+      .then(([updateUserResponse, updateAvatarResponse]) => {
+        console.log(updateUserResponse);
+        console.log(updateAvatarResponse);
+      })
+      .catch((error) => {
+        console.error(error);
+        updateSuccess = false;
       });
+
+    if (updateSuccess) {
+      setAllowInput(!allowInput);
+      showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_USER_SUCCESS);
+    } else {
+      showToast(ToastStatus.ERROR, ToastMessage.UPDATE_USER_FAIL);
+    }
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -91,14 +118,16 @@ function PersonalForm(props: PersonalProps) {
     defaultValues: defaultValueForm,
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const updateUser: Omit<User, "re_password" | "password"> = {
+    const updateUser: Omit<
+      User,
+      "re_password" | "password" | "roles" | "photos"
+    > = {
       id: userInfor.id,
       username: userInfor.username,
       email: userInfor.email,
       firstName: values.firstName,
       lastName: values.lastName,
       telephone: values.telephone,
-      photos: values.photos,
       addresses: [
         {
           addressLine: values.addressLine,
@@ -107,8 +136,6 @@ function PersonalForm(props: PersonalProps) {
         },
       ],
     };
-
-    console.log(updateUser);
     handleUpdateUser(updateUser);
   }
   return (
@@ -279,11 +306,11 @@ function PersonalForm(props: PersonalProps) {
                     <FormLabel className="text-black">Avatar</FormLabel>
                     <FormControl>
                       <Input
-                        className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
-                          allowInput ? "border-b-blue-700 " : " "
-                        }`}
                         disabled={!allowInput}
-                        {...field}
+                        type="file"
+                        onChange={(e) => {
+                          setFile(e.target.files?.[0]);
+                        }}
                       ></Input>
                     </FormControl>
                     <FormMessage className="text-[10px]" />
@@ -294,7 +321,11 @@ function PersonalForm(props: PersonalProps) {
                 {imageError ? (
                   <Fragment>
                     <Image
-                      src={"/banner.jpg"}
+                      src={
+                        currentAvatar !== "Error"
+                          ? `data:image/png;base64,${currentAvatar}`
+                          : "/banner.jpg"
+                      }
                       width={100}
                       height={100}
                       alt=""
@@ -304,7 +335,11 @@ function PersonalForm(props: PersonalProps) {
                 ) : (
                   <Fragment>
                     <Image
-                      src={userInfor.photos}
+                      src={
+                        currentAvatar !== "Error"
+                          ? `data:image/png;base64,${currentAvatar}`
+                          : "/banner.jpg"
+                      }
                       width={100}
                       height={100}
                       alt=""

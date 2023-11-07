@@ -10,7 +10,7 @@ import { useGetByUserNameQuery } from "@/redux/services/userApi";
 function PagePersonal() {
   let user = JSON.parse(localStorage.getItem("user") || "{}");
   const { data, error, isLoading, isSuccess } = useGetByUserNameQuery(
-    user.user
+    user.username
   );
 
   if (isLoading) return <Loading />;

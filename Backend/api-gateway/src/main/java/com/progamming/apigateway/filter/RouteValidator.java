@@ -13,7 +13,7 @@ public class RouteValidator {
             "/api/users/user/register",
             "/api/users/user/forget-password",
             "/api/users/user/send-otp",
-            "/api/courses/download",
+            "/api/courses/course/download",
             "/eureka"
     );
 

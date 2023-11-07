@@ -2,15 +2,15 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(
-        name = "documents"
+        name = "document"
 )
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Document extends BaseModel {
@@ -18,7 +18,4 @@ public class Document extends BaseModel {
     private String name;
     @Column(nullable = false)
     private String url;
-    @ManyToOne(targetEntity = Section.class)
-    @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_documents_section"))
-    private Section section;
 }

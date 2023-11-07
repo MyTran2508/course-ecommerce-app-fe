@@ -1,12 +1,13 @@
 "use client";
 import CartItem from "@/components/CartItem";
+// import Router from "@/components/router/router";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { totalPrice } from "@/utils/function";
 import { useRouter } from "next/navigation";
 import React, { Fragment } from "react";
 
-function PageCart() {
+const PageCart = () => {
   const route = useRouter();
   const carts = useAppSelector((state) => state.cartReducer);
 
@@ -28,6 +29,7 @@ function PageCart() {
   };
 
   return (
+    // <Router>
     <div className="mx-28">
       <div className="flex mt-10">
         <div className="w-3/4">
@@ -52,7 +54,8 @@ function PageCart() {
         </div>
       </div>
     </div>
+    // </Router>
   );
-}
+};
 
 export default PageCart;
