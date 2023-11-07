@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -14,6 +15,6 @@ import java.util.Set;
 public class SectionDto {
     private String id;
     private String name;
-    private Set<LectureDto> lectures;
-    private Set<DocumentDto> documents;
+    private List<LectureDto> lectures;
+    private List<DocumentDto> documents;
 }

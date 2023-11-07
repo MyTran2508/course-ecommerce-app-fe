@@ -9,12 +9,14 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import static java.util.Collections.emptySet;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(
-        name = "categories",
+        name = "category",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"name"}, name = "uq_categories_name")
         },
@@ -24,55 +26,24 @@ import java.util.List;
 )
 @Getter
 @Setter
-@DynamicUpdate
-@DynamicInsert
-@ToString
+@ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 public class Category extends BaseModel {
     @Column(nullable = false, length = 64)
     private String name;
+
     @Column(length = 512)
     private String description;
-    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Topic> topics = new ArrayList<>();
 
-    public void setTopicsAll(List<Topic> newTopics) {
-        this.topics.clear();
+    @OneToMany(targetEntity = Topic.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_topic_category"))
+    private List<Topic> topics;
 
-        if(newTopics != null) {
-            this.topics.addAll(newTopics);
-        }
-    }
-
-    @Override
-    protected void ensureId() {
-        if(topics != null && topics.isEmpty()) {
-            for (Topic topic: topics) {
-                topic.setCategory(this);
-            }
-        }
-
-
-        super.ensureId();
-    }
-//
-//    @Override
-//    protected void setUpdated() {
-//        for (Topic topic: topics) {
-//            topic.setCategory(this);
-//        }
-//        super.setUpdated();
-//    }
-//    public void setNewTopics(List<Topic> topics) {
+//    public void setTopicsAll(List<Topic> newTopics) {
 //        this.topics.clear();
-//        if(topics != null) {
-//            this.topics.addAll(topics);
+//
+//        if(newTopics != null) {
+//            this.topics.addAll(newTopics);
 //        }
 //    }
-//
-    public Category(String id, String name, String description) {
-        super(id);
-        this.name = name;
-        this.description = description;
-    }
 }

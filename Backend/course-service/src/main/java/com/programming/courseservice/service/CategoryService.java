@@ -49,23 +49,28 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
     }
 
     @Override
-    @Transactional
-    public DataResponse<CategoryDto> update(String id, CategoryDto categoryDto) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
-        if (optionalCategory.isEmpty()) {
-            throw new ResourceNotFoundException(id + " does not exists in DB");
-        }
-        Category category = optionalCategory.get();
-        List<Topic> topics = categoryDto.getTopics().stream()
-                .map(topicDto -> topicMapper.dtoToEntity(topicDto))
-                .collect(Collectors.toList());
-        category.setTopicsAll(topics);
-        category.setName(categoryDto.getName());
-        category.setDescription(categoryDto.getDescription());
-        category.getTopics().forEach(System.out::println);
-        Category updatedCategory = categoryRepository.save(category);
-        return ResponseMapper.toDataResponseSuccess(categoryMapper.entityToDto(updatedCategory));
+    public DataResponse<CategoryDto> update(String id, CategoryDto dto) {
+        return super.update(id, dto);
     }
+
+    //    @Override
+//    @Transactional
+//    public DataResponse<CategoryDto> update(String id, CategoryDto categoryDto) {
+//        Optional<Category> optionalCategory = categoryRepository.findById(id);
+//        if (optionalCategory.isEmpty()) {
+//            throw new ResourceNotFoundException(id + " does not exists in DB");
+//        }
+//        Category category = optionalCategory.get();
+//        List<Topic> topics = categoryDto.getTopics().stream()
+//                .map(topicDto -> topicMapper.dtoToEntity(topicDto))
+//                .collect(Collectors.toList());
+//        category.setTopicsAll(topics);
+//        category.setName(categoryDto.getName());
+//        category.setDescription(categoryDto.getDescription());
+//        category.getTopics().forEach(System.out::println);
+//        Category updatedCategory = categoryRepository.save(category);
+//        return ResponseMapper.toDataResponseSuccess(categoryMapper.entityToDto(updatedCategory));
+//    }
 //    @Override
 //    @Transactional
 //    public DataResponse<CategoryDto> update(String id, CategoryDto dto) {

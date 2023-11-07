@@ -10,11 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(
-        name = "addresses",
-        indexes = {
-                @Index(columnList = "user_id", name = "idx_addresses_user_id"),
-                @Index(columnList = "location_id", name = "idx_addresses_location_id")
-        }
+        name = "address"
 )
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,11 +24,4 @@ public class Address extends BaseModel {
     private String postalCode;
     @Column(name = "default_address", columnDefinition = "bit default 0 not null")
     private boolean defaultAddress;
-    @ManyToOne(targetEntity = User.class)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_addresses_users"))
-    @ToString.Exclude
-    private User user;
-    @ManyToOne(targetEntity = Location.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "location_id", foreignKey = @ForeignKey(name = "fk_addresses_location"))
-    private Location location = Location.builder().build();
 }

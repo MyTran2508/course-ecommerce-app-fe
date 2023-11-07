@@ -43,7 +43,7 @@ public class AuthConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**",
                                         "/v3/api-docs/**",
-                                        "/api/courses/download/**")
+                                        "/api/courses/course/download/**")
                         .permitAll()
                         .anyRequest().authenticated()
                 )
