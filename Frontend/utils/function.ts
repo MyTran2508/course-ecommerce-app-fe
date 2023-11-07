@@ -1,4 +1,5 @@
 import { Cart } from "@/types/cart.type";
+import path from "path";
 
 export const totalPrice = (carts: Cart[]) => {
     const checkedItems = carts.filter((item) => item.checked);

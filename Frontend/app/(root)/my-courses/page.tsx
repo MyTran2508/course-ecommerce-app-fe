@@ -1,7 +1,9 @@
 import CourseCard from "@/components/CourseCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Image from "next/image";
-import React from "react";
+import checkRoleMiddleware from "@/config/middleware";
+import { NextApiRequest, NextApiResponse } from "next";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 
 function MyCourses() {

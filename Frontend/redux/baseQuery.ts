@@ -1,17 +1,18 @@
 import { RootState } from './store';
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import Cookies from "js-cookie"
 
 const baseUrl = "http://localhost:8082"
 
 export const baseQueryWithToken = fetchBaseQuery({
     baseUrl: baseUrl,
-    prepareHeaders: (headers, { getState }) => {
-        const token = (getState() as RootState).authReducer.token;
-        console.log(token)
-        
-        if (token) {
-			headers.set('authorization', `Bearer ${token}`);
+    prepareHeaders: (headers) => {
+        // const token = (getState() as RootState).authReducer.token;
+        const userCookie = Cookies.get("user");
+        const user = userCookie ? JSON.parse(userCookie) : null;
+        console.log(user.token)
+        if (user) {
+			headers.set('authorization', `Bearer ${user.token}`);
         }
         headers.set("Access-Control-Allow-Origin", "http://localhost:3000/"),
         headers.set("Access-Control-Allow-Methods", "POST, PUT, PATCH, GET, DELETE, OPTIONS"),

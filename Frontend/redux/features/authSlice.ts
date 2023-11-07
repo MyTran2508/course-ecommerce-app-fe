@@ -1,13 +1,14 @@
 import { User } from "@/types/user.type";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from 'js-cookie';
 
 export interface AuthState {
-  user: string | null;
+  username: string | null;
   token: string | null;
 }
 
 const initialState: AuthState = {
-  user: null,
+  username: null,
   token: null,
 };
 
@@ -17,22 +18,25 @@ export const auth = createSlice({
   reducers: {
     setCredential: (
       state,
-      action: PayloadAction<{ user: string; token: string }>
+      action: PayloadAction<{ username: string; token: string }>
     ) => {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          user: action.payload.user,
+
+      const auth =  JSON.stringify({
+          username: action.payload.username,
           token: action.payload.token,
         })
-      );
-      console.log("token trong state" + state.token)
-      state.user = action.payload.user;
+
+      localStorage.setItem("user", auth);
+
+      Cookies.set('user', auth, { expires: 1 });  
+
+      state.username = action.payload.username;
       state.token = action.payload.token;
     },
     logout: (state) => {
       localStorage.clear();
       state = initialState;
+      Cookies.remove("user");
     },
   },
 });

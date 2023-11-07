@@ -13,7 +13,6 @@ export default function Home() {
     delaySpeed: 3000,
     deleteSpeed: 20,
   });
-
   const renderItem = () => {
     return (
       <div className="grid xl:grid-cols-4 gap-2 md:grid-cols-2">

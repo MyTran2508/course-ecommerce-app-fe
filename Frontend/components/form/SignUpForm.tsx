@@ -24,7 +24,6 @@ import {
   useRegisterUserMutation,
   useVerifyRegisterOTPMutation,
 } from "@/redux/services/authApi";
-import { useAppDispatch } from "@/redux/hooks";
 import { DataResponse } from "@/types/response.type";
 import { Action, StatusCode, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
@@ -42,6 +41,7 @@ const initialUser: Omit<User, "id"> = {
       defaultAddress: true,
     },
   ],
+  roles: null,
   photos: "",
   telephone: "",
   firstName: "",
@@ -54,7 +54,8 @@ function SignUpForm() {
   const [openEye, setOpenEye] = useState(false);
   const [changPage, setChangePage] = useState(false);
   const [changeSchema, setChangeSchema] = useState(false);
-  const [newUser, setNewUser] = useState<Omit<User, "id">>(initialUser);
+  const [newUser, setNewUser] =
+    useState<Omit<User, "id" | "photos">>(initialUser);
   const [isUserExisted, setUserExisted] = useState(false);
   const [isSendOTP, setSendOTP] = useState(false);
   const [otp, setOTP] = useState<string[]>(Array(length).fill(""));
@@ -62,7 +63,7 @@ function SignUpForm() {
   const [registerUser, registerUserResult] = useRegisterUserMutation();
   const [validationOTP, validationOTPResult] = useVerifyRegisterOTPMutation();
 
-  const handleRegister = async (newUser: Omit<User, "id">) => {
+  const handleRegister = async (newUser: Omit<User, "id" | "photos">) => {
     await registerUser(newUser)
       .unwrap()
       .then((fulfilled) => {
@@ -156,17 +157,16 @@ function SignUpForm() {
       lastName,
       telephone,
       addressLine,
-      photos,
     } = values;
 
-    const newUser: Omit<User, "id"> = {
+    const newUser: Omit<User, "id" | "photos"> = {
       username,
       password,
       email,
       firstName,
       lastName,
       telephone,
-      photos,
+      roles: null,
       addresses: [
         {
           addressLine,
@@ -176,6 +176,7 @@ function SignUpForm() {
       ],
     };
 
+    console.log(values);
     setNewUser(newUser);
     handleRegister(newUser);
   }
@@ -376,27 +377,6 @@ function SignUpForm() {
                           <Input
                             className="text-black xl:text-xs h-7"
                             placeholder="address line"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-[10px]" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    key="photos"
-                    control={form.control}
-                    name="photos"
-                    render={({ field }) => (
-                      <FormItem className="mb-1 ">
-                        <FormLabel className="text-black xl:text-xs h-7">
-                          Avatar
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="text-black xl:text-xs h-7"
-                            placeholder="url image"
                             {...field}
                           />
                         </FormControl>
