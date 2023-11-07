@@ -18,11 +18,12 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "name", name = "uq_course_name")
         }
 )
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
-@ToString
 public class Course extends BaseModel {
     private String name;
     @Column(name = "sub_title")
@@ -37,7 +38,7 @@ public class Course extends BaseModel {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_courses_content"))
     private Content content = new Content();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "course", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Image> images;
     @ManyToOne(targetEntity = Topic.class)
     @JoinColumn(name = "topic_id", foreignKey = @ForeignKey(name = "fk_course_topic"))
@@ -51,15 +52,5 @@ public class Course extends BaseModel {
         if(newImages != null) {
             this.images.addAll(newImages);
         }
-    }
-
-    @Override
-    protected void ensureId() {
-        if(images != null && images.isEmpty()) {
-            for (Image image: images) {
-                image.setCourse(this);
-            }
-        }
-        super.ensureId();
     }
 }

@@ -42,7 +42,7 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @ShowOpenAPI
-    @PostMapping("/upload-images/{courseId}/{defaultUrl}")
+    @PutMapping("/images/{courseId}/{defaultUrl}")
     public DataResponse<String> uploadImages(@RequestParam("files") MultipartFile[] files,
                                              @PathVariable("courseId") String courseId,
                                              @PathVariable("defaultUrl") Integer defaultUrl) {
@@ -77,4 +77,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         return courseService.getFiltedCourse(searchCourseDto);
     }
 
+    @GetMapping("/images/{courseId}")
+    public List<byte[]> getImages(@PathVariable("courseId") String courseId) {
+        return courseService.getImages(courseId);
+    }
 }

@@ -20,7 +20,7 @@ import org.apache.commons.io.FileUtils;
 @RequiredArgsConstructor
 public class StorageService {
     private final UserRepository userRepository;
-    private String FOLDER_PATH = Paths.get("./user-data/photos/").toAbsolutePath().toString();
+    private String FOLDER_PATH = Paths.get("./data-app/user/photos/").toAbsolutePath().toString();
     private String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif"};
 
     public boolean isFileImage(MultipartFile file) {

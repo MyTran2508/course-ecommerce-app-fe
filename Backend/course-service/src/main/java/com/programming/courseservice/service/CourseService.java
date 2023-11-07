@@ -29,6 +29,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -131,6 +134,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
             String filePath = storageService.uploadImageToFileSystem(file);
             Image image = Image.builder().url(filePath)
                     .isDefaultImage(defaultUrl == idx)
+                    .course(course)
                     .build();
             idx++;
             images.add(image);
@@ -143,7 +147,28 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         }
 
         course.setImagesAll(images);
+        System.out.println(course);
         courseRepository.save(course);
         return ResponseMapper.toDataResponseSuccess("Upload Images Successfully!");
+    }
+
+    public List<byte[]> getImages(String courseId) {
+        Optional<Course> optionalCourse = courseRepository.findById(courseId);
+        if(optionalCourse.isEmpty()) {
+            throw new DataNotFoundException(courseId + " doesn't exists in DB");
+        }
+        Course course = optionalCourse.get();
+        List<byte[]> images = new ArrayList<>();
+        for (Image image: course.getImages()) {
+            File file = new File(image.getUrl());
+            try {
+                byte[] imageBytes = Files.readAllBytes(file.toPath());
+                images.add(imageBytes);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return images;
     }
 }

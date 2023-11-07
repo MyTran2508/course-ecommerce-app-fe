@@ -14,7 +14,7 @@ import java.util.Arrays;
 @Service
 @RequiredArgsConstructor
 public class StorageService {
-    private String FOLDER_PATH = Paths.get("./course/image-course/").toAbsolutePath().toString();
+    private String FOLDER_PATH = Paths.get("./data-app/course/images/").toAbsolutePath().toString();
     private String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif"};
 
     public boolean isFileImage(MultipartFile file) {
