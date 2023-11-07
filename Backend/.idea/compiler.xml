@@ -10,7 +10,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="course-service" />
-        <module name="config-server" />
         <module name="common" />
         <module name="api-gateway" />
         <module name="user-service" />
@@ -20,6 +19,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="auth-service" target="17" />
+      <module name="config-server" target="17" />
       <module name="ocean" target="11" />
     </bytecodeTargetLevel>
   </component>
