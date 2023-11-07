@@ -54,7 +54,8 @@ function SignUpForm() {
   const [openEye, setOpenEye] = useState(false);
   const [changPage, setChangePage] = useState(false);
   const [changeSchema, setChangeSchema] = useState(false);
-  const [newUser, setNewUser] = useState<Omit<User, "id">>(initialUser);
+  const [newUser, setNewUser] =
+    useState<Omit<User, "id" | "photos">>(initialUser);
   const [isUserExisted, setUserExisted] = useState(false);
   const [isSendOTP, setSendOTP] = useState(false);
   const [otp, setOTP] = useState<string[]>(Array(length).fill(""));
@@ -62,7 +63,7 @@ function SignUpForm() {
   const [registerUser, registerUserResult] = useRegisterUserMutation();
   const [validationOTP, validationOTPResult] = useVerifyRegisterOTPMutation();
 
-  const handleRegister = async (newUser: Omit<User, "id">) => {
+  const handleRegister = async (newUser: Omit<User, "id" | "photos">) => {
     await registerUser(newUser)
       .unwrap()
       .then((fulfilled) => {
@@ -144,9 +145,7 @@ function SignUpForm() {
     resolver: zodResolver(
       changeSchema === false ? validationSchema : formSchema
     ),
-    defaultValues: {
-      photos: "",
-    },
+    defaultValues: {},
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -158,17 +157,15 @@ function SignUpForm() {
       lastName,
       telephone,
       addressLine,
-      photos,
     } = values;
 
-    const newUser: Omit<User, "id"> = {
+    const newUser: Omit<User, "id" | "photos"> = {
       username,
       password,
       email,
       firstName,
       lastName,
       telephone,
-      photos,
       roles: null,
       addresses: [
         {
@@ -380,26 +377,6 @@ function SignUpForm() {
                           <Input
                             className="text-black xl:text-xs h-7"
                             placeholder="address line"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="text-[10px]" />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    key="photos"
-                    control={form.control}
-                    name="photos"
-                    render={({ field }) => (
-                      <FormItem className="mb-1 hidden ">
-                        <FormLabel className="text-black xl:text-xs h-7">
-                          Avatar
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            className="xl:text-xs h-7 text-[8px] text-center"
                             {...field}
                           />
                         </FormControl>

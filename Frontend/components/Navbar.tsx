@@ -95,7 +95,7 @@ function Navbar() {
                   <Menu.Button>
                     <Image
                       src={
-                        currentAvatar !== "Tm90IEZvdW5k"
+                        currentAvatar !== "Error"
                           ? `data:image/png;base64,${currentAvatar}`
                           : "/banner.jpg"
                       }
@@ -118,7 +118,7 @@ function Navbar() {
                         <div className="flex-center gap-4">
                           <Image
                             src={
-                              currentAvatar !== "Tm90IEZvdW5k"
+                              currentAvatar !== "Error"
                                 ? `data:image/png;base64,${currentAvatar}`
                                 : "/banner.jpg"
                             }

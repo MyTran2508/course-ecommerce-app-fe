@@ -306,9 +306,6 @@ function PersonalForm(props: PersonalProps) {
                     <FormLabel className="text-black">Avatar</FormLabel>
                     <FormControl>
                       <Input
-                        // className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
-                        //   allowInput ? "border-b-blue-700 " : " "
-                        // }`}
                         disabled={!allowInput}
                         type="file"
                         onChange={(e) => {
@@ -325,7 +322,7 @@ function PersonalForm(props: PersonalProps) {
                   <Fragment>
                     <Image
                       src={
-                        currentAvatar !== "Tm90IEZvdW5k"
+                        currentAvatar !== "Error"
                           ? `data:image/png;base64,${currentAvatar}`
                           : "/banner.jpg"
                       }
@@ -339,7 +336,7 @@ function PersonalForm(props: PersonalProps) {
                   <Fragment>
                     <Image
                       src={
-                        currentAvatar !== "Tm90IEZvdW5k"
+                        currentAvatar !== "Error"
                           ? `data:image/png;base64,${currentAvatar}`
                           : "/banner.jpg"
                       }

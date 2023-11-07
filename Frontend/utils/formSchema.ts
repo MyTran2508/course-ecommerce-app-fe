@@ -22,15 +22,6 @@ export const formSignUpSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   addressLine: z.string(),
-  photos: z.string(),
-  // photos: z
-  //   .instanceof(File)
-  //   .refine(value => {
-  //     // Kiểm tra thêm các điều kiện tùy chỉnh khác (nếu cần)
-  //     return true;
-  //   }, {
-  //     message: 'Photos must be a file',
-  //   }),
 });
 
 export const validationSignUpSchema = z
@@ -61,7 +52,7 @@ export const formPersonalSchema = z.object({
   lastName: formSignUpSchema.shape.lastName,
   addressLine: formSignUpSchema.shape.addressLine,
   telephone: formSignUpSchema.shape.telephone,
-  photos: formSignUpSchema.shape.photos
+  photos: z.string()
 }).strict()
 
 export const formResetPasswordSchema = z.object({

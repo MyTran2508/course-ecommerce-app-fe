@@ -18,8 +18,8 @@ export const authApi = createApi({
         };
       },
     }),
-    registerUser: builder.mutation<DataResponse, Omit<User, "id">>({
-      query: (body: Omit<User, "id">) => {
+    registerUser: builder.mutation<DataResponse, Omit<User, "id" | "photos">>({
+      query: (body: Omit<User, "id" | "photos">) => {
         return {
           url: "api/users/user/register/send-otp",
           method: "POST",
@@ -32,7 +32,7 @@ export const authApi = createApi({
     }),
     verifyRegisterOTP: builder.mutation<
       DataResponse,
-      { data: Omit<User, "id">; otp: string }
+      { data: Omit<User, "id" | "photos">; otp: string }
     >({
       query: ({ data, otp }) => {
         return {
