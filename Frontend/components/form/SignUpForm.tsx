@@ -24,7 +24,6 @@ import {
   useRegisterUserMutation,
   useVerifyRegisterOTPMutation,
 } from "@/redux/services/authApi";
-import { useAppDispatch } from "@/redux/hooks";
 import { DataResponse } from "@/types/response.type";
 import { Action, StatusCode, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
@@ -145,7 +144,9 @@ function SignUpForm() {
     resolver: zodResolver(
       changeSchema === false ? validationSchema : formSchema
     ),
-    defaultValues: {},
+    defaultValues: {
+      photos: "",
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -178,6 +179,7 @@ function SignUpForm() {
       ],
     };
 
+    console.log(values);
     setNewUser(newUser);
     handleRegister(newUser);
   }
@@ -391,14 +393,13 @@ function SignUpForm() {
                     control={form.control}
                     name="photos"
                     render={({ field }) => (
-                      <FormItem className="mb-1 ">
+                      <FormItem className="mb-1 hidden ">
                         <FormLabel className="text-black xl:text-xs h-7">
                           Avatar
                         </FormLabel>
                         <FormControl>
                           <Input
-                            className="text-black xl:text-xs h-7"
-                            placeholder="url image"
+                            className="xl:text-xs h-7 text-[8px] text-center"
                             {...field}
                           />
                         </FormControl>

@@ -13,7 +13,10 @@ import Image from "next/image";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { FiShoppingCart } from "react-icons/fi";
-import { useGetByUserNameQuery } from "@/redux/services/userApi";
+import {
+  useGetAvatarQuery,
+  useGetByUserNameQuery,
+} from "@/redux/services/userApi";
 import { User } from "@/types/user.type";
 import { setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
@@ -28,18 +31,27 @@ function Navbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const cart = useAppSelector((state) => state.cartReducer);
-  const [isLogout, setLogout] = useState(false);
   const [userData, setUserData] = useState<User>();
+  const [isLogout, setLogout] = useState(false);
+  const [currentAvatar, setCurrentAvatar] = useState();
   let user = JSON.parse(localStorage.getItem("user") || "{}");
-  const { data, isLoading, isSuccess } = useGetByUserNameQuery(user.username);
+  const { data: userNameData, isSuccess: userNameSuccess } =
+    useGetByUserNameQuery(user.username);
+
+  const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
+    user.username
+  );
 
   useEffect(() => {
     dispatch(setCredential(user));
-    if (isSuccess) {
-      dispatch(setUser(data.data as User));
-      setUserData(data.data as User);
+    if (userNameSuccess) {
+      dispatch(setUser(userNameData.data as User));
+      setUserData(userNameData.data as User);
     }
-  }, [data]);
+    if (avatarSuccess) {
+      setCurrentAvatar(avatarData);
+    }
+  }, [userNameData, avatarData]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -82,7 +94,11 @@ function Navbar() {
                 <Menu>
                   <Menu.Button>
                     <Image
-                      src={userData ? userData.photos : "/banner.jpg"}
+                      src={
+                        currentAvatar !== "Tm90IEZvdW5k"
+                          ? `data:image/png;base64,${currentAvatar}`
+                          : "/banner.jpg"
+                      }
                       width={400}
                       height={400}
                       className="w-12 h-12 rounded-full ml-2"
@@ -101,7 +117,11 @@ function Navbar() {
                       >
                         <div className="flex-center gap-4">
                           <Image
-                            src={userData ? userData.photos : "/banner.jpg"}
+                            src={
+                              currentAvatar !== "Tm90IEZvdW5k"
+                                ? `data:image/png;base64,${currentAvatar}`
+                                : "/banner.jpg"
+                            }
                             width={400}
                             height={400}
                             alt="avt"

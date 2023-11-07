@@ -22,9 +22,15 @@ export const formSignUpSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   addressLine: z.string(),
-  photos: z.string().refine((value) => urlRegex.test(value), {
-    message: "Invalid Url"
-  }),
+  photos: z.string(),
+  // photos: z
+  //   .instanceof(File)
+  //   .refine(value => {
+  //     // Kiểm tra thêm các điều kiện tùy chỉnh khác (nếu cần)
+  //     return true;
+  //   }, {
+  //     message: 'Photos must be a file',
+  //   }),
 });
 
 export const validationSignUpSchema = z

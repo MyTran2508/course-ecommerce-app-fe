@@ -6,7 +6,7 @@ export interface User{
     firstName: string,
     lastName: string
     telephone: string
-    photos: string,
+    photos: string | null,
     roles: Role[] | null
     addresses : Address []
 }

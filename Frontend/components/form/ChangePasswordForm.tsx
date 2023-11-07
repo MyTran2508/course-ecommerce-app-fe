@@ -59,6 +59,7 @@ function PasswordForm() {
 
   const handleToast = (dataResult: DataResponse) => {
     if (dataResult?.statusCode === 200) {
+      handleClickEdit();
       showToast(ToastStatus.SUCCESS, ToastMessage.CHANGE_PASSWORD_SUCCESS);
     } else {
       showToast(ToastStatus.ERROR, ToastMessage.CHANGE_PASSWORD_FAIL);
@@ -72,7 +73,6 @@ function PasswordForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     const changePasswordRequest: ChangePasswordRequest = {
       userId: userId,
       newPassword: values.new_password,
