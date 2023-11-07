@@ -75,6 +75,7 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
         E entity = optional.get();
         getBaseMapper().dtoToEntity(dto, entity);
         entity.setId(id);
+        System.out.println(entity);
         getBaseRepository().save(entity);
         return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
     }

@@ -9,12 +9,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@DynamicUpdate
-@DynamicInsert
 @Table(
         name = "topics",
         uniqueConstraints = {
@@ -32,8 +29,10 @@ public class Topic extends BaseModel {
     private String description;
     @ManyToOne(targetEntity = Category.class)
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_topics_categories"))
+    @ToString.Exclude
     private Category category;
     @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<Course> courses;
     @Override
     public String toString() {

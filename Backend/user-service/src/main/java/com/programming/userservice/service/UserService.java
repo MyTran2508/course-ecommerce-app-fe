@@ -148,6 +148,9 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
     public ResponseEntity<?> getAvatar(String username) {
         byte[] image = storageService.loadImageFromFileSystem(username);
+        if(image == null) {
+            return ResponseEntity.ok("Error");
+        }
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(image);

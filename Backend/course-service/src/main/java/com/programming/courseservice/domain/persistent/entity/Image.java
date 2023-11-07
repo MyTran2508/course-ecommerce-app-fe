@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -12,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Table(
         name = "images"
 )
+@SuperBuilder(toBuilder = true)
 public class Image extends BaseModel {
     @Column(nullable = false)
     private String url;
@@ -19,5 +23,6 @@ public class Image extends BaseModel {
     private boolean isDefaultImage;
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false, foreignKey = @ForeignKey(name = "fk_images_course"))
+    @ToString.Exclude
     private Course course;
 }
