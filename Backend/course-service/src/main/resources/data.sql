@@ -8,8 +8,8 @@ INSERT IGNORE INTO `level`(id, created, creator, modifier, removed, updated, des
        VALUES ('3', 1688521765499, 'admin', 'admin', 0, null, 'All Level', 3);
 
 INSERT IGNORE INTO `language`(id, created, creator, modifier, removed, updated, `name`)
-       VALUES ('1', 1688521765499, 'admin', 'admin', 0, null, 'Vietnamese'),
-       ('2', 1688521765499, 'admin', 'admin', 0, null, 'English');
+       VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 'Vietnamese'),
+       ('1', 1688521765499, 'admin', 'admin', 0, null, 'English');
 
 INSERT IGNORE INTO `category`(id, created, creator, modifier, removed, updated, description, `name`)
        VALUES ('0', 1688521765499, 'admin', 'admin', 0, null, 'Progamming Languages', 'Progamming Languages'),
