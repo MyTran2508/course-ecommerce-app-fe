@@ -76,3 +76,15 @@ export const formForgotPasswordSchema = z.object({
 export const formValidateEmailSchema = z.object({
   email: formSignUpSchema.shape.email,
 }).strict()
+
+
+export const formCourseInformationSchema = z.object({
+  name: z.string().min(1).max(255),
+  subTitle: z.string().min(1).max(255),
+  price: z.number(),
+  level: z.string().max(1),
+  language: z.string().max(1),
+  topic: z.string().max(1),
+  urlCourseImages: z.string(),
+  urlPromotionVideos: z.string(),
+});
