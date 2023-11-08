@@ -19,6 +19,7 @@ const test = [
 
 function CourseCard(props: any) {
   const isMyCourse = props.myCourse;
+  const isInstructorCourse = props.instructorCourse;
 
   return (
     <Card
@@ -50,7 +51,7 @@ function CourseCard(props: any) {
           {test[0].title}
         </CardTitle>
       </CardHeader>
-      {isMyCourse ? null : (
+      {isMyCourse || isInstructorCourse ? null : (
         <CardContent className=" mt-4 p-0 flex-between">
           <div className="flex-start">
             <BsPeopleFill className="text-2xl mr-2" />

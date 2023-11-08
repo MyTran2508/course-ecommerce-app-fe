@@ -1,8 +1,5 @@
 import CourseCard from "@/components/CourseCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import checkRoleMiddleware from "@/config/middleware";
-import { NextApiRequest, NextApiResponse } from "next";
-import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 
