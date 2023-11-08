@@ -3,6 +3,7 @@ package com.programming.userservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
 import com.programming.userservice.domain.dto.OrderDto;
 import com.programming.userservice.domain.persistent.entity.Order;
@@ -23,10 +24,21 @@ public class OrderController extends BaseApiImpl<Order, OrderDto> {
 
     @Override
     public DataResponse<OrderDto> add(OrderDto objectDTO) {
-        DataResponse<OrderDto> response = super.add(objectDTO);
-        if(response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
-            // call api add course access
-        }
-        return response;
+        return super.add(objectDTO);
+    }
+
+    @Override
+    public DataResponse<OrderDto> update(OrderDto objectDTO, String id) {
+        return super.update(objectDTO, id);
+    }
+
+    @Override
+    public ListResponse<OrderDto> getAll() {
+        return super.getAll();
+    }
+
+    @Override
+    public DataResponse<OrderDto> getById(String id) {
+        return super.getById(id);
     }
 }
