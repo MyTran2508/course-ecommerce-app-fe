@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 @Tag(
@@ -72,7 +73,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
         RoleDto role = new RoleDto(RoleUser.USER.getValue());
-        objectDTO.setRoles(Set.of(role));
+        objectDTO.setRoles(List.of(role));
         return super.update(objectDTO, id);
     }
 

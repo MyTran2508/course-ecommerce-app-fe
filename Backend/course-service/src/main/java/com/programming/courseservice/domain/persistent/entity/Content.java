@@ -4,24 +4,31 @@ import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
-        name = "contents"
+        name = "content"
 )
 public class Content extends BaseModel {
-    @OneToMany(mappedBy = "content", fetch = FetchType.EAGER)
-    private Set<Section> sections;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "description_id", foreignKey = @ForeignKey(name = "fk_contents_description"))
-    private Description description = new Description();
-    @OneToOne(mappedBy = "content", fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = Section.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_section_content"))
+    private List<Section> sections;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "description_id", foreignKey = @ForeignKey(name = "fk_content_description"))
+    private Description description;
+
+    @OneToOne
+    @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_content_course"))
     @ToString.Exclude
     private Course course;
 }

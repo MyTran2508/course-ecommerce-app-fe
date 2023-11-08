@@ -9,7 +9,10 @@ import com.programming.courseservice.domain.dto.SearchCourseDto;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.service.CourseService;
 import com.programming.courseservice.util.annotation.ShowOpenAPI;
+import com.programming.courseservice.util.constant.S3Constrant;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -41,12 +44,23 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         return super.add(objectDTO);
     }
 
+
     @ShowOpenAPI
-    @PutMapping("/images/{courseId}/{defaultUrl}")
-    public DataResponse<String> uploadImages(@RequestParam("files") MultipartFile[] files,
-                                             @PathVariable("courseId") String courseId,
-                                             @PathVariable("defaultUrl") Integer defaultUrl) {
-        return courseService.uploadImages(files, courseId, defaultUrl);
+    @PostMapping("/images")
+    public DataResponse<String> uploadCourseImage(@RequestParam("file") MultipartFile file) {
+        return courseService.uploadCourseImage(file);
+    }
+
+    @ShowOpenAPI
+    @GetMapping("/download")
+    public ResponseEntity<ByteArrayResource> loadFile(@RequestParam("path") String path) {
+        return courseService.loadFile(path);
+    }
+
+    @ShowOpenAPI
+    @PostMapping("/videos")
+    public DataResponse<String> uploadCourseVideo(@RequestParam("file") MultipartFile file) {
+        return courseService.uploadCourseVideo(file);
     }
 
     @Override
@@ -75,10 +89,5 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @PostMapping("/filter")
     public ListResponse<CourseDto> getFiltedCourse(@RequestBody SearchCourseDto searchCourseDto) {
         return courseService.getFiltedCourse(searchCourseDto);
-    }
-
-    @GetMapping("/images/{courseId}")
-    public List<byte[]> getImages(@PathVariable("courseId") String courseId) {
-        return courseService.getImages(courseId);
     }
 }

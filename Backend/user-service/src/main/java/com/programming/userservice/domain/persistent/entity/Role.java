@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,7 +35,7 @@ public class Role extends BaseModel {
             inverseForeignKey = @ForeignKey(name = "fk_users_roles_users")
     )
     @ToString.Exclude
-    private Set<User> users;
+    private List<User> users;
 
     public Role(String id) {
         super(id);

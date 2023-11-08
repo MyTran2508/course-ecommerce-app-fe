@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.awt.print.Book;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -50,21 +51,8 @@ public class User extends BaseModel {
         foreignKey = @ForeignKey(name = "fk_users_roles_users"),
         inverseForeignKey = @ForeignKey(name = "fk_users_roles_roles")
     )
-    private Set<Role> roles;
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private Set<Address> addresses;
-
-    @Override
-    public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-
-        return Objects.equals(this.getId(), user.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getId() != null ? getId().hashCode() : 0;
-    }
+    private List<Role> roles;
+    @OneToMany(targetEntity = Address.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_address_user"))
+    private List<Address> addresses;
 }

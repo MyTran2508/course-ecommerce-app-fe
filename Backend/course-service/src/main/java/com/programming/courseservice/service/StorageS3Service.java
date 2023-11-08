@@ -23,10 +23,10 @@ public class StorageS3Service {
     private FileUtils fileUtils;
     public String uploadFile(String pathFolder, MultipartFile multipartFile) {
         File file = fileUtils.convertMultipartFiletoFile(multipartFile);
-        String fileName = pathFolder + System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, file));
+        String path = pathFolder + System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
+        s3Client.putObject(new PutObjectRequest(bucketName, path, file));
         file.delete();
-        return "File uploaded: " + fileName;
+        return path;
     }
     public byte[] downloadFile(String fileName) {
         S3Object s3Object = s3Client.getObject(bucketName, fileName);

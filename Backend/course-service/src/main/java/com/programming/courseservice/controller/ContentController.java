@@ -6,6 +6,7 @@ import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.ContentDto;
 import com.programming.courseservice.domain.persistent.entity.Content;
 import com.programming.courseservice.service.ContentService;
+import com.programming.courseservice.util.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,19 @@ public class ContentController extends BaseApiImpl<Content, ContentDto> {
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<ContentDto> getById(String id) {
         return super.getById(id);
+    }
+
+    @Override
+    @ShowOpenAPI
+    public DataResponse<ContentDto> update(ContentDto objectDTO, String id) {
+        return super.update(objectDTO, id);
+    }
+
+    @Override
+    public DataResponse<ContentDto> add(ContentDto objectDTO) {
+        return super.add(objectDTO);
     }
 }

@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(
-        name = "courses",
+        name = "course",
         indexes = {
                 @Index(columnList = "author_name", name = "idx_courses_author_name")
         },
@@ -26,31 +26,36 @@ import java.util.Set;
 @SuperBuilder(toBuilder = true)
 public class Course extends BaseModel {
     private String name;
+
     @Column(name = "sub_title")
     private String subTitle;
+
     private Double price;
+
     @ManyToOne(targetEntity = Level.class)
     @JoinColumn(name = "level_id", foreignKey = @ForeignKey(name = "fk_courses_level"))
     private Level level;
-    @ManyToOne(targetEntity = Language.class, cascade = CascadeType.ALL)
+
+    @ManyToOne(targetEntity = Language.class)
     @JoinColumn(name = "language_id", foreignKey = @ForeignKey(name = "fk_courses_language"))
     private Language language;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_courses_content"))
-    private Content content = new Content();
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Image> images;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "course")
+    private Content content;
+
+    @Column(name = "url_course_images", length = 512)
+    private String urlCourseImages;
+
+    @Column(name = "url_promotion_videos", length = 512)
+    private String urlPromotionVideos;
+
     @ManyToOne(targetEntity = Topic.class)
     @JoinColumn(name = "topic_id", foreignKey = @ForeignKey(name = "fk_course_topic"))
     private Topic topic;
+
     @Column(name = "author_name")
     private String authorName;
 
-    public void setImagesAll(Set<Image> newImages) {
-        this.images.clear();
-
-        if(newImages != null) {
-            this.images.addAll(newImages);
-        }
-    }
+    @Column(columnDefinition="tinyint(1) default 0")
+    private boolean isApproved;
 }

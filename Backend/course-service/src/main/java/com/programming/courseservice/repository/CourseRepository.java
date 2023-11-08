@@ -20,7 +20,7 @@ public interface CourseRepository extends BaseRepository<Course> {
     List<Course> getCourseByTopicId(@Param("topicId") String topicId, Sort sort);
 
     @Modifying
-    @Query(value = "update courses set language_id=:languageId, topic_id=:topicId, level_id=:levelId where id=:id", nativeQuery = true)
+    @Query(value = "update course set language_id=:languageId, topic_id=:topicId, level_id=:levelId where id=:id", nativeQuery = true)
     @Transactional
     void updateCourse(String id, String levelId, String topicId, String languageId);
 }

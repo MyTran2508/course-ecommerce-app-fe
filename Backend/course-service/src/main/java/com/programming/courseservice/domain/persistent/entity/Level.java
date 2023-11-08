@@ -3,16 +3,16 @@ package com.programming.courseservice.domain.persistent.entity;
 import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.LevelName;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
-        name = "levels",
+        name = "level",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "name", name = "uq_levels_name")
         },

@@ -1,15 +1,11 @@
 package com.programming.courseservice.domain.dto;
 
-import com.programming.courseservice.domain.persistent.entity.Image;
-import com.programming.courseservice.domain.persistent.entity.Language;
-import com.programming.courseservice.domain.persistent.entity.Level;
-import com.programming.courseservice.domain.persistent.entity.Topic;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +17,9 @@ public class CourseDto {
     private Double price;
     private LevelDto level;
     private LanguageDto language;
-    private Set<ImageDto> images;
+    private String urlCourseImages;
+    private String urlPromotionVideos;
     private String authorName;
     private TopicDto topic;
+    private Boolean isApproved;
 }

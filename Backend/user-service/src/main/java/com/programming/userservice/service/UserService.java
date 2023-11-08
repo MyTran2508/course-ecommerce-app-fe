@@ -80,7 +80,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
             User user = userMapper.dtoToEntity(userDto);
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             Role role = new Role(RoleUser.USER.getValue());
-            user.setRoles(Set.of(role));
+            user.setRoles(List.of(role));
             userRepository.save(user);
             return ResponseMapper.toDataResponseSuccess("Enroll in user successfully");
         } catch (Exception e) {

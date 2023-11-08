@@ -5,6 +5,7 @@ import com.programming.userservice.domain.persistent.entity.Role;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -26,6 +27,6 @@ public class UserDto {
     private String lastName;
     private String telephone;
     private String photos;
-    private Set<RoleDto> roles;
-    private Set<AddressDto> addresses;
+    private List<RoleDto> roles;
+    private List<AddressDto> addresses;
 }
