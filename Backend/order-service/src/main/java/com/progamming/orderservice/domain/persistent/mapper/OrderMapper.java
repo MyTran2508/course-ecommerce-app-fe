@@ -1,4 +1,4 @@
-package com.progamming.orderservice.domain.mapper;
+package com.progamming.orderservice.domain.persistent.mapper;
 
 import com.main.progamming.common.model.BaseMapperImpl;
 import com.progamming.orderservice.domain.dto.OrderDto;

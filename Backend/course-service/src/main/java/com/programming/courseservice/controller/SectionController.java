@@ -8,10 +8,12 @@ import com.programming.courseservice.domain.persistent.entity.Section;
 import com.programming.courseservice.service.SectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/courses/section")
 public class SectionController extends BaseApiImpl<Section, SectionDto> {
     private final SectionService sectionService;
     @Override
@@ -21,5 +23,15 @@ public class SectionController extends BaseApiImpl<Section, SectionDto> {
     @Override
     public DataResponse<SectionDto> getById(String id) {
         return super.getById(id);
+    }
+
+    @Override
+    public DataResponse<SectionDto> add(SectionDto objectDTO) {
+        return super.add(objectDTO);
+    }
+
+    @Override
+    public DataResponse<SectionDto> update(SectionDto objectDTO, String id) {
+        return super.update(objectDTO, id);
     }
 }

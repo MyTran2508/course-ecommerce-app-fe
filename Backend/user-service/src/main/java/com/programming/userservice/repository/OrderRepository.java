@@ -1,7 +1,7 @@
-package com.progamming.orderservice.repository;
+package com.programming.userservice.repository;
 
 import com.main.progamming.common.repository.BaseRepository;
-import com.progamming.orderservice.domain.persistent.entity.Order;
+import com.programming.userservice.domain.persistent.entity.Order;
 import org.springframework.stereotype.Repository;
 
 @Repository

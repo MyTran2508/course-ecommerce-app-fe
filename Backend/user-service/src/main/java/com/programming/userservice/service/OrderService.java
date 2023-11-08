@@ -1,14 +1,13 @@
-package com.progamming.orderservice.service;
+package com.programming.userservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
-import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.model.BaseMapperImpl;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.progamming.orderservice.domain.dto.OrderDto;
-import com.progamming.orderservice.domain.mapper.OrderMapper;
-import com.progamming.orderservice.domain.persistent.entity.Order;
-import com.progamming.orderservice.repository.OrderRepository;
+import com.programming.userservice.domain.dto.OrderDto;
+import com.programming.userservice.domain.mapper.OrderMapper;
+import com.programming.userservice.domain.persistent.entity.Order;
+import com.programming.userservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

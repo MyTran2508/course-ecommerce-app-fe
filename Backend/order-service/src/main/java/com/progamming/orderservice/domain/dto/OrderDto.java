@@ -11,9 +11,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrdersDto {
+public class OrderDto {
     private Double totalAmount;
     private OrderStatus orderStatus;
     private ShippingMethod shippingMethod;
-    List<OrderItemsDto> orderItemsList;
+    List<OrderItemDto> orderItems;
 }

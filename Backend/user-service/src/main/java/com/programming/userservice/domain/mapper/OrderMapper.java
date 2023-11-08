@@ -1,8 +1,8 @@
-package com.progamming.orderservice.domain.mapper;
+package com.programming.userservice.domain.mapper;
 
 import com.main.progamming.common.model.BaseMapperImpl;
-import com.progamming.orderservice.domain.dto.OrderDto;
-import com.progamming.orderservice.domain.persistent.entity.Order;
+import com.programming.userservice.domain.dto.OrderDto;
+import com.programming.userservice.domain.persistent.entity.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 

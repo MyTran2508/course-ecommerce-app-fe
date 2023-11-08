@@ -26,4 +26,9 @@ public class Section extends BaseModel {
     @OneToMany(targetEntity = Document.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_document_section"))
     private List<Document> documents;
+
+    @ManyToOne
+    @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_section_content"))
+    @ToString.Exclude
+    private Content content;
 }
