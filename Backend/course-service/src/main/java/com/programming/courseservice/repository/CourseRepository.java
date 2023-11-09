@@ -4,6 +4,9 @@ import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.repository.BaseRepository;
 import com.programming.courseservice.domain.dto.CourseDto;
 import com.programming.courseservice.domain.persistent.entity.Course;
+import com.programming.courseservice.domain.persistent.entity.Language;
+import com.programming.courseservice.domain.persistent.entity.Level;
+import com.programming.courseservice.domain.persistent.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,4 +35,15 @@ public interface CourseRepository extends BaseRepository<Course> {
                 order by count(ca.course.id) DESC
            """)
     List<Course> findPopularCourses(@Param("topicId") String topicId, Pageable pageable);
+
+    @Query("""
+                Select c from Course c where c.level.id IN :levelIds
+                and c.language.id IN :languageIds
+                and c.topic.id IN :topicIds
+            """)
+    Page<Course> filterCourse(@Param("levelIds") List<String> levelIds,
+                              @Param("languageIds") List<String> languageIds,
+                              @Param("topicIds") List<String> topicIds,
+                              Pageable pageable);
+
 }

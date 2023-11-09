@@ -15,6 +15,9 @@ import com.programming.courseservice.domain.dto.CourseDto;
 import com.programming.courseservice.domain.dto.SearchCourseDto;
 import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.Course;
+import com.programming.courseservice.domain.persistent.entity.Language;
+import com.programming.courseservice.domain.persistent.entity.Level;
+import com.programming.courseservice.domain.persistent.entity.Topic;
 import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.repository.LanguageRepository;
 import com.programming.courseservice.repository.LevelRepository;
@@ -43,12 +46,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     private final CourseRepository courseRepository;
-    private final LevelRepository levelRepository;
+    private final CourseMapper courseMapper;
+    private final StorageS3Service storageS3Service;
     private final LanguageRepository languageRepository;
     private final TopicRepository topicRepository;
-    private final CourseMapper courseMapper;
-    private final StorageService storageService;
-    private final StorageS3Service storageS3Service;
+    private final LevelRepository levelRepository;
     @Override
     protected BaseRepository<Course> getBaseRepository() {
         return courseRepository;
@@ -98,7 +100,17 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     }
 
     public ListResponse<CourseDto> getFiltedCourse(SearchCourseDto searchCourseDto) {
-        return null;
+        Pageable pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize());
+        List<String> levelIds = searchCourseDto.getLevelIds() == null ? levelRepository.findAll().stream().map(Level::getId).toList() : searchCourseDto.getLevelIds();
+        List<String> languageIds = searchCourseDto.getLanguageIds() == null ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
+        List<String> topicIds = searchCourseDto.getTopicIds() == null ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
+
+        Page<Course> courses = courseRepository.filterCourse(levelIds,
+                languageIds, topicIds, pageable);
+        Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+
+        return ResponseMapper.toPagingResponseSuccess(courseDtos);
+
     }
 
     @Override
