@@ -20,11 +20,13 @@ import com.programming.courseservice.repository.LanguageRepository;
 import com.programming.courseservice.repository.LevelRepository;
 import com.programming.courseservice.repository.TopicRepository;
 import com.programming.courseservice.util.constant.S3Constrant;
+import jakarta.ws.rs.core.Application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,9 +118,10 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     public ResponseEntity<ByteArrayResource> loadFile(String path) {
         byte[] data = storageS3Service.downloadFile(path);
-        ByteArrayResource resource = new ByteArrayResource(data);
+        byte[] dataBase64 = Base64.getEncoder().encode(data);
+        ByteArrayResource resource = new ByteArrayResource(dataBase64);
         return ResponseEntity.ok()
-                .contentLength(data.length)
+                .contentLength(dataBase64.length)
                 .header("Content-type", "application/octet-stream")
                 .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
                 .body(resource);
