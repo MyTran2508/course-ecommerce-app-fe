@@ -15,18 +15,18 @@ export interface Course {
 
 export interface Level {
     id: string
-    name: string
-    description: string
+    name?: string
+    description?: string
 }
 
 export interface Topic {
     id: string
-    name: string
-    description: string
+    name?: string
+    description?: string
 }
 
 
 export interface Language {
     id: string,
-    name: string
+    name?: string
 }

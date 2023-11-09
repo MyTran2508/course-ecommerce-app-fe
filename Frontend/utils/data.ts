@@ -5,11 +5,12 @@ export interface ComboBoxType {
 }
 
 export const Language: ComboBoxType[] = [
-    {id: "1", name: "Vietnamese" },
-    {id: "2", name: "English"},
+    {id: "0", name: "Vietnamese" },
+    {id: "1", name: "English"},
 ]
 export const Topic: ComboBoxType[] = [
-    {id: "1", name: "Java" },
+    { id: "0", name: "Python" },
+    { id: "1", name: "Java" },
     { id: "2", name: "C#" },
     { id: "3", name: "C++" },
     { id: "4", name: "ReactJS" },

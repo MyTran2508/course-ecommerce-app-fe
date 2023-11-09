@@ -29,8 +29,11 @@ export enum ToastMessage {
   DELETE_CART_SUCCESS = "Xóa Sản Phẩm Thành Công",
   CHANGE_PASSWORD_SUCCESS = "Đổi Mật Khẩu Thành Công",
   CHANGE_PASSWORD_FAIL = "Mật Khẩu Không Chính Xác",
-  UPDATE_USER_SUCCESS = "Cập nhật thông tin thành công",
-  UPDATE_USER_FAIL = "Cập nhật thông tin thất bại",
+  UPDATE_USER_SUCCESS = "Cập Nhật Thông Tin Thành Công",
+  UPDATE_USER_FAIL = "Cập Nhật Thông Tin Thất Bại",
+  CREATE_COURSE_SUCCESS = "Thêm Thông Tin Khóa Học Thành Công",
+  CREATE_COURSE_FAIL = "Thêm Thông Tin Khóa Học Thất Bại",
+  DATA_COURSE_EXISTED = "Tên Khóa Học Đã Tồn Tại",
 }
 
 export enum Role {
