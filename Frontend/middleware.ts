@@ -31,9 +31,9 @@ export async function middleware(request: NextRequest) {
       .then((data: DataResponse) => {
         return data.data as User
       })
-    const role = user.roles && user.roles.length > 0 ? user.roles[0]?.name : null;
+    const role = user.roles && user.roles.length > 0 ? user.roles[1]?.name : null;
 
-    if ((isUserRoute(pathname) && _.isEqual(role, Role.USER))
+    if ((isUserRoute(pathname) && _.isEqual(role, Role.USER) )
       || (isAdminRoute(pathname) && _.isEqual(role, Role.ADMIN))) {
       
       return NextResponse.next();

@@ -26,6 +26,8 @@ function CourseInforForm(props: any) {
   const formRef = useRef<HTMLFormElement>(null);
   const [imageFile, setImageFile] = useState<File>();
   const [videoFile, setVideoFile] = useState<File>();
+  const [urlImageCourse, setUrlImageCourse] = useState("");
+  const [urlVideoCourse, setUrlVideoCourse] = useState("");
   const saveStatus = useAppSelector(
     (state) => state.courseReducer.saveCourseStatus
   );
@@ -45,6 +47,8 @@ function CourseInforForm(props: any) {
       level: Level[0].id,
       language: Language[0].id,
       topic: Topic[0].id,
+      urlCourseImages: urlImageCourse,
+      urlPromotionVideos: urlVideoCourse,
     },
   });
 
@@ -109,6 +113,7 @@ function CourseInforForm(props: any) {
                   <FormLabel className="text-black">Giá Tiền</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                       {...field}
                     ></Input>
@@ -180,9 +185,11 @@ function CourseInforForm(props: any) {
                         <Input
                           className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                           type="file"
-                          onChange={(e) => {
-                            setImageFile(e.target.files?.[0]);
-                          }}
+                          accept=".jpeg, .jpg, .png"
+                          // onChange={(e) => {
+                          //   setImageFile(e.target.files?.[0]);
+                          // }}
+                          {...field}
                         />
                       </div>
                     </div>
@@ -214,9 +221,8 @@ function CourseInforForm(props: any) {
                         <Input
                           className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black w-max"
                           type="file"
-                          onChange={(e) => {
-                            setVideoFile(e.target.files?.[0]);
-                          }}
+                          accept=".mp4, .mkv, .wmv"
+                          onChange={(e) => setVideoFile(e.target.files?.[0])}
                         />
                       </div>
                     </div>
