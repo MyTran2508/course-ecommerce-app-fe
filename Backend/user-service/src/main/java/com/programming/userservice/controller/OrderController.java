@@ -6,24 +6,17 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
 import com.programming.userservice.domain.dto.OrderDto;
-import com.programming.userservice.domain.dto.OrderItemDto;
 import com.programming.userservice.domain.persistent.entity.Order;
-import com.programming.userservice.service.CourseAccessService;
 import com.programming.userservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users/order")
 public class OrderController extends BaseApiImpl<Order, OrderDto> {
     private final OrderService orderService;
-    private final CourseAccessService courseAccessService;
     @Override
     protected BaseService<Order, OrderDto> getBaseService() {
         return orderService;
@@ -31,15 +24,7 @@ public class OrderController extends BaseApiImpl<Order, OrderDto> {
 
     @Override
     public DataResponse<OrderDto> add(OrderDto objectDTO) {
-        DataResponse<OrderDto> response = super.add(objectDTO);
-        if(response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
-            List<String> listCourseId = objectDTO.getOrderItems()
-                    .stream()
-                    .map(OrderItemDto::getCourseId)
-                    .collect(Collectors.toList());;
-            courseAccessService.handleAddCourseAccess(listCourseId, objectDTO.getUser());
-        }
-        return response;
+        return super.add(objectDTO);
     }
 
     @Override

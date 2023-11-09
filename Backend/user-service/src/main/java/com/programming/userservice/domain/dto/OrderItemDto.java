@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class OrderItemDto {
     private String Id;
     private String courseId;
-    private Integer quantity;
     private Double price;
 }

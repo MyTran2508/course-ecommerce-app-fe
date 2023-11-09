@@ -23,6 +23,7 @@ import com.programming.courseservice.util.constant.S3Constrant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -66,26 +67,32 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return null;
     }
 
-    public ListResponse<List<CourseDto>> getNewestCourse(String topicId, Integer size) {
-        Sort sortCourse = Sort.by(Sort.Direction.DESC, "created");
-        List<Course> courseList = courseRepository.getCourseByTopicId(topicId, sortCourse);
-        List<CourseDto> resultList = courseList.stream()
-                .limit(size).map((course) -> courseMapper.entityToDto(course))
-                .collect(Collectors.toList());
-        return ResponseMapper.toListResponseSuccess(resultList);
-    }
-
     @Override
     public ListResponse<CourseDto> getAll() {
         return super.getAll();
     }
 
-    public ListResponse<CourseDto> getPopularCourse(String topicId, Integer size) {
-        return null;
+    public ListResponse<List<CourseDto>> getNewestCourse(String topicId, int size) {
+        Sort sortCourse = Sort.by(Sort.Direction.DESC, "created");
+        Pageable pageable = PageRequest.of(0, size, sortCourse);
+
+        List<CourseDto> courseDtos = courseRepository.getCourseByTopicId(topicId, pageable)
+                .stream()
+                .map((course -> courseMapper.entityToDto(course)))
+                .collect(Collectors.toList());
+
+        return ResponseMapper.toListResponseSuccess(courseDtos);
     }
 
-    public ListResponse<CourseDto> getFavoritesCourse(String topicId, Integer size) {
-        return null;
+    public ListResponse<List<CourseDto>> getPopularCourse(String topicId, Integer size) {
+        Pageable pageable = PageRequest.of(0, size);
+
+        List<CourseDto> courseDtos = courseRepository.findPopularCourses(topicId, pageable)
+                .stream()
+                .map((course -> courseMapper.entityToDto(course)))
+                .collect(Collectors.toList());
+
+        return ResponseMapper.toListResponseSuccess(courseDtos);
     }
 
     public ListResponse<CourseDto> getFiltedCourse(SearchCourseDto searchCourseDto) {

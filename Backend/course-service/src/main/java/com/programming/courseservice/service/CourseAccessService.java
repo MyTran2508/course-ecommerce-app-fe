@@ -7,9 +7,12 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.courseservice.domain.dto.CourseAccessDto;
+import com.programming.courseservice.domain.dto.CourseAccessListDto;
 import com.programming.courseservice.domain.mapper.CourseAccessMapper;
+import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.domain.persistent.entity.CourseAccess;
 import com.programming.courseservice.repository.CourseAccessRepository;
+import com.programming.courseservice.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,16 +24,17 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CourseAccessService extends BaseServiceImpl<CourseAccess, CourseAccessDto> {
-    private final CourseAccessRepository coursePermissionRepository;
-    private final CourseAccessMapper coursePermissionMapper;
+    private final CourseAccessRepository courseAccessRepository;
+    private final CourseAccessMapper courseAccessMapper;
+    private final CourseRepository courseRepository;
     @Override
     protected BaseRepository<CourseAccess> getBaseRepository() {
-        return coursePermissionRepository;
+        return courseAccessRepository;
     }
 
     @Override
     protected BaseMapper<CourseAccess, CourseAccessDto> getBaseMapper() {
-        return coursePermissionMapper;
+        return courseAccessMapper;
     }
 
     @Override
@@ -44,11 +48,23 @@ public class CourseAccessService extends BaseServiceImpl<CourseAccess, CourseAcc
     }
 
     public DataResponse<Boolean> hasAccessToCourse(String userId, String courseId) {
-        Optional<CourseAccess> optionalCourseAccess = coursePermissionRepository.findByUserIdAndCourseId(userId, courseId);
+        Optional<CourseAccess> optionalCourseAccess = courseAccessRepository.findByUserIdAndCourseId(userId, courseId);
         if(optionalCourseAccess.isPresent()) {
             return ResponseMapper.toDataResponseSuccess(true);
         } else {
             return ResponseMapper.toDataResponseSuccess(false);
         }
+    }
+
+    public DataResponse<String> addList(CourseAccessListDto courseAccessListDto) {
+        System.out.println(courseAccessListDto.toString());
+        for (String courseId: courseAccessListDto.getCourseId()) {
+            Course course = courseRepository.findById(courseId).get();
+            CourseAccess courseAccess = CourseAccess.builder()
+                    .userId(courseAccessListDto.getUserId())
+                    .course(course).build();
+            courseAccessRepository.save(courseAccess);
+        }
+        return ResponseMapper.toDataResponseSuccess("Success");
     }
 }
