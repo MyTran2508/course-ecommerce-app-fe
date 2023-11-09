@@ -28,19 +28,16 @@ public class LanguageController extends BaseApiImpl<Language, LanguageDto> {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<LanguageDto> add(LanguageDto objectDTO) {
         return super.add(objectDTO);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<LanguageDto> update(LanguageDto objectDTO, String id) {
         return super.update(objectDTO, id);
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ListResponse<LanguageDto> getAll() {
         List<LanguageDto> languageDto = super.getAll().getData();
         return ResponseMapper.toListResponseSuccess(languageDto.stream()
@@ -49,7 +46,6 @@ public class LanguageController extends BaseApiImpl<Language, LanguageDto> {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<LanguageDto> getById(String id) {
         return super.getById(id);
     }
