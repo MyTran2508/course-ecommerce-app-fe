@@ -16,7 +16,7 @@ public class SearchCourseDto {
     private List<String> levelIds;
     private List<String> languageIds;
     private List<String> topicIds;
-//    private String key;
+    private String keyword;
     private int pageIndex;
     private int pageSize;
 }

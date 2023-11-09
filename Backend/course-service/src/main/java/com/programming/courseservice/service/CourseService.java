@@ -104,9 +104,10 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         List<String> levelIds = searchCourseDto.getLevelIds() == null ? levelRepository.findAll().stream().map(Level::getId).toList() : searchCourseDto.getLevelIds();
         List<String> languageIds = searchCourseDto.getLanguageIds() == null ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
         List<String> topicIds = searchCourseDto.getTopicIds() == null ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
+        String keyword = searchCourseDto.getKeyword();
 
         Page<Course> courses = courseRepository.filterCourse(levelIds,
-                languageIds, topicIds, pageable);
+                languageIds, topicIds, keyword, pageable);
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
 
         return ResponseMapper.toPagingResponseSuccess(courseDtos);

@@ -40,10 +40,12 @@ public interface CourseRepository extends BaseRepository<Course> {
                 Select c from Course c where c.level.id IN :levelIds
                 and c.language.id IN :languageIds
                 and c.topic.id IN :topicIds
+                and (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
             """)
     Page<Course> filterCourse(@Param("levelIds") List<String> levelIds,
                               @Param("languageIds") List<String> languageIds,
                               @Param("topicIds") List<String> topicIds,
+                              @Param("keyword") String keyword,
                               Pageable pageable);
 
 }
