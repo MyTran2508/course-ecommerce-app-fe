@@ -19,6 +19,17 @@ import Image from "next/image";
 import { Topic, Language, Level } from "@/utils/data";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setStatusSaveCourse } from "@/redux/features/courseSlice";
+import {
+  useCreateCourseMutation,
+  useUploadCourseImageMutation,
+  useUploadCourseVideoMutation,
+} from "@/redux/services/courseApi";
+import { FileImage } from "lucide-react";
+import { DataResponse } from "@/types/response.type";
+import { Course } from "@/types/course.type";
+import { isFulfilled } from "@reduxjs/toolkit";
+import showToast from "@/utils/showToast";
+import { StatusCode, ToastMessage, ToastStatus } from "@/utils/resources";
 
 const formSchema = formCourseInformationSchema;
 
@@ -30,6 +41,61 @@ function CourseInforForm(props: any) {
     (state) => state.courseReducer.saveCourseStatus
   );
   const dispatch = useAppDispatch();
+  const [uploadCourseImage] = useUploadCourseImageMutation();
+  const [uploadCourseVideo] = useUploadCourseVideoMutation();
+  const [createCourse] = useCreateCourseMutation();
+
+  const handleUploadFile = async () => {
+    try {
+      const [uploadCourseImageResponse, uploadCourseVideoResponse] =
+        await Promise.all([
+          imageFile ? uploadCourseImage(imageFile) : null,
+          videoFile ? uploadCourseVideo(videoFile) : null,
+        ]);
+
+      console.log(uploadCourseImageResponse);
+      console.log(uploadCourseVideoResponse);
+
+      let newUrlCourseImage = "";
+      let newUrlCourseVideo = "";
+
+      if (uploadCourseImageResponse && "data" in uploadCourseImageResponse) {
+        newUrlCourseImage = uploadCourseImageResponse.data.data as string;
+      }
+
+      if (uploadCourseVideoResponse && "data" in uploadCourseVideoResponse) {
+        newUrlCourseVideo = uploadCourseVideoResponse.data.data as string;
+      }
+
+      return { newUrlCourseImage, newUrlCourseVideo };
+    } catch (error) {
+      console.error(error);
+      return { newUrlCourseImage: "", newUrlCourseVideo: "" };
+    }
+  };
+
+  const handleCreateCourse = async (
+    newCourse: Omit<Course, "id" | "isApproved">
+  ) => {
+    await createCourse(newCourse)
+      .unwrap()
+      .then((fulfilled) => {
+        console.log(fulfilled);
+        handleToast(fulfilled);
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast(ToastStatus.ERROR, ToastMessage.CREATE_COURSE_FAIL);
+      });
+  };
+
+  const handleToast = (dataResult: DataResponse) => {
+    if (dataResult?.statusCode === StatusCode.REQUEST_SUCCESS) {
+      showToast(ToastStatus.SUCCESS, ToastMessage.CREATE_COURSE_SUCCESS);
+    } else {
+      showToast(ToastStatus.ERROR, ToastMessage.DATA_COURSE_EXISTED);
+    }
+  };
 
   useEffect(() => {
     if (saveStatus && formRef.current) {
@@ -45,12 +111,33 @@ function CourseInforForm(props: any) {
       level: Level[0].id,
       language: Language[0].id,
       topic: Topic[0].id,
+      urlCourseImages: "",
+      urlPromotionVideos: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const { newUrlCourseImage, newUrlCourseVideo } = await handleUploadFile();
+    const newCourse: Omit<Course, "id" | "isApproved"> = {
+      name: values.name,
+      subTitle: values.subTitle,
+      price: values.price,
+      level: {
+        id: values.level,
+      },
+      language: {
+        id: values.language,
+      },
+      topic: {
+        id: values.topic,
+      },
+      urlCourseImages: newUrlCourseImage,
+      urlPromotionVideos: newUrlCourseVideo,
+      authorName: "",
+    };
+
+    handleCreateCourse(newCourse);
+  };
   return (
     <div>
       <Form {...form}>
@@ -109,6 +196,7 @@ function CourseInforForm(props: any) {
                   <FormLabel className="text-black">Giá Tiền</FormLabel>
                   <FormControl>
                     <Input
+                      type="number"
                       className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                       {...field}
                     ></Input>
@@ -180,6 +268,7 @@ function CourseInforForm(props: any) {
                         <Input
                           className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                           type="file"
+                          accept=".jpeg, .jpg, .png"
                           onChange={(e) => {
                             setImageFile(e.target.files?.[0]);
                           }}
@@ -214,9 +303,8 @@ function CourseInforForm(props: any) {
                         <Input
                           className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black w-max"
                           type="file"
-                          onChange={(e) => {
-                            setVideoFile(e.target.files?.[0]);
-                          }}
+                          accept=".mp4, .mkv, .wmv"
+                          onChange={(e) => setVideoFile(e.target.files?.[0])}
                         />
                       </div>
                     </div>

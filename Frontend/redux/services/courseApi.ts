@@ -1,82 +1,65 @@
 import { DataResponse } from "@/types/response.type";
-import { ForgotPasswordRequest, LoginRequest } from "@/types/request.type";
-import { User } from "@/types/user.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQuery } from "../baseQuery";
+import {baseQueryWithToken } from "../baseQuery";
+import { url } from "inspector";
+import { Course } from "@/types/course.type";
 
-export const authApi = createApi({
-  reducerPath: "authApi",
-  baseQuery: baseQuery,
-  tagTypes: ["User"],
+export const courseApi = createApi({
+  reducerPath: "courseApi",
+  baseQuery: baseQueryWithToken,
+  tagTypes: ["Course"],
   endpoints: (builder) => ({
-    loginUser: builder.mutation<DataResponse, LoginRequest>({
-      query: (body: LoginRequest) => {
+    uploadCourseImage: builder.mutation<DataResponse, File>({
+      query: (image: File) => {
+        var bodyFormData = new FormData();
+        bodyFormData.append("file", image);
         return {
-          url: "api/users/user/login",
+          url: "/api/courses/course/images",
           method: "POST",
-          body: body,
+          body: bodyFormData,
+          formData: true,
+          responseHandler: "content-type"
         };
       },
     }),
-    registerUser: builder.mutation<DataResponse, Omit<User, "id">>({
-      query: (body: Omit<User, "id">) => {
+    uploadCourseVideo: builder.mutation<DataResponse, File>({
+      query: (video: File) => {
+        var bodyFormData = new FormData();
+        bodyFormData.append("file", video);
         return {
-          url: "api/users/user/register/send-otp",
+          url: "/api/courses/course/videos",
           method: "POST",
-          body,
+          body: bodyFormData,
+          formData: true
+        };
+      },
+    }),
+    loadFileFromCloud: builder.query<[], string>({
+      query: (path: string) => {
+        return {
+          url: "/api/courses/course/download",
           params: {
-            email: body.email,
+            path: path
           },
-        };
-      },
+          responseHandler: "text"
+        }
+      }
     }),
-    verifyRegisterOTP: builder.mutation<
-      DataResponse,
-      { data: Omit<User, "id">; otp: string }
-    >({
-      query: ({ data, otp }) => {
+    createCourse: builder.mutation<DataResponse, Omit<Course, "id" |"isApproved">>({
+      query: (data: Omit<Course, "id" | "isApproved">) => {
         return {
-          url: "api/users/user/register/verify-save",
+          url: "/api/courses/course/add",
           method: "POST",
-          body: data,
-          params: {
-            email: data.email,
-            otp: otp,
-          },
-        };
-      },
-    }),
-    forgotPassword: builder.mutation<DataResponse, string>({
-      query: (email) => {
-        return {
-          url: "api/users/user/forget-password/send-otp",
-          method: "POST",
-          params: {
-            email,
-          },
-        };
-      },
-    }),
-
-    verifyForgotPasswordOTP: builder.mutation<
-      DataResponse,
-      ForgotPasswordRequest
-    >({
-      query: (data) => {
-        return {
-          url: "api/users/user/forget-password/verify",
-          method: "POST",
-          body: data,
-        };
-      },
-    }),
+          body: data
+        }
+      }
+    })
   }),
 });
 
 export const {
-  useLoginUserMutation,
-  useRegisterUserMutation,
-  useVerifyRegisterOTPMutation,
-  useVerifyForgotPasswordOTPMutation,
-  useForgotPasswordMutation,
-} = authApi;
+  useLoadFileFromCloudQuery,
+  useUploadCourseImageMutation,
+  useUploadCourseVideoMutation,
+  useCreateCourseMutation,
+} = courseApi;

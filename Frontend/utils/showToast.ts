@@ -5,7 +5,7 @@ export default function showToast(status: ToastStatus, message: string) {
   const toastConfig = {
     position: 'top-right' as ToastPosition,
     autoClose: 1200,
-    theme: 'dark' as Theme ,
+    theme: 'dark' as Theme,
   };
 
   switch (status) {

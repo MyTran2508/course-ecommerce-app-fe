@@ -77,11 +77,13 @@ export const formValidateEmailSchema = z.object({
   email: formSignUpSchema.shape.email,
 }).strict()
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const MAX_FILE_SIZE = 500000;
 
 export const formCourseInformationSchema = z.object({
   name: z.string().min(1).max(255),
   subTitle: z.string().min(1).max(255),
-  price: z.number(),
+  price: z.coerce.number(),
   level: z.string().max(1),
   language: z.string().max(1),
   topic: z.string().max(1),
