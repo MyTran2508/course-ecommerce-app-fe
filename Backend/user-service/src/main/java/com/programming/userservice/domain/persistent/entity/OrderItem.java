@@ -20,6 +20,5 @@ import lombok.ToString;
 public class OrderItem extends BaseModel {
     @Column(name = "course_id")
     private String courseId;
-    private Integer quantity;
     private Double price;
 }

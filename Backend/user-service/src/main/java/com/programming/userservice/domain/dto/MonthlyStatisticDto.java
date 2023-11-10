@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CourseAccessDto {
-    private UserDto user;
-    private String courseId;
+@NoArgsConstructor
+public class MonthlyStatisticDto {
+    private Integer month;
+    private Double total;
 }

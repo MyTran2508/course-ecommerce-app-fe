@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItemDto {
-    private String Id;
-    private String courseId;
-    private Double price;
+public class StatictisSamePeriodDto {
+    private Integer month;
+    private Double targetYearTotal;
+    private Double previousYearTotal;
 }

@@ -20,8 +20,8 @@ import java.util.List;
         name = "orders"
 )
 public class Order extends BaseModel {
-    @Column(name = "total_amount")
-    private Double totalAmount;
+    @Column(name = "total_price")
+    private Double totalPrice;
 
     @Column(name = "order_status")
     private OrderStatus orderStatus;

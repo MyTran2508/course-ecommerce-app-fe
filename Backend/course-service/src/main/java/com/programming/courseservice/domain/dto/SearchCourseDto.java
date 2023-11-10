@@ -1,5 +1,8 @@
 package com.programming.courseservice.domain.dto;
 
+import com.programming.courseservice.domain.persistent.entity.Language;
+import com.programming.courseservice.domain.persistent.entity.Level;
+import com.programming.courseservice.domain.persistent.entity.Topic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchCourseDto {
-    private List<String> levelId;
-    private List<String> languageId;
-    private boolean isFree;
+    private List<String> levelIds;
+    private List<String> languageIds;
+    private List<String> topicIds;
+    private String keyword;
+    private int pageIndex;
+    private int pageSize;
 }

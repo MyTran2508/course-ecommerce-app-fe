@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDto {
     private String id;
-    private Double totalAmount;
+    private Double totalPrice;
     private OrderStatus orderStatus;
     private ShippingMethod shippingMethod;
     List<OrderItemDto> orderItems;
