@@ -34,7 +34,7 @@ export const courseApi = createApi({
         };
       },
     }),
-    loadFileFromCloud: builder.query<[], string>({
+    loadFileFromCloud: builder.query<string, string>({
       query: (path: string) => {
         return {
           url: "/api/courses/course/download",
@@ -45,16 +45,40 @@ export const courseApi = createApi({
         }
       }
     }),
-    createCourse: builder.mutation<DataResponse, Omit<Course, "id" |"isApproved">>({
-      query: (data: Omit<Course, "id" | "isApproved">) => {
+    createCourse: builder.mutation<DataResponse, Course>({
+      query: (data: Course) => {
         return {
           url: "/api/courses/course/add",
           method: "POST",
           body: data
         }
       }
-    })
+    }),
+    updateCourseById: builder.mutation<DataResponse, Course>({
+       query: (data: Course) => {
+         return {
+           url: `/api/courses/course/update/${data.id}`,
+           method: "PUT",
+           body:data
+         }
+      },
+      invalidatesTags: () => [{type: "Course", id: "course"}]
+     }),
+    getCourseById: builder.query<DataResponse, string>({
+      query: (id: string) => {
+         return {
+           url: `/api/courses/course/get-by-id`,
+           params: {
+             id: id
+           }
+         }
+      },
+      providesTags() {
+        return [{type: "Course", id: "course"}]
+      }
+     })
   }),
+
 });
 
 export const {
@@ -62,4 +86,6 @@ export const {
   useUploadCourseImageMutation,
   useUploadCourseVideoMutation,
   useCreateCourseMutation,
+  useGetCourseByIdQuery,
+  useUpdateCourseByIdMutation
 } = courseApi;
