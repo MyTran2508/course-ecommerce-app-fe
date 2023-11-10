@@ -5,11 +5,10 @@ import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.model.BaseMapperImpl;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.userservice.communication.OpenFeign.CourseAccessApi;
-import com.programming.userservice.domain.dto.CourseAccessListDto;
-import com.programming.userservice.domain.dto.OrderDto;
-import com.programming.userservice.domain.dto.OrderItemDto;
+import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.mapper.OrderMapper;
 import com.programming.userservice.domain.persistent.entity.Order;
 import com.programming.userservice.repository.OrderRepository;
@@ -19,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,5 +68,60 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
             courseAccessApi.addList(courseAccessListDto);
         }
         return response;
+    }
+
+    public DataResponse<List<MonthlyStatisticDto>> getMonthlySales(int targetYear) {
+        List<Object[]> totalPriceByMonth = orderRepository.getTotalPriceByMonth(targetYear);
+        List<MonthlyStatisticDto> monthlyStatisticDtos = new ArrayList<>();
+
+        for(Object[] objects: totalPriceByMonth) {
+            MonthlyStatisticDto monthlyStatisticDto = new MonthlyStatisticDto((Integer) objects[0], (Double) objects[1]);
+            monthlyStatisticDtos.add(monthlyStatisticDto);
+        }
+
+        for (int i = 1; i <= 12; i++) {
+            int finalI = i;
+            if(!monthlyStatisticDtos.stream().anyMatch(item -> item.getMonth() == finalI)) {
+                monthlyStatisticDtos.add(new MonthlyStatisticDto(i, 0.0));
+            }
+        }
+
+        return ResponseMapper.toDataResponseSuccess(monthlyStatisticDtos.stream()
+                .sorted(Comparator.comparingInt(MonthlyStatisticDto::getMonth))
+                .collect(Collectors.toList()));
+    }
+
+    public DataResponse<List<StatictisSamePeriodDto>> getSalesInSamePeriod(int targetYear) {
+        List<Object[]> totalPriceByMonthTargetYear = orderRepository.getTotalPriceByMonth(targetYear);
+        List<Object[]> totalPriceByMonthPreviousYear = orderRepository.getTotalPriceByMonth(targetYear - 1);
+        List<StatictisSamePeriodDto> results = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            StatictisSamePeriodDto statisticSamePeriodDto = new StatictisSamePeriodDto();
+            statisticSamePeriodDto.setMonth(i);
+
+            for (Object[] objects: totalPriceByMonthTargetYear) {
+                if((Integer) objects[0] == i) {
+                    statisticSamePeriodDto.setTargetYearTotal((Double) objects[1]);
+                }
+            }
+            if(statisticSamePeriodDto.getTargetYearTotal() == null) {
+                statisticSamePeriodDto.setTargetYearTotal(0.0);
+            }
+
+            for (Object[] objects: totalPriceByMonthPreviousYear) {
+                if((Integer) objects[0] == i) {
+                    statisticSamePeriodDto.setPreviousYearTotal((Double) objects[1]);
+                }
+            }
+            if(statisticSamePeriodDto.getPreviousYearTotal() == null) {
+                statisticSamePeriodDto.setPreviousYearTotal(0.0);
+            }
+
+            results.add(statisticSamePeriodDto);
+        }
+
+        return ResponseMapper.toDataResponseSuccess(results.stream()
+                .sorted(Comparator.comparingInt(StatictisSamePeriodDto::getMonth))
+                .collect(Collectors.toList()));
     }
 }
