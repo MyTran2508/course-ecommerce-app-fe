@@ -9,8 +9,7 @@ import com.programming.courseservice.service.ContentService;
 import com.programming.courseservice.util.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,7 +34,13 @@ public class ContentController extends BaseApiImpl<Content, ContentDto> {
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<ContentDto> add(ContentDto objectDTO) {
         return super.add(objectDTO);
+    }
+    @GetMapping("/get-by-course-id")
+    @ShowOpenAPI
+    public DataResponse<ContentDto> getByCourseId(@RequestParam("id") String id) {
+        return contentService.getByCourseId(id);
     }
 }
