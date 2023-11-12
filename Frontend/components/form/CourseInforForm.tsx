@@ -136,7 +136,7 @@ function CourseInforForm(props: CourseInfoProps) {
 
   const handleToast = (dataResult: DataResponse) => {
     if (dataResult?.statusCode === StatusCode.REQUEST_SUCCESS) {
-      showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_COURSE_FAIL);
+      showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_COURSE_SUCCESS);
     } else {
       showToast(ToastStatus.ERROR, ToastMessage.DATA_COURSE_EXISTED);
     }

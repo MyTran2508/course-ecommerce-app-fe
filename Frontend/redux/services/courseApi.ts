@@ -3,6 +3,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import {baseQueryWithToken } from "../baseQuery";
 import { url } from "inspector";
 import { Course } from "@/types/course.type";
+import Content from "@/types/content.type";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
@@ -59,7 +60,7 @@ export const courseApi = createApi({
          return {
            url: `/api/courses/course/update/${data.id}`,
            method: "PUT",
-           body:data
+           body: data
          }
       },
       invalidatesTags: () => [{type: "Course", id: "course"}]
@@ -76,7 +77,7 @@ export const courseApi = createApi({
       providesTags() {
         return [{type: "Course", id: "course"}]
       }
-     })
+    }),
   }),
 
 });

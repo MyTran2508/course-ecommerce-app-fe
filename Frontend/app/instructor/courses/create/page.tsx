@@ -1,7 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { setManageCourse } from "@/redux/features/courseSlice";
+import {
+  setManageCourse,
+  setParamCourseId,
+} from "@/redux/features/courseSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useCreateCourseMutation } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
@@ -19,9 +22,8 @@ function CreateCoursePage() {
   const router = useRouter();
 
   const handleChangeRouteManageCourse = (courseId: string | undefined) => {
-    // dispatch(setManageCourse(newCourse));
-    // const courseId = newCourse.id;
-    const manageCourseUrl = `/instructor/courses/${courseId}/manage/basics`;
+    dispatch(setParamCourseId(courseId as string));
+    const manageCourseUrl = `/instructor/courses/${courseId}/manage/content`;
     router.push(manageCourseUrl);
   };
 
