@@ -1,9 +1,12 @@
 "use client";
+import { useAppSelector } from "@/redux/hooks";
 import Link from "next/link";
 import React, { Fragment, useState } from "react";
 import { AiFillProfile, AiOutlineInfoCircle } from "react-icons/ai";
+import { MdOutlineDescription } from "react-icons/md";
 
 function SideBar() {
+  const id = useAppSelector((state) => state.courseReducer.courseId);
   const [activeLink, setActiveLink] = useState<number>(0);
 
   const handleLinkClick = (index: number) => {
@@ -20,7 +23,7 @@ function SideBar() {
             </div>
             <nav className="flex flex-col w-max text-md">
               <Link
-                href="/instructor/courses/manage/basics"
+                href={`/instructor/courses/${id}/manage/content`}
                 className={`p-2 hover:bg-gray-300 flex gap-2 mb-2 hover:rounded-md py-3 ${
                   activeLink === 0
                     ? "border border-l-2 border-y-0 border-r-0 border-red-600 "
@@ -29,19 +32,33 @@ function SideBar() {
                 onClick={() => handleLinkClick(0)}
               >
                 <div className="flex items-center gap-2">
-                  <AiOutlineInfoCircle />
-                  Thông Tin Khóa Học
+                  <MdOutlineDescription />
+                  Chi Tiết Khóa Học
                 </div>
               </Link>
-
               <Link
-                href="/instructor/courses/manage/curriculum"
+                href={`/instructor/courses/${id}/manage/basics`}
                 className={`p-2 hover:bg-gray-300 flex gap-2 mb-2 hover:rounded-md py-3 ${
                   activeLink === 1
                     ? "border border-l-2 border-y-0 border-r-0 border-red-600 "
                     : "border border-l-2 border-y-0 border-r-0 border-white"
                 }`}
                 onClick={() => handleLinkClick(1)}
+              >
+                <div className="flex items-center gap-2">
+                  <AiOutlineInfoCircle />
+                  Thông Tin Khóa Học
+                </div>
+              </Link>
+
+              <Link
+                href={`/instructor/courses/${id}/manage/curriculum`}
+                className={`p-2 hover:bg-gray-300 flex gap-2 mb-2 hover:rounded-md py-3 ${
+                  activeLink === 2
+                    ? "border border-l-2 border-y-0 border-r-0 border-red-600 "
+                    : "border border-l-2 border-y-0 border-r-0 border-white"
+                }`}
+                onClick={() => handleLinkClick(2)}
               >
                 <div className="flex items-center gap-2">
                   <AiFillProfile />

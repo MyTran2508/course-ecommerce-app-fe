@@ -20,30 +20,77 @@ import { Topic, Language, Level } from "@/utils/data";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setStatusSaveCourse } from "@/redux/features/courseSlice";
 import {
-  useCreateCourseMutation,
+  useLoadFileFromCloudQuery,
+  useUpdateCourseByIdMutation,
   useUploadCourseImageMutation,
   useUploadCourseVideoMutation,
 } from "@/redux/services/courseApi";
-import { FileImage } from "lucide-react";
 import { DataResponse } from "@/types/response.type";
 import { Course } from "@/types/course.type";
-import { isFulfilled } from "@reduxjs/toolkit";
 import showToast from "@/utils/showToast";
 import { StatusCode, ToastMessage, ToastStatus } from "@/utils/resources";
 
 const formSchema = formCourseInformationSchema;
 
-function CourseInforForm(props: any) {
+interface CourseInfoProps {
+  course: Course;
+}
+
+const handleSetDefaultValueFrom = (course: any) => {
+  return {
+    name: course.name,
+    subTitle: course.subTitle,
+    price: course.price,
+    level: course.level.id,
+    language: course.language.id,
+    topic: course.topic.id,
+    urlCourseImages: course.urlCourseImages ? course.urlCourseImages : "",
+    urlPromotionVideos: course.urlPromotionVideos
+      ? course.urlPromotionVideos
+      : "",
+  };
+};
+
+function CourseInforForm(props: CourseInfoProps) {
+  const { course } = props;
   const formRef = useRef<HTMLFormElement>(null);
   const [imageFile, setImageFile] = useState<File>();
   const [videoFile, setVideoFile] = useState<File>();
+  const [imageUrl, setImageUrl] = useState<string>();
+  const [videoUrl, setVideoUrl] = useState<string>();
   const saveStatus = useAppSelector(
     (state) => state.courseReducer.saveCourseStatus
+  );
+
+  const email = useAppSelector((state) => state.userReducer.email);
+  const [defaultValueForm, setDefaultValueFrom] = useState(
+    handleSetDefaultValueFrom(course)
   );
   const dispatch = useAppDispatch();
   const [uploadCourseImage] = useUploadCourseImageMutation();
   const [uploadCourseVideo] = useUploadCourseVideoMutation();
-  const [createCourse] = useCreateCourseMutation();
+  const { data: imageBase64, isSuccess: loadImageSuccess } =
+    useLoadFileFromCloudQuery(course ? (course.urlCourseImages as string) : "");
+  const { data: videoBase64, isSuccess: loadVideoSuccess } =
+    useLoadFileFromCloudQuery(
+      course.urlCourseImages ? (course.urlPromotionVideos as string) : ""
+    );
+  const [updateCourse] = useUpdateCourseByIdMutation();
+
+  useEffect(() => {
+    console.log(course);
+    setDefaultValueFrom(handleSetDefaultValueFrom(course));
+  }, [course]);
+
+  useEffect(() => {
+    if (loadImageSuccess) {
+      setImageUrl(imageBase64);
+    }
+
+    if (loadVideoSuccess) {
+      setVideoUrl(videoBase64);
+    }
+  }, [imageBase64, videoBase64]);
 
   const handleUploadFile = async () => {
     try {
@@ -74,10 +121,8 @@ function CourseInforForm(props: any) {
     }
   };
 
-  const handleCreateCourse = async (
-    newCourse: Omit<Course, "id" | "isApproved">
-  ) => {
-    await createCourse(newCourse)
+  const handleUpdateCourse = async (course: Omit<Course, "isApproved">) => {
+    await updateCourse(course)
       .unwrap()
       .then((fulfilled) => {
         console.log(fulfilled);
@@ -85,13 +130,13 @@ function CourseInforForm(props: any) {
       })
       .catch((error) => {
         console.log(error);
-        showToast(ToastStatus.ERROR, ToastMessage.CREATE_COURSE_FAIL);
+        showToast(ToastStatus.ERROR, ToastMessage.UPDATE_COURSE_FAIL);
       });
   };
 
   const handleToast = (dataResult: DataResponse) => {
     if (dataResult?.statusCode === StatusCode.REQUEST_SUCCESS) {
-      showToast(ToastStatus.SUCCESS, ToastMessage.CREATE_COURSE_SUCCESS);
+      showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_COURSE_SUCCESS);
     } else {
       showToast(ToastStatus.ERROR, ToastMessage.DATA_COURSE_EXISTED);
     }
@@ -107,18 +152,13 @@ function CourseInforForm(props: any) {
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      level: Level[0].id,
-      language: Language[0].id,
-      topic: Topic[0].id,
-      urlCourseImages: "",
-      urlPromotionVideos: "",
-    },
+    defaultValues: defaultValueForm,
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const { newUrlCourseImage, newUrlCourseVideo } = await handleUploadFile();
-    const newCourse: Omit<Course, "id" | "isApproved"> = {
+    const updateCourse: Omit<Course, "isApproved"> = {
+      id: course?.id,
       name: values.name,
       subTitle: values.subTitle,
       price: values.price,
@@ -133,10 +173,10 @@ function CourseInforForm(props: any) {
       },
       urlCourseImages: newUrlCourseImage,
       urlPromotionVideos: newUrlCourseVideo,
-      authorName: "",
+      authorName: email,
     };
 
-    handleCreateCourse(newCourse);
+    handleUpdateCourse(updateCourse);
   };
   return (
     <div>
@@ -216,7 +256,11 @@ function CourseInforForm(props: any) {
                 render={({ field }) => (
                   <FormItem className="mb-10 mt-3">
                     <FormControl>
-                      <MyCombobox data={Language} onChange={field.onChange} />
+                      <MyCombobox
+                        data={Language}
+                        onChange={field.onChange}
+                        value={parseInt(field.value)}
+                      />
                     </FormControl>
                     <FormMessage className="text-[10px]" />
                   </FormItem>
@@ -228,7 +272,11 @@ function CourseInforForm(props: any) {
                 render={({ field }) => (
                   <FormItem className="mb-10 mt-3">
                     <FormControl>
-                      <MyCombobox data={Level} onChange={field.onChange} />
+                      <MyCombobox
+                        data={Level}
+                        onChange={field.onChange}
+                        value={parseInt(field.value)}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -239,7 +287,11 @@ function CourseInforForm(props: any) {
                 render={({ field }) => (
                   <FormItem className="mb-10 mt-3">
                     <FormControl>
-                      <MyCombobox data={Topic} onChange={field.onChange} />
+                      <MyCombobox
+                        data={Topic}
+                        onChange={field.onChange}
+                        value={parseInt(field.value)}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -255,12 +307,24 @@ function CourseInforForm(props: any) {
                   </FormLabel>
                   <FormControl>
                     <div className="flex gap-6">
-                      <Image
-                        src={"/banner.jpg"}
-                        alt=""
-                        width={400}
-                        height={200}
-                      />
+                      {imageBase64 ? (
+                        <Image
+                          src={`data:image/png;base64,${imageBase64}`}
+                          alt=""
+                          width={400}
+                          height={200}
+                          className="w-[360px] h-[200px]"
+                        />
+                      ) : (
+                        <Image
+                          src={"/placeholder.jpg"}
+                          alt=""
+                          width={400}
+                          height={200}
+                          className="w-[360px] h-[200px]"
+                        />
+                      )}
+
                       <div className="flex justify-center flex-col">
                         <div className="mb-2 text-xs">
                           Tải lên hình ảnh khóa học của bạn ở đây
@@ -288,12 +352,21 @@ function CourseInforForm(props: any) {
                   <FormLabel className="text-black">Video Intro</FormLabel>
                   <FormControl>
                     <div className="flex gap-6">
-                      <Image
-                        src={"/banner.jpg"}
-                        alt=""
-                        width={400}
-                        height={200}
-                      />
+                      {videoBase64 ? (
+                        <video
+                          controls
+                          src={`data:video/mp4;base64, ${videoBase64}`}
+                          className="w-[360px] h-[200px]"
+                        />
+                      ) : (
+                        <Image
+                          src={"/placeholder.jpg"}
+                          alt=""
+                          width={400}
+                          height={200}
+                          className="w-[360px] h-[200px]"
+                        />
+                      )}
                       <div className="flex justify-center flex-col">
                         <div className="mb-2 text-xs">
                           Video quảng cáo của bạn là cách nhanh chóng và hấp dẫn

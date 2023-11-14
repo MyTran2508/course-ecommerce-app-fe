@@ -9,6 +9,7 @@ let initialState: User = {
     lastName: "",
     photos: "",
     email: "",
+    roles:null,
     password:"",
     telephone:"",
     addresses:[]

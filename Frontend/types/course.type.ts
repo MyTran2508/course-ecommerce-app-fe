@@ -1,16 +1,16 @@
 
 export interface Course {
-    id: string;
+    id?: string;
     name: string;
-    subTitle: string;
-    price: number;
+    subTitle?: string;
+    price?: number;
     level: Level;
     language: Language;
-    urlCourseImages: string;
-    urlPromotionVideos: string;
-    authorName: string;
+    urlCourseImages?: string;
+    urlPromotionVideos?: string;
+    authorName?: string;
     topic: Topic;
-    isApproved: boolean;
+    isApproved?: boolean;
 }
 
 export interface Level {

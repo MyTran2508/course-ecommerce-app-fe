@@ -6,11 +6,12 @@ import { ComboBoxType } from "@/utils/data";
 interface ComboBoxProps {
   data: ComboBoxType[];
   onChange: (value: string) => void;
+  value: number;
 }
 
 export default function MyCombobox(props: ComboBoxProps) {
-  const { data, onChange } = props;
-  const [selectedData, setSelectedData] = useState(data[0]);
+  const { data, onChange, value } = props;
+  const [selectedData, setSelectedData] = useState(data[value]);
 
   const handleOnChange = (data: ComboBoxType) => {
     setSelectedData(data);

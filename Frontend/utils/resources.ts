@@ -34,6 +34,10 @@ export enum ToastMessage {
   CREATE_COURSE_SUCCESS = "Thêm Thông Tin Khóa Học Thành Công",
   CREATE_COURSE_FAIL = "Thêm Thông Tin Khóa Học Thất Bại",
   DATA_COURSE_EXISTED = "Tên Khóa Học Đã Tồn Tại",
+  UPDATE_COURSE_SUCCESS = "Cập Nhật Thông Tin Khóa Học Thành Công",
+  UPDATE_COURSE_FAIL = "Cập Nhật Thông Tin Khóa Học Thất Bại",
+  UPDATE_CONTENT_SUCCESS = "Cập Nhật Thông Tin Chi Tiết Thành Công",
+  UPDATE_CONTENT_FAIL = "Cập Nhật Thông Tin Chi Tiết Thất Bại",
 }
 
 export enum Role {
@@ -45,3 +49,8 @@ export enum Role {
 export enum ApiResource {
 
 } 
+export enum CourseDescriptionField {
+  REQUIREMENT = "REQUIREMENT",
+  DETAIL = "DETAIL",
+  TARGET_CONSUMER = "TARGET_CONSUMER"
+}
