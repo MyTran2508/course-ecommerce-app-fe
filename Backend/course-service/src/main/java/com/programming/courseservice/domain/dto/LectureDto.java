@@ -12,4 +12,5 @@ public class LectureDto {
     private Integer ordinalNumber;
     private String name;
     private String url;
+    private Long videoDuration;
 }

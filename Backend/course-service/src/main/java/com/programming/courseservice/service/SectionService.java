@@ -9,6 +9,7 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseService;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.dto.SectionDto;
 import com.programming.courseservice.domain.mapper.SectionMapper;
 import com.programming.courseservice.domain.persistent.entity.Section;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -83,4 +85,15 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
                 .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
                 .body(resource);
     }
+
+//    public List<LectureDto> getVideoDuration(List<LectureDto> lectureDtos) {
+//        for (LectureDto lectureDto: lectureDtos) {
+//            if(lectureDto.getVideoDuration() == null) {
+//                Long duration = storageS3Service.getVideoDuration(lectureDto.getUrl());
+//                lectureDto.setVideoDuration(duration);
+//                System.out.println(duration);
+//            }
+//        }
+//        return lectureDtos;
+//    }
 }
