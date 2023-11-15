@@ -13,6 +13,7 @@ import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.dto.SectionDto;
 import com.programming.courseservice.domain.mapper.SectionMapper;
 import com.programming.courseservice.domain.persistent.entity.Section;
+import com.programming.courseservice.repository.LectureRepository;
 import com.programming.courseservice.repository.SectionRepository;
 import com.programming.courseservice.util.FileUtils;
 import com.programming.courseservice.util.constant.S3Constrant;
@@ -33,6 +34,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SectionService extends BaseServiceImpl<Section, SectionDto> {
     private final SectionRepository sectionRepository;
+    private final LectureRepository lectureRepository;
     private final SectionMapper sectionMapper;
     private final StorageS3Service storageS3Service;
     private final FileUtils fileUtils;
@@ -85,6 +87,18 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
                 .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
                 .body(resource);
     }
+
+    public SectionDto deleteLectures(SectionDto sectionDto) {
+        for (LectureDto lectureDto: sectionDto.getLectures()) {
+            if(lectureDto.getOrdinalNumber() < 1) {
+                storageS3Service.deleteFile(lectureDto.getUrl());
+                lectureRepository.deleteById(lectureDto.getId());
+                sectionDto.getLectures().remove(lectureDto);
+            }
+        }
+        return sectionDto;
+    }
+
 
 //    public List<LectureDto> getVideoDuration(List<LectureDto> lectureDtos) {
 //        for (LectureDto lectureDto: lectureDtos) {
