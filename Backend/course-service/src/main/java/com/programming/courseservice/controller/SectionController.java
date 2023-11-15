@@ -3,6 +3,7 @@ package com.programming.courseservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseService;
+import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.dto.SectionDto;
 import com.programming.courseservice.domain.persistent.entity.Section;
 import com.programming.courseservice.service.SectionService;
@@ -34,12 +35,16 @@ public class SectionController extends BaseApiImpl<Section, SectionDto> {
     @Override
     @ShowOpenAPI
     public DataResponse<SectionDto> add(SectionDto objectDTO) {
+//        List<LectureDto> lectureDtos = sectionService.getVideoDuration(objectDTO.getLectures());
+//        objectDTO.setLectures(lectureDtos);
         return super.add(objectDTO);
     }
 
     @Override
     @ShowOpenAPI
     public DataResponse<SectionDto> update(SectionDto objectDTO, String id) {
+//        List<LectureDto> lectureDtos = sectionService.getVideoDuration(objectDTO.getLectures());
+//        objectDTO.setLectures(lectureDtos);
         return super.update(objectDTO, id);
     }
 

@@ -16,16 +16,16 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Section extends BaseModel {
+    @Column(name = "ordinal_number")
+    private Integer ordinalNumber;
+
     @Column(nullable = false)
     private String name;
 
     @OneToMany(targetEntity = Lecture.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_lecture_section"))
+    @OrderBy("ordinalNumber ASC")
     private List<Lecture> lectures;
-
-    @OneToMany(targetEntity = Document.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_document_section"))
-    private List<Document> documents;
 
     @ManyToOne
     @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_section_content"))

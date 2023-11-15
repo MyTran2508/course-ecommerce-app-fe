@@ -20,6 +20,7 @@ import java.util.Set;
 )
 public class Content extends BaseModel {
     @OneToMany(mappedBy = "content", fetch = FetchType.EAGER)
+    @OrderBy("ordinalNumber ASC")
     private List<Section> sections;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
