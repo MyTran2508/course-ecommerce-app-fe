@@ -67,7 +67,7 @@ const handleSetDefaultValueForm = (content: Content | null) => {
     let requirementsFields: string[] = ["requirement"];
     let detailsFields: string[] = ["detail"];
     let targetConsumersFields: string[] = ["targetConsumer"];
-    let fieldName: string = "";
+
     requirements.forEach((requirement, index) => {
       if (index !== 0) {
         const fieldName = `requirement${index + 1}`;
