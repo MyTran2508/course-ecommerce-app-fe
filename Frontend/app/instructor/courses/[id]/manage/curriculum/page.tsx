@@ -1,8 +1,34 @@
 "use client";
-import CourseSessionForm from "@/components/form/CourseSessionForm";
-import React from "react";
+import Loading from "@/app/(root)/user/personal/loading";
+import CourseSectionForm from "@/components/form/CourseSectionForm";
+import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
+import Content from "@/types/content.type";
+import { Section } from "@/types/section.type";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import _ from "lodash";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
+import showToast from "@/utils/showToast";
 
 function CurriculumPage() {
+  const router = useRouter();
+  const param = useParams();
+  const courseId = param.id as string;
+  const { data: contentData, isLoading: isContentLoading } =
+    useGetContentByCourseIdQuery(courseId);
+  let sections: Section[] = [];
+
+  if (isContentLoading) return <Loading />;
+
+  if (!(contentData?.data as Content).id) {
+    showToast(ToastStatus.WARNING, ToastMessage.CHECK_CREATE_CONTENT);
+    router.push(`/instructor/courses/${courseId}/manage/content`);
+  } else {
+    sections = _.cloneDeep(
+      (contentData?.data as Content).sections
+    ) as Section[];
+  }
+
   return (
     <div className="mt-10 shadow-xl w-full mx-5 ">
       <div className="my-5 mx-5 flex items-center font-bold text-xl">
@@ -22,7 +48,10 @@ function CurriculumPage() {
         </div>
       </div>
       <div className="mt-10 ml-10">
-        <CourseSessionForm />
+        <CourseSectionForm
+          contentId={(contentData?.data as Content).id as string}
+          sections={sections}
+        />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 import Loading from "@/app/(root)/user/personal/loading";
 import CourseContentForm from "@/components/form/CourseContentForm";
+import { setContentId } from "@/redux/features/contentSlice";
 import { setParamCourseId } from "@/redux/features/courseSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
@@ -16,6 +17,7 @@ function CourseContentPage() {
   const { data, isLoading } = useGetContentByCourseIdQuery(courseId);
 
   if (isLoading) return <Loading />;
+  dispatch(setContentId((data?.data as Content).id as string));
 
   return (
     <div className="mt-10 shadow-xl w-full mx-5 ">

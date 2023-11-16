@@ -1,4 +1,5 @@
 import { Cart } from "@/types/cart.type";
+import { Lecture, Section } from "@/types/section.type";
 import path from "path";
 
 export const totalPrice = (carts: Cart[]) => {
@@ -28,3 +29,33 @@ export const isURLValid = (url: string) => {
     return false;
   }
 };
+
+export const checkFileExtension = (file: File):boolean =>{
+  const allowedExtensions: string[] = ['mp4'];
+  const fileName: string = file.name;
+  const fileExtension: string = fileName.split('.').pop()!.toLowerCase();
+  return allowedExtensions.includes(fileExtension);
+}
+
+export const handleGetDurationFormVideo = async (file: File) => {
+    if (checkFileExtension(file)) {
+      const videoElement = document.createElement("video");
+      const videoURL = URL.createObjectURL(file);
+      videoElement.src = videoURL;
+
+      await new Promise<void>((resolve) => {
+        videoElement.addEventListener("loadedmetadata", () => {
+          resolve();
+        });
+      });
+
+      return Math.round(videoElement.duration);
+    }
+
+    return 0;
+};
+  
+export const handleCountObject = (array: Lecture[] | Section[]): number => {
+  const filteredArray = array.filter(item => 'ordinalNumber' in item && item.ordinalNumber !== -1);
+  return filteredArray.length;
+}

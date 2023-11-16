@@ -38,6 +38,7 @@ export enum ToastMessage {
   UPDATE_COURSE_FAIL = "Cập Nhật Thông Tin Khóa Học Thất Bại",
   UPDATE_CONTENT_SUCCESS = "Cập Nhật Thông Tin Chi Tiết Thành Công",
   UPDATE_CONTENT_FAIL = "Cập Nhật Thông Tin Chi Tiết Thất Bại",
+  CHECK_CREATE_CONTENT = "Vui Lòng Hoàn Thành Chi Tiết Khóa Học",
 }
 
 export enum Role {
@@ -49,8 +50,20 @@ export enum Role {
 export enum ApiResource {
 
 } 
+
 export enum CourseDescriptionField {
   REQUIREMENT = "REQUIREMENT",
   DETAIL = "DETAIL",
   TARGET_CONSUMER = "TARGET_CONSUMER"
+}
+
+export enum CourseSessionField {
+  SESSION = "SESSION",
+  LECTURE = "LECTURE",
+}
+
+export enum CourseLectureField {
+  URL = "url",
+  NAME = "name",
+  FILENAME = "fileName"
 }

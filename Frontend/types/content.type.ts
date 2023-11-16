@@ -1,9 +1,11 @@
 import { Course } from "./course.type";
+import { Section } from "./section.type";
 
 export default interface Content {
     id?: string,
     description: Description,
     course: Pick<Course, "id">
+    sections?: Section[]
 }
 
 interface Description {

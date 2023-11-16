@@ -6,5 +6,5 @@ export interface DataResponse {
     timestamp: number,
     statusCode: number,
     statusMessage: string,
-    data: string | User | Course | Content
+    data: string | string[] | User | Course | Content
 }
