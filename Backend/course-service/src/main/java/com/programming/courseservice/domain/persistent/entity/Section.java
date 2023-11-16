@@ -2,7 +2,9 @@ package com.programming.courseservice.domain.persistent.entity;
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +27,7 @@ public class Section extends BaseModel {
     @OneToMany(targetEntity = Lecture.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_lecture_section"))
     @OrderBy("ordinalNumber ASC")
-    private List<Lecture> lectures;
+    private List<Lecture> lectures = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_section_content"))

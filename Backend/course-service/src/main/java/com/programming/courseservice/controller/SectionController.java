@@ -45,7 +45,8 @@ public class SectionController extends BaseApiImpl<Section, SectionDto> {
     public DataResponse<SectionDto> update(SectionDto objectDTO, String id) {
 //        List<LectureDto> lectureDtos = sectionService.getVideoDuration(objectDTO.getLectures());
 //        objectDTO.setLectures(lectureDtos);
-        return super.update(objectDTO, id);
+        SectionDto sectionDtos = sectionService.deleteLectures(objectDTO);
+        return super.update(sectionDtos, id);
     }
 
     @PostMapping("/upload")
