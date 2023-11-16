@@ -2,11 +2,12 @@ package com.progamming.orderservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.model.BaseMapper;
+import com.main.progamming.common.model.BaseMapperImpl;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.progamming.orderservice.domain.dto.OrdersDto;
+import com.progamming.orderservice.domain.dto.OrderDto;
 import com.progamming.orderservice.domain.mapper.OrderMapper;
-import com.progamming.orderservice.domain.persistent.entity.Orders;
+import com.progamming.orderservice.domain.persistent.entity.Order;
 import com.progamming.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,27 +18,27 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService extends BaseServiceImpl<Orders, OrdersDto> {
-    private final BaseRepository orderRepository;
-    private final BaseMapper orderMapper;
+public class OrderService extends BaseServiceImpl<Order, OrderDto> {
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
     @Override
-    protected BaseRepository<Orders> getBaseRepository() {
+    protected BaseRepository<Order> getBaseRepository() {
         return orderRepository;
     }
 
     @Override
-    protected BaseMapper<Orders, OrdersDto> getBaseMapper() {
+    protected BaseMapperImpl<Order, OrderDto> getBaseMapper() {
         return orderMapper;
     }
 
     @Override
-    protected Page<OrdersDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
+    protected Page<OrderDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         return null;
     }
 
     @Override
-    protected List<OrdersDto> getListSearchResults(String keyword) {
+    protected List<OrderDto> getListSearchResults(String keyword) {
         return null;
     }
 }

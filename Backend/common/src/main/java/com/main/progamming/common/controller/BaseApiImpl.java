@@ -14,6 +14,7 @@ import java.util.List;
 
 public abstract class BaseApiImpl<E, D> implements BaseApi<E, D> {
     protected abstract BaseService<E, D> getBaseService();
+
     @Override
     @PostMapping(ApiResources.ADD)
     public DataResponse<D> add(D objectDTO) {

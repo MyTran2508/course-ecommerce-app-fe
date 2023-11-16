@@ -41,7 +41,7 @@ const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
   };
 };
 
-function PersonalForm(props: PersonalProps) {
+async function PersonalForm(props: PersonalProps) {
   const { userInfor } = props;
   const [allowInput, setAllowInput] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -68,11 +68,11 @@ function PersonalForm(props: PersonalProps) {
     }
   }, [allowInput]);
 
+  useEffect(() => {}, [updateUserResult]);
   useEffect(() => {
     setDefaultValueFrom(handleSetDefaultValueFrom(userInfor));
     handleImageError(false);
     setCurrentAvatar(avatarData);
-    console.log(currentAvatar);
   }, [userInfor, avatarData]);
 
   const handleClickEdit = () => {

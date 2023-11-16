@@ -1,24 +1,24 @@
 package com.progamming.orderservice.domain.mapper;
 
 import com.main.progamming.common.model.BaseMapperImpl;
-import com.progamming.orderservice.domain.dto.OrdersDto;
-import jakarta.persistence.criteria.Order;
+import com.progamming.orderservice.domain.dto.OrderDto;
+import com.progamming.orderservice.domain.persistent.entity.Order;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrderMapper extends BaseMapperImpl<Order, OrdersDto> {
+public class OrderMapper extends BaseMapperImpl<Order, OrderDto> {
     public OrderMapper(ModelMapper modelMapper) {
         super(modelMapper);
     }
 
     @Override
     protected Class<Order> getEntityClass() {
-        return null;
+        return Order.class;
     }
 
     @Override
-    protected Class<OrdersDto> getDtoClass() {
-        return null;
+    protected Class<OrderDto> getDtoClass() {
+        return OrderDto.class;
     }
 }

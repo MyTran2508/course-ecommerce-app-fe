@@ -77,13 +77,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @GetMapping("/popular/{topic-id}/{size}")
-    public ListResponse<CourseDto> getPopularCourse(@PathVariable("topic-id") String topicId, @PathVariable("size") Integer size) {
+    public ListResponse<List<CourseDto>> getPopularCourse(@PathVariable("topic-id") String topicId, @PathVariable("size") Integer size) {
         return courseService.getPopularCourse(topicId, size);
-    }
-
-    @GetMapping("/favorites/{topic-id}/{size}")
-    public ListResponse<CourseDto> getFavoritesCourse(@PathVariable("topic-id") String topicId, @PathVariable("size") Integer size) {
-        return courseService.getFavoritesCourse(topicId, size);
     }
 
     @PostMapping("/filter")

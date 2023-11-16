@@ -1,4 +1,3 @@
-import { Action } from './../../utils/resources';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Cart } from "@/types/cart.type";
 import { v4 as uuidv4 } from "uuid";

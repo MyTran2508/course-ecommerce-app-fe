@@ -17,7 +17,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDto userDto = userApi.getByUsername(username).getData();
-        userDto.getRoles().forEach(roleDto -> System.out.println(roleDto.getId()));
         if(userDto != null) {
             return new CustomUserDetails(userDto.getUsername(), userDto.getPassword(), userDto.getRoles());
         } else {

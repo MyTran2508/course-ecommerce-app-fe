@@ -1,0 +1,127 @@
+package com.programming.userservice.service;
+
+import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.message.StatusCode;
+import com.main.progamming.common.model.BaseMapperImpl;
+import com.main.progamming.common.repository.BaseRepository;
+import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ResponseMapper;
+import com.main.progamming.common.service.BaseServiceImpl;
+import com.programming.userservice.communication.OpenFeign.CourseAccessApi;
+import com.programming.userservice.domain.dto.*;
+import com.programming.userservice.domain.mapper.OrderMapper;
+import com.programming.userservice.domain.persistent.entity.Order;
+import com.programming.userservice.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class OrderService extends BaseServiceImpl<Order, OrderDto> {
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
+    private final CourseAccessApi courseAccessApi;
+
+    @Override
+    protected BaseRepository<Order> getBaseRepository() {
+        return orderRepository;
+    }
+
+    @Override
+    protected BaseMapperImpl<Order, OrderDto> getBaseMapper() {
+        return orderMapper;
+    }
+
+    @Override
+    protected Page<OrderDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    protected List<OrderDto> getListSearchResults(String keyword) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public DataResponse<OrderDto> create(OrderDto dto) {
+        DataResponse<OrderDto> response = super.create(dto);
+        if(response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
+
+            // Setup to call API add course access
+            String userId = response.getData().getUser().getId();
+            List<OrderItemDto> orderItemDtos = response.getData().getOrderItems();
+            List<String> courseIds = orderItemDtos.stream()
+                    .map(OrderItemDto::getCourseId)
+                    .collect(Collectors.toList());
+            CourseAccessListDto courseAccessListDto = new CourseAccessListDto(userId, courseIds);
+
+            // Call API
+            courseAccessApi.addList(courseAccessListDto);
+        }
+        return response;
+    }
+
+    public DataResponse<List<MonthlyStatisticDto>> getMonthlySales(int targetYear) {
+        List<Object[]> totalPriceByMonth = orderRepository.getTotalPriceByMonth(targetYear);
+        List<MonthlyStatisticDto> monthlyStatisticDtos = new ArrayList<>();
+
+        for(Object[] objects: totalPriceByMonth) {
+            MonthlyStatisticDto monthlyStatisticDto = new MonthlyStatisticDto((Integer) objects[0], (Double) objects[1]);
+            monthlyStatisticDtos.add(monthlyStatisticDto);
+        }
+
+        for (int i = 1; i <= 12; i++) {
+            int finalI = i;
+            if(!monthlyStatisticDtos.stream().anyMatch(item -> item.getMonth() == finalI)) {
+                monthlyStatisticDtos.add(new MonthlyStatisticDto(i, 0.0));
+            }
+        }
+
+        return ResponseMapper.toDataResponseSuccess(monthlyStatisticDtos.stream()
+                .sorted(Comparator.comparingInt(MonthlyStatisticDto::getMonth))
+                .collect(Collectors.toList()));
+    }
+
+    public DataResponse<List<StatictisSamePeriodDto>> getSalesInSamePeriod(int targetYear) {
+        List<Object[]> totalPriceByMonthTargetYear = orderRepository.getTotalPriceByMonth(targetYear);
+        List<Object[]> totalPriceByMonthPreviousYear = orderRepository.getTotalPriceByMonth(targetYear - 1);
+        List<StatictisSamePeriodDto> results = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            StatictisSamePeriodDto statisticSamePeriodDto = new StatictisSamePeriodDto();
+            statisticSamePeriodDto.setMonth(i);
+
+            for (Object[] objects: totalPriceByMonthTargetYear) {
+                if((Integer) objects[0] == i) {
+                    statisticSamePeriodDto.setTargetYearTotal((Double) objects[1]);
+                }
+            }
+            if(statisticSamePeriodDto.getTargetYearTotal() == null) {
+                statisticSamePeriodDto.setTargetYearTotal(0.0);
+            }
+
+            for (Object[] objects: totalPriceByMonthPreviousYear) {
+                if((Integer) objects[0] == i) {
+                    statisticSamePeriodDto.setPreviousYearTotal((Double) objects[1]);
+                }
+            }
+            if(statisticSamePeriodDto.getPreviousYearTotal() == null) {
+                statisticSamePeriodDto.setPreviousYearTotal(0.0);
+            }
+
+            results.add(statisticSamePeriodDto);
+        }
+
+        return ResponseMapper.toDataResponseSuccess(results.stream()
+                .sorted(Comparator.comparingInt(StatictisSamePeriodDto::getMonth))
+                .collect(Collectors.toList()));
+    }
+}

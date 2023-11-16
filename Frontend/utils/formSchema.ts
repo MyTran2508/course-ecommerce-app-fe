@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { phoneNumberRegExp, urlRegex } from "./regex";
+import { newLineRegex, phoneNumberRegExp, urlRegex } from "./regex";
 
 export const formSignUpSchema = z.object({
   username: z.string().min(6, "Username must contain at least 6 character(s)"),
@@ -76,3 +76,27 @@ export const formForgotPasswordSchema = z.object({
 export const formValidateEmailSchema = z.object({
   email: formSignUpSchema.shape.email,
 }).strict()
+
+
+export const formCourseInformationSchema = z.object({
+  name: z.string().min(1).max(255),
+  subTitle: z.string().min(1).max(255),
+  price: z.coerce.number(),
+  level: z.string().max(1),
+  language: z.string().max(1),
+  topic: z.string().max(1),
+  urlCourseImages: z.string(),
+  urlPromotionVideos: z.string(),
+});
+
+export const formCourseContentSchema = z.object({
+  requirement: z.string().min(1).refine((value) => !newLineRegex.test(value), {
+    message: "Vui Lòng Không Điền /n",
+  }),
+  detail:z.string().min(1).refine((value) => !newLineRegex.test(value), {
+    message: "Vui Lòng Không Điền /n",
+  }),
+  targetConsumer: z.string().min(1).refine((value) => !newLineRegex.test(value), {
+    message: "Vui Lòng Không Điền /n",
+  }),
+})

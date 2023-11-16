@@ -15,16 +15,22 @@ import com.programming.courseservice.domain.dto.CourseDto;
 import com.programming.courseservice.domain.dto.SearchCourseDto;
 import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.Course;
+import com.programming.courseservice.domain.persistent.entity.Language;
+import com.programming.courseservice.domain.persistent.entity.Level;
+import com.programming.courseservice.domain.persistent.entity.Topic;
 import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.repository.LanguageRepository;
 import com.programming.courseservice.repository.LevelRepository;
 import com.programming.courseservice.repository.TopicRepository;
 import com.programming.courseservice.util.constant.S3Constrant;
+import jakarta.ws.rs.core.Application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,12 +46,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     private final CourseRepository courseRepository;
-    private final LevelRepository levelRepository;
+    private final CourseMapper courseMapper;
+    private final StorageS3Service storageS3Service;
     private final LanguageRepository languageRepository;
     private final TopicRepository topicRepository;
-    private final CourseMapper courseMapper;
-    private final StorageService storageService;
-    private final StorageS3Service storageS3Service;
+    private final LevelRepository levelRepository;
     @Override
     protected BaseRepository<Course> getBaseRepository() {
         return courseRepository;
@@ -66,30 +71,47 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return null;
     }
 
-    public ListResponse<List<CourseDto>> getNewestCourse(String topicId, Integer size) {
-        Sort sortCourse = Sort.by(Sort.Direction.DESC, "created");
-        List<Course> courseList = courseRepository.getCourseByTopicId(topicId, sortCourse);
-        List<CourseDto> resultList = courseList.stream()
-                .limit(size).map((course) -> courseMapper.entityToDto(course))
-                .collect(Collectors.toList());
-        return ResponseMapper.toListResponseSuccess(resultList);
-    }
-
     @Override
     public ListResponse<CourseDto> getAll() {
         return super.getAll();
     }
 
-    public ListResponse<CourseDto> getPopularCourse(String topicId, Integer size) {
-        return null;
+    public ListResponse<List<CourseDto>> getNewestCourse(String topicId, int size) {
+        Sort sortCourse = Sort.by(Sort.Direction.DESC, "created");
+        Pageable pageable = PageRequest.of(0, size, sortCourse);
+
+        List<CourseDto> courseDtos = courseRepository.getCourseByTopicId(topicId, pageable)
+                .stream()
+                .map((course -> courseMapper.entityToDto(course)))
+                .collect(Collectors.toList());
+
+        return ResponseMapper.toListResponseSuccess(courseDtos);
     }
 
-    public ListResponse<CourseDto> getFavoritesCourse(String topicId, Integer size) {
-        return null;
+    public ListResponse<List<CourseDto>> getPopularCourse(String topicId, Integer size) {
+        Pageable pageable = PageRequest.of(0, size);
+
+        List<CourseDto> courseDtos = courseRepository.findPopularCourses(topicId, pageable)
+                .stream()
+                .map((course -> courseMapper.entityToDto(course)))
+                .collect(Collectors.toList());
+
+        return ResponseMapper.toListResponseSuccess(courseDtos);
     }
 
     public ListResponse<CourseDto> getFiltedCourse(SearchCourseDto searchCourseDto) {
-        return null;
+        Pageable pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize());
+        List<String> levelIds = searchCourseDto.getLevelIds() == null ? levelRepository.findAll().stream().map(Level::getId).toList() : searchCourseDto.getLevelIds();
+        List<String> languageIds = searchCourseDto.getLanguageIds() == null ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
+        List<String> topicIds = searchCourseDto.getTopicIds() == null ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
+        String keyword = searchCourseDto.getKeyword();
+
+        Page<Course> courses = courseRepository.filterCourse(levelIds,
+                languageIds, topicIds, keyword, pageable);
+        Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+
+        return ResponseMapper.toPagingResponseSuccess(courseDtos);
+
     }
 
     @Override
@@ -116,9 +138,10 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     public ResponseEntity<ByteArrayResource> loadFile(String path) {
         byte[] data = storageS3Service.downloadFile(path);
-        ByteArrayResource resource = new ByteArrayResource(data);
+        byte[] dataBase64 = Base64.getEncoder().encode(data);
+        ByteArrayResource resource = new ByteArrayResource(dataBase64);
         return ResponseEntity.ok()
-                .contentLength(data.length)
+                .contentLength(dataBase64.length)
                 .header("Content-type", "application/octet-stream")
                 .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
                 .body(resource);

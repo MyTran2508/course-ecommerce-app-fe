@@ -19,8 +19,8 @@ import java.util.Set;
         name = "content"
 )
 public class Content extends BaseModel {
-    @OneToMany(targetEntity = Section.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "content_id", foreignKey = @ForeignKey(name = "fk_section_content"))
+    @OneToMany(mappedBy = "content", fetch = FetchType.EAGER)
+    @OrderBy("ordinalNumber ASC")
     private List<Section> sections;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
