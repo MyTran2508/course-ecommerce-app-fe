@@ -156,7 +156,6 @@ function CourseSectionForm(props: CourseSectionProps) {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(lectureFiles);
     if (checkEmptyNames()) {
       if (contentId) {
         const urlList = await handleUploadFiles();
@@ -183,13 +182,14 @@ function CourseSectionForm(props: CourseSectionProps) {
       if (section.ordinalNumber !== -1) {
         section.ordinalNumber = countSection;
         countSection++;
+
+        section.lectures.forEach((lecture) => {
+          if (lecture.ordinalNumber !== -1) {
+            lecture.ordinalNumber = countLecture;
+            countLecture++;
+          }
+        });
       }
-      section.lectures.forEach((lecture) => {
-        if (lecture.ordinalNumber !== -1) {
-          lecture.ordinalNumber = countLecture;
-          countLecture++;
-        }
-      });
 
       if (section.id) {
         handleUpdateSection(section);
