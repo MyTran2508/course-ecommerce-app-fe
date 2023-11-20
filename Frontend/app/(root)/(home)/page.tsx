@@ -1,6 +1,11 @@
 "use client";
 import CourseCard from "@/components/CourseCard";
+import { useGetNewestCourseQuery } from "@/redux/services/courseApi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
+import Loading from "../user/personal/loading";
+import { Course } from "@/types/course.type";
+import { course } from "@/redux/features/courseSlice";
+import Checkout from "@/components/PayPal";
 
 export default function Home() {
   const [text] = useTypewriter({
@@ -13,24 +18,28 @@ export default function Home() {
     delaySpeed: 3000,
     deleteSpeed: 20,
   });
+  let newestCourseList: Course[] = [];
+  const { data, isLoading } = useGetNewestCourseQuery({ topicId: 0, size: 4 });
+  if (isLoading) return <Loading />;
+
+  if (data) {
+    newestCourseList = data?.data as Course[];
+  }
+
   const renderItem = () => {
     return (
-      <div className="grid xl:grid-cols-4 gap-2 md:grid-cols-2">
-        <div>
-          <CourseCard />
-        </div>
-        <div>
-          <CourseCard />
-        </div>
-        <div>
-          <CourseCard />
-        </div>
-        <div>
-          <CourseCard />
+      <div className="flex justify-center items-center">
+        <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
+          {newestCourseList.map((course) => (
+            <div key={course.id}>
+              <CourseCard course={course} />
+            </div>
+          ))}
         </div>
       </div>
     );
   };
+
   return (
     <main className=" max-w-screen-2xl w-full mx-auto flex-col">
       <section className="nav-padding w-full flex-center">

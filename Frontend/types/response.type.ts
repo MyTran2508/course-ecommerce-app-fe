@@ -6,5 +6,14 @@ export interface DataResponse {
     timestamp: number,
     statusCode: number,
     statusMessage: string,
-    data: string | string[] | User | Course | Content
+    data: string | string[] | User | Course | Content | Course[] | boolean
+}
+
+export interface ListResponse {
+    timestamp: number,
+    statusCode: number,
+    statusMessage: string,
+    totalRecords: number,
+    totalPages: number,
+    data:  Course[]
 }

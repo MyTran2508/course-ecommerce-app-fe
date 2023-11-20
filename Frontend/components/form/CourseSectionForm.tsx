@@ -439,6 +439,7 @@ function CourseSectionForm(props: CourseSectionProps) {
                           <Input
                             className="w-70 my-5 mx-5"
                             type="File"
+                            accept=".mp4, .pdf"
                             placeholder="Video URL"
                             onChange={(event) =>
                               handleInputChange(

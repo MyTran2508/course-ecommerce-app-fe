@@ -6,11 +6,13 @@ import { User } from "@/types/user.type";
 import React, { Suspense, useEffect } from "react";
 import Loading from "./loading";
 import { useGetByUserNameQuery } from "@/redux/services/userApi";
+import { useAppSelector } from "@/redux/hooks";
 
 function PagePersonal() {
-  let user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = useAppSelector((state) => state.persistedReducer.authReducer);
+  // let user = JSON.parse(localStorage.getItem("user") || "{}");
   const { data, error, isLoading, isSuccess } = useGetByUserNameQuery(
-    user.username
+    user.username as string
   );
 
   if (isLoading) return <Loading />;

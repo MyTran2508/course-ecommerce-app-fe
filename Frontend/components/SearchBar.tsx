@@ -4,7 +4,9 @@ import SearchBarManufacturer from "./SearchBarManufacturer";
 
 function SearchBar() {
   const [manufacturer, setManufacturer] = useState("");
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    console.log(manufacturer);
+  };
 
   return (
     <form className="search-bar w-96" onSubmit={handleSubmit}>

@@ -1,15 +1,33 @@
+"use client";
 import CourseCard from "@/components/CourseCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import React, { useEffect } from "react";
+import { useAppSelector } from "@/redux/hooks";
+import { useGetCourseByUserIdQuery } from "@/redux/services/courseApi";
+import { Course } from "@/types/course.type";
+import React, { useEffect, useState } from "react";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 
 function MyCourses() {
-  return (
-    <div className="container mt-20">
-      <div className="font-bold text-2xl xs:text-[10px]"> Khóa Học Của Tôi</div>
+  const userId = useAppSelector(
+    (state) => state.persistedReducer.userReducer.id
+  );
+  const [courses, setCourses] = useState<Course[]>([]);
+  const { data: coursesData, isSuccess } = useGetCourseByUserIdQuery(userId);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setCourses(coursesData?.data as Course[]);
+    }
+  }, [coursesData]);
+
+  const renderCourse = () => {
+    return (
       <div className="grid grid-cols-4 xs:grid-cols-1">
-        <CourseCard myCourse={true} />
-        <CourseCard myCourse={true} />
+        {courses.map((course) => (
+          <div key={course.id}>
+            <CourseCard myCourse={true} course={course} />
+          </div>
+        ))}
         <div>
           <Card className="w-full max-w-fit border-0 !bg-transparent sm:max-w-[356px] m-8 border-spacing-3">
             <CardHeader className="flex-center flex-col gap-2.5 !p-0 hover:cursor-pointer">
@@ -31,6 +49,12 @@ function MyCourses() {
           </Card>
         </div>
       </div>
+    );
+  };
+  return (
+    <div className="container mt-20">
+      <div className="font-bold text-2xl xs:text-[10px]"> Khóa Học Của Tôi</div>
+      {renderCourse()}
     </div>
   );
 }

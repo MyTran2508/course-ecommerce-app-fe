@@ -26,6 +26,7 @@ export enum ToastMessage {
   LOGOUT_SUCCESS = "Đăng Xuất Thành Công",
   NOT_SELECT_PAYMENT = "Vui Lòng Chọn Phương Thức Thanh Toán",
   ADD_CART_SUCCESS = "Thêm Sản Phẩm Thành Công",
+  ADD_CART_DUPLICATE = "Sản Phẩm Đã Có Trong Giỏ Hàng",
   DELETE_CART_SUCCESS = "Xóa Sản Phẩm Thành Công",
   CHANGE_PASSWORD_SUCCESS = "Đổi Mật Khẩu Thành Công",
   CHANGE_PASSWORD_FAIL = "Mật Khẩu Không Chính Xác",
@@ -39,12 +40,14 @@ export enum ToastMessage {
   UPDATE_CONTENT_SUCCESS = "Cập Nhật Thông Tin Chi Tiết Thành Công",
   UPDATE_CONTENT_FAIL = "Cập Nhật Thông Tin Chi Tiết Thất Bại",
   CHECK_CREATE_CONTENT = "Vui Lòng Hoàn Thành Chi Tiết Khóa Học",
+  PAYMENT_SUCCESS = "Thanh Toán Thành Công",
+  PAYMENT_FAIL = "Thanh Toán Thất Bại",
 }
 
 export enum Role {
-  USER = "USER",
-  ADMIN = "ADMIN",
-  MANAGER = "MANAGER"
+  USER = "ROLE_USER",
+  ADMIN = "ROLE_ADMIN",
+  MANAGER = "ROLE_MANAGER"
 }
 
 export enum ApiResource {

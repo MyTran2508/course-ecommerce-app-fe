@@ -4,7 +4,7 @@ import { Section } from "./section.type";
 export default interface Content {
     id?: string,
     description: Description,
-    course: Pick<Course, "id">
+    course: Pick<Course, "id"> | Course
     sections?: Section[]
 }
 

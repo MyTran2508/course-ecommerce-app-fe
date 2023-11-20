@@ -1,10 +1,11 @@
 export interface Cart{
     id: string,
+    courseId?: string,
     image: string,
     nameCourse: string,
-    sections: number,
-    totalLength: number,
-    lectures: number,
+    totalSection: number,
+    totalDurationCourse: string,
+    totalLecture: number,
     price: number,
     checked: boolean
 
