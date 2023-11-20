@@ -48,4 +48,6 @@ public interface CourseRepository extends BaseRepository<Course> {
                               @Param("keyword") String keyword,
                               Pageable pageable);
 
+    @Query("select c from Course c, CourseAccess as ca where ca.userId = :userId and c.id = ca.course.id")
+    Page<Course> getCourseAccessByUserId(@Param("userId") String topicId, Pageable pageable);
 }

@@ -147,6 +147,12 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
                 .body(resource);
     }
 
+    public ListResponse<CourseDto> getCourseAccessByUserId(String userId) {
+        Pageable pageable = PageRequest.of(0,4);
+        Page<Course> courses = courseRepository.getCourseAccessByUserId(userId, pageable);
+        Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+        return ResponseMapper.toPagingResponseSuccess(courseDtos);
+    }
 
 //    @Transactional
 //    public DataResponse<String> uploadImages(MultipartFile[] files, String courseId, Integer defaultUrl) {

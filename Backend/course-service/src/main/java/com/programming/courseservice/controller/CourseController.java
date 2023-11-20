@@ -85,4 +85,9 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     public ListResponse<CourseDto> getFiltedCourse(@RequestBody SearchCourseDto searchCourseDto) {
         return courseService.getFiltedCourse(searchCourseDto);
     }
+
+    @GetMapping("/get-all-by-user-id")
+    public ListResponse<CourseDto> getAllCourseAccessByUserId(@RequestParam("userId") String userId) {
+        return courseService.getCourseAccessByUserId(userId);
+    }
 }
