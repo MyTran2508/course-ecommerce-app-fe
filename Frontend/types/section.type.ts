@@ -16,5 +16,5 @@ export interface Lecture {
   fileName: string;
   url: string;
   videoDuration?: number | 0;
-  isSuccess?: false;
+  isSuccess?: boolean;
 }

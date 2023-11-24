@@ -2,6 +2,7 @@ import { DataResponse, ListResponse } from "@/types/response.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {baseQueryWithToken } from "../baseQuery";
 import { Course } from "@/types/course.type";
+import { SearchCourseRequest } from "@/types/request.type";
 
 
 export const courseApi = createApi({
@@ -112,6 +113,15 @@ export const courseApi = createApi({
          }
       },
     }),
+    filterCourse: builder.mutation<ListResponse, SearchCourseRequest>({
+      query: (data: SearchCourseRequest) => {
+        return {
+          url: `/api/courses/course/filter`,
+          method: "POST",
+          body: data
+        }
+      }
+    })
   }),
 
 });
@@ -126,5 +136,6 @@ export const {
   useGetNewestCourseQuery,
   useGetCourseByUserIdQuery,
   useGetAllCourseQuery,
-  useGetCourseAccessQuery
+  useGetCourseAccessQuery,
+  useFilterCourseMutation
 } = courseApi;

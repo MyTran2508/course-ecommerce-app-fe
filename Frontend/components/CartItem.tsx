@@ -10,8 +10,6 @@ import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { Checkbox } from "./ui/checkbox";
 import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
 interface CartItemProps {
   cartItem: Cart;
 }

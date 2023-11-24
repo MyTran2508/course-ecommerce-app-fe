@@ -3,15 +3,13 @@ import { SearchManufacturerProps } from "@/types/ComponentProps";
 import { Course } from "@/types/course.type";
 import { Combobox, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiSearchAlt } from "react-icons/bi";
 
-function SearchBarManufacturer({
-  manufacturer,
-  setManufacturer,
-}: SearchManufacturerProps) {
-  const [query, setQuery] = useState("");
+function SearchBarManufacturer() {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [manufacturer, setManufacturer] = useState("");
   const router = useRouter();
   const [courses, setCourses] = useState<Course[]>([]);
   const { data: courseData, isSuccess } = useGetAllCourseQuery(null);
@@ -24,19 +22,28 @@ function SearchBarManufacturer({
   }, [courseData]);
 
   const filterManufacturer =
-    query === ""
+    manufacturer === ""
       ? courses
       : courses.filter((index) =>
           index.name
             .toLowerCase()
             .replace("/s+/g", "")
-            .includes(query.toLowerCase().replace("/s+/g", ""))
+            .includes(manufacturer.toLowerCase().replace("/s+/g", ""))
         );
   const handleOptionSelect = (item: Course) => {
     const courseURL = `/course/${item.id}`;
     router.push(courseURL);
   };
-
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
+      const searchPageUrl = `/course/search?q=${manufacturer}`;
+      router.push(searchPageUrl);
+    }
+  };
   return (
     <div className="search-manufacturer">
       <Combobox>
@@ -45,10 +52,12 @@ function SearchBarManufacturer({
             <BiSearchAlt className="text-2xl text-right ml-2" />
           </Combobox.Button>
           <Combobox.Input
+            ref={inputRef}
             className="search-manufacturer__input bg-slate-200 border rounded-full w-full h-10 placeholder:font-normal text-center text-sm"
             placeholder="Tìm Kiếm Khóa Học"
             displayValue={(manufacturer: string) => manufacturer}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => setManufacturer(e.target.value)}
+            onKeyDown={handleKeyDown}
             autoComplete="off"
           ></Combobox.Input>
           <Transition
@@ -56,10 +65,10 @@ function SearchBarManufacturer({
             leave="transition ease-in duration-100"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            afterLeave={() => setQuery("")}
+            afterLeave={() => setManufacturer("")}
           >
             <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {filterManufacturer.length === 0 && query !== "" ? (
+              {filterManufacturer.length === 0 && manufacturer !== "" ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                   Nothing found.
                 </div>
@@ -85,18 +94,6 @@ function SearchBarManufacturer({
                         >
                           {item.name}
                         </span>
-                        {/* {selected ? (
-                          <span
-                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                              active ? "text-white" : "text-teal-600"
-                            }`}
-                          >
-                            <AiOutlineCheck
-                              className="h-5 w-5"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        ) : null} */}
                       </>
                     )}
                   </Combobox.Option>
