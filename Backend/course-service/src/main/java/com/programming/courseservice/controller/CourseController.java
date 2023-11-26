@@ -87,7 +87,7 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @GetMapping("/get-all-by-user-id")
-    public ListResponse<CourseDto> getAllCourseAccessByUserId(@RequestParam("userId") String userId) {
+    public ListResponse<CourseDto> getAllCourseProgressByUserId(@RequestParam("userId") String userId) {
         return courseService.getCourseAccessByUserId(userId);
     }
 }

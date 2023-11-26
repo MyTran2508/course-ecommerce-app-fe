@@ -3,6 +3,7 @@ package com.programming.courseservice.domain.persistent.entity;
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -12,6 +13,7 @@ import lombok.*;
 )
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder(toBuilder = true)
 public class CourseProgress extends BaseModel {
     private String userId;
 

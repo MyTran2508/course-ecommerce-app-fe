@@ -24,15 +24,14 @@ public interface CourseRepository extends BaseRepository<Course> {
     List<Course> getCourseByTopicId(@Param("topicId") String topicId, Pageable pageable);
 
     @Modifying
-    @Query(value = "update course set language_id=:languageId, topic_id=:topicId, level_id=:levelId where id=:id"
-            , nativeQuery = true)
+    @Query(value = "update course set language_id=:languageId, topic_id=:topicId, level_id=:levelId where id=:id", nativeQuery = true)
     @Transactional
     void updateCourse(String id, String levelId, String topicId, String languageId);
 
     @Query("""
-                Select ca.course from CourseAccess ca where ca.course.topic.id = :topicId 
-                GROUP BY ca.course.id 
-                order by count(ca.course.id) DESC
+                Select cg.course from CourseProgress cg where cg.course.topic.id = :topicId 
+                GROUP BY cg.course.id 
+                order by count(cg.course.id) DESC
            """)
     List<Course> findPopularCourses(@Param("topicId") String topicId, Pageable pageable);
 
@@ -48,6 +47,6 @@ public interface CourseRepository extends BaseRepository<Course> {
                               @Param("keyword") String keyword,
                               Pageable pageable);
 
-    @Query("select c from Course c, CourseAccess as ca where ca.userId = :userId and c.id = ca.course.id")
+    @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id")
     Page<Course> getCourseAccessByUserId(@Param("userId") String topicId, Pageable pageable);
 }

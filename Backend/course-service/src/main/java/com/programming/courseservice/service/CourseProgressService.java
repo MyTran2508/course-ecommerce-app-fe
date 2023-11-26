@@ -7,14 +7,20 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.programming.courseservice.domain.dto.CourseProgressListDto;
 import com.programming.courseservice.domain.dto.CourseProgressDto;
+import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.mapper.CourseProgressMapper;
+import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.domain.persistent.entity.CourseProgress;
+import com.programming.courseservice.domain.persistent.entity.Section;
 import com.programming.courseservice.repository.CourseProgressRepository;
+import com.programming.courseservice.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +30,8 @@ import java.util.Optional;
 public class CourseProgressService extends BaseServiceImpl<CourseProgress, CourseProgressDto> {
     private final CourseProgressRepository courseProgressRepository;
     private final CourseProgressMapper courseProgressMapper;
+    private final CourseRepository courseRepository;
+    private final CourseMapper courseMapper;
     @Override
     protected BaseRepository<CourseProgress> getBaseRepository() {
         return courseProgressRepository;
@@ -69,6 +77,36 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
             return ResponseMapper.toDataResponseSuccess(courseProgressMapper.entityToDto(savedCourseProgress));
         } else {
             throw new ResourceNotFoundException("Data doesn't exists");
+        }
+    }
+
+    @Transactional
+    public DataResponse<String> addList(CourseProgressListDto courseProgressListDto) {
+        System.out.println(courseProgressListDto.toString());
+        for (String courseId: courseProgressListDto.getCourseId()) {
+            Course course = courseRepository.findById(courseId).get();
+
+            int totalAmountOfLecture = 0;
+            for(Section section: course.getContent().getSections()) {
+                totalAmountOfLecture += section.getLectures().size();
+            }
+            CourseProgress courseProgress = CourseProgress.builder()
+                    .userId(courseProgressListDto.getUserId())
+                    .course(course)
+                    .currentProgress(0)
+                    .totalAmountOfLecture(totalAmountOfLecture)
+                    .build();
+            courseProgressRepository.save(courseProgress);
+        }
+        return ResponseMapper.toDataResponseSuccess("Success");
+    }
+
+    public DataResponse<Boolean> hasAccessToCourse(String userId, String courseId) {
+        Optional<CourseProgress> optionalCourseAccess = courseProgressRepository.findByUserIdAndCourseId(userId, courseId);
+        if(optionalCourseAccess.isPresent()) {
+            return ResponseMapper.toDataResponseSuccess(true);
+        } else {
+            return ResponseMapper.toDataResponseSuccess(false);
         }
     }
 }
