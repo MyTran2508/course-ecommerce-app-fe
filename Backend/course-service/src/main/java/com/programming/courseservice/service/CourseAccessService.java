@@ -8,15 +8,20 @@ import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.courseservice.domain.dto.CourseAccessDto;
 import com.programming.courseservice.domain.dto.CourseAccessListDto;
+import com.programming.courseservice.domain.dto.CourseDto;
+import com.programming.courseservice.domain.dto.CourseProgressDto;
 import com.programming.courseservice.domain.mapper.CourseAccessMapper;
+import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.domain.persistent.entity.CourseAccess;
+import com.programming.courseservice.domain.persistent.entity.Section;
 import com.programming.courseservice.repository.CourseAccessRepository;
 import com.programming.courseservice.repository.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +32,8 @@ public class CourseAccessService extends BaseServiceImpl<CourseAccess, CourseAcc
     private final CourseAccessRepository courseAccessRepository;
     private final CourseAccessMapper courseAccessMapper;
     private final CourseRepository courseRepository;
+    private final CourseProgressService courseProgressService;
+    private final CourseMapper courseMapper;
     @Override
     protected BaseRepository<CourseAccess> getBaseRepository() {
         return courseAccessRepository;
@@ -56,6 +63,7 @@ public class CourseAccessService extends BaseServiceImpl<CourseAccess, CourseAcc
         }
     }
 
+    @Transactional
     public DataResponse<String> addList(CourseAccessListDto courseAccessListDto) {
         System.out.println(courseAccessListDto.toString());
         for (String courseId: courseAccessListDto.getCourseId()) {
@@ -64,7 +72,26 @@ public class CourseAccessService extends BaseServiceImpl<CourseAccess, CourseAcc
                     .userId(courseAccessListDto.getUserId())
                     .course(course).build();
             courseAccessRepository.save(courseAccess);
+
+            /*
+                Add Course Progress
+                + CurrentProgress 0 (Begin)
+                + TotalAmountOfLecture = totalLectures of course
+             */
+            int totalAmountOfLecture = 0;
+            for(Section section: course.getContent().getSections()) {
+                totalAmountOfLecture += section.getLectures().size();
+            }
+            CourseDto courseDto = courseMapper.entityToDto(course);
+            CourseProgressDto courseProgressDto = CourseProgressDto.builder()
+                    .userId(courseAccessListDto.getUserId())
+                    .course(courseDto)
+                    .currentProgress(0)
+                    .totalAmountOfLecture(totalAmountOfLecture)
+                    .build();
+            courseProgressService.create(courseProgressDto);
         }
+
         return ResponseMapper.toDataResponseSuccess("Success");
     }
 }

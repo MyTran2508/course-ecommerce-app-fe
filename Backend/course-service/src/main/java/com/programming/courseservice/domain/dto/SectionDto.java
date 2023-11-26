@@ -17,4 +17,5 @@ public class SectionDto {
     private List<LectureDto> lectures;
     @JsonBackReference
     private ContentDto content;
+    private Long totalDurationVideoLectures;
 }
