@@ -38,6 +38,7 @@ public class ContentController extends BaseApiImpl<Content, ContentDto> {
     public DataResponse<ContentDto> add(ContentDto objectDTO) {
         return super.add(objectDTO);
     }
+
     @GetMapping("/get-by-course-id")
     @ShowOpenAPI
     public DataResponse<ContentDto> getByCourseId(@RequestParam("id") String id) {

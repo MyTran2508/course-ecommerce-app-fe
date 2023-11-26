@@ -25,6 +25,11 @@ public class CourseProgressController extends BaseApiImpl<CourseProgress, Course
         return super.delete(id);
     }
 
+    @Override
+    public DataResponse<CourseProgressDto> setRemoved(String id) {
+        return super.setRemoved(id);
+    }
+
     @GetMapping("/get-by-userId-courseId")
     public DataResponse<CourseProgressDto> getByUserIdAndCourseId(@RequestParam String userId,
                                                                   @RequestParam String courseId) {
