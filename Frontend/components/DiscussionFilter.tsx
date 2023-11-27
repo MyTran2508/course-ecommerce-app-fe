@@ -33,10 +33,7 @@ function DiscussionFilter(props: DiscussionFilterProps) {
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button
-              className="
-                border-t flex w-full justify-between py-4 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 border-back"
-            >
+            <Disclosure.Button className="border-t flex w-full justify-between py-4 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 border-back">
               <div className="flex flex-between w-full">
                 <span className="text-md ">{label}</span>
                 <HiChevronUp

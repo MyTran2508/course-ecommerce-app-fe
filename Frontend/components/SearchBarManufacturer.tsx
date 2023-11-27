@@ -1,10 +1,8 @@
 import { useGetAllCourseQuery } from "@/redux/services/courseApi";
-import { SearchManufacturerProps } from "@/types/ComponentProps";
 import { Course } from "@/types/course.type";
 import { Combobox, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { AiOutlineCheck } from "react-icons/ai";
 import { BiSearchAlt } from "react-icons/bi";
 
 function SearchBarManufacturer() {
