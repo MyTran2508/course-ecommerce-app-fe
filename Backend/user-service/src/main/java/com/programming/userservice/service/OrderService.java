@@ -7,7 +7,7 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.userservice.communication.OpenFeign.CourseAccessApi;
+import com.programming.userservice.communication.OpenFeign.CourseProgressApi;
 import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.mapper.OrderMapper;
 import com.programming.userservice.domain.persistent.entity.Order;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class OrderService extends BaseServiceImpl<Order, OrderDto> {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final CourseAccessApi courseAccessApi;
+    private final CourseProgressApi courseProgressApi;
 
     @Override
     protected BaseRepository<Order> getBaseRepository() {
@@ -56,16 +56,16 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
         DataResponse<OrderDto> response = super.create(dto);
         if(response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
 
-            // Setup to call API add course access
+            // Setup to call API add course progress
             String userId = response.getData().getUser().getId();
             List<OrderItemDto> orderItemDtos = response.getData().getOrderItems();
             List<String> courseIds = orderItemDtos.stream()
                     .map(OrderItemDto::getCourseId)
                     .collect(Collectors.toList());
-            CourseAccessListDto courseAccessListDto = new CourseAccessListDto(userId, courseIds);
+            CourseProgressListDto courseProgressListDto = new CourseProgressListDto(userId, courseIds);
 
             // Call API
-            courseAccessApi.addList(courseAccessListDto);
+            courseProgressApi.addList(courseProgressListDto);
         }
         return response;
     }

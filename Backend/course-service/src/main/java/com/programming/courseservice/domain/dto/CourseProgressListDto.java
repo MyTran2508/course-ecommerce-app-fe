@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CourseAccessDto {
+public class CourseProgressListDto {
     private String userId;
-    private CourseDto course;
+    private List<String> courseId;
 }
