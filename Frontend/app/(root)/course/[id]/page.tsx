@@ -15,7 +15,6 @@ import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import {
-  useGetCourseAccessQuery,
   useGetCourseByIdQuery,
   useLoadFileFromCloudQuery,
 } from "@/redux/services/courseApi";
@@ -26,6 +25,7 @@ import Content from "@/types/content.type";
 import { Section } from "@/types/section.type";
 import { handleCountFieldsInSection } from "@/utils/function";
 import { useRouter } from "next/navigation";
+import { useGetCourseAccessQuery } from "@/redux/services/courseProcessApi";
 
 const initCourse: Course = {
   id: "0",
@@ -62,7 +62,8 @@ function CoursePage() {
   const { data: courseAccess, isSuccess: getCourseAccessSuccess } =
     useGetCourseAccessQuery({
       userId: userId,
-      courseId: course?.id as string,
+      // courseId: course?.id as string,
+      courseId: param.id as string,
     });
   const { totalDurationCourse, totalLectureCount } =
     handleCountFieldsInSection(sections);
@@ -86,7 +87,7 @@ function CoursePage() {
     if (getCourseAccessSuccess) {
       setAccess(courseAccess?.data as boolean);
       if ((courseAccess.data as boolean) === true) {
-        router.push(`/learning/${course.id}`);
+        router.push(`/learning/${param.id as string}`);
       }
     }
   }, [courseAccess]);

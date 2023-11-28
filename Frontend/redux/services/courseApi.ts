@@ -102,17 +102,6 @@ export const courseApi = createApi({
          }
       },
     }),
-    getCourseAccess: builder.query<DataResponse, {courseId: string, userId: string}>({
-      query: ({courseId, userId}) => {
-         return {
-           url: `/api/courses/course-access/has-access-to-course`,
-           params: {
-             userId: userId,
-             courseId: courseId
-           }
-         }
-      },
-    }),
     filterCourse: builder.mutation<ListResponse, SearchCourseRequest>({
       query: (data: SearchCourseRequest) => {
         return {
@@ -136,6 +125,5 @@ export const {
   useGetNewestCourseQuery,
   useGetCourseByUserIdQuery,
   useGetAllCourseQuery,
-  useGetCourseAccessQuery,
   useFilterCourseMutation
 } = courseApi;
