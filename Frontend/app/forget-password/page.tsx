@@ -7,7 +7,6 @@ import { IoChevronBackCircleSharp } from "react-icons/io5";
 
 function PageForgetPassword() {
   const route = useRouter();
-  const token = useAppSelector((state) => state.authReducer.token);
 
   return (
     <div className=" bg-blue-100 border-6 p-2">

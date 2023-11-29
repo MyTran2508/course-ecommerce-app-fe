@@ -1,23 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Cart } from "@/types/cart.type";
-import { v4 as uuidv4 } from "uuid";
 
-let initialState: Cart[] = [{
-    id: uuidv4().toString(),
-    image: "https://www.udemy.com/staticx/udemy/images/v9/hpp-paypal.svg",
-    nameCourse: " Khóa Học JavaScript",
-    sections: 11,
-    totalLength: 120,
-    price: 2000000,
-    lectures: 11,
-    checked: false
-  },
-];
+let initialState: Cart[] = [];
 
-const storedState = localStorage.getItem("cartState");
-if (storedState) {
-  initialState = JSON.parse(storedState);
-}
+// const storedState = localStorage.getItem("cartState");
+// if (storedState) {
+//   initialState = JSON.parse(storedState);
+// }
 
 export const cartSlice = createSlice({
     name: "cart",
@@ -26,7 +15,6 @@ export const cartSlice = createSlice({
         addToCart: (state, action: PayloadAction<Cart>) => {
             const newCartItem = action.payload;
             state.push(newCartItem);
-            localStorage.setItem("cartState", JSON.stringify(state));
         },
 
         removeFromCart: (state, action: PayloadAction<string>) => {
@@ -34,9 +22,12 @@ export const cartSlice = createSlice({
             
             if (index != -1) {
                 state.splice(index, 1);
-                localStorage.setItem("cartState", JSON.stringify(state));
             }
 
+        },
+
+        setCart: (state, action: PayloadAction<Cart[]>) => {
+            return action.payload;
         },
 
         setCheckedFormCart: (state, action: PayloadAction<{ id: string; checked: boolean }>) => {
@@ -46,11 +37,10 @@ export const cartSlice = createSlice({
             if (cartItem) {
                 cartItem.checked = checked;
             }
-            localStorage.setItem("cartState", JSON.stringify(state));
         }
     }
 })
 
-export const { addToCart, removeFromCart, setCheckedFormCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, setCheckedFormCart, setCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

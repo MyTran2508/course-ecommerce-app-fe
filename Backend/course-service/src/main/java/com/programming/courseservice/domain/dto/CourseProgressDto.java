@@ -1,16 +1,24 @@
 package com.programming.courseservice.domain.dto;
 
 import com.programming.courseservice.domain.persistent.entity.Course;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CourseAccessListDto {
+@NoArgsConstructor
+@Builder
+public class CourseProgressDto {
     private String userId;
-    private List<String> courseId;
+
+    private Integer currentProgress;
+
+    private Integer totalAmountOfLecture;
+
+    private Double rateProgress;
+
+    private CourseDto course;
 }

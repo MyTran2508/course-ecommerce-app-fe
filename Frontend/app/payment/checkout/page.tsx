@@ -6,15 +6,16 @@ import { BiRadioCircle, BiRadioCircleMarked } from "react-icons/bi";
 import { GrStatusWarning } from "react-icons/gr";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@material-tailwind/react";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { useAppSelector } from "@/redux/hooks";
 import { convertVNDtoUSD, totalPrice } from "@/utils/function";
+import { Button } from "@/components/ui/button";
+import Checkout from "@/components/PayPal";
 
 function PageCheckout() {
   const [open, setOpen] = useState(false);
-  const carts = useAppSelector((state) => state.cartReducer);
+  const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
   const totalPriceVND = totalPrice(carts);
   const totalPriceUSD = convertVNDtoUSD(totalPriceVND);
 
@@ -110,12 +111,16 @@ function PageCheckout() {
           <div className="opacity-60 text-[12px]">
             By completing your purchase you agree to these Terms of Service.
           </div>
-          <Button
-            className="w-full h-10 flex items-center justify-center mt-4 rounded-none"
-            onClick={() => handleCheckout()}
-          >
-            Complete Checkout
-          </Button>
+          {open ? (
+            <Checkout price={totalPriceUSD} />
+          ) : (
+            <Button
+              className="w-full h-14 flex items-center justify-center mt-4 rounded-sm"
+              onClick={() => handleCheckout()}
+            >
+              Complete Checkout
+            </Button>
+          )}
         </div>
       </div>
     </div>

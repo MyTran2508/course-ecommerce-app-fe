@@ -26,10 +26,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     private final CategoryService categoryService;
+
     @Override
     protected BaseService<Category, CategoryDto> getBaseService() {
         return categoryService;
     }
+
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -37,6 +39,7 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
         System.out.println("Vao day");
         return super.add(categoryDto);
     }
+
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -44,21 +47,25 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
         System.out.println("Vao day");
         return super.update(categoryDto, id);
     }
+
     @Override
     @ShowOpenAPI
     public ListResponse<CategoryDto> getAll() {
         return super.getAll();
     }
+
     @Override
     @ShowOpenAPI
     public DataResponse<CategoryDto> getById(String id) {
         return super.getById(id);
     }
+
     @ShowOpenAPI
     @GetMapping("/get-by-name/{name}")
     public DataResponse<CategoryDto> getByName(@PathVariable String name) {
         return categoryService.getByName(name);
     }
+
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> setRemoved(String id) {

@@ -16,7 +16,7 @@ import {
   useGetByUserNameQuery,
 } from "@/redux/services/userApi";
 import { User } from "@/types/user.type";
-import { setUser } from "@/redux/features/userSlice";
+import { removeUser, setUser } from "@/redux/features/userSlice";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -26,22 +26,29 @@ const links = [
 function InstructorNavbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state) => state.cartReducer);
+  const cart = useAppSelector((state) => state.persistedReducer.cartReducer);
   const [userData, setUserData] = useState<User>();
   const [isLogout, setLogout] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState();
-  let user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = useAppSelector((state) => state.persistedReducer.authReducer);
+  console.log(user);
+  // let user = JSON.parse(localStorage.getItem("user") || "{}");
   const { data: userNameData, isSuccess: userNameSuccess } =
-    useGetByUserNameQuery(user.username);
+    useGetByUserNameQuery(user.username as string);
 
   const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
-    user.username
+    user.username as string
   );
 
   useEffect(() => {
-    dispatch(setCredential(user));
     if (userNameSuccess) {
-      dispatch(setUser(userNameData.data as User));
+      const userState: Pick<User, "username" | "photos" | "email" | "id"> = {
+        id: (userNameData.data as User).id,
+        username: (userNameData.data as User).username,
+        photos: (userNameData.data as User).photos,
+        email: (userNameData.data as User).email,
+      };
+      dispatch(setUser(userState));
       setUserData(userNameData.data as User);
     }
     if (avatarSuccess) {
@@ -50,6 +57,7 @@ function InstructorNavbar() {
   }, [userNameData, avatarData]);
 
   const handleLogout = () => {
+    dispatch(removeUser());
     dispatch(logout());
     setLogout(true);
     router.push("/");

@@ -9,7 +9,7 @@ import React, { Fragment } from "react";
 
 const PageCart = () => {
   const route = useRouter();
-  const carts = useAppSelector((state) => state.cartReducer);
+  const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
 
   const renderCartItem = () => {
     return (

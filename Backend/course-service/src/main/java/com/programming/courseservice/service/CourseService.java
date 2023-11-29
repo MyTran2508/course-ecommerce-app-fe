@@ -101,9 +101,9 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     public ListResponse<CourseDto> getFiltedCourse(SearchCourseDto searchCourseDto) {
         Pageable pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize());
-        List<String> levelIds = searchCourseDto.getLevelIds() == null ? levelRepository.findAll().stream().map(Level::getId).toList() : searchCourseDto.getLevelIds();
-        List<String> languageIds = searchCourseDto.getLanguageIds() == null ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
-        List<String> topicIds = searchCourseDto.getTopicIds() == null ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
+        List<String> levelIds = searchCourseDto.getLevelIds() == null || searchCourseDto.getLevelIds().isEmpty() ? levelRepository.findAll().stream().map(Level::getId).toList() : searchCourseDto.getLevelIds();
+        List<String> languageIds = searchCourseDto.getLanguageIds() == null || searchCourseDto.getLanguageIds().isEmpty() ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
+        List<String> topicIds = searchCourseDto.getTopicIds() == null || searchCourseDto.getTopicIds().isEmpty() ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
         String keyword = searchCourseDto.getKeyword();
 
         Page<Course> courses = courseRepository.filterCourse(levelIds,
@@ -147,6 +147,12 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
                 .body(resource);
     }
 
+    public ListResponse<CourseDto> getCourseAccessByUserId(String userId) {
+        Pageable pageable = PageRequest.of(0,4);
+        Page<Course> courses = courseRepository.getCourseAccessByUserId(userId, pageable);
+        Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+        return ResponseMapper.toPagingResponseSuccess(courseDtos);
+    }
 
 //    @Transactional
 //    public DataResponse<String> uploadImages(MultipartFile[] files, String courseId, Integer defaultUrl) {

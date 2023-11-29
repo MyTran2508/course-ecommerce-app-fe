@@ -62,40 +62,46 @@ function CreateCoursePage() {
     }
   };
   return (
-    <body className="overflow-hidden">
-      <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-10 shadow-md">
-        <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-4">
-          <Link href={"/"} className="text-2xl uppercase">
-            E-LEANING
-          </Link>
-          <div>
-            <Link
-              href={"/instructor/courses"}
-              className="hover:text-orange-400 font-bold"
-            >
-              Cancel
-            </Link>
+    <div>
+      <div className="overflow-hidden">
+        <div className="flex flex-col min-h-screen">
+          <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-10 shadow-md">
+            <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-4">
+              <Link href={"/"} className="text-2xl uppercase">
+                E-LEANING
+              </Link>
+              <div>
+                <Link
+                  href={"/instructor/courses"}
+                  className="hover:text-orange-400 font-bold"
+                >
+                  Cancel
+                </Link>
+              </div>
+            </div>
           </div>
+          <div className="flex justify-center flex-col items-center w-1/2 mx-auto my-auto ">
+            <div className="text-2xl pb-10">
+              Hãy Đặt Tên Cho Khóa Học Của Bạn
+            </div>
+            <Input
+              className="rounded-none border-black h-16 text-lg"
+              placeholder="Ví dụ: Khóa Học JavaScript"
+              onChange={(e) => setNameCourse(e.target.value)}
+            ></Input>
+          </div>
+          <footer className="bg-gray-200 py-8 sticky bottom-0 shadow-md text-right">
+            <Button
+              className="mr-10 "
+              disabled={nameCourse ? false : true}
+              onClick={() => handleCreateCourse()}
+            >
+              Tạo Khóa Học
+            </Button>
+          </footer>
         </div>
       </div>
-      <div className="flex justify-center flex-col items-center min-h-screen w-1/2 mx-auto ">
-        <div className="text-2xl mb-10">Hãy Đặt Tên Cho Khóa Học Của Bạn</div>
-        <Input
-          className="rounded-none border-black h-16 text-lg"
-          placeholder="Ví dụ: Khóa Học JavaScript"
-          onChange={(e) => setNameCourse(e.target.value)}
-        ></Input>
-      </div>
-      <footer className="bg-gray-200 py-8 sticky bottom-0 shadow-md text-right">
-        <Button
-          className="mr-10 "
-          disabled={nameCourse ? false : true}
-          onClick={() => handleCreateCourse()}
-        >
-          Tạo Khóa Học
-        </Button>
-      </footer>
-    </body>
+    </div>
   );
 }
 

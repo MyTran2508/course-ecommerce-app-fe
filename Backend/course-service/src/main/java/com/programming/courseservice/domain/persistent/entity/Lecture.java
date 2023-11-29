@@ -20,6 +20,8 @@ public class Lecture extends BaseModel {
     private String name;
     @Column(nullable = false)
     private String url;
+    @Column(nullable = false)
+    private String fileName;
     @Column(name = "video_duration")
     private Long videoDuration;
 }

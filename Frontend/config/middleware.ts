@@ -32,7 +32,7 @@ export const rtkQueryErrorLogger: Middleware =
       }
     }
     if (isRejected(action)) {
-      showToast(ToastStatus.WARNING, (action.payload as any).error);
+      // showToast(ToastStatus.WARNING, (action.payload as any).error);
       console.log((action.payload as any).error)
     }
     return next(action);

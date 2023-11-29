@@ -14,3 +14,12 @@ export interface ForgotPasswordRequest {
     email: string,
     newPassword: string
 }
+
+export interface SearchCourseRequest {
+    levelIds?: string[];
+    languageIds?: string[];
+    topicIds?: string[];
+    keyword: string | null;
+    pageIndex: number;
+    pageSize: number;
+}

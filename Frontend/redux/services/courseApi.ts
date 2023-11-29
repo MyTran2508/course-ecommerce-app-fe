@@ -1,9 +1,9 @@
-import { DataResponse } from "@/types/response.type";
+import { DataResponse, ListResponse } from "@/types/response.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {baseQueryWithToken } from "../baseQuery";
-import { url } from "inspector";
 import { Course } from "@/types/course.type";
-import Content from "@/types/content.type";
+import { SearchCourseRequest } from "@/types/request.type";
+
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
@@ -78,6 +78,39 @@ export const courseApi = createApi({
         return [{type: "Course", id: "course"}]
       }
     }),
+    getNewestCourse: builder.query<DataResponse, {topicId: number , size: number}>({
+      query: ({ topicId, size }) => {
+        return {
+          url: `/api/courses/course/newest/${topicId}/${size}`,
+        }
+      }
+    }),
+    getCourseByUserId: builder.query<ListResponse, string>({
+      query: (id: string) => {
+         return {
+           url: `/api/courses/course/get-all-by-user-id`,
+           params: {
+             userId: id
+           }
+         }
+      },
+    }),
+    getAllCourse: builder.query<ListResponse, null>({
+      query: () => {
+         return {
+           url: `/api/courses/course/get-all`,
+         }
+      },
+    }),
+    filterCourse: builder.mutation<ListResponse, SearchCourseRequest>({
+      query: (data: SearchCourseRequest) => {
+        return {
+          url: `/api/courses/course/filter`,
+          method: "POST",
+          body: data
+        }
+      }
+    })
   }),
 
 });
@@ -88,5 +121,9 @@ export const {
   useUploadCourseVideoMutation,
   useCreateCourseMutation,
   useGetCourseByIdQuery,
-  useUpdateCourseByIdMutation
+  useUpdateCourseByIdMutation,
+  useGetNewestCourseQuery,
+  useGetCourseByUserIdQuery,
+  useGetAllCourseQuery,
+  useFilterCourseMutation
 } = courseApi;

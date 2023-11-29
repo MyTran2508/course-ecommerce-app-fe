@@ -1,4 +1,3 @@
-import { User } from "@/types/user.type";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Cookies from 'js-cookie';
 
@@ -8,8 +7,8 @@ export interface AuthState {
 }
 
 const initialState: AuthState = {
-  username: null,
-  token: null,
+  username: "",
+  token: "",
 };
 
 export const auth = createSlice({
@@ -24,19 +23,15 @@ export const auth = createSlice({
       const auth =  JSON.stringify({
           username: action.payload.username,
           token: action.payload.token,
-        })
-
-      localStorage.setItem("user", auth);
-
+      })
       Cookies.set('user', auth, { expires: 1 });  
-
       state.username = action.payload.username;
       state.token = action.payload.token;
     },
-    logout: (state) => {
+    logout: () => {
       localStorage.clear();
-      state = initialState;
       Cookies.remove("user");
+      return { ...initialState };
     },
   },
 });

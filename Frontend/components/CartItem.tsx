@@ -8,8 +8,7 @@ import { removeFromCart, setCheckedFormCart } from "@/redux/features/cartSlice";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { Checkbox } from "./ui/checkbox";
-
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 
 interface CartItemProps {
   cartItem: Cart;
@@ -19,6 +18,7 @@ function CartItem(props: CartItemProps) {
   const { cartItem } = props;
   const dispatch = useAppDispatch();
   const [isChecked, setChecked] = useState(cartItem.checked);
+  const { data: image } = useLoadFileFromCloudQuery(cartItem.image);
 
   const handleDeleteFromCart = () => {
     dispatch(removeFromCart(cartItem.id));
@@ -38,7 +38,7 @@ function CartItem(props: CartItemProps) {
       <div className="flex justify-between">
         <div className="flex gap-4">
           <Image
-            src={cartItem.image}
+            src={image ? `data:image/png;base64,${image}` : "/banner.jpg"}
             alt="course"
             className="w-24 h-14 pb-2"
             width={40}
@@ -49,11 +49,11 @@ function CartItem(props: CartItemProps) {
               {cartItem.nameCourse}
             </div>
             <div className="flex-start xl:gap-2 xs:gap-0.5 text-[10px] opacity-50">
-              <div>{cartItem.sections} chương</div>
+              <div>{cartItem.totalSection} chương</div>
               <BsDot className="text-[12px]" />
-              <div>{cartItem.lectures} bài học</div>
+              <div>{cartItem.totalLecture} bài học</div>
               <BsDot className="text-[12px]" />
-              <div>Thời lượng {cartItem.totalLength}</div>
+              <div>Thời lượng {cartItem.totalDurationCourse}</div>
             </div>
           </div>
         </div>
