@@ -10,14 +10,14 @@ import { iconMap } from "@/utils/map";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setCredential, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { FiShoppingCart } from "react-icons/fi";
 import {
   useGetAvatarQuery,
   useGetByUserNameQuery,
 } from "@/redux/services/userApi";
-import { User } from "@/types/user.type";
+import { RoleType, User } from "@/types/user.type";
 import { removeUser, setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
 import "./style/category.scss";
@@ -35,7 +35,9 @@ function Navbar() {
   const [isLogout, setLogout] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState();
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
-  // let user = JSON.parse(localStorage.getItem("user") || "{}");
+  const roles = useAppSelector(
+    (state) => state.persistedReducer.userReducer.roles
+  );
   const { data: userNameData, isSuccess: userNameSuccess } =
     useGetByUserNameQuery(user.username as string);
 
@@ -45,11 +47,15 @@ function Navbar() {
 
   useEffect(() => {
     if (userNameSuccess) {
-      const userState: Pick<User, "username" | "photos" | "email" | "id"> = {
+      const userState: Pick<
+        User,
+        "username" | "photos" | "email" | "id" | "roles"
+      > = {
         id: (userNameData.data as User).id,
         username: (userNameData.data as User).username,
         photos: (userNameData.data as User).photos,
         email: (userNameData.data as User).email,
+        roles: (userNameData.data as User).roles,
       };
       dispatch(setUser(userState));
       setUserData(userNameData.data as User);
@@ -83,8 +89,13 @@ function Navbar() {
           <SearchBar />
         </div>
         <div className="">
-          {user?.username ? (
+          {user ? (
             <div className="flex-center gap-10">
+              {roles && (roles as RoleType[])[0]?.id !== Role.USER ? (
+                <div className="xs:hidden">
+                  <Link href={"/instructor/courses"}>Quản lý khóa học</Link>
+                </div>
+              ) : null}
               <div className="xs:hidden">
                 <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
               </div>
@@ -140,6 +151,12 @@ function Navbar() {
 
                         <div className="flex-col">
                           <div className="hidden xs:flex xs:flex-col">
+                            <Link href={"/instructor/courses"}>
+                              Quản lý khóa học
+                            </Link>
+                            <hr className="my-4 w-full" />
+                          </div>
+                          <div className="hidden xs:flex xs:flex-col">
                             <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
                             <hr className="my-4 w-full" />
                           </div>
@@ -164,6 +181,15 @@ function Navbar() {
             </div>
           ) : (
             <div className="hidden lg:inline-flex gap-3">
+              <div
+                className="flex relative hover:cursor-pointer flex-center mr-3"
+                onClick={() => handleChangeRouteCart()}
+              >
+                <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
+                  {cart.length}
+                </span>
+                <FiShoppingCart className="text-2xl" />
+              </div>
               <CustomButton
                 title="Login"
                 containerStyles="bg-white-500 border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"

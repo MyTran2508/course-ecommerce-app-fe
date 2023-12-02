@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAppSelector } from "@/redux/hooks";
 import { useGetCourseByUserIdQuery } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 
@@ -39,7 +40,7 @@ function MyCourses() {
 
                   <div className="inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                     <div className="bg-orange-200 rounded-2xl py-2 px-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
-                      Thêm Khóa Học
+                      <Link href="/">Thêm Khóa Học</Link>
                     </div>
                   </div>
                   <div className="min-h-[400px]"></div>

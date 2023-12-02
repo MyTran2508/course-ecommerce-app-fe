@@ -87,14 +87,22 @@ function SearchPage() {
               </div>
             </div>
             <div className="w-full">
-              {coursesSearch.map((course, index) => {
-                return (
-                  <div key={index}>
-                    <CourseCardSearch course={course} />
-                    {coursesSearch.length - 1 !== index ? <hr /> : ""}
-                  </div>
-                );
-              })}
+              {coursesSearch.length !== 0 ? (
+                <Fragment>
+                  {coursesSearch.map((course, index) => {
+                    return (
+                      <div key={index}>
+                        <CourseCardSearch course={course} />
+                        {coursesSearch.length - 1 !== index ? <hr /> : ""}
+                      </div>
+                    );
+                  })}
+                </Fragment>
+              ) : (
+                <div className="text-2xl flex-center">
+                  Không tìm thấy kết quả phù hợp
+                </div>
+              )}
             </div>
           </div>
         </div>
