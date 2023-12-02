@@ -14,7 +14,12 @@ public class RouteValidator {
             "/api/users/user/forget-password",
             "/api/users/user/send-otp",
             "/api/courses/course/download",
-            "/eureka"
+            "/eureka",
+            "/api/courses/course/filter",
+            "/api/courses/course/newest",
+            "/api/courses/course/popular",
+            "/api/courses/content/get-by-course-id",
+            "/api/courses/course/get-all"
     );
 
     public Predicate<ServerHttpRequest> isSecured =
