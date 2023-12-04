@@ -15,7 +15,6 @@ function SearchBarManufacturer() {
   useEffect(() => {
     if (isSuccess) {
       setCourses(courseData?.data as Course[]);
-      console.log(courseData?.data as Course[]);
     }
   }, [courseData]);
 

@@ -5,18 +5,49 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { BiSolidMessageSquareAdd } from "react-icons/bi";
 import InstructorNavbar from "../Navbar";
-import { useGetAllCourseQuery } from "@/redux/services/courseApi";
+import {
+  useFilterCourseMutation,
+  useGetAllCourseQuery,
+} from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
+import { SearchCourseRequest } from "@/types/request.type";
+import Paginate from "@/components/Paginate";
 
 function InstructorCourses() {
   const [courses, setCourses] = useState<Course[]>([]);
-  const { data: courseData, isSuccess } = useGetAllCourseQuery(null);
+  const [searchCourse] = useFilterCourseMutation();
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+
+  const handleSearch = async (page: number) => {
+    await searchCourse({
+      keyword: null,
+      pageIndex: page - 1,
+      pageSize: 8,
+    })
+      .unwrap()
+      .then((fulfilled) => {
+        setCourses(fulfilled.data as Course[]);
+        setTotalPage(fulfilled.totalPages);
+      });
+  };
 
   useEffect(() => {
-    if (isSuccess) {
-      setCourses(courseData?.data as Course[]);
-    }
-  }, [courseData]);
+    handleSearch(page);
+  }, []);
+
+  useEffect(() => {
+    handleSearch(page);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [page]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     setCourses(courseData?.data as Course[]);
+  //   }
+  // }, [courseData]);
   return (
     <div>
       <InstructorNavbar />
@@ -30,28 +61,15 @@ function InstructorCourses() {
               <CourseCard instructorCourse={true} course={course} />
             </div>
           ))}
-          <div>
-            <Card className="w-full max-w-fit border-0 !bg-transparent sm:max-w-[356px] m-8 border-spacing-3">
-              <CardHeader className="flex-center flex-col gap-2.5 !p-0 hover:cursor-pointer">
-                <div className="h-fit w-full relative">
-                  <div className="group">
-                    <div className=" bg-white border-none">
-                      <BiSolidMessageSquareAdd className="text-3xl w-40 h-20 xs:text-[10px]" />
-                    </div>
-
-                    <div className="inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
-                      <div className="bg-orange-200 rounded-2xl py-2 px-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
-                        <Link href={"/instructor/courses/create"}>
-                          Tạo Khóa Học Mới
-                        </Link>
-                      </div>
-                    </div>
-                    <div className="min-h-[400px]"></div>
-                  </div>
-                </div>
-              </CardHeader>
-            </Card>
-          </div>
+        </div>
+        <div className="flex-center">
+          {courses.length !== 0 ? (
+            <Paginate
+              totalPage={totalPage}
+              currentPage={page}
+              setCurrentPage={setPage}
+            />
+          ) : null}
         </div>
       </div>
     </div>

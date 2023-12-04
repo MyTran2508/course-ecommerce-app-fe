@@ -7,11 +7,11 @@ export interface User{
     lastName: string
     telephone: string
     photos: string | null,
-    roles: Role[] | null
+    roles: RoleType[] | null
     addresses : Address []
 }
 
-export interface Role {
+export interface RoleType {
     id: string,
     name: string
 }

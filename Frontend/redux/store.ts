@@ -6,7 +6,7 @@ import userReducer from "./features/userSlice";
 import courseReducer from "./features/courseSlice";
 import contentReducer from "./features/contentSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { rtkQueryErrorLogger } from "@/config/middleware";
+import { AuthMiddleware, rtkQueryErrorLogger } from "@/config/middleware";
 import { userApi } from "./services/userApi";
 import { courseApi } from "./services/courseApi";
 import { contentApi } from "./services/contentApi";
@@ -25,7 +25,7 @@ const persistConfig = {
 export interface RootStateReduxPersist {
   cartReducer: Cart[];
   authReducer: AuthState;
-  userReducer:  Pick<User, "username" | "photos" | "email" | "id">,
+  userReducer:  Pick<User, "username" | "photos" | "email" | "id" | "roles">,
 }
 
 const rootReducer = combineReducers<RootStateReduxPersist>( {
@@ -48,7 +48,7 @@ export const store = configureStore({
     [orderApi.reducerPath]: orderApi.reducer,
     [courseProcessApi.reducerPath]: courseProcessApi.reducer
   },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({}).concat([authApi.middleware, userApi.middleware, courseApi.middleware, contentApi.middleware, sectionApi.middleware, orderApi.middleware,courseProcessApi.middleware, rtkQueryErrorLogger]),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({}).concat([authApi.middleware, userApi.middleware, courseApi.middleware, contentApi.middleware, sectionApi.middleware, orderApi.middleware,courseProcessApi.middleware, rtkQueryErrorLogger, AuthMiddleware]),
 });
 setupListeners(store.dispatch);
 export type RootState = ReturnType<typeof store.getState>

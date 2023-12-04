@@ -35,12 +35,12 @@ function CourseCardSearch(props: CourseCardProps) {
                 : "/banner.jpg"
             }
             alt="course"
-            className="w-64 h-36 pb-2"
-            width={64}
-            height={36}
+            className="w-40 h-24 pb-2"
+            width={40}
+            height={24}
           />
           <div>
-            <div className="text-[25px] font-bold mb-1">{course.name}</div>
+            <div className="text-[20px] font-bold mb-1">{course.name}</div>
             <div className="flex-start xl:gap-2 xs:gap-0.5  opacity-50">
               <div>{course.language.name}</div>
               <BsDot className="text-[15px]" />
@@ -52,8 +52,8 @@ function CourseCardSearch(props: CourseCardProps) {
         </div>
         <div className="flex gap-16 items-center">
           <div className="flex gap-4 items-center">
-            <div className="text-violet-800 font-bold flex gap-2 w-[200px] xs:w-[100px] ml-auto flex-row-reverse text-2xl">
-              <BsFillTagFill className="pt-1 text-2xl" />
+            <div className="text-violet-800 font-bold flex gap-2 w-[200px] xs:w-[100px] ml-auto flex-row-reverse text-xl">
+              <BsFillTagFill className="pt-1 text-xl" />
               {course.price?.toLocaleString()}đ
             </div>
           </div>

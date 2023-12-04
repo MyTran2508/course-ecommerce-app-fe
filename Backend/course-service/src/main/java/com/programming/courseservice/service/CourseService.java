@@ -26,10 +26,7 @@ import com.programming.courseservice.util.constant.S3Constrant;
 import jakarta.ws.rs.core.Application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -109,7 +106,6 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         Page<Course> courses = courseRepository.filterCourse(levelIds,
                 languageIds, topicIds, keyword, pageable);
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
-
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
 
     }
@@ -147,8 +143,8 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
                 .body(resource);
     }
 
-    public ListResponse<CourseDto> getCourseAccessByUserId(String userId) {
-        Pageable pageable = PageRequest.of(0,4);
+    public ListResponse<CourseDto> getCourseAccessByUserId(String userId, Integer pageIndex, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex,pageSize);
         Page<Course> courses = courseRepository.getCourseAccessByUserId(userId, pageable);
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
         return ResponseMapper.toPagingResponseSuccess(courseDtos);

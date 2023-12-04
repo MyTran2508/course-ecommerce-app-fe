@@ -21,6 +21,7 @@ function SideBarFilter(props: SideBarFilterProps) {
       languageIds: selectedLanguages,
       topicIds: selectedTopics,
       levelIds: selectedLevels,
+      pageIndex: 0,
     }));
   }, [selectedLanguages, selectedTopics, selectedLevels]);
 

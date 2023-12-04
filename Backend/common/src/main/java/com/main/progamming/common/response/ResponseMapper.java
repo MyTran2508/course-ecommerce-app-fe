@@ -22,6 +22,7 @@ public class ResponseMapper {
         ListResponse listResponse = new ListResponse();
         listResponse.setTimestamp(System.currentTimeMillis());
         listResponse.setData(list);
+        listResponse.setTotalPages(totalPages);
         listResponse.setTotalRecords(totalRecords);
         listResponse.setStatusCode(statusCode);
         listResponse.setStatusMessage(statusMessage);
