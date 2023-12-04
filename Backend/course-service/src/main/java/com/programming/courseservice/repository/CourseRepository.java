@@ -48,5 +48,5 @@ public interface CourseRepository extends BaseRepository<Course> {
                               Pageable pageable);
 
     @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id")
-    Page<Course> getCourseAccessByUserId(@Param("userId") String topicId, Pageable pageable);
+    Page<Course> getCourseAccessByUserId(@Param("userId") String userId, Pageable pageable);
 }
