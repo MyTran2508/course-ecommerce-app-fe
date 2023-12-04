@@ -1,5 +1,6 @@
 "use client";
 import CourseCardSearch from "@/components/CourseCardSearch";
+import Paginate from "@/components/Paginate";
 import SideBarFilter from "@/components/SideBarFilter";
 import { useFilterCourseMutation } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
@@ -16,8 +17,10 @@ function SearchPage() {
   const [searchRequest, setSearchRequest] = useState<SearchCourseRequest>({
     keyword: keyword,
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 5,
   });
+  const [page, setPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
   const [coursesSearch, setCourseSearch] = useState<Course[]>([]);
   const [searchCourse] = useFilterCourseMutation();
 
@@ -30,6 +33,7 @@ function SearchPage() {
       .then((fulfilled) => {
         console.log(fulfilled);
         setCourseSearch(fulfilled.data as Course[]);
+        setTotalPage(fulfilled.totalPages);
       });
   };
   useEffect(() => {
@@ -40,6 +44,17 @@ function SearchPage() {
     console.log(searchRequest);
     handleSearch();
   }, [searchRequest]);
+
+  useEffect(() => {
+    setSearchRequest((prevSearchRequest) => ({
+      ...prevSearchRequest,
+      pageIndex: page - 1,
+    }));
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [page]);
 
   useEffect(() => {
     if (query !== keyword) {
@@ -82,11 +97,11 @@ function SearchPage() {
                 isOpenFilter ? "w-3/12" : "transform -translate-x-full "
               } transition-transform duration-300`}
             >
-              <div className={`${isOpenFilter ? "" : "hidden"}`}>
+              <div className={`${isOpenFilter ? "" : "hidden"} sticky top-20 `}>
                 <SideBarFilter setSearchRequest={setSearchRequest} />
               </div>
             </div>
-            <div className="w-full">
+            <div className="w-full flex flex-col">
               {coursesSearch.length !== 0 ? (
                 <Fragment>
                   {coursesSearch.map((course, index) => {
@@ -103,6 +118,15 @@ function SearchPage() {
                   Không tìm thấy kết quả phù hợp
                 </div>
               )}
+              <div className="flex-center">
+                {coursesSearch.length !== 0 ? (
+                  <Paginate
+                    totalPage={totalPage}
+                    currentPage={page}
+                    setCurrentPage={setPage}
+                  />
+                ) : null}
+              </div>
             </div>
           </div>
         </div>

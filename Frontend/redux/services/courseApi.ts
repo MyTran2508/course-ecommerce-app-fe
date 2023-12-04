@@ -85,12 +85,14 @@ export const courseApi = createApi({
         }
       }
     }),
-    getCourseByUserId: builder.query<ListResponse, string>({
-      query: (id: string) => {
+    getCourseByUserId: builder.query<ListResponse, {id: string, pageIndex: number, pageSize: number}>({
+      query: ({id, pageIndex, pageSize}) => {
          return {
            url: `/api/courses/course/get-all-by-user-id`,
            params: {
-             userId: id
+             userId: id,
+             pageIndex: pageIndex,
+             pageSize: pageSize,
            }
          }
       },

@@ -77,9 +77,7 @@ function InstructorNavbar() {
         <div className="">
           {user?.username ? (
             <div className="flex-center gap-10">
-              <div className="xs:hidden">
-                <Link href={"/instructor/courses"}>Quản Lý Khóa Học</Link>
-              </div>
+              <Link href={"/instructor/courses/create"}>Tạo Khóa Học Mới</Link>
               <div>
                 <Menu>
                   <Menu.Button>
