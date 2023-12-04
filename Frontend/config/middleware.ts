@@ -53,7 +53,7 @@ export const AuthMiddleware: Middleware =
     const loginUrl = '/login';
     const homeUrl = '/'
     console.log(roles)
-    if (window) { 
+    if (typeof window !== 'undefined') { 
       const pathname = window.location.pathname;
       if (roles) {
         const role = roles[0].id
