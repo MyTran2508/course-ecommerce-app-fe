@@ -6,9 +6,8 @@ import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.ContentDto;
 import com.programming.courseservice.domain.persistent.entity.Content;
 import com.programming.courseservice.service.ContentService;
-import com.programming.courseservice.util.annotation.ShowOpenAPI;
+import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

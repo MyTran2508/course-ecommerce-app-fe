@@ -20,8 +20,8 @@ import com.programming.userservice.domain.dto.UserDto;
 import com.programming.userservice.domain.mapper.UserMapper;
 import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.repository.UserRepository;
-import com.programming.userservice.util.OtpUtil;
-import com.programming.userservice.util.constant.TypeMessage;
+import com.programming.userservice.utilities.OtpUtil;
+import com.programming.userservice.utilities.constant.TypeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,11 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -57,21 +53,26 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     }
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        return userRepository.searchUser(searchKeywordDto.getKeyword().trim(), pageable)
+        String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
+        return userRepository.searchUser(name, pageable)
                 .map(user -> userMapper.entityToDto(user));
     }
+
     @Override
     protected List<UserDto> getListSearchResults(String keyword) {
         return null;
     }
+
     public DataResponse<UserDto> getUserByUsername(String username) {
         UserDto userDto = userMapper.entityToDto(userRepository.findByUserName(username));
         return ResponseMapper.toDataResponseSuccess(userDto);
     }
+
     public DataResponse<String> generateToken(String username) {
-        String token = jwtService.generateToken(username);
-        return ResponseMapper.toDataResponseSuccess(token);
+        String accessToken = jwtService.generateToken(username);
+        return ResponseMapper.toDataResponseSuccess(accessToken);
     }
+
     public DataResponse<String> verifyAndSaveRegister(UserDto userDto, String email, Integer otp) {
         if (!otpUtil.validateOTP(email, otp)) {
             return ResponseMapper.toDataResponse("Otp is not correct", StatusCode.NOT_IMPLEMENTED, StatusMessage.NOT_IMPLEMENTED);
@@ -171,5 +172,25 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         user.setPhotos(filePath);
         userRepository.save(user);
         return ResponseMapper.toDataResponseSuccess("Upload avatar succcessfully");
+    }
+
+    public DataResponse<UserDto> updateAdminUser(UserDto userDto, String id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(optionalUser.isPresent()) {
+            User savedUser = optionalUser.get();
+            savedUser.setUsername(userDto.getUsername());
+            savedUser.setEmail(userDto.getEmail());
+            List<Role> roles = new ArrayList<>();
+            roles.add(new Role(userDto.getRoles().get(0).getId()));
+            savedUser.setRoles(roles);
+            User updatedUser = userRepository.save(savedUser);
+            return ResponseMapper.toDataResponseSuccess(userMapper.entityToDto(updatedUser));
+        } else {
+            throw new ResourceNotFoundException("Data doesn't exists");
+        }
+    }
+
+    public DataResponse<Map<String, Integer>> getStatistics(Integer targetYear, Integer targetMonth) {
+        return null;
     }
 }

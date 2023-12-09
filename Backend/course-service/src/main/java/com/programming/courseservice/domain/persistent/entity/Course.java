@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(
@@ -56,6 +55,23 @@ public class Course extends BaseModel {
     @Column(name = "author_name")
     private String authorName;
 
-    @Column(columnDefinition="tinyint(1) default 0")
-    private boolean isApproved;
+    @Column(columnDefinition="tinyint(1) default 0", name = "is_approved")
+    private Boolean isApproved;
+
+    @Column(columnDefinition="tinyint(1) default 0", name = "is_completed_content")
+    private Boolean isCompletedContent;
+
+    @Column(columnDefinition = "tinyint(1) default 0", name = "is_awaiting_approval")
+    private Boolean isAwaitingApproval;
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<CourseIssueReport> courseIssueReports;
+
+    @Override
+    protected void ensureId() {
+        this.isApproved = false;
+        this.isCompletedContent = false;
+        this.isAwaitingApproval = false;
+        super.ensureId();
+    }
 }

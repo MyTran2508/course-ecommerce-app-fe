@@ -7,7 +7,7 @@ import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.CategoryDto;
 import com.programming.courseservice.domain.persistent.entity.Category;
 import com.programming.courseservice.service.CategoryService;
-import com.programming.courseservice.util.annotation.ShowOpenAPI;
+import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

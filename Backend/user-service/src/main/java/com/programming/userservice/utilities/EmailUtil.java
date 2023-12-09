@@ -1,6 +1,6 @@
-package com.programming.userservice.util;
+package com.programming.userservice.utilities;
 
-import com.programming.userservice.util.constant.TypeMessage;
+import com.programming.userservice.utilities.constant.TypeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

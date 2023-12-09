@@ -1,4 +1,4 @@
-package com.programming.userservice.util;
+package com.programming.userservice.utilities;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

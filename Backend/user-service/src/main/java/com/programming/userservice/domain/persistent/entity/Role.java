@@ -22,7 +22,7 @@ import java.util.Set;
 )
 @ToString(callSuper = true)
 public class Role extends BaseModel {
-    @Column(nullable = false, length = 64)
+    @Column(length = 64)
     private String name;
     @Column(length = 512)
     private String description;
