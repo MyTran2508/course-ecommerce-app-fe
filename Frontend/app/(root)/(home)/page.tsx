@@ -6,6 +6,7 @@ import Loading from "../user/personal/loading";
 import { Course } from "@/types/course.type";
 import { course } from "@/redux/features/courseSlice";
 import Checkout from "@/components/PayPal";
+import Paginate from "@/components/Paginate";
 
 export default function Home() {
   const [text] = useTypewriter({
@@ -55,6 +56,12 @@ export default function Home() {
       <div>
         <h3 className="text-2xl font-bold ml-6">Khóa Học Mới</h3>
         {renderItem()}
+      </div>
+      <div className="flex-center">
+        {/* <Paginate totalPage={4} key={"123123"} setPage={setPage} /> */}
+        {/* {newestCourseList.length !== 0 ? (
+          <Paginate totalPage={newestCourseList.length} />
+        ) : null} */}
       </div>
     </main>
   );

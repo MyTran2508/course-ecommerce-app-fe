@@ -44,7 +44,12 @@ public class AuthConfig {
                         .requestMatchers("/swagger-ui/**",
                                         "/v3/api-docs/**",
                                         "/api/courses/course/download/**",
-                                        "/api/courses/course/filter")
+                                        "/api/courses/course/filter",
+                                        "/api/courses/course/newest/**",
+                                        "/api/courses/course/popular/**",
+                                        "/api/courses/content/get-by-course-id",
+                                        "/api/courses/course/get-all"
+                                        )
 
                         .permitAll()
                         .anyRequest().authenticated()

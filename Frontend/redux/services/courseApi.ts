@@ -85,12 +85,14 @@ export const courseApi = createApi({
         }
       }
     }),
-    getCourseByUserId: builder.query<ListResponse, string>({
-      query: (id: string) => {
+    getCourseByUserId: builder.query<ListResponse, {id: string, pageIndex: number, pageSize: number}>({
+      query: ({id, pageIndex, pageSize}) => {
          return {
            url: `/api/courses/course/get-all-by-user-id`,
            params: {
-             userId: id
+             userId: id,
+             pageIndex: pageIndex,
+             pageSize: pageSize,
            }
          }
       },
@@ -99,17 +101,6 @@ export const courseApi = createApi({
       query: () => {
          return {
            url: `/api/courses/course/get-all`,
-         }
-      },
-    }),
-    getCourseAccess: builder.query<DataResponse, {courseId: string, userId: string}>({
-      query: ({courseId, userId}) => {
-         return {
-           url: `/api/courses/course-access/has-access-to-course`,
-           params: {
-             userId: userId,
-             courseId: courseId
-           }
          }
       },
     }),
@@ -136,6 +127,5 @@ export const {
   useGetNewestCourseQuery,
   useGetCourseByUserIdQuery,
   useGetAllCourseQuery,
-  useGetCourseAccessQuery,
   useFilterCourseMutation
 } = courseApi;

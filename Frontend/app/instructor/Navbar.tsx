@@ -42,11 +42,15 @@ function InstructorNavbar() {
 
   useEffect(() => {
     if (userNameSuccess) {
-      const userState: Pick<User, "username" | "photos" | "email" | "id"> = {
+      const userState: Pick<
+        User,
+        "username" | "photos" | "email" | "id" | "roles"
+      > = {
         id: (userNameData.data as User).id,
         username: (userNameData.data as User).username,
         photos: (userNameData.data as User).photos,
         email: (userNameData.data as User).email,
+        roles: (userNameData.data as User).roles,
       };
       dispatch(setUser(userState));
       setUserData(userNameData.data as User);
@@ -73,9 +77,7 @@ function InstructorNavbar() {
         <div className="">
           {user?.username ? (
             <div className="flex-center gap-10">
-              <div className="xs:hidden">
-                <Link href={"/instructor/courses"}>Quản Lý Khóa Học</Link>
-              </div>
+              <Link href={"/instructor/courses/create"}>Tạo Khóa Học Mới</Link>
               <div>
                 <Menu>
                   <Menu.Button>

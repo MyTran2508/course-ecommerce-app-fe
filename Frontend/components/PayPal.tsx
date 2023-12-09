@@ -69,7 +69,7 @@ const Checkout = (props: CheckoutProps) => {
       .then((fulfilled) => {
         console.log(fulfilled);
         showToast(ToastStatus.SUCCESS, ToastMessage.PAYMENT_SUCCESS);
-        router.push("/my-course");
+        router.push("/my-courses");
       });
   };
 

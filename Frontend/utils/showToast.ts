@@ -1,7 +1,7 @@
 import { Theme, ToastPosition, toast } from "react-toastify";
 import { ToastStatus } from "./resources";
-
-export default function showToast(status: ToastStatus, message: string) {
+import {debounce} from "lodash"
+const showToast = debounce((status: ToastStatus, message: string) => {
   const toastConfig = {
     position: 'top-right' as ToastPosition,
     autoClose: 1200,
@@ -21,4 +21,5 @@ export default function showToast(status: ToastStatus, message: string) {
     default:
       break;
   }
-}
+},1000)
+export default showToast;

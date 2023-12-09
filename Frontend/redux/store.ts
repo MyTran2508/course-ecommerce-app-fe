@@ -6,12 +6,13 @@ import userReducer from "./features/userSlice";
 import courseReducer from "./features/courseSlice";
 import contentReducer from "./features/contentSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { rtkQueryErrorLogger } from "@/config/middleware";
+import { AuthMiddleware, rtkQueryErrorLogger } from "@/config/middleware";
 import { userApi } from "./services/userApi";
 import { courseApi } from "./services/courseApi";
 import { contentApi } from "./services/contentApi";
 import { sectionApi } from "./services/sectionApi";
-import { orderApi} from "./services/orderApi";
+import { orderApi } from "./services/orderApi";
+import { courseProcessApi} from "./services/courseProcessApi";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { Cart } from "@/types/cart.type";
@@ -24,7 +25,7 @@ const persistConfig = {
 export interface RootStateReduxPersist {
   cartReducer: Cart[];
   authReducer: AuthState;
-  userReducer:  Pick<User, "username" | "photos" | "email" | "id">,
+  userReducer:  Pick<User, "username" | "photos" | "email" | "id" | "roles">,
 }
 
 const rootReducer = combineReducers<RootStateReduxPersist>( {
@@ -44,9 +45,10 @@ export const store = configureStore({
     [courseApi.reducerPath]: courseApi.reducer,
     [contentApi.reducerPath]: contentApi.reducer,
     [sectionApi.reducerPath]: sectionApi.reducer,
-     [orderApi.reducerPath]: orderApi.reducer
+    [orderApi.reducerPath]: orderApi.reducer,
+    [courseProcessApi.reducerPath]: courseProcessApi.reducer
   },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({}).concat([authApi.middleware, userApi.middleware, courseApi.middleware, contentApi.middleware, sectionApi.middleware, orderApi.middleware, rtkQueryErrorLogger]),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({}).concat([authApi.middleware, userApi.middleware, courseApi.middleware, contentApi.middleware, sectionApi.middleware, orderApi.middleware,courseProcessApi.middleware, rtkQueryErrorLogger, AuthMiddleware]),
 });
 setupListeners(store.dispatch);
 export type RootState = ReturnType<typeof store.getState>

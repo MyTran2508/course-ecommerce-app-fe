@@ -94,8 +94,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @GetMapping("/get-all-by-user-id")
-    public ListResponse<CourseDto> getAllCourseProgressByUserId(@RequestParam("userId") String userId) {
-        return courseService.getCourseAccessByUserId(userId);
+    public ListResponse<CourseDto> getAllCourseProgressByUserId(@RequestParam("userId") String userId,@RequestParam("pageIndex")Integer pageIndex, @RequestParam("pageSize") Integer pageSize ) {
+        return courseService.getCourseAccessByUserId(userId, pageIndex, pageSize);
     }
 
     @PostMapping("/update-approved")

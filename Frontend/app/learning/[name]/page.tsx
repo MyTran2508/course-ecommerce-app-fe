@@ -6,26 +6,32 @@ import { BsQuestionCircle } from "react-icons/bs";
 import CourseContentLearning from "@/components/CourseContentLearning";
 import DiscussionSheet from "@/components/DiscussionSheet";
 import { useParams, useRouter } from "next/navigation";
-import {
-  useGetCourseAccessQuery,
-  useLoadFileFromCloudQuery,
-} from "@/redux/services/courseApi";
+import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 import { useAppSelector } from "@/redux/hooks";
 import { Lecture, Section } from "@/types/section.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content from "@/types/content.type";
 import { Course } from "@/types/course.type";
-import { handleCountFieldsInSection } from "@/utils/function";
+import {
+  useGetByUserIdAndCourseIdQuery,
+  useGetCourseAccessQuery,
+  useUpdateCurrentProgressMutation,
+} from "@/redux/services/courseProcessApi";
+import { CourseProcess } from "@/types/courseProcess.type";
+import PDFViewer from "@/components/PDFviewer";
+import { debounce } from "lodash";
 
 function PageLearning() {
   const param = useParams();
   const router = useRouter();
-  const [courseId, setCourseId] = useState("");
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [courseId, setCourseId] = useState(param.name as string);
   const [nameCourse, setNameCourse] = useState("");
   const [isAccess, setAccess] = useState<boolean>();
   const [sections, setSections] = useState<Section[]>([]);
   const [lecture, setLecture] = useState<Lecture>();
-  const { totalLectureCount } = handleCountFieldsInSection(sections);
+  const [readDocComplete, setReadDocComplete] = useState(false);
+  const [courseProcess, setCourseProcess] = useState<CourseProcess>();
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.id
   );
@@ -35,10 +41,30 @@ function PageLearning() {
   const { data: courseAccess, isSuccess: getCourseAccessSuccess } =
     useGetCourseAccessQuery({
       userId: userId,
-      courseId: param.name as string,
+      courseId: courseId,
+    });
+  const { data: courseProcessData, isSuccess: getCourseProcessSuccess } =
+    useGetByUserIdAndCourseIdQuery({
+      userId: userId,
+      courseId: courseId,
     });
   const { data: contentData, isSuccess: getContentSuccess } =
     useGetContentByCourseIdQuery(courseId);
+  const [updateCourseProcess] = useUpdateCurrentProgressMutation();
+
+  const handleUpdateCourseProcess = async () => {
+    await updateCourseProcess({
+      userId: userId,
+      courseId: courseId,
+    });
+  };
+
+  useEffect(() => {
+    if (getCourseProcessSuccess) {
+      console.log(courseProcessData);
+      setCourseProcess(courseProcessData.data as CourseProcess);
+    }
+  }, [courseProcessData]);
 
   useEffect(() => {
     if (getCourseAccessSuccess) {
@@ -61,6 +87,20 @@ function PageLearning() {
     }
   }, [isAccess]);
 
+  useEffect(() => {
+    if (readDocComplete) {
+      if (
+        !lecture?.isSuccess &&
+        lecture?.videoDuration === 0 &&
+        (lecture?.ordinalNumber as number) >
+          (courseProcess as CourseProcess).currentProgress
+      ) {
+        handleUpdateCourseProcess();
+        setReadDocComplete(false);
+      }
+    }
+  }, [readDocComplete]);
+
   const renderCourseContent = () => {
     return (
       <div className="sticky top-[100px]  custom-scrollbar overflow-y-scroll h-2/3">
@@ -72,6 +112,8 @@ function PageLearning() {
                 <CourseContentLearning
                   section={section}
                   setLecture={setLecture}
+                  currentProgress={courseProcess?.currentProgress as number}
+                  lectureActive={lecture?.ordinalNumber as number}
                 />
               </div>
             );
@@ -80,23 +122,19 @@ function PageLearning() {
     );
   };
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handleTimeUpdate = () => {
+  const handleTimeUpdate = debounce(() => {
     if (videoRef.current) {
       const currentTime = videoRef.current.currentTime;
-      if (currentTime > (lecture?.videoDuration as number) - 60) {
-        setSections((prevSections) =>
-          prevSections.map((section) => {
-            const updatedLectures = section.lectures.map((lec) =>
-              lec.id === lecture?.id ? { ...lec, isSuccess: true } : lec
-            );
-            return { ...section, lectures: updatedLectures };
-          })
-        );
+
+      if (
+        currentTime / (lecture?.videoDuration as number) > 0.98 &&
+        (lecture?.ordinalNumber as number) >
+          (courseProcess as CourseProcess).currentProgress
+      ) {
+        handleUpdateCourseProcess();
       }
     }
-  };
+  }, 1000);
 
   return (
     <div>
@@ -120,11 +158,14 @@ function PageLearning() {
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-sm font-semibold text-blue-500">
-                        50%
+                        {(courseProcess?.rateProgress as number) * 100}%
                       </span>
                     </div>
                   </div>
-                  <div>0/{totalLectureCount} bài học</div>
+                  <div>
+                    {courseProcess?.currentProgress}/
+                    {courseProcess?.totalAmountOfLecture} bài học
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <BiNotepad />
@@ -156,20 +197,25 @@ function PageLearning() {
                       autoPlay
                     />
                   ) : (
-                    <div>
-                      <object
-                        data={`data:application/pdf;base64,${fileBase64}#page=1&zoom=50`}
-                        type="application/pdf"
-                        className="w-full h-[500px]"
-                      />
-                    </div>
+                    // <div>
+                    //   <object
+                    //     data={`data:application/pdf;base64,${fileBase64}#page=1&zoom=50`}
+                    //     type="application/pdf"
+                    //     className="w-full h-[500px]"
+                    //   />
+                    // </div>
+
+                    <PDFViewer
+                      fileBase64={fileBase64 as string}
+                      setReadDocComplete={setReadDocComplete}
+                      lectureUrl={lecture?.url}
+                    />
                   )}
                 </div>
 
                 <div className="text-xl font-bold mt-2 ml-4">
                   {lecture?.name}
                 </div>
-                <div className="min-h-[200px]"></div>
               </div>
             </div>
             <div className="w-3/12 sticky z-30">

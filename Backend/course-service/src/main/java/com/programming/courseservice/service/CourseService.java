@@ -106,7 +106,6 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         Page<Course> courses = courseRepository.filterCourse(levelIds,
                 languageIds, topicIds, keyword, pageable);
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
-
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
 
     }
@@ -144,8 +143,8 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
                 .body(resource);
     }
 
-    public ListResponse<CourseDto> getCourseAccessByUserId(String userId) {
-        Pageable pageable = PageRequest.of(0,4);
+    public ListResponse<CourseDto> getCourseAccessByUserId(String userId, Integer pageIndex, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex,pageSize);
         Page<Course> courses = courseRepository.getCourseAccessByUserId(userId, pageable);
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
