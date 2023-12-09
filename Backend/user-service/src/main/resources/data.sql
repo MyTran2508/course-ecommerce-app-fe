@@ -8,7 +8,7 @@ INSERT IGNORE INTO `user`(id, created, creator, modifier, removed, updated, emai
        ('2', null, null, null, 0, null, 'pntnoah2@gmail.com', 'manager', 'manager', '$2a$10$IKPvCwZfK0sbqeC/W5N1vOlol8GwuJN8q1f5WgLqaYe7TgnBxIbU.', null, '0393023681', 'manager'),
        ('3', null, null, null, 0, null, 'keyhoangvu@gmail.com', 'user', 'user', '$2a$10$IKPvCwZfK0sbqeC/W5N1vOlol8GwuJN8q1f5WgLqaYe7TgnBxIbU.', null, '0937566870', 'user');
 
-INSERT IGNORE INTO `users_roles`(user_id, role_id)
-       VALUES ('1', 'ROLE_ADMIN'),
-       ('2', 'ROLE_MANAGER'),
-       ('3', 'ROLE_USER');
+-- INSERT IGNORE INTO `users_roles`(user_id, role_id)
+--        VALUES ('1', 'ROLE_ADMIN'),
+--        ('2', 'ROLE_MANAGER'),
+--        ('3', 'ROLE_USER');

@@ -15,13 +15,13 @@ import java.util.Set;
 public class UserDto {
     private String id;
 //    @NotEmpty(message = "Password is required")
-    @Size(min = 2, max = 100, message = "Password must be between 2 and 100 characters")
+//    @Size(min = 2, max = 32, message = "Password must be between 2 and 32 characters")
     private String password;
     @Email(message = "Invalid email address")
     @NotEmpty(message = "Email is required")
     private String email;
     @NotEmpty(message = "Username is required")
-    @Size(min = 6, message = "Username must be at least 6 characters")
+    @Size(min = 4, message = "Username must be at least 4 characters")
     private String username;
     private String firstName;
     private String lastName;

@@ -1,4 +1,4 @@
-package com.programming.courseservice.util.constant;
+package com.programming.courseservice.utilities.constant;
 
 public class S3Constrant {
     public static final String PATH_COURSE_LECTURE = "course/lecture/";

@@ -20,7 +20,7 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends BaseRepository<Course> {
-    @Query("select c from Course c where c.topic.id = :topicId")
+    @Query("select c from Course c where c.topic.id = :topicId and c.isApproved = true")
     List<Course> getCourseByTopicId(@Param("topicId") String topicId, Pageable pageable);
 
     @Modifying
@@ -29,7 +29,7 @@ public interface CourseRepository extends BaseRepository<Course> {
     void updateCourse(String id, String levelId, String topicId, String languageId);
 
     @Query("""
-                Select cg.course from CourseProgress cg where cg.course.topic.id = :topicId 
+                Select cg.course from CourseProgress cg where cg.course.topic.id = :topicId and cg.course.isApproved = true
                 GROUP BY cg.course.id 
                 order by count(cg.course.id) DESC
            """)
@@ -40,6 +40,7 @@ public interface CourseRepository extends BaseRepository<Course> {
                 and c.language.id IN :languageIds
                 and c.topic.id IN :topicIds
                 and (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                and c.isApproved = true
             """)
     Page<Course> filterCourse(@Param("levelIds") List<String> levelIds,
                               @Param("languageIds") List<String> languageIds,
@@ -47,6 +48,25 @@ public interface CourseRepository extends BaseRepository<Course> {
                               @Param("keyword") String keyword,
                               Pageable pageable);
 
-    @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id")
-    Page<Course> getCourseAccessByUserId(@Param("userId") String userId, Pageable pageable);
+    @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id and cg.course.isApproved = true")
+    Page<Course> getCourseAccessByUserId(@Param("userId") String topicId, Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query("Update Course c set c.isApproved = :isApproved WHERE c.id = :id")
+    void updateIsApproved(String id, boolean isApproved);
+
+//    @Transactional
+//    @Modifying
+//    @Query("Update Course c set c.isAwaitingApproval = :awaitingApproval WHERE c.id = :id")
+//    void updateAwaitingApproval(String id, boolean awaitingApproval);
+
+    @Query("""
+                select c from Course c where (c.name LIKE %:name% or c.subTitle LIKE %:name% or :name IS NULL)
+                and (c.isApproved = :isApproved or :isApproved IS NULL)
+                and (c.isAwaitingApproval = :isAwaitingApproval or :isAwaitingApproval IS NULL)
+                and c.isCompletedContent = true
+            """)
+    Page<Course> searchCourseOfAdmin(@Param("name") String name, @Param("isApproved") Boolean isApproved,
+                                     @Param("isAwaitingApproval") Boolean isAwaitingApproval, Pageable pageable);
 }

@@ -1,4 +1,4 @@
-package com.programming.userservice.util.constant;
+package com.programming.courseservice.utilities.constant;
 
 import java.util.UUID;
 

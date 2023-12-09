@@ -1,24 +1,26 @@
 package com.programming.courseservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
+import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.CourseDto;
+import com.programming.courseservice.domain.dto.CourseIssueReportDto;
 import com.programming.courseservice.domain.dto.SearchCourseDto;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.service.CourseService;
-import com.programming.courseservice.util.annotation.ShowOpenAPI;
-import com.programming.courseservice.util.constant.S3Constrant;
+import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +31,11 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @Override
     protected BaseService<Course, CourseDto> getBaseService() {
         return courseService;
+    }
+
+    @Override
+    public ListResponse<CourseDto> getAll() {
+        return super.getAll();
     }
 
     @Override
@@ -90,4 +97,30 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     public ListResponse<CourseDto> getAllCourseProgressByUserId(@RequestParam("userId") String userId,@RequestParam("pageIndex")Integer pageIndex, @RequestParam("pageSize") Integer pageSize ) {
         return courseService.getCourseAccessByUserId(userId, pageIndex, pageSize);
     }
+
+    @PostMapping("/update-approved")
+    public DataResponse<String> updateIsApproved(@RequestParam("id") String courseId,
+                                                 @RequestParam("isApproved") Boolean isApproved,
+                                                 @Valid @RequestBody CourseIssueReportDto courseIssueReportDto) {
+        return courseService.updateIsApproved(courseId, isApproved, courseIssueReportDto);
+    }
+
+    @PostMapping("/update-awaiting-approval")
+    public DataResponse<String> updateAwaitingApproval(@RequestParam("id") String courseId,
+                                                       @RequestParam("isAwaitingApproval") Boolean isAwaitingApproval) {
+        return courseService.updateAwaitingApproval(courseId, isAwaitingApproval);
+    }
+
+    @Override
+    public ListResponse<CourseDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
+        /*
+         * List<String> keyword:
+         * index 1: key of name or subTitle
+         * index 2: isApproved (true/false/null)
+         * index 3: isAwaitingApproval (true/false/null)
+         */
+        return super.searchByKeyword(searchKeywordDto);
+    }
+
+
 }

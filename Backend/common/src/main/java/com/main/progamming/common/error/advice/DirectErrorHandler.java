@@ -28,12 +28,12 @@ public class DirectErrorHandler extends ResponseEntityExceptionHandler{
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         System.out.println("Vao day");
-        Map<String, String> errors = new HashMap<>();
+//        Map<String, String> errors = new HashMap<>();
+        List<String> errors = new ArrayList<>();
         List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
         errorList.forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
             String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
+            errors.add(message);
         });
         DataResponse<?> errorResponse = ResponseMapper.toDataResponse(errors,
                 StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);

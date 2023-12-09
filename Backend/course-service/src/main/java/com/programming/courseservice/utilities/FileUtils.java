@@ -1,4 +1,4 @@
-package com.programming.courseservice.util;
+package com.programming.courseservice.utilities;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -27,7 +27,7 @@ public interface UserRepository extends BaseRepository<User> {
 
     @Query("""
                 select u from User u where u.username LIKE %:keyword% or 
-                u.email LIKE %:keyword%
+                u.email LIKE %:keyword% OR :keyword IS NULL
             """)
     Page<User> searchUser(@Param("keyword") String keyword, Pageable pageable);
 }

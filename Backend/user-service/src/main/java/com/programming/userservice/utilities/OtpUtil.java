@@ -1,7 +1,7 @@
-package com.programming.userservice.util;
+package com.programming.userservice.utilities;
 
 import com.programming.userservice.repository.UserRepository;
-import com.programming.userservice.util.constant.TypeMessage;
+import com.programming.userservice.utilities.constant.TypeMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

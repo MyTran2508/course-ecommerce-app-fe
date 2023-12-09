@@ -2,9 +2,11 @@ package com.main.progamming.common.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class SearchKeywordDto {
-    private String keyword;
+    private List<String> keyword;
     private String sortBy = "";
     private Boolean isDecrease = true;
     private int pageIndex;

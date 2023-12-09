@@ -11,12 +11,10 @@ import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.service.StorageService;
 import com.programming.userservice.service.UserService;
-import com.programming.userservice.util.annotation.ShowOpenAPI;
+import com.programming.userservice.utilities.annotation.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,9 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Tag(
         name = "User Service - User Controller",
@@ -79,9 +76,10 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/update-admin")
-    public DataResponse<UserDto> updateUserForAdmin(@Valid @RequestBody UserDto userDto, @RequestParam String id) {
-        return userService.update(id, userDto);
+    @PutMapping("/update-admin/{id}")
+    public DataResponse<UserDto> updateAdminUser(@Valid @RequestBody UserDto userDto,
+                                                    @PathVariable("id") String id) {
+        return userService.updateAdminUser(userDto, id);
     }
 
     @PostMapping("/login")
@@ -139,6 +137,10 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @Override
     @ShowOpenAPI
     public ListResponse<UserDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
+        /*
+         * List<String> keyword:
+         * index 1: key of username or email
+         */
         return super.searchByKeyword(searchKeywordDto);
     }
 
@@ -153,5 +155,10 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     public DataResponse<String> uploadAvatar(@PathVariable("username") String username,
                                           @RequestParam("image")MultipartFile file) {
         return userService.uploadAvatar(username, file);
+    }
+
+    public DataResponse<Map<String, Integer>> getStatisticsByYear(@RequestParam("targetYear") Integer targetYear,
+                                                                  @RequestParam("targetMonth") Integer targetMonth) {
+        return userService.getStatistics(targetYear, targetMonth);
     }
 }

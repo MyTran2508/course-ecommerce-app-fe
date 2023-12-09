@@ -1,5 +1,6 @@
 package com.programming.courseservice.domain.dto;
 
+import com.programming.courseservice.domain.persistent.entity.CourseIssueReport;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,7 @@ public class CourseDto {
     private String authorName;
     private TopicDto topic;
     private Boolean isApproved;
+    private Boolean isCompletedContent;
+    private Boolean isAwaitingApproval;
+    private List<CourseIssueReportDto> courseIssueReports;
 }

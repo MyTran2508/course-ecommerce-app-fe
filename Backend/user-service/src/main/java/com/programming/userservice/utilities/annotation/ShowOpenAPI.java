@@ -1,4 +1,4 @@
-package com.programming.userservice.util.annotation;
+package com.programming.userservice.utilities.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

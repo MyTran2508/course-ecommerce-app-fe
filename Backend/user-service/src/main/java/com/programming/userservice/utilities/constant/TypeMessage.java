@@ -1,4 +1,4 @@
-package com.programming.userservice.util.constant;
+package com.programming.userservice.utilities.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
