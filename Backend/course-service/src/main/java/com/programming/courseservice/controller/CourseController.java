@@ -101,7 +101,7 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @PostMapping("/update-approved")
     public DataResponse<String> updateIsApproved(@RequestParam("id") String courseId,
                                                  @RequestParam("isApproved") Boolean isApproved,
-                                                 @Valid @RequestBody CourseIssueReportDto courseIssueReportDto) {
+                                                 @RequestBody CourseIssueReportDto courseIssueReportDto) {
         return courseService.updateIsApproved(courseId, isApproved, courseIssueReportDto);
     }
 
@@ -121,6 +121,4 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
          */
         return super.searchByKeyword(searchKeywordDto);
     }
-
-
 }

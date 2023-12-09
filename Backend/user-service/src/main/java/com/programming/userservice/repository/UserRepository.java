@@ -30,4 +30,16 @@ public interface UserRepository extends BaseRepository<User> {
                 u.email LIKE %:keyword% OR :keyword IS NULL
             """)
     Page<User> searchUser(@Param("keyword") String keyword, Pageable pageable);
+
+
+    /*
+
+    @Query(value = "SELECT MONTH(FROM_UNIXTIME(created / 1000)) as month, SUM(total_price) as total " +
+            "FROM orders " +
+            "WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
+            "GROUP BY MONTH(FROM_UNIXTIME(created / 1000))", nativeQuery = true)
+     */
+    @Query(value = "SELECT COUNT(*) FROM user WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
+            "and (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL)", nativeQuery = true)
+    Integer countByYearAnhMonth(@Param("targetYear") Integer targetYear, @Param("targetMonth") Integer targetMonth);
 }

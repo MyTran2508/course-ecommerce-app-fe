@@ -157,8 +157,9 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         return userService.uploadAvatar(username, file);
     }
 
-    public DataResponse<Map<String, Integer>> getStatisticsByYear(@RequestParam("targetYear") Integer targetYear,
-                                                                  @RequestParam("targetMonth") Integer targetMonth) {
-        return userService.getStatistics(targetYear, targetMonth);
+    @ShowOpenAPI
+    @PostMapping("/get-statistics")
+    public DataResponse<Map<String, Integer>> getStatisticsByYear(@Valid @RequestBody StatisticsRequest statisticsRequest) {
+        return userService.getStatistics(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
     }
 }

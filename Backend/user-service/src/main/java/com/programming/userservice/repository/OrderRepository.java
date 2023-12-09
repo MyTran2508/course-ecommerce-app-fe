@@ -16,4 +16,9 @@ public interface OrderRepository extends BaseRepository<Order> {
             "WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
             "GROUP BY MONTH(FROM_UNIXTIME(created / 1000))", nativeQuery = true)
     List<Object[]> getTotalPriceByMonth(@Param("targetYear") int targetYear);
+
+//    @Query(value = "SELECT TOTAL(totalPrice) FROM orders WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
+//            "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL)", nativeQuery = true)
+//    Integer getTotalRenevueByYearAndMonth(@Param("targetYear") int targetYear,
+//                                          @Param("targetMonth") Integer targetMonth);
 }

@@ -170,6 +170,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
             courseIssueReports.add(courseIssueReport);
             courseIssueReports.forEach(System.out::println);
             course.setCourseIssueReports(courseIssueReports);
+            course.setIsAwaitingApproval(false);
             courseRepository.save(course);
             return ResponseMapper.toDataResponseSuccess("Update succcessful");
         }

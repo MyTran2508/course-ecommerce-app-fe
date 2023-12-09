@@ -190,7 +190,14 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         }
     }
 
+    public Integer getTotalRegisteredUsers(Integer targetYear, Integer targetMonth) {
+        return userRepository.countByYearAnhMonth(targetYear, targetMonth);
+//        return null;
+    }
+
     public DataResponse<Map<String, Integer>> getStatistics(Integer targetYear, Integer targetMonth) {
-        return null;
+        Map<String, Integer> statisticsMap = new HashMap<>();
+        statisticsMap.put("totalOfUserByYearAndMonth", getTotalRegisteredUsers(targetYear, targetMonth));
+        return ResponseMapper.toDataResponseSuccess(statisticsMap);
     }
 }
