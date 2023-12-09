@@ -15,7 +15,7 @@ import java.util.Set;
 public class UserDto {
     private String id;
 //    @NotEmpty(message = "Password is required")
-    @Size(min = 2, max = 32, message = "Password must be between 2 and 32 characters")
+    @Size(min = 2, max = 100, message = "Password must be between 2 and 100 characters")
     private String password;
     @Email(message = "Invalid email address")
     @NotEmpty(message = "Email is required")
@@ -29,4 +29,5 @@ public class UserDto {
     private String photos;
     private List<RoleDto> roles;
     private List<AddressDto> addresses;
+    private Boolean removed;
 }

@@ -11,7 +11,7 @@ import { BiSolidMessageSquareAdd } from "react-icons/bi";
 
 function MyCourses() {
   const userId = useAppSelector(
-    (state) => state.persistedReducer.userReducer.id
+    (state) => state.persistedReducer.userReducer.user.id
   );
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);

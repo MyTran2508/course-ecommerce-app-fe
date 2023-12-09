@@ -63,7 +63,7 @@ function CourseInforForm(props: CourseInfoProps) {
   );
 
   const email = useAppSelector(
-    (state) => state.persistedReducer.userReducer.email
+    (state) => state.persistedReducer.userReducer.user.email
   );
   const [defaultValueForm, setDefaultValueFrom] = useState(
     handleSetDefaultValueFrom(course)

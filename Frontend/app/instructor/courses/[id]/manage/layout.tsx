@@ -9,6 +9,7 @@ function layout({ children }: { children: React.ReactNode }) {
       <Navbar />
       <div className="flex">
         <SideBar />
+
         {children}
       </div>
       <Footer />

@@ -23,3 +23,11 @@ export interface SearchCourseRequest {
     pageIndex: number;
     pageSize: number;
 }
+
+export interface SearchRequest {
+    sortBy: string,
+    isDecrease: boolean;
+    keyword: string;
+    pageIndex: number;
+    pageSize: number;
+}

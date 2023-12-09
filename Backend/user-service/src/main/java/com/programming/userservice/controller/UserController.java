@@ -80,7 +80,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-admin")
-    public DataResponse<UserDto> updateUserForAdmin(@Valid UserDto userDto, String id) {
+    public DataResponse<UserDto> updateUserForAdmin(@Valid @RequestBody UserDto userDto, @RequestParam String id) {
         return userService.update(id, userDto);
     }
 

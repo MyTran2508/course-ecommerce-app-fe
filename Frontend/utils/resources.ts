@@ -47,7 +47,8 @@ export enum ToastMessage {
 export enum Role {
   USER = "ROLE_USER",
   ADMIN = "ROLE_ADMIN",
-  MANAGER = "ROLE_MANAGER"
+  MANAGER = "ROLE_MANAGER",
+  GUEST = "ROLE_GUEST"
 }
 
 export enum ApiResource {

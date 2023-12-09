@@ -52,7 +52,8 @@ export const formPersonalSchema = z.object({
   lastName: formSignUpSchema.shape.lastName,
   addressLine: formSignUpSchema.shape.addressLine,
   telephone: formSignUpSchema.shape.telephone,
-  photos: z.string()
+  photos: z.string(),
+  role: z.string()
 }).strict()
 
 export const formResetPasswordSchema = z.object({

@@ -33,7 +33,7 @@ function PageLearning() {
   const [readDocComplete, setReadDocComplete] = useState(false);
   const [courseProcess, setCourseProcess] = useState<CourseProcess>();
   const userId = useAppSelector(
-    (state) => state.persistedReducer.userReducer.id
+    (state) => state.persistedReducer.userReducer.user.id
   );
 
   const { data: fileBase64, isSuccess: loadFileSuccess } =

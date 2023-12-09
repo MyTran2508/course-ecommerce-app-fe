@@ -25,7 +25,10 @@ import Content from "@/types/content.type";
 import { Section } from "@/types/section.type";
 import { handleCountFieldsInSection } from "@/utils/function";
 import { useRouter } from "next/navigation";
-import { useGetCourseAccessQuery } from "@/redux/services/courseProcessApi";
+import {
+  useGetCourseAccessQuery,
+  useLazyGetCourseAccessQuery,
+} from "@/redux/services/courseProcessApi";
 
 const initCourse: Course = {
   id: "0",
@@ -57,16 +60,24 @@ function CoursePage() {
     param.id as string
   );
   const userId = useAppSelector(
-    (state) => state.persistedReducer.userReducer.id
+    (state) => state.persistedReducer.userReducer.user.id
   );
-  const { data: courseAccess, isSuccess: getCourseAccessSuccess } =
-    useGetCourseAccessQuery({
-      userId: userId,
-      // courseId: course?.id as string,
-      courseId: param.id as string,
-    });
+  const [
+    getCourseAccess,
+    { data: courseAccess, isSuccess: getCourseAccessSuccess },
+  ] = useLazyGetCourseAccessQuery();
   const { totalDurationCourse, totalLectureCount } =
     handleCountFieldsInSection(sections);
+
+  useEffect(() => {
+    if (userId) {
+      getCourseAccess({
+        userId: userId,
+        // courseId: course?.id as string,
+        courseId: param.id as string,
+      });
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -86,7 +97,7 @@ function CoursePage() {
   useEffect(() => {
     if (getCourseAccessSuccess) {
       setAccess(courseAccess?.data as boolean);
-      if ((courseAccess.data as boolean) === true) {
+      if ((courseAccess?.data as boolean) === true) {
         router.push(`/learning/${param.id as string}`);
       }
     }
