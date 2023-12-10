@@ -62,13 +62,15 @@ public interface CourseRepository extends BaseRepository<Course> {
 //    void updateAwaitingApproval(String id, boolean awaitingApproval);
 
     @Query("""
-                select c from Course c where (c.name LIKE %:name% or c.subTitle LIKE %:name% or :name IS NULL)
+                select c from Course c
+                where (c.name LIKE %:name% or c.subTitle LIKE %:name% or :name IS NULL)
+                and (c.creator = :creator or :creator IS NULL)
                 and (c.isApproved = :isApproved or :isApproved IS NULL)
                 and (c.isAwaitingApproval = :isAwaitingApproval or :isAwaitingApproval IS NULL)
-                and c.isCompletedContent = true
+                and (c.isCompletedContent = :isCompletedContent or :isCompletedContent IS NULL)
             """)
-    Page<Course> searchCourseOfAdmin(@Param("name") String name, @Param("isApproved") Boolean isApproved,
-                                     @Param("isAwaitingApproval") Boolean isAwaitingApproval, Pageable pageable);
+    Page<Course> searchCourseOfAdmin(String name, String creator, Boolean isApproved,
+                                     Boolean isAwaitingApproval, Boolean isCompletedContent, Pageable pageable);
 
     @Query(value = "SELECT COUNT(*) FROM course WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
             "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL) " +

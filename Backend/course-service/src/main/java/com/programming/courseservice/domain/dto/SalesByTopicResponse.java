@@ -11,7 +11,6 @@ public class SalesByTopicResponse {
     private String topicName;
     private Double totalPrice;
 
-
     public Integer convertTopicIdAsInteger() {
         try {
             return Integer.parseInt(topicId);

@@ -112,8 +112,10 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         /*
          * List<String> keyword:
          * index 1: key of name or subTitle
-         * index 2: isApproved (true/false/null)
-         * index 3: isAwaitingApproval (true/false/null)
+         * index 2: creator (username)
+         * index 3: isApproved (true/false/null)
+         * index 4: isAwaitingApproval (true/false/null)
+         * index 5: isAwaitingApproval (true/false/null)
          */
         return super.searchByKeyword(searchKeywordDto);
     }

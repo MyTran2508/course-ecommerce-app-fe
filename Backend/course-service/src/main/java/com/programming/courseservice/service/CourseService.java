@@ -55,9 +55,11 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     @Override
     protected Page<CourseDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
-        Boolean isApproved = searchKeywordDto.getKeyword().get(1) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(1).trim());
-        Boolean isAwaitingApproval = searchKeywordDto.getKeyword().get(2) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(2).trim());
-        return courseRepository.searchCourseOfAdmin(name, isApproved, isAwaitingApproval, pageable)
+        String creator =  searchKeywordDto.getKeyword().get(1) == null ? null : searchKeywordDto.getKeyword().get(1).trim();
+        Boolean isApproved = searchKeywordDto.getKeyword().get(2) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(2).trim());
+        Boolean isAwaitingApproval = searchKeywordDto.getKeyword().get(3) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(3).trim());
+        Boolean isCompletedContent = searchKeywordDto.getKeyword().get(4) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(4).trim());
+        return courseRepository.searchCourseOfAdmin(name, creator, isApproved, isAwaitingApproval, isCompletedContent, pageable)
                 .map(course -> courseMapper.entityToDto(course));
     }
 
@@ -207,7 +209,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toDataResponseSuccess(courseRepository.getTotalApprovedCourseByYearAndMonth(targetYear, targetMonth));
     }
 
-    public DataResponse<List<SalesByTopicResponse>> getSalesByTopics(Integer targetYear) {
+    public DataResponse<List<SalesByTopicResponse>>  getSalesByTopics(Integer targetYear) {
         List<Topic> topics = topicRepository.findAll();
         List<Object[]> salesByTopics = courseRepository.getMonthlySalesByTopics(targetYear);
         List<SalesByTopicResponse> salesByTopicResponses = new ArrayList<>();
