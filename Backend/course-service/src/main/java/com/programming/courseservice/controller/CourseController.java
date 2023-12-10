@@ -122,5 +122,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         return super.searchByKeyword(searchKeywordDto);
     }
 
-
+    @PostMapping("/get-total-approved-course")
+    public DataResponse<Integer> getTotalApprovedCourseByYearAndMonth(@RequestBody StatisticsRequest statisticsRequest) {
+        return courseService.getTotalApprovedCourseByYearAndMonth(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
+    }
 }
