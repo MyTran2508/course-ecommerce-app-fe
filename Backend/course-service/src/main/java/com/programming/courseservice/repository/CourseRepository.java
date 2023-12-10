@@ -74,4 +74,10 @@ public interface CourseRepository extends BaseRepository<Course> {
             "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL) " +
             "AND is_approved = true", nativeQuery = true)
     Integer getTotalApprovedCourseByYearAndMonth(int targetYear, Integer targetMonth);
+
+    @Query(value = "SELECT c.topic_id, SUM(c.price) FROM course_progress as cp " +
+            "INNER JOIN course as c ON cp.course_id = c.id " +
+            "WHERE YEAR(FROM_UNIXTIME(cp.created / 1000)) = :targetYear " +
+            "GROUP BY c.topic_id", nativeQuery = true)
+    List<Object[]> getMonthlySalesByTopics(@Param("targetYear") int targetYear);
 }
