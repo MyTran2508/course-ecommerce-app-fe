@@ -27,7 +27,7 @@ export interface SearchCourseRequest {
 export interface SearchRequest {
     sortBy: string,
     isDecrease: boolean;
-    keyword: string;
+    keyword: any;
     pageIndex: number;
     pageSize: number;
 }

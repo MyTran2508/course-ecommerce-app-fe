@@ -123,6 +123,19 @@ export const courseColumns: ColumnDef<Course>[] = [
       </div>
     ),
   },
+  {
+    accessorKey: "isAwaitingApproval",
+    header: "Chờ Phê Duyệt",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("isAwaitingApproval") ? (
+          <FaRegCheckCircle className="text-lg text-green-500" />
+        ) : (
+          <FaRegTimesCircle className="text-lg text-red-500" />
+        )}
+      </div>
+    ),
+  },
 
   {
     id: "actions",

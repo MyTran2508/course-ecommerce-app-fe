@@ -23,9 +23,6 @@ function UserDialog(props: UserDialogProps) {
       <DialogContent className="w-[500px] flex-center flex-col">
         <DialogHeader>
           <DialogTitle>Chỉnh sửa user</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when
-          </DialogDescription>
         </DialogHeader>
         <PersonalForm userInfor={user} isAdmin={true} />
       </DialogContent>

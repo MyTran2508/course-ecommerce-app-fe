@@ -50,7 +50,7 @@ function UserAdmin() {
   const [getUserByKeyword] = useFilterUserMutation();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: "",
+    keyword: [""],
     sortBy: "",
     isDecrease: true,
     pageIndex: 0,
@@ -71,7 +71,7 @@ function UserAdmin() {
   const handleSearch = () => {
     setSearchQuery((prevSearchQuery) => ({
       ...prevSearchQuery,
-      keyword: searchKeyword,
+      keyword: [searchKeyword],
     }));
   };
 

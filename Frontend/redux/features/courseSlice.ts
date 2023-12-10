@@ -5,7 +5,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface CourseState {
   saveCourseStatus: boolean,
   manageCourse: Course,
-  courseId: string
+  courseId: string,
+  updateCourse: boolean
 }
 
 const initialState: CourseState = {
@@ -22,7 +23,8 @@ const initialState: CourseState = {
         id: "0",
       },
   },
-  courseId: ""
+  courseId: "",
+  updateCourse: false,
 }
 
 export const course = createSlice({
@@ -38,9 +40,12 @@ export const course = createSlice({
     setParamCourseId : (state, action: PayloadAction<string>) => {
       state.courseId = action.payload
     },
+    updateCourse: (state) => {
+        state.updateCourse = !state.updateCourse;
+    }
   },
 });
 
-export const {setStatusSaveCourse , setManageCourse, setParamCourseId} = course.actions;
+export const {setStatusSaveCourse , setManageCourse, setParamCourseId, updateCourse} = course.actions;
 
 export default course.reducer;

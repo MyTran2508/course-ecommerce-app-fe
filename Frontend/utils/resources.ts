@@ -71,3 +71,14 @@ export enum CourseLectureField {
   NAME = "name",
   FILENAME = "fileName"
 }
+
+export enum IssueType {
+  CONTENT_FORMAT=("CONTENT FORMAT ERROR"),
+  FILE_ERROR =("IMAGE OR VIDEO FILE ERROR"),
+  OTHER = ("OTHER TYPES OF ERRORS")
+}
+export enum SecurityLevel {
+  HIGH=("HIGH"),
+  LOW =("LOW"),
+  MEDIUM = ("MEDIUM")
+}

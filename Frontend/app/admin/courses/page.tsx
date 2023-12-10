@@ -30,26 +30,65 @@ import {
 } from "@/components/ui/table";
 import { useState, useEffect } from "react";
 import { courseColumns } from "@/components/table/Columns";
-import { useGetAllCourseQuery } from "@/redux/services/courseApi";
+import {
+  useFilterCourseAdminMutation,
+  useGetAllCourseQuery,
+} from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
+import { SearchRequest } from "@/types/request.type";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { updateCourse } from "@/redux/features/courseSlice";
 
 function CoursesAdmin() {
+  const dispatch = useAppDispatch();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [paginate, setPaginate] = useState({
+  const [courseList, setCourseList] = useState<Course[]>([]);
+  const [totalPage, setTotalPage] = useState(0);
+  const [getCourseByKeyword] = useFilterCourseAdminMutation();
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchQuery, setSearchQuery] = useState<SearchRequest>({
+    keyword: ["", null, null],
+    sortBy: "",
+    isDecrease: true,
     pageIndex: 0,
     pageSize: 5,
   });
-  const [courseList, setCourseList] = useState<Course[]>([]);
-  const { data, isSuccess } = useGetAllCourseQuery(null);
+  const isUpdateCourse = useAppSelector(
+    (state) => state.courseReducer.updateCourse
+  );
+
+  const getCourseList = async (query: SearchRequest) => {
+    await getCourseByKeyword(query)
+      .unwrap()
+      .then((fulfilled) => {
+        setCourseList(fulfilled.data as Course[]);
+        setTotalPage(fulfilled.totalPages);
+      });
+  };
+  const handleSearch = () => {
+    setSearchQuery((prevSearchQuery) => ({
+      ...prevSearchQuery,
+      keyword: [searchKeyword, null, null],
+    }));
+  };
 
   useEffect(() => {
-    if (isSuccess) {
-      setCourseList(data.data as Course[]);
+    getCourseList(searchQuery);
+  }, []);
+
+  useEffect(() => {
+    getCourseList(searchQuery);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (isUpdateCourse) {
+      getCourseList(searchQuery);
+      dispatch(updateCourse());
     }
-  }, [data]);
+  }, [isUpdateCourse]);
 
   const table = useReactTable({
     data: courseList,
@@ -67,25 +106,24 @@ function CoursesAdmin() {
       columnFilters,
       columnVisibility,
       rowSelection,
-      pagination: paginate,
     },
   });
 
   return (
     <div className="w-full px-10">
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Find course name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("name")?.setFilterValue(event.target.value);
-            setPaginate((prevPage) => ({
-              ...prevPage,
-              pageIndex: 0,
-            }));
-          }}
-          className="max-w-sm"
-        />
+        <div className="flex gap-3">
+          <Input
+            placeholder="Nhập username hoặc email..."
+            onChange={(event) => {
+              setSearchKeyword(event.target.value);
+            }}
+            className="max-w-sm "
+          />
+          <Button variant="outline" className="ml-auto" onClick={handleSearch}>
+            Search
+          </Button>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -177,12 +215,12 @@ function CoursesAdmin() {
             variant="outline"
             size="sm"
             onClick={() =>
-              setPaginate((prevPage) => ({
-                ...prevPage,
-                pageIndex: paginate.pageIndex - 1,
+              setSearchQuery((prevSearchQuery) => ({
+                ...prevSearchQuery,
+                pageIndex: searchQuery.pageIndex - 1,
               }))
             }
-            disabled={!table.getCanPreviousPage()}
+            disabled={searchQuery.pageIndex === 0 ? true : false}
           >
             Previous
           </Button>
@@ -190,12 +228,12 @@ function CoursesAdmin() {
             variant="outline"
             size="sm"
             onClick={() =>
-              setPaginate((prevPage) => ({
-                ...prevPage,
-                pageIndex: paginate.pageIndex + 1,
+              setSearchQuery((prevSearchQuery) => ({
+                ...prevSearchQuery,
+                pageIndex: searchQuery.pageIndex + 1,
               }))
             }
-            disabled={!table.getCanNextPage()}
+            disabled={searchQuery.pageIndex < totalPage ? false : true}
           >
             Next
           </Button>

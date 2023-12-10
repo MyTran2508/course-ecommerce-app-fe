@@ -18,6 +18,7 @@ import { Course } from "@/types/course.type";
 import { useAppDispatch } from "@/redux/hooks";
 import { updateUser } from "@/redux/features/userSlice";
 import { useRouter } from "next/navigation";
+import { setManageCourse } from "@/redux/features/courseSlice";
 
 interface ActionCellProps {
   user?: User;
@@ -45,6 +46,7 @@ const ActionsCell = (props: ActionCellProps) => {
   };
 
   const handleViewCourse = () => {
+    dispatch(setManageCourse(course as Course));
     router.push(`/instructor/courses/${course?.id}/manage/content`);
   };
 

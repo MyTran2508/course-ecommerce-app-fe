@@ -38,7 +38,6 @@ function CreateCourseNavBar() {
             ) : (
               <Fragment>
                 {totalLectureCount > 0 ? <RequestApprovalButton /> : null}
-
                 <SaveButton />
               </Fragment>
             )}

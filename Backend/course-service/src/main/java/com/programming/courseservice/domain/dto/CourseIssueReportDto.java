@@ -15,14 +15,10 @@ import lombok.Setter;
 public class CourseIssueReportDto {
     private String id;
 
-    @NotNull(message = "Issue Type is not null")
     private IssueType issueType;
 
-    @Size(min = 2, message = "Message must be greater than 4 characters.")
-    @Size(max = 254, message = "Message must be less than 254 characters.")
     private String message;
 
     // Value: NONE, LOW, MEDIUM, HIGH -> SeverityLevel
-    @NotNull(message = "Severity Level is not null")
     private String severityLevel;
 }

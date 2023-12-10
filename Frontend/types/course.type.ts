@@ -11,6 +11,16 @@ export interface Course {
     authorName?: string;
     topic: Topic;
     isApproved?: boolean;
+    isCompletedContent?: boolean;
+    isAwaitingApproval?: boolean;
+    courseIssueReports?: CourseIssueReport | {};
+    
+}
+export interface CourseIssueReport {
+    id?: string
+    issueType: string
+    message: string
+    severityLevel: string
 }
 
 export interface Level {
