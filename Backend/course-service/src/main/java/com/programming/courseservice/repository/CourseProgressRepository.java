@@ -25,4 +25,9 @@ public interface CourseProgressRepository extends BaseRepository<CourseProgress>
     void updateCurrentProgress(@Param("userId") String userId,
                                @Param("courseId") String courseId,
                                @Param("currentProgress") Integer currentProgress);
+
+    @Query(value = "SELECT COUNT(*) FROM course_progress WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
+            "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL)", nativeQuery = true)
+    Double getTotalRegisteredCourseByYearAndMonth(@Param("targetYear") int targetYear,
+                                         @Param("targetMonth") Integer targetMonth);
 }

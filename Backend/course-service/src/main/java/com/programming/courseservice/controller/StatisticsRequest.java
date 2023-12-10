@@ -1,4 +1,4 @@
-package com.programming.userservice.domain.dto;
+package com.programming.courseservice.controller;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -12,6 +12,6 @@ import lombok.Setter;
 @Setter
 public class StatisticsRequest {
     @NotNull(message = "Target Year is required")
-    private int targetYear;
+    private Integer targetYear;
     private Integer targetMonth;
 }

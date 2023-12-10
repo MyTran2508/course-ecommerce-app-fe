@@ -11,8 +11,10 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.programming.userservice.communication.OpenFeign.CourseAPI;
 import com.programming.userservice.domain.dto.ChangePasswordRequest;
 import com.programming.userservice.domain.dto.ForgetPasswordRequest;
+import com.programming.userservice.domain.dto.StatisticsRequest;
 import com.programming.userservice.domain.persistent.entity.Role;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.security.jwt.JwtService;
@@ -43,6 +45,8 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     private final OtpUtil otpUtil;
     private final PasswordEncoder passwordEncoder;
     private final StorageService storageService;
+    private final OrderService orderService;
+    private final CourseAPI courseAPI;
     @Override
     protected BaseRepository<User> getBaseRepository() {
         return userRepository;
@@ -190,14 +194,22 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         }
     }
 
-    public Integer getTotalRegisteredUsers(Integer targetYear, Integer targetMonth) {
+    public Integer getTotalRegisteredUsers(int targetYear, Integer targetMonth) {
         return userRepository.countByYearAnhMonth(targetYear, targetMonth);
 //        return null;
     }
 
-    public DataResponse<Map<String, Integer>> getStatistics(Integer targetYear, Integer targetMonth) {
-        Map<String, Integer> statisticsMap = new HashMap<>();
-        statisticsMap.put("totalOfUserByYearAndMonth", getTotalRegisteredUsers(targetYear, targetMonth));
+    public DataResponse<Map<String, Integer>> getStatisticsByYearAndMonth(StatisticsRequest statisticsRequest) {
+        Map<String, Double> statisticsMap = new HashMap<>();
+        statisticsMap.put("totalRegisteredUser", Double.valueOf(getTotalRegisteredUsers(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth())));
+        Double totalRevenue = orderService.getTotalRenevueByYearAndMonth(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
+        statisticsMap.put("totalRevenue", totalRevenue == null ? 0.0 : totalRevenue);
+
+        DataResponse<Integer> response = courseAPI.getTotalRegisteredCourseByYearAndMonth(statisticsRequest);
+        statisticsMap.put("totalRegisteredCourse", Double.valueOf(response.getData()));
+        response = courseAPI.getTotalApprovedCourseByYearAndMonth(statisticsRequest);
+        statisticsMap.put("totalApprovedCourse", Double.valueOf(response.getData()));
+
         return ResponseMapper.toDataResponseSuccess(statisticsMap);
     }
 }

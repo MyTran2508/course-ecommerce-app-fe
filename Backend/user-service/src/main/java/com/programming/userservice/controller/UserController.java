@@ -159,7 +159,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @ShowOpenAPI
     @PostMapping("/get-statistics")
-    public DataResponse<Map<String, Integer>> getStatisticsByYear(@Valid @RequestBody StatisticsRequest statisticsRequest) {
-        return userService.getStatistics(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
+    public DataResponse<Map<String, Integer>> getStatisticsByYearAndMonth(@Valid @RequestBody StatisticsRequest statisticsRequest) {
+        return userService.getStatisticsByYearAndMonth(statisticsRequest);
     }
 }

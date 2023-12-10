@@ -69,4 +69,9 @@ public interface CourseRepository extends BaseRepository<Course> {
             """)
     Page<Course> searchCourseOfAdmin(@Param("name") String name, @Param("isApproved") Boolean isApproved,
                                      @Param("isAwaitingApproval") Boolean isAwaitingApproval, Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM course WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
+            "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL) " +
+            "AND is_approved = true", nativeQuery = true)
+    Integer getTotalApprovedCourseByYearAndMonth(int targetYear, Integer targetMonth);
 }

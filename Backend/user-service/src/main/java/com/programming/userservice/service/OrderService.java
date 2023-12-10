@@ -1,17 +1,20 @@
 package com.programming.userservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.model.BaseMapperImpl;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.userservice.communication.OpenFeign.CourseProgressApi;
+import com.programming.userservice.communication.OpenFeign.CourseAPI;
 import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.mapper.OrderMapper;
 import com.programming.userservice.domain.persistent.entity.Order;
-import com.programming.userservice.repository.OrderRepository;
+import com.programming.userservice.domain.persistent.entity.User;
+import com.programming.userservice.repository.OrdersRepository;
+import com.programming.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,14 +24,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class OrderService extends BaseServiceImpl<Order, OrderDto> {
-    private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final CourseProgressApi courseProgressApi;
+    private final CourseAPI courseAPI;
+    private final OrdersRepository orderRepository;
+    private final UserRepository userRepository;
 
     @Override
     protected BaseRepository<Order> getBaseRepository() {
@@ -53,6 +58,10 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
     @Override
     @Transactional
     public DataResponse<OrderDto> create(OrderDto dto) {
+        Optional<User> optionalUser = userRepository.findById(dto.getUser().getId());
+        if(optionalUser.isEmpty()) {
+            throw new ResourceNotFoundException("User doesn't exists.");
+        }
         DataResponse<OrderDto> response = super.create(dto);
         if(response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
 
@@ -65,7 +74,7 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
             CourseProgressListDto courseProgressListDto = new CourseProgressListDto(userId, courseIds);
 
             // Call API
-            courseProgressApi.addList(courseProgressListDto);
+            courseAPI.addList(courseProgressListDto);
         }
         return response;
     }
@@ -123,5 +132,9 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
         return ResponseMapper.toDataResponseSuccess(results.stream()
                 .sorted(Comparator.comparingInt(StatictisSamePeriodDto::getMonth))
                 .collect(Collectors.toList()));
+    }
+
+    public Double getTotalRenevueByYearAndMonth(int targetYear, Integer targetMonth) {
+        return orderRepository.getTotalRenevueByYearAndMonth(targetYear, targetMonth);
     }
 }

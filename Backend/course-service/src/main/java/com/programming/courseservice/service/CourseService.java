@@ -10,6 +10,7 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.programming.courseservice.controller.StatisticsRequest;
 import com.programming.courseservice.domain.dto.CourseDto;
 import com.programming.courseservice.domain.dto.CourseIssueReportDto;
 import com.programming.courseservice.domain.dto.SearchCourseDto;
@@ -203,5 +204,9 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
             }
         }
         return true;
+    }
+
+    public DataResponse<Integer> getTotalApprovedCourseByYearAndMonth(int targetYear, Integer targetMonth) {
+        return ResponseMapper.toDataResponseSuccess(courseRepository.getTotalApprovedCourseByYearAndMonth(targetYear, targetMonth));
     }
 }

@@ -53,6 +53,11 @@ public class CourseProgressController extends BaseApiImpl<CourseProgress, Course
         return courseProgressService.hasAccessToCourse(userId, courseId);
     }
 
+    @PostMapping("/get-total-register-course")
+    public DataResponse<Integer> getTotalRegisteredCourseByYearAndMonth(@RequestBody StatisticsRequest statisticsRequest) {
+        return courseProgressService.getTotalRegisteredCourseByYearAndMonth(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
+    }
+
 //    @Override
 //    public DataResponse<CourseProgressDto> add(CourseProgressDto courseProgressDto) {
 //        return super.add(courseProgressDto);
