@@ -107,7 +107,7 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @PostMapping("/update-awaiting-approval")
     public DataResponse<String> updateAwaitingApproval(@RequestParam("id") String courseId,
-                                                       @RequestParam("isAwaitingApproval") Boolean isAwaitingApproval) {
+                                                           @RequestParam("isAwaitingApproval") Boolean isAwaitingApproval) {
         return courseService.updateAwaitingApproval(courseId, isAwaitingApproval);
     }
 

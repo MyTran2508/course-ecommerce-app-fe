@@ -233,7 +233,7 @@ function UserAdmin() {
                 pageIndex: searchQuery.pageIndex + 1,
               }))
             }
-            disabled={searchQuery.pageIndex < totalPage ? false : true}
+            disabled={searchQuery.pageIndex + 1 < totalPage ? false : true}
           >
             Next
           </Button>

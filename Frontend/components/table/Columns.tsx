@@ -6,6 +6,7 @@ import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/types/course.type";
+import FilterColumn from "./FilterColumn";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -112,7 +113,7 @@ export const courseColumns: ColumnDef<Course>[] = [
   },
   {
     accessorKey: "isApproved",
-    header: "Phê Duyệt",
+    header: () => <FilterColumn name="isApproved" />,
     cell: ({ row }) => (
       <div className="capitalize">
         {row.getValue("isApproved") ? (
@@ -125,7 +126,7 @@ export const courseColumns: ColumnDef<Course>[] = [
   },
   {
     accessorKey: "isAwaitingApproval",
-    header: "Chờ Phê Duyệt",
+    header: () => <FilterColumn name="isAwaitingApproval" />,
     cell: ({ row }) => (
       <div className="capitalize">
         {row.getValue("isAwaitingApproval") ? (

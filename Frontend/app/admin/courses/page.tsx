@@ -41,6 +41,9 @@ import { updateCourse } from "@/redux/features/courseSlice";
 
 function CoursesAdmin() {
   const dispatch = useAppDispatch();
+  const searchStatusCourse = useAppSelector(
+    (state) => state.courseReducer.searchStatusCourse
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -71,7 +74,11 @@ function CoursesAdmin() {
   const handleSearch = () => {
     setSearchQuery((prevSearchQuery) => ({
       ...prevSearchQuery,
-      keyword: [searchKeyword, null, null],
+      keyword: [
+        searchKeyword,
+        searchStatusCourse.isApproved,
+        searchStatusCourse.isAwaitingApproval,
+      ],
     }));
   };
 
@@ -89,6 +96,10 @@ function CoursesAdmin() {
       dispatch(updateCourse());
     }
   }, [isUpdateCourse]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchStatusCourse]);
 
   const table = useReactTable({
     data: courseList,
@@ -208,8 +219,7 @@ function CoursesAdmin() {
         </div>
         <div className="space-x-2 flex gap-1">
           <div className="flex-center text-sm text-muted-foreground">
-            {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()} page.
+            {searchQuery.pageIndex + 1} of {totalPage} page.
           </div>
           <Button
             variant="outline"
@@ -233,7 +243,7 @@ function CoursesAdmin() {
                 pageIndex: searchQuery.pageIndex + 1,
               }))
             }
-            disabled={searchQuery.pageIndex < totalPage ? false : true}
+            disabled={searchQuery.pageIndex + 1 < totalPage ? false : true}
           >
             Next
           </Button>

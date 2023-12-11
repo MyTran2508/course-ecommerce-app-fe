@@ -136,6 +136,19 @@ export const courseApi = createApi({
       },
       invalidatesTags: () => [{type: "Course", id: "course"}]
     }),
+    updateAwaitingApproval: builder.mutation<DataResponse, { courseId: string, isAwaitingApproval: boolean }>({
+      query: ({courseId, isAwaitingApproval}) => {
+        return {
+          url: `/api/courses/course/update-awaiting-approval`,
+          method: "POST",
+          params: {
+            id: courseId,
+           isAwaitingApproval: isAwaitingApproval
+          },
+        };
+      },
+      invalidatesTags: () => [{type: "Course", id: "course"}]
+    }),
   }),
 
 });
@@ -152,5 +165,6 @@ export const {
   useGetCourseByUserIdQuery,
   useGetAllCourseQuery,
   useFilterCourseMutation,
-  useUpdateApprovedMutation
+  useUpdateApprovedMutation,
+  useUpdateAwaitingApprovalMutation
 } = courseApi;

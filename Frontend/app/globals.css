@@ -30,6 +30,17 @@
   background-color: #E5E7EB;
   border-radius: 10px;
 }
+.HIGH {
+  color: #e01616; 
+}
+
+.LOW {
+  color: #71cb71;
+}
+
+.MEDIUM {
+  color: #2e2ed8; 
+}
   .paddle-checkout {
     @apply min-h-screen w-full py-10 md:py-20 lg:w-1/2;
   }

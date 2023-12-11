@@ -8,24 +8,23 @@ import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { setManageCourse, updateCourse } from "@/redux/features/courseSlice";
 
-function ApprovedButton() {
-  const course = useAppSelector((state) => state.courseReducer.manageCourse);
+interface ApprovedButtonProps {
+  course: Course;
+}
+
+function ApprovedButton(props: ApprovedButtonProps) {
+  const { course } = props;
   const [isOpen, setOpen] = useState(false);
-  const [courseData, setCourseData] = useState<Course>();
   const dispatch = useAppDispatch();
   const [updateApproveCourse] = useUpdateApprovedMutation();
 
   const handleClickOpen = () => {
     setOpen(!isOpen);
   };
-  useEffect(() => {
-    setCourseData(course);
-    console.log(course);
-  }, [course]);
 
   const handleApproveCourse = async () => {
     const request = {
-      courseId: courseData?.id as string,
+      courseId: course?.id as string,
       isApproved: true,
       courseIssueReport: {},
     };
@@ -33,15 +32,13 @@ function ApprovedButton() {
       .unwrap()
       .then((fulfilled) => {
         showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_COURSE_SUCCESS);
-        dispatch(
-          setManageCourse({ ...(courseData as Course), isApproved: true })
-        );
+        dispatch(setManageCourse({ ...(course as Course), isApproved: true }));
       });
     handleClickOpen();
   };
   return (
     <div>
-      {courseData && courseData.isAwaitingApproval && !courseData.isApproved ? (
+      {course && course.isAwaitingApproval && !course.isApproved ? (
         <Fragment>
           {isOpen ? (
             <Fragment>
@@ -76,7 +73,7 @@ function ApprovedButton() {
         </Fragment>
       ) : (
         <Fragment>
-          {courseData && courseData.isApproved ? (
+          {course && course.isApproved ? (
             <div className="italic text-orange-400"> Đã Xét Duyệt</div>
           ) : null}
         </Fragment>

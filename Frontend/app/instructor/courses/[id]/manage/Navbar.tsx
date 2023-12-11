@@ -1,6 +1,6 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import SaveButton from "./SaveButton";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -9,6 +9,7 @@ import { Role } from "@/utils/resources";
 import ApprovedButton from "./ApprovedButton";
 import RequestApprovalButton from "./RequestApprovalButton";
 import { handleCountFieldsInSection } from "@/utils/function";
+import { Course } from "@/types/course.type";
 
 function CreateCourseNavBar() {
   const router = useRouter();
@@ -17,6 +18,11 @@ function CreateCourseNavBar() {
   )[0].id;
   const sections = useAppSelector((state) => state.sectionReducer.section);
   const { totalLectureCount } = handleCountFieldsInSection(sections);
+  const course = useAppSelector((state) => state.courseReducer.manageCourse);
+  const [courseData, setCourseData] = useState<Course>();
+  useEffect(() => {
+    setCourseData(course);
+  }, [course]);
 
   const handleClickBack = () => {
     router.back();
@@ -34,10 +40,20 @@ function CreateCourseNavBar() {
           </div>
           <div className="flex gap-10 mr-10 items-center">
             {role === Role.ADMIN ? (
-              <ApprovedButton />
+              <ApprovedButton course={courseData as Course} />
             ) : (
               <Fragment>
-                {totalLectureCount > 0 ? <RequestApprovalButton /> : null}
+                {totalLectureCount > 0 || !courseData?.isApproved ? (
+                  <RequestApprovalButton course={courseData as Course} />
+                ) : (
+                  <Fragment>
+                    {courseData?.isApproved ? (
+                      <div className="italic text-orange-400">
+                        Xét duyệt thành công
+                      </div>
+                    ) : null}
+                  </Fragment>
+                )}
                 <SaveButton />
               </Fragment>
             )}

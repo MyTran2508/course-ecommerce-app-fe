@@ -6,7 +6,11 @@ export interface CourseState {
   saveCourseStatus: boolean,
   manageCourse: Course,
   courseId: string,
-  updateCourse: boolean
+  updateCourse: boolean,
+  searchStatusCourse: {
+    isApproved: string | null,
+    isAwaitingApproval: string | null
+  }
 }
 
 const initialState: CourseState = {
@@ -25,6 +29,10 @@ const initialState: CourseState = {
   },
   courseId: "",
   updateCourse: false,
+  searchStatusCourse: {
+    isApproved: null,
+    isAwaitingApproval: null
+  }
 }
 
 export const course = createSlice({
@@ -35,17 +43,23 @@ export const course = createSlice({
       state.saveCourseStatus = action.payload
     },
     setManageCourse: (state, action: PayloadAction<Course>) => {
-       return {...state,  manageCourse: action.payload}
+      return { ...state, manageCourse: action.payload }
     },
-    setParamCourseId : (state, action: PayloadAction<string>) => {
+    setParamCourseId: (state, action: PayloadAction<string>) => {
       state.courseId = action.payload
     },
     updateCourse: (state) => {
-        state.updateCourse = !state.updateCourse;
+      state.updateCourse = !state.updateCourse;
+    },
+    setIsApprovedSearch: (state, action: PayloadAction<string | null>) =>{
+      state.searchStatusCourse.isApproved = action.payload
+    },
+    setIsAwaitingApprovalSearch: (state,  action: PayloadAction<string | null>) =>{
+      state.searchStatusCourse.isAwaitingApproval = action.payload
     }
   },
 });
 
-export const {setStatusSaveCourse , setManageCourse, setParamCourseId, updateCourse} = course.actions;
+export const {setStatusSaveCourse , setManageCourse, setParamCourseId, updateCourse, setIsApprovedSearch, setIsAwaitingApprovalSearch} = course.actions;
 
 export default course.reducer;
