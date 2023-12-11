@@ -5,13 +5,10 @@ import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
-import com.programming.courseservice.domain.dto.CourseDto;
-import com.programming.courseservice.domain.dto.CourseIssueReportDto;
-import com.programming.courseservice.domain.dto.SearchCourseDto;
+import com.programming.courseservice.domain.dto.*;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.service.CourseService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -116,8 +112,10 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         /*
          * List<String> keyword:
          * index 1: key of name or subTitle
-         * index 2: isApproved (true/false/null)
-         * index 3: isAwaitingApproval (true/false/null)
+         * index 2: creator (username)
+         * index 3: isApproved (true/false/null)
+         * index 4: isAwaitingApproval (true/false/null)
+         * index 5: isAwaitingApproval (true/false/null)
          */
         return super.searchByKeyword(searchKeywordDto);
     }
@@ -125,5 +123,15 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @PostMapping("/get-total-approved-course")
     public DataResponse<Integer> getTotalApprovedCourseByYearAndMonth(@RequestBody StatisticsRequest statisticsRequest) {
         return courseService.getTotalApprovedCourseByYearAndMonth(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
+    }
+
+    @GetMapping("/sales-by-topics")
+    public DataResponse<List<SalesByTopicResponse>> getSalesByTopics(@RequestParam("targetYear") Integer targetYear) {
+        return courseService.getSalesByTopics(targetYear);
+    }
+
+    @GetMapping("/sales-same-period-by-topics")
+    public DataResponse<List<SalesByTopicSamePeriodResponse>> getSalesSamePeriodByTopics(@RequestParam("targetYear") Integer targetYear) {
+        return courseService.getSalesSamePeriodByTopics(targetYear);
     }
 }

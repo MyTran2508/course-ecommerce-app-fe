@@ -10,10 +10,7 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.courseservice.controller.StatisticsRequest;
-import com.programming.courseservice.domain.dto.CourseDto;
-import com.programming.courseservice.domain.dto.CourseIssueReportDto;
-import com.programming.courseservice.domain.dto.SearchCourseDto;
+import com.programming.courseservice.domain.dto.*;
 import com.programming.courseservice.domain.mapper.CourseIssueReportMapper;
 import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.*;
@@ -58,9 +55,11 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     @Override
     protected Page<CourseDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
-        Boolean isApproved = searchKeywordDto.getKeyword().get(1) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(1).trim());
-        Boolean isAwaitingApproval = searchKeywordDto.getKeyword().get(2) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(2).trim());
-        return courseRepository.searchCourseOfAdmin(name, isApproved, isAwaitingApproval, pageable)
+        String creator =  searchKeywordDto.getKeyword().get(1) == null ? null : searchKeywordDto.getKeyword().get(1).trim();
+        Boolean isApproved = searchKeywordDto.getKeyword().get(2) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(2).trim());
+        Boolean isAwaitingApproval = searchKeywordDto.getKeyword().get(3) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(3).trim());
+        Boolean isCompletedContent = searchKeywordDto.getKeyword().get(4) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(4).trim());
+        return courseRepository.searchCourseOfAdmin(name, creator, isApproved, isAwaitingApproval, isCompletedContent, pageable)
                 .map(course -> courseMapper.entityToDto(course));
     }
 
@@ -208,5 +207,69 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     public DataResponse<Integer> getTotalApprovedCourseByYearAndMonth(int targetYear, Integer targetMonth) {
         return ResponseMapper.toDataResponseSuccess(courseRepository.getTotalApprovedCourseByYearAndMonth(targetYear, targetMonth));
+    }
+
+    public DataResponse<List<SalesByTopicResponse>>  getSalesByTopics(Integer targetYear) {
+        List<Topic> topics = topicRepository.findAll();
+        List<Object[]> salesByTopics = courseRepository.getMonthlySalesByTopics(targetYear);
+        List<SalesByTopicResponse> salesByTopicResponses = new ArrayList<>();
+        for (Topic topic: topics) {
+            boolean f = false;
+            for(Object[] salesByTopic: salesByTopics) {
+                if(topic.getId().equals(salesByTopic[0])) {
+                    f = true;
+                    salesByTopicResponses.add(new SalesByTopicResponse(topic.getId(), topic.getName(), (Double) salesByTopic[1]));
+                    break;
+                }
+            }
+            if(!f) {
+                salesByTopicResponses.add(new SalesByTopicResponse(topic.getId(), topic.getName(), 0.0));
+            }
+        }
+        return ResponseMapper.toDataResponseSuccess(salesByTopicResponses.stream()
+                .sorted(Comparator.comparingInt(SalesByTopicResponse::convertTopicIdAsInteger))
+                .collect(Collectors.toList()));
+    }
+
+    @SuppressWarnings("unchecked")
+    public DataResponse<List<SalesByTopicSamePeriodResponse>> getSalesSamePeriodByTopics(Integer targetYear) {
+        List<Topic> topics = topicRepository.findAll();
+        List<Object[]> salesTargetYearByTopics = courseRepository.getMonthlySalesByTopics(targetYear);
+        List<Object[]> salesPreviousYearByTopics = courseRepository.getMonthlySalesByTopics(targetYear - 1);
+        List<SalesByTopicSamePeriodResponse> salesByTopicSamePeriodResponses = new ArrayList<>();
+        for (Topic topic: topics) {
+            boolean f = false;
+            SalesByTopicSamePeriodResponse salesByTopicSamePeriodResponse = new SalesByTopicSamePeriodResponse();
+            salesByTopicSamePeriodResponse.setTopicId(topic.getId());
+            salesByTopicSamePeriodResponse.setTopicName(topic.getName());
+            for(Object[] salesTargetYearByTopic : salesTargetYearByTopics) {
+                if(topic.getId().equals(salesTargetYearByTopic[0])) {
+                    f = true;
+                    salesByTopicSamePeriodResponse.setTargetYearTotal((Double) salesTargetYearByTopic[1]);
+                    break;
+                }
+            }
+            if(!f) {
+                salesByTopicSamePeriodResponse.setTargetYearTotal(0.0);
+            }
+            f = false;
+
+            for(Object[] salesPreviousYearByTopic : salesPreviousYearByTopics) {
+                if(topic.getId().equals(salesPreviousYearByTopic[0])) {
+                    f = true;
+                    salesByTopicSamePeriodResponse.setPreviousYearTotal((Double) salesPreviousYearByTopic[1]);
+                    break;
+                }
+            }
+            if(!f) {
+                salesByTopicSamePeriodResponse.setPreviousYearTotal(0.0);
+            }
+
+            salesByTopicSamePeriodResponses.add(salesByTopicSamePeriodResponse);
+        }
+
+        return ResponseMapper.toDataResponseSuccess(salesByTopicSamePeriodResponses.stream()
+                .sorted(Comparator.comparingInt(SalesByTopicSamePeriodResponse::convertTopicIdAsInteger))
+                .collect(Collectors.toList()));
     }
 }
