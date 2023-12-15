@@ -1,12 +1,17 @@
 "use client";
 import CourseCard from "@/components/CourseCard";
-import { useGetNewestCourseQuery } from "@/redux/services/courseApi";
+import {
+  useFilterCourseMutation,
+  useGetAllCourseQuery,
+  useGetNewestCourseQuery,
+} from "@/redux/services/courseApi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Loading from "../user/personal/loading";
 import { Course } from "@/types/course.type";
 import { course } from "@/redux/features/courseSlice";
 import Checkout from "@/components/PayPal";
 import Paginate from "@/components/Paginate";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [text] = useTypewriter({
@@ -20,7 +25,24 @@ export default function Home() {
     deleteSpeed: 20,
   });
   let newestCourseList: Course[] = [];
-  const { data, isLoading } = useGetNewestCourseQuery({ topicId: 0, size: 4 });
+  const [searchCourse] = useFilterCourseMutation();
+  useEffect(() => {
+    handleSearch();
+  }, []);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const handleSearch = async () => {
+    await searchCourse({
+      keyword: null,
+      pageIndex: 0,
+      pageSize: 10,
+    })
+      .unwrap()
+      .then((fulfilled) => {
+        setCourses(fulfilled.data as Course[]);
+      });
+  };
+  // const { data, isLoading } = useGetNewestCourseQuery({ topicId: 0, size: 4 });
+  const { data, isLoading } = useGetAllCourseQuery(null);
   if (isLoading) return <Loading />;
 
   if (data) {
@@ -31,7 +53,7 @@ export default function Home() {
     return (
       <div className="flex justify-center items-center">
         <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
-          {newestCourseList.map((course) => (
+          {courses.map((course) => (
             <div key={course.id}>
               <CourseCard course={course} />
             </div>
@@ -54,7 +76,7 @@ export default function Home() {
         </div>
       </section>
       <div>
-        <h3 className="text-2xl font-bold ml-6">Khóa Học Mới</h3>
+        <h3 className="text-2xl font-bold ml-10">Các Khóa Học</h3>
         {renderItem()}
       </div>
       <div className="flex-center">

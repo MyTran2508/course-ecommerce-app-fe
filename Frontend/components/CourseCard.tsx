@@ -25,6 +25,11 @@ function CourseCard(props: CourseProps) {
     course ? (course.urlCourseImages as string) : ""
   );
 
+  const MAX_TITLE_LENGTH = 22;
+  const truncatedTitle =
+    course.name.length > MAX_TITLE_LENGTH
+      ? course.name.substring(0, MAX_TITLE_LENGTH) + "..."
+      : course.name;
   return (
     <Card
       className="w-full max-w-fit border-0 !bg-transparent sm:max-w-[356px] m-8 "
@@ -66,7 +71,7 @@ function CourseCard(props: CourseProps) {
         </div>
 
         <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left xs:text-[10px]">
-          {course.name}
+          {truncatedTitle}
         </CardTitle>
       </CardHeader>
       {isMyCourse || isInstructorCourse ? null : (

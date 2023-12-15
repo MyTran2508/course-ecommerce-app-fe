@@ -173,11 +173,16 @@ function CourseInforForm(props: CourseInfoProps) {
       topic: {
         id: values.topic,
       },
-      urlCourseImages: newUrlCourseImage,
-      urlPromotionVideos: newUrlCourseVideo,
+      urlCourseImages:
+        newUrlCourseImage.length !== 0
+          ? newUrlCourseImage
+          : course.urlCourseImages,
+      urlPromotionVideos:
+        newUrlCourseVideo.length !== 0
+          ? newUrlCourseVideo
+          : course.urlPromotionVideos,
       authorName: email,
     };
-
     handleUpdateCourse(updateCourse);
   };
   return (

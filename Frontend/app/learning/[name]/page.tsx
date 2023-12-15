@@ -158,7 +158,10 @@ function PageLearning() {
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-sm font-semibold text-blue-500">
-                        {(courseProcess?.rateProgress as number) * 100}%
+                        {Math.round(
+                          (courseProcess?.rateProgress as number) * 100
+                        )}
+                        %
                       </span>
                     </div>
                   </div>

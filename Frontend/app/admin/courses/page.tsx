@@ -53,7 +53,7 @@ function CoursesAdmin() {
   const [getCourseByKeyword] = useFilterCourseAdminMutation();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: ["", null, null],
+    keyword: ["", null, null, null, true],
     sortBy: "",
     isDecrease: true,
     pageIndex: 0,
@@ -76,8 +76,10 @@ function CoursesAdmin() {
       ...prevSearchQuery,
       keyword: [
         searchKeyword,
+        null,
         searchStatusCourse.isApproved,
         searchStatusCourse.isAwaitingApproval,
+        true,
       ],
     }));
   };
@@ -125,7 +127,7 @@ function CoursesAdmin() {
       <div className="flex items-center py-4">
         <div className="flex gap-3">
           <Input
-            placeholder="Nhập username hoặc email..."
+            placeholder="Nhập tên khóa học"
             onChange={(event) => {
               setSearchKeyword(event.target.value);
             }}

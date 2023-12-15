@@ -108,14 +108,15 @@ function Navbar() {
             <div className="flex-center gap-10">
               {roles && (roles as RoleType[])[0]?.id !== Role.USER ? (
                 <Fragment>
-                  <div className="xs:hidden">
-                    <Link href={"/instructor/courses"}>Quản lý khóa học</Link>
-                  </div>
                   {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
                     <div className="xs:hidden">
                       <Link href={"/admin"}>Trang Admin</Link>
                     </div>
-                  ) : null}
+                  ) : (
+                    <div className="xs:hidden">
+                      <Link href={"/instructor/courses"}>Quản lý khóa học</Link>
+                    </div>
+                  )}
                 </Fragment>
               ) : (
                 <div className="xs:hidden">

@@ -25,7 +25,11 @@ function CreateCourseNavBar() {
   }, [course]);
 
   const handleClickBack = () => {
-    router.back();
+    if (role === Role.ADMIN) {
+      router.push("/admin/courses");
+    } else {
+      router.push("/instructor/courses");
+    }
   };
   return (
     <div className="sticky top-0 z-20">
@@ -43,7 +47,7 @@ function CreateCourseNavBar() {
               <ApprovedButton course={courseData as Course} />
             ) : (
               <Fragment>
-                {totalLectureCount > 0 || !courseData?.isApproved ? (
+                {totalLectureCount > 0 && !courseData?.isApproved ? (
                   <RequestApprovalButton course={courseData as Course} />
                 ) : (
                   <Fragment>
