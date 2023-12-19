@@ -154,11 +154,11 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 //    }
 
     public ResponseEntity<?> loadFile(String path) {
-        byte[] image = storageService.loadImageFromFileSystem(path);
-        if(image == null) {
+        byte[] file = storageService.loadImageFromFileSystem(path);
+        if(file == null) {
             return ResponseEntity.ok("Error");
         }
-        String imageBase64 = Base64.getEncoder().encodeToString(image);
+        String imageBase64 = Base64.getEncoder().encodeToString(file);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

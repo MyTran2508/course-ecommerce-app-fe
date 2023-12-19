@@ -20,11 +20,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +37,8 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
     private final SectionRepository sectionRepository;
     private final LectureRepository lectureRepository;
     private final SectionMapper sectionMapper;
-    private final StorageS3Service storageS3Service;
+//    private final StorageS3Service storageS3Service;
+    private final StorageService storageService;
     private final FileUtils fileUtils;
     @Override
     protected BaseRepository<Section> getBaseRepository() {
@@ -62,9 +66,10 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
         Integer idx = 0;
         for (MultipartFile file: files) {
             if(fileUtils.isFileVideo(file)) {
-                listPath.add(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_LECTURE, file));
+//                listPath.add(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_LECTURE, file));
+                listPath.add(storageService.uploadVideoToFileSystem(file));
             } else if (fileUtils.isFileDocument(file)){
-                listPath.add(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_DOCUMENT, file));
+                listPath.add(storageService.uploadDocumentToFileSystem(file));
             } else {
                 listError.add(idx.toString());
             }
@@ -76,36 +81,27 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
         return ResponseMapper.toDataResponseSuccess(listPath);
     }
 
-    public ResponseEntity<ByteArrayResource> loadFile(String path) {
-        byte[] data = storageS3Service.downloadFile(path);
-        ByteArrayResource resource = new ByteArrayResource(data);
-        return ResponseEntity.ok()
-                .contentLength(data.length)
-                .header("Content-type", "application/octet-stream")
-                .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
-                .body(resource);
+    public ResponseEntity<?> loadFile(String path) {
+        byte[] file = storageService.loadImageFromFileSystem(path);
+        if(file == null) {
+            return ResponseEntity.ok("Error");
+        }
+        String imageBase64 = Base64.getEncoder().encodeToString(file);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(imageBase64);
     }
 
     public SectionDto deleteLectures(SectionDto sectionDto) {
         for (LectureDto lectureDto: sectionDto.getLectures()) {
             if(lectureDto.getOrdinalNumber() < 1) {
-                storageS3Service.deleteFile(lectureDto.getUrl());
+//                storageS3Service.deleteFile(lectureDto.getUrl());
+                storageService.deleteFileFromSystem(lectureDto.getUrl());
                 lectureRepository.deleteById(lectureDto.getId());
                 sectionDto.getLectures().remove(lectureDto);
             }
         }
         return sectionDto;
     }
-
-
-//    public List<LectureDto> getVideoDuration(List<LectureDto> lectureDtos) {
-//        for (LectureDto lectureDto: lectureDtos) {
-//            if(lectureDto.getVideoDuration() == null) {
-//                Long duration = storageS3Service.getVideoDuration(lectureDto.getUrl());
-//                lectureDto.setVideoDuration(duration);
-//                System.out.println(duration);
-//            }
-//        }
-//        return lectureDtos;
-//    }
 }
