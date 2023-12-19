@@ -29,16 +29,6 @@ public class ResponseMapper {
         return listResponse;
     }
 
-    public static ListResponse toPagingResponse(Page page, int statusCode, String statusMessage) {
-        if (page != null) {
-            long totalRecords = page.getTotalElements();
-            int totalPages = page.getTotalPages();
-            List list = page.getContent();
-            return toListResponse(list, totalRecords, totalPages, statusCode, statusMessage);
-        }
-        return toListResponse(null, 0, 0, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
-    }
-
     public static DataResponse toDataResponseSuccess(Object data) {
         if (data == null) {
             return toDataResponse(null, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
@@ -51,6 +41,16 @@ public class ResponseMapper {
             return toListResponse(null, 0, 0, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
         }
         return toListResponse(list, list.size(), 1, StatusCode.REQUEST_SUCCESS, StatusMessage.REQUEST_SUCCESS);
+    }
+
+    public static ListResponse toPagingResponse(Page page, int statusCode, String statusMessage) {
+        if (page != null) {
+            long totalRecords = page.getTotalElements();
+            int totalPages = page.getTotalPages();
+            List list = page.getContent();
+            return toListResponse(list, totalRecords, totalPages, statusCode, statusMessage);
+        }
+        return toListResponse(null, 0, 0, StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
     }
 
     public static ListResponse toPagingResponseSuccess(Page page) {

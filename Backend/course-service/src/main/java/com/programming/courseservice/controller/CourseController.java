@@ -56,7 +56,7 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @ShowOpenAPI
     @GetMapping("/download")
-    public ResponseEntity<ByteArrayResource> loadFile(@RequestParam("path") String path) {
+    public ResponseEntity<?> loadFile(@RequestParam("path") String path) {
         return courseService.loadFile(path);
     }
 

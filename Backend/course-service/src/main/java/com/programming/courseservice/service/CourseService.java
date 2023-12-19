@@ -14,6 +14,7 @@ import com.programming.courseservice.domain.dto.*;
 import com.programming.courseservice.domain.mapper.CourseIssueReportMapper;
 import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.*;
+import com.programming.courseservice.domain.persistent.enumrate.FilterSortBy;
 import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.repository.LanguageRepository;
 import com.programming.courseservice.repository.LevelRepository;
@@ -25,6 +26,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +41,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
     private final StorageS3Service storageS3Service;
+    private final StorageService storageService;
     private final LanguageRepository languageRepository;
     private final TopicRepository topicRepository;
     private final LevelRepository levelRepository;
@@ -70,7 +74,10 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     @Override
     public ListResponse<CourseDto> getAll() {
-        return super.getAll();
+        return ResponseMapper.toListResponseSuccess(courseRepository.getAllCourseIsApproved()
+                .stream()
+                .map(course -> courseMapper.entityToDto(course))
+                .collect(Collectors.toList()));
     }
 
     public ListResponse<List<CourseDto>> getNewestCourse(String topicId, int size) {
@@ -97,15 +104,29 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     }
 
     public ListResponse<CourseDto> getFiltedCourse(SearchCourseDto searchCourseDto) {
-        Pageable pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize());
+        Pageable pageable;
+        if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.NEWEST) {
+            Sort sortCourse = Sort.by(Sort.Direction.DESC, "created");
+            pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize(), sortCourse);
+        } else {
+            pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize());
+        }
+
         List<String> levelIds = searchCourseDto.getLevelIds() == null || searchCourseDto.getLevelIds().isEmpty() ? levelRepository.findAll().stream().map(Level::getId).toList() : searchCourseDto.getLevelIds();
         List<String> languageIds = searchCourseDto.getLanguageIds() == null || searchCourseDto.getLanguageIds().isEmpty() ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
         List<String> topicIds = searchCourseDto.getTopicIds() == null || searchCourseDto.getTopicIds().isEmpty() ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
+        Boolean isFree = searchCourseDto.getIsFree();
         String keyword = searchCourseDto.getKeyword();
 
-        Page<Course> courses = courseRepository.filterCourse(levelIds,
-                languageIds, topicIds, keyword, pageable);
+        Page<Course> courses = null;
+        if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
+            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, pageable);
+        } else {
+            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, keyword, pageable);
+        }
+
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
 
     }
@@ -124,23 +145,40 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toDataResponseSuccess(courseMapper.entityToDto(courseRepository.save(course)));
     }
 
+//    public DataResponse<String> uploadCourseImage(MultipartFile file) {
+//        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_IMAGE, file));
+//    }
+//
+//    public DataResponse<String> uploadCourseVideo(MultipartFile file) {
+//        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_VIDEO, file));
+//    }
+
+    public ResponseEntity<?> loadFile(String path) {
+        byte[] image = storageService.loadImageFromFileSystem(path);
+        if(image == null) {
+            return ResponseEntity.ok("Error");
+        }
+        String imageBase64 = Base64.getEncoder().encodeToString(image);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(imageBase64);
+    }
+
     public DataResponse<String> uploadCourseImage(MultipartFile file) {
-        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_IMAGE, file));
+        String filePath = storageService.uploadImageToFileSystem(file);
+        if(filePath.isEmpty()) {
+            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+        }
+        return ResponseMapper.toDataResponseSuccess(filePath);
     }
 
     public DataResponse<String> uploadCourseVideo(MultipartFile file) {
-        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_VIDEO, file));
-    }
-
-    public ResponseEntity<ByteArrayResource> loadFile(String path) {
-        byte[] data = storageS3Service.downloadFile(path);
-        byte[] dataBase64 = Base64.getEncoder().encode(data);
-        ByteArrayResource resource = new ByteArrayResource(dataBase64);
-        return ResponseEntity.ok()
-                .contentLength(dataBase64.length)
-                .header("Content-type", "application/octet-stream")
-                .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
-                .body(resource);
+        String filePath = storageService.uploadVideoToFileSystem(file);
+        if(filePath.isEmpty()) {
+            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+        }
+        return ResponseMapper.toDataResponseSuccess(filePath);
     }
 
     public ListResponse<CourseDto> getCourseAccessByUserId(String userId, Integer pageIndex, Integer pageSize) {
@@ -209,7 +247,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toDataResponseSuccess(courseRepository.getTotalApprovedCourseByYearAndMonth(targetYear, targetMonth));
     }
 
-    public DataResponse<List<SalesByTopicResponse>>  getSalesByTopics(Integer targetYear) {
+    public DataResponse<List<SalesByTopicResponse>> getSalesByTopics(Integer targetYear) {
         List<Topic> topics = topicRepository.findAll();
         List<Object[]> salesByTopics = courseRepository.getMonthlySalesByTopics(targetYear);
         List<SalesByTopicResponse> salesByTopicResponses = new ArrayList<>();

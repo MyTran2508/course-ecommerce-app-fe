@@ -65,6 +65,7 @@ public class Course extends BaseModel {
     private Boolean isAwaitingApproval;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OrderBy("created DESC")
     private List<CourseIssueReport> courseIssueReports;
 
     @Override

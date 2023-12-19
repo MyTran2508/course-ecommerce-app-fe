@@ -12,7 +12,6 @@ public class RouteValidator {
             "/api/users/user/login",
             "/api/users/user/register",
             "/api/users/user/forget-password",
-            "/api/users/user/send-otp",
             "/api/courses/course/download",
             "/eureka",
             "/api/courses/course/filter",
