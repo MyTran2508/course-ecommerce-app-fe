@@ -29,4 +29,5 @@ public class UserDto {
     private String photos;
     private List<RoleDto> roles;
     private List<AddressDto> addresses;
+    private Boolean removed;
 }

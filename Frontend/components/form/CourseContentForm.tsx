@@ -118,7 +118,6 @@ const handleSetDefaultValueForm = (content: Content | null) => {
 
 function CourseContentForm(props: ContentProps) {
   const { content, courseId } = props;
-  console.log(content);
   const [defaultValueForm, setDefaultValueForm] = useState(
     handleSetDefaultValueForm(content)
   );

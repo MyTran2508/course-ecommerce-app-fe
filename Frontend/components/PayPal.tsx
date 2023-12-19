@@ -25,7 +25,9 @@ const Checkout = (props: CheckoutProps) => {
   const [orderID, setOrderID] = useState<string | false>(false);
   const CLIENT_ID: string = process.env.NEXT_PUBLIC_CLIENT_ID || "";
   const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
-  const user = useAppSelector((state) => state.persistedReducer.userReducer);
+  const user = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user
+  );
   const [addOrder] = useAddOrderMutation();
   const dispatch = useAppDispatch();
 

@@ -16,9 +16,11 @@ import { FiShoppingCart } from "react-icons/fi";
 import {
   useGetAvatarQuery,
   useGetByUserNameQuery,
+  useLazyGetAvatarQuery,
+  useLazyGetByUserNameQuery,
 } from "@/redux/services/userApi";
 import { RoleType, User } from "@/types/user.type";
-import { removeUser, setUser } from "@/redux/features/userSlice";
+import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
 import "./style/category.scss";
 
@@ -36,14 +38,25 @@ function Navbar() {
   const [currentAvatar, setCurrentAvatar] = useState();
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
   const roles = useAppSelector(
-    (state) => state.persistedReducer.userReducer.roles
+    (state) => state.persistedReducer.userReducer.user.roles
   );
-  const { data: userNameData, isSuccess: userNameSuccess } =
-    useGetByUserNameQuery(user.username as string);
 
-  const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
-    user.username as string
-  );
+  const [getByUserName, { data: userNameData, isSuccess: userNameSuccess }] =
+    useLazyGetByUserNameQuery();
+
+  const [getAvatar, { data: avatarData, isSuccess: avatarSuccess }] =
+    useLazyGetAvatarQuery();
+
+  useEffect(() => {
+    if (user.isActive) {
+      getAvatar(user.username as string);
+      getByUserName(user.username as string);
+    }
+  }, [user.isActive]);
+
+  useEffect(() => {
+    dispatch(loadUser());
+  }, []);
 
   useEffect(() => {
     if (userNameSuccess) {
@@ -51,14 +64,15 @@ function Navbar() {
         User,
         "username" | "photos" | "email" | "id" | "roles"
       > = {
-        id: (userNameData.data as User).id,
-        username: (userNameData.data as User).username,
-        photos: (userNameData.data as User).photos,
-        email: (userNameData.data as User).email,
-        roles: (userNameData.data as User).roles,
+        id: (userNameData?.data as User).id,
+        username: (userNameData?.data as User).username,
+        photos: (userNameData?.data as User).photos,
+        email: (userNameData?.data as User).email,
+        roles: (userNameData?.data as User).roles,
       };
       dispatch(setUser(userState));
-      setUserData(userNameData.data as User);
+      dispatch(loadUser());
+      setUserData(userNameData?.data as User);
     }
     if (avatarSuccess) {
       setCurrentAvatar(avatarData);
@@ -68,6 +82,7 @@ function Navbar() {
   const handleLogout = () => {
     dispatch(removeUser());
     dispatch(logout());
+    dispatch(loadUser());
     setLogout(true);
     router.push("/");
     showToast(ToastStatus.SUCCESS, ToastMessage.LOGOUT_SUCCESS);
@@ -89,16 +104,25 @@ function Navbar() {
           <SearchBar />
         </div>
         <div className="">
-          {user ? (
+          {user?.username !== "" ? (
             <div className="flex-center gap-10">
               {roles && (roles as RoleType[])[0]?.id !== Role.USER ? (
+                <Fragment>
+                  {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
+                    <div className="xs:hidden">
+                      <Link href={"/admin"}>Trang Admin</Link>
+                    </div>
+                  ) : (
+                    <div className="xs:hidden">
+                      <Link href={"/instructor/courses"}>Quản lý khóa học</Link>
+                    </div>
+                  )}
+                </Fragment>
+              ) : (
                 <div className="xs:hidden">
-                  <Link href={"/instructor/courses"}>Quản lý khóa học</Link>
+                  <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
                 </div>
-              ) : null}
-              <div className="xs:hidden">
-                <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
-              </div>
+              )}
               <div
                 className="flex relative hover:cursor-pointer"
                 onClick={() => handleChangeRouteCart()}

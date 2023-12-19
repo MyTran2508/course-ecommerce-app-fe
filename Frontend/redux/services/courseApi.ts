@@ -1,8 +1,8 @@
 import { DataResponse, ListResponse } from "@/types/response.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {baseQueryWithToken } from "../baseQuery";
-import { Course } from "@/types/course.type";
-import { SearchCourseRequest } from "@/types/request.type";
+import { Course, CourseIssueReport } from "@/types/course.type";
+import { SearchCourseRequest, SearchRequest } from "@/types/request.type";
 
 
 export const courseApi = createApi({
@@ -112,13 +112,50 @@ export const courseApi = createApi({
           body: data
         }
       }
-    })
+    }),
+    filterCourseAdmin: builder.mutation<ListResponse, SearchRequest>({
+      query: (data: SearchRequest ) => {
+        return {
+          url: `/api/courses/course/search-by-keyword`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    updateApproved: builder.mutation<DataResponse, {courseId: string, isApproved: boolean, courseIssueReport: CourseIssueReport | {}}>({
+      query: ({courseId, isApproved, courseIssueReport} ) => {
+        return {
+          url: `/api/courses/course/update-approved`,
+          method: "POST",
+          params: {
+            id: courseId,
+            isApproved: isApproved
+          },
+          body: courseIssueReport,
+        };
+      },
+      invalidatesTags: () => [{type: "Course", id: "course"}]
+    }),
+    updateAwaitingApproval: builder.mutation<DataResponse, { courseId: string, isAwaitingApproval: boolean }>({
+      query: ({courseId, isAwaitingApproval}) => {
+        return {
+          url: `/api/courses/course/update-awaiting-approval`,
+          method: "POST",
+          params: {
+            id: courseId,
+           isAwaitingApproval: isAwaitingApproval
+          },
+        };
+      },
+      invalidatesTags: () => [{type: "Course", id: "course"}]
+    }),
   }),
 
 });
 
 export const {
   useLoadFileFromCloudQuery,
+  useFilterCourseAdminMutation,
   useUploadCourseImageMutation,
   useUploadCourseVideoMutation,
   useCreateCourseMutation,
@@ -127,5 +164,7 @@ export const {
   useGetNewestCourseQuery,
   useGetCourseByUserIdQuery,
   useGetAllCourseQuery,
-  useFilterCourseMutation
+  useFilterCourseMutation,
+  useUpdateApprovedMutation,
+  useUpdateAwaitingApprovalMutation
 } = courseApi;

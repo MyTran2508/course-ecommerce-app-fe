@@ -11,22 +11,33 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { User } from "@/types/user.type";
+import { RoleType, User } from "@/types/user.type";
 import Image from "next/image";
 import {
   useGetAvatarQuery,
   useUploadImageMutation,
   useUpdateUserMutation,
+  useUpdateUserAdminMutation,
 } from "@/redux/services/userApi";
 import showToast from "@/utils/showToast";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
 
 const formSchema = formPersonalSchema;
 
 interface PersonalProps {
   userInfor: Omit<User, "re_password">;
+  isAdmin?: boolean;
 }
 
 const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
@@ -38,11 +49,12 @@ const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
     photos: "",
     telephone: value.telephone,
     addressLine: value.addresses[0]?.addressLine,
+    role: (value.roles as RoleType[])[0].id,
   };
 };
 
-async function PersonalForm(props: PersonalProps) {
-  const { userInfor } = props;
+function PersonalForm(props: PersonalProps) {
+  const { userInfor, isAdmin } = props;
   const [allowInput, setAllowInput] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [imageError, setImageError] = useState(false);
@@ -53,7 +65,8 @@ async function PersonalForm(props: PersonalProps) {
   const [currentAvatar, setCurrentAvatar] = useState();
 
   const [updateAvatar] = useUploadImageMutation();
-  const [updateUser, updateUserResult] = useUpdateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
+  const [updateUserAdmin] = useUpdateUserAdminMutation();
   const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
     userInfor.username
   );
@@ -68,7 +81,6 @@ async function PersonalForm(props: PersonalProps) {
     }
   }, [allowInput]);
 
-  useEffect(() => {}, [updateUserResult]);
   useEffect(() => {
     setDefaultValueFrom(handleSetDefaultValueFrom(userInfor));
     handleImageError(false);
@@ -87,12 +99,12 @@ async function PersonalForm(props: PersonalProps) {
   };
 
   const handleUpdateUser = async (
-    data: Omit<User, "re_password" | "password" | "roles" | "photos">
+    data: Omit<User, "re_password" | "password" | "photos">
   ) => {
     let updateSuccess = true;
 
     await Promise.all([
-      updateUser(data).unwrap(),
+      isAdmin ? updateUserAdmin(data).unwrap() : updateUser(data).unwrap(),
       file ? updateAvatar({ username: data.username, image: file }) : null,
     ])
       .then(([updateUserResponse, updateAvatarResponse]) => {
@@ -117,17 +129,21 @@ async function PersonalForm(props: PersonalProps) {
     resolver: zodResolver(formSchema),
     defaultValues: defaultValueForm,
   });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const updateUser: Omit<
-      User,
-      "re_password" | "password" | "roles" | "photos"
-    > = {
+    const updateUser: Omit<User, "re_password" | "password" | "photos"> = {
       id: userInfor.id,
       username: userInfor.username,
       email: userInfor.email,
       firstName: values.firstName,
       lastName: values.lastName,
       telephone: values.telephone,
+      roles: [
+        {
+          id: values.role,
+          name: values.role,
+        },
+      ],
       addresses: [
         {
           addressLine: values.addressLine,
@@ -178,12 +194,16 @@ async function PersonalForm(props: PersonalProps) {
 
             <hr className="mt-2 border border-b-orange-500" />
           </div>
-          <div>
+          <div
+            className={`${
+              isAdmin ? "custom-scrollbar overflow-y-auto h-[500px]" : ""
+            }`}
+          >
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
-                <FormItem className="mb-14 mt-3">
+                <FormItem className="mb-3 mt-3">
                   <FormLabel className="text-black">User Name</FormLabel>
                   <FormControl>
                     <Input
@@ -203,7 +223,7 @@ async function PersonalForm(props: PersonalProps) {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem className="mb-14 mt-3">
+                <FormItem className="mb-3 mt-3">
                   <FormLabel className="text-black">Email</FormLabel>
                   <FormControl>
                     <Input
@@ -223,15 +243,15 @@ async function PersonalForm(props: PersonalProps) {
               control={form.control}
               name="firstName"
               render={({ field }) => (
-                <FormItem className="mb-14 mt-3">
+                <FormItem className="mb-3 mt-3">
                   <FormLabel className="text-black">First Name</FormLabel>
                   <FormControl>
                     <Input
                       ref={inputRef}
                       className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
-                        allowInput ? "border-b-blue-700 " : " "
+                        allowInput && !isAdmin ? "border-b-blue-700 " : " "
                       }`}
-                      disabled={!allowInput}
+                      disabled={!allowInput || isAdmin}
                       value={field.value}
                       onChange={field.onChange}
                     ></Input>
@@ -244,14 +264,14 @@ async function PersonalForm(props: PersonalProps) {
               control={form.control}
               name="lastName"
               render={({ field }) => (
-                <FormItem className="mb-14 mt-3">
+                <FormItem className="mb-3 mt-3">
                   <FormLabel className="text-black">Last Name</FormLabel>
                   <FormControl>
                     <Input
                       className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
-                        allowInput ? "border-b-blue-700 " : " "
+                        allowInput && !isAdmin ? "border-b-blue-700 " : " "
                       }`}
-                      disabled={!allowInput}
+                      disabled={!allowInput || isAdmin}
                       {...field}
                     ></Input>
                   </FormControl>
@@ -263,14 +283,14 @@ async function PersonalForm(props: PersonalProps) {
               control={form.control}
               name="addressLine"
               render={({ field }) => (
-                <FormItem className="mb-14 mt-3">
+                <FormItem className="mb-3 mt-3">
                   <FormLabel className="text-black">Address Line</FormLabel>
                   <FormControl>
                     <Input
                       className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
-                        allowInput ? "border-b-blue-700 " : " "
+                        allowInput && !isAdmin ? "border-b-blue-700 " : " "
                       }`}
-                      disabled={!allowInput}
+                      disabled={!allowInput || isAdmin}
                       {...field}
                     ></Input>
                   </FormControl>
@@ -282,16 +302,52 @@ async function PersonalForm(props: PersonalProps) {
               control={form.control}
               name="telephone"
               render={({ field }) => (
-                <FormItem className="mb-14 mt-3">
+                <FormItem className="mb-3 mt-3">
                   <FormLabel className="text-black">Phone Number</FormLabel>
                   <FormControl>
                     <Input
                       className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
-                        allowInput ? "border-b-blue-700 " : " "
+                        allowInput && !isAdmin ? "border-b-blue-700 " : " "
                       }`}
-                      disabled={!allowInput}
+                      disabled={!allowInput || isAdmin}
                       {...field}
                     ></Input>
+                  </FormControl>
+                  <FormMessage className="text-[10px]" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem className={`mb-3 mt-3 ${isAdmin ? "" : "hidden"}`}>
+                  <FormLabel className="text-black">Role</FormLabel>
+                  <FormControl>
+                    <Select
+                      defaultValue={field.value}
+                      onValueChange={field.onChange}
+                      disabled={!allowInput}
+                    >
+                      <SelectTrigger
+                        className={`focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default w-[200px] ${
+                          allowInput ? "border-blue-700 " : ""
+                        }`}
+                      >
+                        <SelectValue placeholder="Chọn quyền" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value={Role.ADMIN}>
+                            {Role.ADMIN}
+                          </SelectItem>
+                          <SelectItem value={Role.MANAGER}>
+                            {Role.MANAGER}
+                          </SelectItem>
+                          <SelectItem value={Role.USER}>{Role.USER}</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage className="text-[10px]" />
                 </FormItem>
@@ -306,8 +362,11 @@ async function PersonalForm(props: PersonalProps) {
                     <FormLabel className="text-black">Avatar</FormLabel>
                     <FormControl>
                       <Input
-                        disabled={!allowInput}
                         type="file"
+                        className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
+                          allowInput && !isAdmin ? "border-b-blue-700 " : " "
+                        }`}
+                        disabled={!allowInput || isAdmin}
                         onChange={(e) => {
                           setFile(e.target.files?.[0]);
                         }}

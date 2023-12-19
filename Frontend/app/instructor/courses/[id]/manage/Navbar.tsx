@@ -1,16 +1,36 @@
 "use client";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { Fragment, useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import SaveButton from "./SaveButton";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { RoleType } from "@/types/user.type";
+import { Role } from "@/utils/resources";
+import ApprovedButton from "./ApprovedButton";
+import RequestApprovalButton from "./RequestApprovalButton";
+import { handleCountFieldsInSection } from "@/utils/function";
+import { Course } from "@/types/course.type";
 
 function CreateCourseNavBar() {
   const router = useRouter();
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles as RoleType[]
+  )[0].id;
+  const sections = useAppSelector((state) => state.sectionReducer.section);
+  const { totalLectureCount } = handleCountFieldsInSection(sections);
+  const course = useAppSelector((state) => state.courseReducer.manageCourse);
+  const [courseData, setCourseData] = useState<Course>();
+  useEffect(() => {
+    setCourseData(course);
+  }, [course]);
 
   const handleClickBack = () => {
-    router.push("/instructor/courses");
+    if (role === Role.ADMIN) {
+      router.push("/admin/courses");
+    } else {
+      router.push("/instructor/courses");
+    }
   };
-
   return (
     <div className="sticky top-0 z-20">
       <div className="bg-gray-900 text-white py-4 px-2 ">
@@ -23,7 +43,24 @@ function CreateCourseNavBar() {
             <div>Quay Lại</div>
           </div>
           <div className="flex gap-10 mr-10 items-center">
-            <SaveButton />
+            {role === Role.ADMIN ? (
+              <ApprovedButton course={courseData as Course} />
+            ) : (
+              <Fragment>
+                {totalLectureCount > 0 && !courseData?.isApproved ? (
+                  <RequestApprovalButton course={courseData as Course} />
+                ) : (
+                  <Fragment>
+                    {courseData?.isApproved ? (
+                      <div className="italic text-orange-400">
+                        Xét duyệt thành công
+                      </div>
+                    ) : null}
+                  </Fragment>
+                )}
+                <SaveButton />
+              </Fragment>
+            )}
           </div>
         </div>
       </div>

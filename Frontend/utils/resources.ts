@@ -47,7 +47,8 @@ export enum ToastMessage {
 export enum Role {
   USER = "ROLE_USER",
   ADMIN = "ROLE_ADMIN",
-  MANAGER = "ROLE_MANAGER"
+  MANAGER = "ROLE_MANAGER",
+  GUEST = "ROLE_GUEST"
 }
 
 export enum ApiResource {
@@ -69,4 +70,15 @@ export enum CourseLectureField {
   URL = "url",
   NAME = "name",
   FILENAME = "fileName"
+}
+
+export enum IssueType {
+  CONTENT_FORMAT=("CONTENT FORMAT ERROR"),
+  FILE_ERROR =("IMAGE OR VIDEO FILE ERROR"),
+  OTHER = ("OTHER TYPES OF ERRORS")
+}
+export enum SecurityLevel {
+  HIGH=("HIGH"),
+  LOW =("LOW"),
+  MEDIUM = ("MEDIUM")
 }

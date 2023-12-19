@@ -8,7 +8,7 @@ export default interface Content {
     sections?: Section[]
 }
 
-interface Description {
+export interface Description {
     id?: string,
     requirements: string,
     details: string,

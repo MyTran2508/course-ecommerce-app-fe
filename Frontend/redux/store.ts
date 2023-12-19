@@ -2,9 +2,10 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { authApi } from "./services/authApi";
 import authReducer, { AuthState } from "./features/authSlice";
 import cartReducer from "./features/cartSlice";
-import userReducer from "./features/userSlice";
+import userReducer, { UserState } from "./features/userSlice";
 import courseReducer from "./features/courseSlice";
 import contentReducer from "./features/contentSlice";
+import sectionReducer from "./features/sectionSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { AuthMiddleware, rtkQueryErrorLogger } from "@/config/middleware";
 import { userApi } from "./services/userApi";
@@ -25,7 +26,7 @@ const persistConfig = {
 export interface RootStateReduxPersist {
   cartReducer: Cart[];
   authReducer: AuthState;
-  userReducer:  Pick<User, "username" | "photos" | "email" | "id" | "roles">,
+  userReducer:  UserState,
 }
 
 const rootReducer = combineReducers<RootStateReduxPersist>( {
@@ -40,6 +41,7 @@ export const store = configureStore({
     persistedReducer,
     courseReducer,
     contentReducer,
+    sectionReducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [courseApi.reducerPath]: courseApi.reducer,

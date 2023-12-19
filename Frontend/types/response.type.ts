@@ -16,5 +16,5 @@ export interface ListResponse {
     statusMessage: string,
     totalRecords: number,
     totalPages: number,
-    data:  Course[]
+    data:  Course[] | User[]
 }

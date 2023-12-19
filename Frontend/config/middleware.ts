@@ -34,44 +34,47 @@ export const rtkQueryErrorLogger: Middleware =
       if (isPayloadErrorMessage(action.payload)) {
         const error = action.payload.data.error
         // showToast(ToastStatus.WARNING, error);
+        console.log(error)
         if (error === "Internal Server Error") {
           dispatch(logout());
           dispatch(removeUser());
         }
       }
     }
-    // if (isRejected(action)) {
-    //   showToast(ToastStatus.WARNING, (action.payload as any).error);
-    //   console.log((action.payload as any).error)
-    // }
     return next(action);
   };
 
 export const AuthMiddleware: Middleware =
-  (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
-    const roles = api.getState().persistedReducer.userReducer.roles
-    const loginUrl = '/login';
-    const homeUrl = '/'
-    console.log(roles)
-    if (typeof window !== 'undefined') { 
-      const pathname = window.location.pathname;
-      if (roles) {
-        const role = roles[0].id
-        if ((isAdminRoute(pathname) || isManagerRoute(pathname)) && _.isEqual(role, Role.USER)) {
-          window.location.href = homeUrl
-        }  
+  (api: MiddlewareAPI) => {
 
-        return next(action);
-      } else {
-        console.log("zô else")
-        if (isUserRoute(pathname) || isManagerRoute(pathname)) {
-          window.location.href = loginUrl
-        } else {
-          return next(action);
-        }
-      }
-    }
+    return (next) => (action: AnyAction) => {
+    // const roles = api.getState().persistedReducer.userReducer.roles
+    // const loginUrl = '/login';
+    // const homeUrl = '/'
+      
+    // if (typeof window !== 'undefined') { 
+    //   const pathname = window.location.pathname;
+    //   if (roles) {
+    //     const role = roles[0].id
+    //     if ((isAdminRoute(pathname) || isManagerRoute(pathname)) && _.isEqual(role, Role.USER)) {
+    //       window.location.href = homeUrl
+    //     }
+
+    //     if ((isUserRoute(pathname) || isManagerRoute(pathname) || isAdminRoute(pathname)) && _.isEqual(role, Role.GUEST)) {
+    //       window.location.href = loginUrl
+    //     }
+    //     return next(action);
+    //   } else {
+    //     if (isManagerRoute(pathname) || isAdminRoute(pathname)) {
+    //       window.location.href = homeUrl
+    //     } else {
+    //       return next(action);
+    //     }  
+    //   }
+    // }
+    return next(action);
   }
+} 
 
 const userRoutes = ['/my-courses', '/payment/checkout', '/learning', '/user'];
 
