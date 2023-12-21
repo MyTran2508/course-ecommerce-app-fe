@@ -4,6 +4,7 @@ import {
   useFilterCourseMutation,
   useGetAllCourseQuery,
   useGetNewestCourseQuery,
+  useGetPopularCourseQuery,
 } from "@/redux/services/courseApi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Loading from "../user/personal/loading";
@@ -12,8 +13,11 @@ import { course } from "@/redux/features/courseSlice";
 import Checkout from "@/components/PayPal";
 import Paginate from "@/components/Paginate";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const router = useRouter();
   const [text] = useTypewriter({
     words: [
       "We accompany you on your learning journey and personal development",
@@ -24,36 +28,39 @@ export default function Home() {
     delaySpeed: 3000,
     deleteSpeed: 20,
   });
-  let newestCourseList: Course[] = [];
-  const [searchCourse] = useFilterCourseMutation();
+  const [courseNewest, setCourseNewest] = useState<Course[]>([]);
+  const [coursePopular, setCoursePopular] = useState<Course[]>([]);
+  const {
+    data: courseNewestData,
+    isLoading: isCourseNewestLoading,
+    isSuccess: isCourseNewestSuccess,
+  } = useGetNewestCourseQuery({
+    topicId: 0,
+    size: 4,
+  });
+  const {
+    data: coursePopularData,
+    isLoading: isCoursePopularLoading,
+    isSuccess: isCoursePopularSuccess,
+  } = useGetPopularCourseQuery({
+    topicId: 0,
+    size: 4,
+  });
   useEffect(() => {
-    handleSearch();
-  }, []);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const handleSearch = async () => {
-    await searchCourse({
-      keyword: null,
-      pageIndex: 0,
-      pageSize: 10,
-    })
-      .unwrap()
-      .then((fulfilled) => {
-        setCourses(fulfilled.data as Course[]);
-      });
-  };
-  // const { data, isLoading } = useGetNewestCourseQuery({ topicId: 0, size: 4 });
-  const { data, isLoading } = useGetAllCourseQuery(null);
-  if (isLoading) return <Loading />;
+    if (isCourseNewestSuccess) {
+      setCourseNewest(courseNewestData?.data as Course[]);
+    }
+    if (isCoursePopularSuccess) {
+      setCoursePopular(coursePopularData?.data as Course[]);
+    }
+  }, [courseNewestData, coursePopularData]);
+  if (isCourseNewestLoading || isCoursePopularLoading) return <Loading />;
 
-  if (data) {
-    newestCourseList = data?.data as Course[];
-  }
-
-  const renderItem = () => {
+  const renderCourse = (courseList: Course[]) => {
     return (
       <div className="flex justify-center items-center">
         <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
-          {courses.map((course) => (
+          {courseList.map((course) => (
             <div key={course.id}>
               <CourseCard course={course} />
             </div>
@@ -75,9 +82,29 @@ export default function Home() {
           </p>
         </div>
       </section>
-      <div>
-        <h3 className="text-2xl font-bold ml-10">Các Khóa Học</h3>
-        {renderItem()}
+      <div className="mx-10">
+        <div className="flex-between">
+          <h3 className="text-2xl font-bold ml-6">Khóa Học Mới</h3>
+          <div
+            onClick={() => router.push("/course/search")}
+            className="hover:cursor-pointer hover:text-orange-400"
+          >
+            Xem thêm
+          </div>
+        </div>
+        {renderCourse(courseNewest)}
+      </div>
+      <div className="mx-10">
+        <div className="flex-between">
+          <h3 className="text-2xl font-bold ml-6">Khóa Học Phổ Biến</h3>
+          <div
+            onClick={() => router.push("/course/search")}
+            className="hover:cursor-pointer hover:text-orange-400"
+          >
+            Xem thêm
+          </div>
+        </div>
+        {renderCourse(coursePopular)}
       </div>
       <div className="flex-center">
         {/* <Paginate totalPage={4} key={"123123"} setPage={setPage} /> */}

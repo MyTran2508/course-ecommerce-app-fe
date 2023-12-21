@@ -115,7 +115,7 @@ export const courseColumns: ColumnDef<Course>[] = [
     accessorKey: "isApproved",
     header: () => <FilterColumn name="isApproved" />,
     cell: ({ row }) => (
-      <div className="capitalize">
+      <div className="capitalize ml-10">
         {row.getValue("isApproved") ? (
           <FaRegCheckCircle className="text-lg text-green-500" />
         ) : (
@@ -128,7 +128,7 @@ export const courseColumns: ColumnDef<Course>[] = [
     accessorKey: "isAwaitingApproval",
     header: () => <FilterColumn name="isAwaitingApproval" />,
     cell: ({ row }) => (
-      <div className="capitalize">
+      <div className="capitalize ml-10">
         {row.getValue("isAwaitingApproval") ? (
           <FaRegCheckCircle className="text-lg text-green-500" />
         ) : (

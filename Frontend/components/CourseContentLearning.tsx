@@ -49,7 +49,7 @@ function CourseContentLearning(props: CourseContentLearningProps) {
       <Disclosure>
         {({ open }) => (
           <>
-            <Disclosure.Button className="flex h-12  w-full justify-between border-b-2 bg-gray-50 px-2 pt-1 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 items-center sticky top-0">
+            <Disclosure.Button className="flex h-full w-full justify-between border-b-2 bg-gray-50 px-2 pt-1 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 items-center sticky top-0">
               <div className="flex flex-col pl-2">
                 <span className="text-sm">
                   {section.ordinalNumber}. {section.name}
@@ -91,7 +91,7 @@ function CourseContentLearning(props: CourseContentLearningProps) {
                         return (
                           <div
                             key={lecture.id}
-                            className={`flex-between gap-3 hover:cursor-pointer pl-5 h-12  ${
+                            className={`flex-between gap-3 hover:cursor-pointer pl-5 h-full  ${
                               isSuccess ||
                               (lecture.ordinalNumber as number) ==
                                 currentProgress + 1

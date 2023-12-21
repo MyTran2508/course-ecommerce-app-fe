@@ -12,23 +12,17 @@ import { SiScikitlearn } from "react-icons/si";
 function SideBar() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const handleLogout = () => {
-    dispatch(removeUser());
-    dispatch(logout());
-    router.push("/");
-    showToast(ToastStatus.SUCCESS, ToastMessage.LOGOUT_SUCCESS);
-  };
 
   return (
-    <div className="relative flex flex-col bg-clip-border rounded-xl bg-orange-50 text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
+    <div className="sticky top-0 flex flex-col bg-clip-border rounded-xl bg-orange-50 text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ">
       <div className="mb-2 p-4 bg-white border border-orange-500 rounded-md">
         <h5 className="flex-center gap-2 block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-gray-900">
           <SiScikitlearn className="text-3xl" />
           E-LEARNING ADMIN
         </h5>
       </div>
-      <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-normal text-gray-700">
-        <Link href={"/admin/user"}>
+      <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-normal text-gray-700 ">
+        <Link href={"/admin/overview"}>
           <div
             role="button"
             tabIndex={0}
@@ -100,30 +94,30 @@ function SideBar() {
             Quản lý tài khoản
           </div>
         </Link>
-
-        <div
-          role="button"
-          tabIndex={0}
-          className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-          onClick={handleLogout}
-        >
-          <div className="grid place-items-center mr-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-              className="h-5 w-5"
-            >
-              <path
-                fillRule="evenodd"
-                d="M12 2.25a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM6.166 5.106a.75.75 0 010 1.06 8.25 8.25 0 1011.668 0 .75.75 0 111.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788a.75.75 0 011.06 0z"
-                clipRule="evenodd"
-              />
-            </svg>
+        <Link href={"/"}>
+          <div
+            role="button"
+            tabIndex={0}
+            className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+          >
+            <div className="grid place-items-center mr-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                className="h-5 w-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 2.25a.75.75 0 01.75.75v9a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM6.166 5.106a.75.75 0 010 1.06 8.25 8.25 0 1011.668 0 .75.75 0 111.06-1.06c3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788a.75.75 0 011.06 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            Trang Chủ
           </div>
-          Đăng xuất
-        </div>
+        </Link>
       </nav>
     </div>
   );

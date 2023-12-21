@@ -363,6 +363,7 @@ function PersonalForm(props: PersonalProps) {
                     <FormControl>
                       <Input
                         type="file"
+                        accept=".jpg,.png"
                         className={`border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
                           allowInput && !isAdmin ? "border-b-blue-700 " : " "
                         }`}

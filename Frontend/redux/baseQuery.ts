@@ -1,7 +1,7 @@
 import { RootState } from './store';
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import { store } from "./store"
-const baseUrl = "http://localhost:8080"
+const baseUrl =  process.env.NEXT_PUBLIC_END_POINT
 
 export const baseQueryWithToken = fetchBaseQuery({
     baseUrl: baseUrl,

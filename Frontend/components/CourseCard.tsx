@@ -54,7 +54,7 @@ function CourseCard(props: CourseProps) {
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                 <div className="bg-white rounded-2xl py-2 px-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
                   {isMyCourse ? (
-                    <Link href={`/learning/${course.id}`}>Tiếp tục học</Link>
+                    <Link href={`/course/${course.id}`}>Tiếp tục học</Link>
                   ) : isInstructorCourse ? (
                     <Link
                       href={`/instructor/courses/${course.id}/manage/content`}

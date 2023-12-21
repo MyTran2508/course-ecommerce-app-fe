@@ -27,10 +27,34 @@ export const orderApi = createApi({
          }
       },
     }),
+    monthlySales: builder.query<DataResponse, number>({
+      query: (targetYear: number) => {
+        return {
+          url: `/api/users/order/monthly-sales`,
+          params: {
+            targetYear: targetYear,
+          },
+        };
+      },
+    }),
+    salesSamePeriod: builder.query<DataResponse, number>({
+      query: (targetYear: number) => {
+        return {
+          url: `/api/users/order/sales-same-period`,
+          params: {
+            targetYear: targetYear,
+          },
+        };
+      },
+    }),
   }),
 });
 
 export const {
-    useAddOrderMutation,
-    useGetOrderByIdQuery
+  useAddOrderMutation,
+  useGetOrderByIdQuery,
+  useMonthlySalesQuery,
+  useSalesSamePeriodQuery,
+  useLazyMonthlySalesQuery,
+  useLazySalesSamePeriodQuery
 } = orderApi;
