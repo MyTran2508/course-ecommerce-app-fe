@@ -1,4 +1,4 @@
-package com.programming.courseservice.controller;
+package com.programming.courseservice.domain.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

@@ -1,45 +1,63 @@
 package com.programming.courseservice.service;
 
+import com.programming.courseservice.utilities.FileUtils;
+import com.programming.courseservice.utilities.constant.StorageConstrant;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
 @Service
 @RequiredArgsConstructor
 public class StorageService {
-    private String FOLDER_PATH = Paths.get("./data-app/course/images/").toAbsolutePath().toString();
-    private String[] validExtensions = {".jpg", ".jpeg", ".png", ".gif"};
+    private final FileUtils fileUtils;
 
-    public boolean isFileImage(MultipartFile file) {
-        if(file == null || file.isEmpty()) {
-            return false;
+    @SuppressWarnings("unchecked")
+    public String uploadImageToFileSystem(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        Path filePath = Paths.get(StorageConstrant.COURSE_IMAGE_PATH).resolve(fileName).toAbsolutePath();
+
+        if (!fileUtils.isFileImage(file)) {
+            return "";
         }
-        String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-        return Arrays.asList(validExtensions).contains(extension);
+
+        return fileUtils.uploadFileToSystem(file, filePath);
     }
 
-    public String uploadImageToFileSystem(MultipartFile file) {
-        String filePath = FOLDER_PATH + "/" +file.getOriginalFilename();
-        System.out.println(filePath);
-        try {
-            // auto create directory if it doesn't exist
-            File folder = new File(FOLDER_PATH);
-            if (!folder.exists()) {
-                FileUtils.forceMkdir(folder);
-            }
+    @SuppressWarnings("unchecked")
+    public String uploadVideoToFileSystem(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        Path filePath = Paths.get(StorageConstrant.COURSE_VIDEO_PATH).resolve(fileName).toAbsolutePath();
 
-            file.transferTo(new File(filePath));
-            return filePath;
-        } catch (IOException e) {
+        if (!fileUtils.isFileVideo(file)) {
             return "";
+        }
+        return fileUtils.uploadFileToSystem(file, filePath);
+    }
+
+    @SuppressWarnings("unchecked")
+    public String uploadDocumentToFileSystem(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+        Path filePath = Paths.get(StorageConstrant.COURSE_DOCUMENT_PATH).resolve(fileName).toAbsolutePath();
+
+//        if (!fileUtils.isFileDocument(file)) {
+//            return "";
+//        }
+        return fileUtils.uploadFileToSystem(file, filePath);
+    }
+
+
+    public byte[] loadImageFromFileSystem(String filePath) {
+        try {
+            return Files.readAllBytes(new File(filePath).toPath());
+        } catch (IOException e) {
+            return "Not Found".getBytes();
         }
     }
 
@@ -48,16 +66,4 @@ public class StorageService {
         file.delete();
     }
 
-//    public byte[] loadImageFromFileSystem(String usename) {
-//        User user = userRepository.findByUserName(usename);
-//        if(user == null || user.getPhotos() == null || user.getPhotos().isEmpty()) {
-//            return null;
-//        }
-//        String filePath= user.getPhotos();
-//        try {
-//            return Files.readAllBytes(new File(filePath).toPath());
-//        } catch (IOException e) {
-//            return "Not Found".getBytes();
-//        }
-//    }
 }

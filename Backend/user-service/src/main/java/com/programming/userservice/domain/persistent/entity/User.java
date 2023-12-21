@@ -51,7 +51,7 @@ public class User extends BaseModel {
     @Column(length = 512)
     private String photos;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles",
         joinColumns = @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id"),

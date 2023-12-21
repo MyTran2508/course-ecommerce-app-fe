@@ -55,7 +55,7 @@ public class SectionController extends BaseApiImpl<Section, SectionDto> {
 
     @ShowOpenAPI
     @GetMapping("/download")
-    public ResponseEntity<ByteArrayResource> loadFile(@RequestParam("path") String path) {
+    public ResponseEntity<?> loadFile(@RequestParam("path") String path) {
         return sectionService.loadFile(path);
     }
 }
