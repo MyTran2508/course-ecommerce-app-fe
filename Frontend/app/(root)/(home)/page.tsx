@@ -4,7 +4,6 @@ import {
   useFilterCourseMutation,
   useGetAllCourseQuery,
   useGetNewestCourseQuery,
-  useGetPopularCourseQuery,
 } from "@/redux/services/courseApi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Loading from "../user/personal/loading";
@@ -12,7 +11,7 @@ import { Course } from "@/types/course.type";
 import { course } from "@/redux/features/courseSlice";
 import Checkout from "@/components/PayPal";
 import Paginate from "@/components/Paginate";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -42,8 +41,8 @@ export default function Home() {
     data: coursePopularData,
     isLoading: isCoursePopularLoading,
     isSuccess: isCoursePopularSuccess,
-  } = useGetPopularCourseQuery({
-    topicId: 0,
+  } = useGetNewestCourseQuery({
+    topicId: 1,
     size: 4,
   });
   useEffect(() => {
@@ -56,17 +55,35 @@ export default function Home() {
   }, [courseNewestData, coursePopularData]);
   if (isCourseNewestLoading || isCoursePopularLoading) return <Loading />;
 
-  const renderCourse = (courseList: Course[]) => {
+  const renderCourse = (courseList: Course[], title: string) => {
+    console.log(courseList);
     return (
-      <div className="flex justify-center items-center">
-        <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
-          {courseList.map((course) => (
-            <div key={course.id}>
-              <CourseCard course={course} />
+      <Fragment>
+        {courseList ? (
+          <Fragment>
+            <div className="flex-between">
+              <h3 className="text-2xl font-bold ml-6">{title}</h3>
+              <div
+                onClick={() => router.push("/course/search")}
+                className="hover:cursor-pointer hover:text-orange-400"
+              >
+                Xem thêm
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
+            <div className="flex justify-center items-center">
+              <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
+                <Fragment>
+                  {courseList.map((course) => (
+                    <div key={course.id}>
+                      <CourseCard course={course} />
+                    </div>
+                  ))}
+                </Fragment>
+              </div>
+            </div>
+          </Fragment>
+        ) : null}
+      </Fragment>
     );
   };
 
@@ -82,29 +99,9 @@ export default function Home() {
           </p>
         </div>
       </section>
+      <div className="mx-10">{renderCourse(courseNewest, "Khóa Học Mới")}</div>
       <div className="mx-10">
-        <div className="flex-between">
-          <h3 className="text-2xl font-bold ml-6">Khóa Học Mới</h3>
-          <div
-            onClick={() => router.push("/course/search")}
-            className="hover:cursor-pointer hover:text-orange-400"
-          >
-            Xem thêm
-          </div>
-        </div>
-        {renderCourse(courseNewest)}
-      </div>
-      <div className="mx-10">
-        <div className="flex-between">
-          <h3 className="text-2xl font-bold ml-6">Khóa Học Phổ Biến</h3>
-          <div
-            onClick={() => router.push("/course/search")}
-            className="hover:cursor-pointer hover:text-orange-400"
-          >
-            Xem thêm
-          </div>
-        </div>
-        {renderCourse(coursePopular)}
+        {renderCourse(coursePopular, "Khóa Học Phổ Biến")}
       </div>
       <div className="flex-center">
         {/* <Paginate totalPage={4} key={"123123"} setPage={setPage} /> */}
