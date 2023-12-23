@@ -56,7 +56,6 @@ export default function Home() {
   if (isCourseNewestLoading || isCoursePopularLoading) return <Loading />;
 
   const renderCourse = (courseList: Course[], title: string) => {
-    console.log(courseList);
     return (
       <Fragment>
         {courseList ? (

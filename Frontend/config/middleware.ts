@@ -48,7 +48,7 @@ export const AuthMiddleware: Middleware =
   (api: MiddlewareAPI) => {
 
     return (next) => (action: AnyAction) => {
-    const roles = api.getState().persistedReducer.userReducer.roles
+    const roles = api.getState().persistedReducer.userReducer.user.roles
     const loginUrl = '/login';
     const homeUrl = '/'
       
