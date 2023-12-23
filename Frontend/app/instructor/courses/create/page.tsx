@@ -16,6 +16,9 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 function CreateCoursePage() {
+  const email = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.email
+  );
   const [nameCourse, setNameCourse] = useState<string>();
   const [createCourse] = useCreateCourseMutation();
   const dispatch = useAppDispatch();
@@ -39,6 +42,7 @@ function CreateCoursePage() {
       topic: {
         id: "0",
       },
+      authorName: email,
     };
 
     await createCourse(newCourse)

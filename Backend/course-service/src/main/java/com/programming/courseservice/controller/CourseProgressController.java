@@ -5,6 +5,7 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.CourseProgressListDto;
 import com.programming.courseservice.domain.dto.CourseProgressDto;
+import com.programming.courseservice.domain.dto.StatisticsRequest;
 import com.programming.courseservice.domain.persistent.entity.CourseProgress;
 import com.programming.courseservice.service.CourseProgressService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,11 @@ public class CourseProgressController extends BaseApiImpl<CourseProgress, Course
     public DataResponse<Boolean> hasAccessToCourse(@RequestParam("userId") String userId,
                                                    @RequestParam("courseId") String courseId) {
         return courseProgressService.hasAccessToCourse(userId, courseId);
+    }
+
+    @PostMapping("/get-total-register-course")
+    public DataResponse<Integer> getTotalRegisteredCourseByYearAndMonth(@RequestBody StatisticsRequest statisticsRequest) {
+        return courseProgressService.getTotalRegisteredCourseByYearAndMonth(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
     }
 
 //    @Override

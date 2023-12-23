@@ -9,10 +9,13 @@ import React, { useEffect } from "react";
 import _ from "lodash";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
+import { useAppDispatch } from "@/redux/hooks";
+import { setSections } from "@/redux/features/sectionSlice";
 
 function CurriculumPage() {
   const router = useRouter();
   const param = useParams();
+  const dispatch = useAppDispatch();
   const courseId = param.id as string;
   const { data: contentData, isLoading: isContentLoading } =
     useGetContentByCourseIdQuery(courseId);
@@ -27,6 +30,7 @@ function CurriculumPage() {
     sections = _.cloneDeep(
       (contentData?.data as Content).sections
     ) as Section[];
+    dispatch(setSections((contentData?.data as Content).sections as Section[]));
   }
 
   return (

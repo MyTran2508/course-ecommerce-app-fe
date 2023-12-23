@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.awt.print.Book;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -31,18 +32,25 @@ import java.util.Set;
 public class User extends BaseModel {
     @Column(nullable = false)
     private String password;
+
     @Column(length = 200)
     private String email;
+
     @Column(length = 150)
     private String username;
+
     @Column(name = "first_name", nullable = false, length = 64)
     private String firstName;
+
     @Column(name = "last_name", nullable = false, length = 64)
     private String lastName;
+
     @Column(name = "telephone")
     private String telephone;
+
     @Column(length = 512)
     private String photos;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles",
@@ -52,6 +60,7 @@ public class User extends BaseModel {
         inverseForeignKey = @ForeignKey(name = "fk_users_roles_roles")
     )
     private List<Role> roles;
+
     @OneToMany(targetEntity = Address.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_address_user"))
     private List<Address> addresses;

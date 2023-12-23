@@ -1,3 +1,4 @@
+import { MonthlySale, SalesByTopic, SalesSamePeriod, SalesSamePeriodByTopics } from "@/app/admin/preview/page";
 import Content from "./content.type";
 import { Course } from "./course.type";
 import { CourseProcess } from "./courseProcess.type";
@@ -7,7 +8,7 @@ export interface DataResponse {
     timestamp: number,
     statusCode: number,
     statusMessage: string,
-    data: string | string[] | User | Course | Content | Course[] | boolean | CourseProcess
+    data: string |number | string[] | User | Course | Content | Course[] | boolean | CourseProcess | SalesByTopic[] | MonthlySale[] | SalesSamePeriod[] | SalesSamePeriodByTopics[]
 }
 
 export interface ListResponse {
@@ -16,5 +17,5 @@ export interface ListResponse {
     statusMessage: string,
     totalRecords: number,
     totalPages: number,
-    data:  Course[]
+    data:  Course[] | User[]
 }

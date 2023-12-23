@@ -96,16 +96,16 @@ function Footer() {
           <ul className="body__box">
             <li>Account</li>
             <li>
-              <Link href={"/"}>Profile</Link>
+              <Link href={"/user/security"}>Profile</Link>
             </li>
             <li>
               <Link href={"/"}>My account</Link>
             </li>
             <li>
-              <Link href={"/"}>Shopping cart</Link>
+              <Link href={"/cart"}>Shopping cart</Link>
             </li>
             <li>
-              <Link href={"/"}>Change password</Link>
+              <Link href={"/user/personal"}>Change password</Link>
             </li>
           </ul>
           <ul className="body__box body__box--input">

@@ -50,7 +50,7 @@ function SearchBarManufacturer() {
           </Combobox.Button>
           <Combobox.Input
             ref={inputRef}
-            className="search-manufacturer__input bg-slate-200 border rounded-full w-full h-10 placeholder:font-normal text-center text-sm"
+            className="search-manufacturer__input bg-slate-200 border rounded-full w-full h-10 placeholder:font-normal pl-10 text-sm"
             placeholder="Tìm Kiếm Khóa Học"
             displayValue={(manufacturer: string) => manufacturer}
             onChange={(e) => setManufacturer(e.target.value)}

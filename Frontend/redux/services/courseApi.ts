@@ -1,8 +1,8 @@
 import { DataResponse, ListResponse } from "@/types/response.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {baseQueryWithToken } from "../baseQuery";
-import { Course } from "@/types/course.type";
-import { SearchCourseRequest } from "@/types/request.type";
+import { Course, CourseIssueReport } from "@/types/course.type";
+import { SearchCourseRequest, SearchRequest } from "@/types/request.type";
 
 
 export const courseApi = createApi({
@@ -83,6 +83,19 @@ export const courseApi = createApi({
         return {
           url: `/api/courses/course/newest/${topicId}/${size}`,
         }
+      },
+      providesTags() {
+        return [{type: "Course", id: "course"}]
+      }
+    }),
+    getPopularCourse: builder.query<DataResponse, {topicId: number, size: number}>({
+      query: ({ topicId, size }) => {
+        return {
+          url: `/api/courses/course/popular/${topicId}/${size}`,
+        }
+      },
+       providesTags() {
+        return [{type: "Course", id: "course"}]
       }
     }),
     getCourseByUserId: builder.query<ListResponse, {id: string, pageIndex: number, pageSize: number}>({
@@ -112,13 +125,80 @@ export const courseApi = createApi({
           body: data
         }
       }
-    })
+    }),
+    filterCourseAdmin: builder.mutation<ListResponse, SearchRequest>({
+      query: (data: SearchRequest ) => {
+        return {
+          url: `/api/courses/course/search-by-keyword`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    updateApproved: builder.mutation<DataResponse, {courseId: string, isApproved: boolean, courseIssueReport: CourseIssueReport | {}}>({
+      query: ({courseId, isApproved, courseIssueReport} ) => {
+        return {
+          url: `/api/courses/course/update-approved`,
+          method: "POST",
+          params: {
+            id: courseId,
+            isApproved: isApproved
+          },
+          body: courseIssueReport,
+        };
+      },
+      invalidatesTags: () => [{type: "Course", id: "course"}]
+    }),
+    updateAwaitingApproval: builder.mutation<DataResponse, { courseId: string, isAwaitingApproval: boolean }>({
+      query: ({courseId, isAwaitingApproval}) => {
+        return {
+          url: `/api/courses/course/update-awaiting-approval`,
+          method: "POST",
+          params: {
+            id: courseId,
+           isAwaitingApproval: isAwaitingApproval
+          },
+        };
+      },
+      invalidatesTags: () => [{type: "Course", id: "course"}]
+    }),
+    saleByTopics: builder.query<DataResponse, number>({
+      query: (targetYear: number) => {
+        return {
+          url: `/api/courses/course/sales-by-topics`,
+          params: {
+            targetYear: targetYear,
+          },
+        };
+      },
+    }),
+    salesSamePeriodByTopics: builder.query<DataResponse, number>({
+      query: (targetYear: number) => {
+        return {
+          url: `/api/courses/course/sales-same-period-by-topics`,
+          params: {
+            targetYear: targetYear,
+          },
+        };
+      },
+    }),
+    getTotalApprovedCourse: builder.mutation<DataResponse, {targetYear:number}>({
+      query: (data: {targetYear: number}) => {
+        return {
+          url: `/api/courses/course/get-total-approved-course`,
+          method: "POST",
+          body: data
+        };
+      },
+    }),
   }),
 
 });
 
 export const {
   useLoadFileFromCloudQuery,
+  useLazyGetAllCourseQuery,
+  useFilterCourseAdminMutation,
   useUploadCourseImageMutation,
   useUploadCourseVideoMutation,
   useCreateCourseMutation,
@@ -127,5 +207,13 @@ export const {
   useGetNewestCourseQuery,
   useGetCourseByUserIdQuery,
   useGetAllCourseQuery,
-  useFilterCourseMutation
+  useFilterCourseMutation,
+  useUpdateApprovedMutation,
+  useUpdateAwaitingApprovalMutation,
+  useGetPopularCourseQuery,
+  useSaleByTopicsQuery,
+  useSalesSamePeriodByTopicsQuery,
+  useGetTotalApprovedCourseMutation,
+  useLazySalesSamePeriodByTopicsQuery,
+ useLazySaleByTopicsQuery,
 } = courseApi;

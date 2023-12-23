@@ -30,7 +30,7 @@ function PasswordForm() {
   const [openEye, setOpenEye] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const userId = useAppSelector(
-    (state) => state.persistedReducer.userReducer.id
+    (state) => state.persistedReducer.userReducer.user.id
   );
 
   const [changePassword] = useChangePasswordMutation();

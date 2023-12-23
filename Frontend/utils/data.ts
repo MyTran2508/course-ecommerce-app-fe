@@ -22,6 +22,8 @@ export const Topic: ComboBoxType[] = [
     { id: "10", name: "Selenium WebDriver" },
     { id: "11", name: "Postman" },
     { id: "12", name: "JUnit" },
+    { id: "13", name: "NodeJS" },
+    { id: "14", name: "HTML" },
 ]
 
 export const Level: ComboBoxType[] = [

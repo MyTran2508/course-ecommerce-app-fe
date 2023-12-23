@@ -50,7 +50,8 @@ export const courseProcessApi = createApi({
 });
 
 export const {
-    useGetCourseAccessQuery,
-    useUpdateCurrentProgressMutation,
-    useGetByUserIdAndCourseIdQuery
+  useGetCourseAccessQuery,
+  useLazyGetCourseAccessQuery,
+  useUpdateCurrentProgressMutation,
+  useGetByUserIdAndCourseIdQuery
 } = courseProcessApi;

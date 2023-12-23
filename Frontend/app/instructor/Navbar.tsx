@@ -16,7 +16,7 @@ import {
   useGetByUserNameQuery,
 } from "@/redux/services/userApi";
 import { User } from "@/types/user.type";
-import { removeUser, setUser } from "@/redux/features/userSlice";
+import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -31,8 +31,7 @@ function InstructorNavbar() {
   const [isLogout, setLogout] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState();
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
-  console.log(user);
-  // let user = JSON.parse(localStorage.getItem("user") || "{}");
+
   const { data: userNameData, isSuccess: userNameSuccess } =
     useGetByUserNameQuery(user.username as string);
 
@@ -53,6 +52,7 @@ function InstructorNavbar() {
         roles: (userNameData.data as User).roles,
       };
       dispatch(setUser(userState));
+      // dispatch(loadUser());
       setUserData(userNameData.data as User);
     }
     if (avatarSuccess) {

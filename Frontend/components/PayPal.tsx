@@ -8,10 +8,13 @@ import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
-import { setCart } from "@/redux/features/cartSlice";
+import { setCart, updatePrice } from "@/redux/features/cartSlice";
 import { useAddOrderMutation } from "@/redux/services/orderApi";
 import { Order, OrderStatus, ShippingMethod } from "@/types/order.type";
 import { isFulfilled } from "@reduxjs/toolkit";
+import { convertVNDtoUSD, totalPrice } from "@/utils/function";
+import { useLazyGetAllCourseQuery } from "@/redux/services/courseApi";
+import { Course } from "@/types/course.type";
 
 interface CheckoutProps {
   price: number;
@@ -25,12 +28,33 @@ const Checkout = (props: CheckoutProps) => {
   const [orderID, setOrderID] = useState<string | false>(false);
   const CLIENT_ID: string = process.env.NEXT_PUBLIC_CLIENT_ID || "";
   const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
-  const user = useAppSelector((state) => state.persistedReducer.userReducer);
+  const user = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user
+  );
   const [addOrder] = useAddOrderMutation();
   const dispatch = useAppDispatch();
+  const totalPriceVND = totalPrice(carts);
+  const totalPriceUSD = convertVNDtoUSD(totalPriceVND);
+  const [cartList, setCardList] = useState(carts);
+
+  const [getCourse, { data, isLoading, isSuccess }] =
+    useLazyGetAllCourseQuery();
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(updatePrice(data?.data as Course[]));
+    }
+  }, [data]);
+  useEffect(() => {
+    console.log(carts);
+  }, [carts]);
+  useEffect(() => {
+    getCourse(null);
+  }, []);
 
   // creates a paypal order
   const createOrder = (data: any, actions: any) => {
+    getCourse(null);
     return actions.order
       .create({
         purchase_units: [
@@ -38,7 +62,7 @@ const Checkout = (props: CheckoutProps) => {
             description: "Thanh Toán Khóa Học",
             amount: {
               currency_code: "USD",
-              value: price,
+              value: totalPriceUSD,
             },
           },
         ],
@@ -69,7 +93,7 @@ const Checkout = (props: CheckoutProps) => {
       .then((fulfilled) => {
         console.log(fulfilled);
         showToast(ToastStatus.SUCCESS, ToastMessage.PAYMENT_SUCCESS);
-        router.push("/my-courses");
+        router.push("/");
       });
   };
 
@@ -95,7 +119,7 @@ const Checkout = (props: CheckoutProps) => {
         };
       });
     const newOrder: Order = {
-      totalPrice: price,
+      totalPrice: totalPriceVND,
       orderStatus: OrderStatus.PAID,
       shippingMethod: ShippingMethod.PAYPAL,
       orderItems: orderItems,

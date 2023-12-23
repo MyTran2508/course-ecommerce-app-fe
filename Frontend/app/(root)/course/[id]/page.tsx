@@ -21,11 +21,15 @@ import {
 import Loading from "../../user/personal/loading";
 import { Course } from "@/types/course.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
-import Content from "@/types/content.type";
+import Content, { Description } from "@/types/content.type";
 import { Section } from "@/types/section.type";
 import { handleCountFieldsInSection } from "@/utils/function";
 import { useRouter } from "next/navigation";
-import { useGetCourseAccessQuery } from "@/redux/services/courseProcessApi";
+import {
+  useGetCourseAccessQuery,
+  useLazyGetCourseAccessQuery,
+} from "@/redux/services/courseProcessApi";
+import { IoCheckmarkDone } from "react-icons/io5";
 
 const initCourse: Course = {
   id: "0",
@@ -47,6 +51,7 @@ function CoursePage() {
   const [isOpenAllContent, setOpenAllContent] = useState<boolean>(false);
   const [course, setCourse] = useState(initCourse);
   const [video, setVideo] = useState("");
+  const [description, setDescription] = useState<Description>();
   const [isAccess, setAccess] = useState<boolean>();
   const [sections, setSections] = useState<Section[]>([]);
   const { data: videoBase64 } = useLoadFileFromCloudQuery(video);
@@ -57,16 +62,24 @@ function CoursePage() {
     param.id as string
   );
   const userId = useAppSelector(
-    (state) => state.persistedReducer.userReducer.id
+    (state) => state.persistedReducer.userReducer.user.id
   );
-  const { data: courseAccess, isSuccess: getCourseAccessSuccess } =
-    useGetCourseAccessQuery({
-      userId: userId,
-      // courseId: course?.id as string,
-      courseId: param.id as string,
-    });
+  const [
+    getCourseAccess,
+    { data: courseAccess, isSuccess: getCourseAccessSuccess },
+  ] = useLazyGetCourseAccessQuery();
   const { totalDurationCourse, totalLectureCount } =
     handleCountFieldsInSection(sections);
+
+  useEffect(() => {
+    if (userId) {
+      getCourseAccess({
+        userId: userId,
+        // courseId: course?.id as string,
+        courseId: param.id as string,
+      });
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -80,13 +93,14 @@ function CoursePage() {
           (section) => section.ordinalNumber !== -1
         )
       );
+      setDescription((contentData?.data as Content).description);
     }
   }, [contentData]);
 
   useEffect(() => {
     if (getCourseAccessSuccess) {
       setAccess(courseAccess?.data as boolean);
-      if ((courseAccess.data as boolean) === true) {
+      if ((courseAccess?.data as boolean) === true) {
         router.push(`/learning/${param.id as string}`);
       }
     }
@@ -112,6 +126,67 @@ function CoursePage() {
         })}
       </div>
     );
+  };
+
+  const renderTargetConsumers = () => {
+    if (description) {
+      const targetConsumers = description.targetConsumers;
+      console.log(targetConsumers.length);
+      if (targetConsumers.length === 2) {
+        return null;
+      }
+      const targetConsumersList = targetConsumers.split("/n");
+
+      return (
+        <Fragment>
+          <div className="text-2xl font-bold md-6 mt-10 mb-5">
+            Bạn sẽ học được những gì?
+          </div>
+          <div className="grid grid-cols-2 gap-10 mb-10">
+            {targetConsumersList.map((targetConsumer, index) => {
+              if (targetConsumer !== "") {
+                return (
+                  <div key={index} className="flex gap-2">
+                    <IoCheckmarkDone className="text-orange-500 text-xl" />
+                    {targetConsumer}
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </div>
+        </Fragment>
+      );
+    }
+    return null;
+  };
+
+  const renderRequirement = () => {
+    if (description) {
+      const requirements = description.requirements;
+      const requirementsList = requirements.split("/n");
+      if (requirements.length === 2) {
+        return null;
+      }
+      return (
+        <Fragment>
+          <div className="text-2xl font-bold md-6 mt-10 mb-5">Yêu Cầu</div>
+
+          {requirementsList.map((requirement, index) => {
+            if (requirement !== "") {
+              return (
+                <div key={index} className="flex gap-2 mb-5">
+                  <IoCheckmarkDone className="text-orange-500 text-xl" />
+                  {requirement}
+                </div>
+              );
+            }
+            return null;
+          })}
+        </Fragment>
+      );
+    }
+    return null;
   };
 
   const handleAddToCart = () => {
@@ -144,6 +219,7 @@ function CoursePage() {
           <div className="xl:w-2/3 ml-8 xs:m-6">
             <div className="text-3xl font-bold mb-6"> {course?.name}</div>
             <div className="font-light mb-2">{course?.subTitle}</div>
+            {renderTargetConsumers()}
             <div className="sticky top-[80px] z-1 bg-white">
               <div className="text-2xl font-bold md-6 ">Nội Dung Khóa Học</div>
               <div className="flex-between my-2 xs:text-[10px]">
@@ -165,6 +241,7 @@ function CoursePage() {
               </div>
             </div>
             <div className="w-full">{renderCourseContent()}</div>
+            {renderRequirement()}
           </div>
           <div className="xl:w-1/3 flex mr-2">
             <Card className="p-4 max-w-md mx-auto shadow-md sticky top-[65px] z-10 max-h-[550px]">

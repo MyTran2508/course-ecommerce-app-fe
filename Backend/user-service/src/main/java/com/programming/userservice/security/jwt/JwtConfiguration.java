@@ -1,5 +1,5 @@
 package com.programming.userservice.security.jwt;
-import com.programming.userservice.util.constant.SecurityConstrant;
+import com.programming.userservice.utilities.constant.SecurityConstrant;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

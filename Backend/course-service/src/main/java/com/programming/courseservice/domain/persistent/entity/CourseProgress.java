@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 public class CourseProgress extends BaseModel {
     private String userId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Course.class)
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_course_progress_course"))
     private Course course;
 

@@ -8,7 +8,8 @@ export interface User{
     telephone: string
     photos: string | null,
     roles: RoleType[] | null
-    addresses : Address []
+    addresses: Address[]
+    removed?: boolean
 }
 
 export interface RoleType {

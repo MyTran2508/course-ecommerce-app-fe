@@ -109,4 +109,8 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
             return ResponseMapper.toDataResponseSuccess(false);
         }
     }
+
+    public DataResponse<Integer> getTotalRegisteredCourseByYearAndMonth(int targetYear, Integer targetMonth) {
+        return ResponseMapper.toDataResponseSuccess(courseProgressRepository.getTotalRegisteredCourseByYearAndMonth(targetYear, targetMonth));
+    }
 }

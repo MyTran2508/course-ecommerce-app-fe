@@ -20,7 +20,9 @@ import java.util.List;
 
 @Repository
 public interface CourseRepository extends BaseRepository<Course> {
-    @Query("select c from Course c where c.topic.id = :topicId")
+    @Query("SELECT c FROM Course c where c.isApproved = true")
+    List<Course> getAllCourseIsApproved();
+    @Query("select c from Course c where c.topic.id = :topicId and c.isApproved = true")
     List<Course> getCourseByTopicId(@Param("topicId") String topicId, Pageable pageable);
 
     @Modifying
@@ -29,24 +31,77 @@ public interface CourseRepository extends BaseRepository<Course> {
     void updateCourse(String id, String levelId, String topicId, String languageId);
 
     @Query("""
-                Select cg.course from CourseProgress cg where cg.course.topic.id = :topicId 
-                GROUP BY cg.course.id 
+                Select cg.course from CourseProgress cg
+                where cg.course.topic.id = :topicId and cg.course.isApproved = true
+                GROUP BY cg.course.id
                 order by count(cg.course.id) DESC
            """)
     List<Course> findPopularCourses(@Param("topicId") String topicId, Pageable pageable);
 
     @Query("""
-                Select c from Course c where c.level.id IN :levelIds
-                and c.language.id IN :languageIds
-                and c.topic.id IN :topicIds
-                and (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                SELECT c FROM Course c 
+                WHERE c.level.id IN :levelIds
+                AND c.language.id IN :languageIds
+                AND c.topic.id IN :topicIds
+                AND ((:isFree = 0 AND c.price > 0) OR (:isFree = 1 AND c.price = 0) OR (:isFree IS NULL))
+                AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                AND c.isApproved = true
             """)
     Page<Course> filterCourse(@Param("levelIds") List<String> levelIds,
                               @Param("languageIds") List<String> languageIds,
                               @Param("topicIds") List<String> topicIds,
+                              @Param("isFree") Boolean isFree,
                               @Param("keyword") String keyword,
                               Pageable pageable);
 
-    @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id")
-    Page<Course> getCourseAccessByUserId(@Param("userId") String userId, Pageable pageable);
+    @Query("""
+                Select cg.course from CourseProgress cg
+                WHERE cg.course.level.id IN :levelIds
+                AND cg.course.language.id IN :languageIds
+                AND cg.course.topic.id IN :topicIds
+                AND ((:isFree = 0 AND cg.course.price > 0) OR (:isFree = 1 AND cg.course.price = 0) OR (:isFree IS NULL))
+                AND (cg.course.name LIKE %:keyword% OR cg.course.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                GROUP BY cg.course.id
+                order by count(cg.course.id) DESC
+            """)
+    Page<Course> filterCoursePopular(@Param("levelIds") List<String> levelIds,
+                              @Param("languageIds") List<String> languageIds,
+                              @Param("topicIds") List<String> topicIds,
+                              @Param("isFree") Boolean isFree,
+                              @Param("keyword") String keyword,
+                              Pageable pageable);
+    @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id and cg.course.isApproved = true")
+    Page<Course> getCourseAccessByUserId(@Param("userId") String topicId, Pageable pageable);
+
+    @Transactional
+    @Modifying
+    @Query("Update Course c set c.isApproved = :isApproved WHERE c.id = :id")
+    void updateIsApproved(String id, boolean isApproved);
+
+//    @Transactional
+//    @Modifying
+//    @Query("Update Course c set c.isAwaitingApproval = :awaitingApproval WHERE c.id = :id")
+//    void updateAwaitingApproval(String id, boolean awaitingApproval);
+
+    @Query("""
+                select c from Course c
+                where (c.name LIKE %:name% or c.subTitle LIKE %:name% or :name IS NULL)
+                and (c.creator = :creator or :creator IS NULL)
+                and (c.isApproved = :isApproved or :isApproved IS NULL)
+                and (c.isAwaitingApproval = :isAwaitingApproval or :isAwaitingApproval IS NULL)
+                and (c.isCompletedContent = :isCompletedContent or :isCompletedContent IS NULL)
+            """)
+    Page<Course> searchCourseOfAdmin(String name, String creator, Boolean isApproved,
+                                     Boolean isAwaitingApproval, Boolean isCompletedContent, Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) FROM course WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
+            "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL) " +
+            "AND is_approved = true", nativeQuery = true)
+    Integer getTotalApprovedCourseByYearAndMonth(int targetYear, Integer targetMonth);
+
+    @Query(value = "SELECT c.topic_id, SUM(c.price) FROM course_progress as cp " +
+            "INNER JOIN course as c ON cp.course_id = c.id " +
+            "WHERE YEAR(FROM_UNIXTIME(cp.created / 1000)) = :targetYear " +
+            "GROUP BY c.topic_id", nativeQuery = true)
+    List<Object[]> getMonthlySalesByTopics(@Param("targetYear") int targetYear);
 }

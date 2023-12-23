@@ -12,6 +12,13 @@
 	<description>Spring Boot project as course service</description>
 	<dependencies>
 		<dependency>
+			<groupId>com.programming</groupId>
+			<artifactId>common</artifactId>
+			<version>0.0.1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}\..\common\target\common-0.0.1.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>

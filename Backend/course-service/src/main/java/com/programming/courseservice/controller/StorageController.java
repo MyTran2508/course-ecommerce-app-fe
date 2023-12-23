@@ -1,7 +1,7 @@
 package com.programming.courseservice.controller;
 
 import com.programming.courseservice.service.StorageS3Service;
-import com.programming.courseservice.util.constant.S3Constrant;
+import com.programming.courseservice.utilities.constant.S3Constrant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;

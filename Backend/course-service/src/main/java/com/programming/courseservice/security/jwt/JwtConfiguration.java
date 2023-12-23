@@ -1,6 +1,6 @@
 package com.programming.courseservice.security.jwt;
 
-import com.programming.courseservice.util.constant.SecurityConstrant;
+import com.programming.courseservice.utilities.constant.SecurityConstrant;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

@@ -6,7 +6,6 @@ export const formSignUpSchema = z.object({
   email: z
     .string()
     .min(10, "Email must contain at least 10 character(s)")
-    .max(30)
     .email(),
   password: z
     .string()
@@ -52,7 +51,8 @@ export const formPersonalSchema = z.object({
   lastName: formSignUpSchema.shape.lastName,
   addressLine: formSignUpSchema.shape.addressLine,
   telephone: formSignUpSchema.shape.telephone,
-  photos: z.string()
+  photos: z.string(),
+  role: z.string()
 }).strict()
 
 export const formResetPasswordSchema = z.object({
@@ -82,9 +82,9 @@ export const formCourseInformationSchema = z.object({
   name: z.string().min(1).max(255),
   subTitle: z.string().min(1).max(255),
   price: z.coerce.number(),
-  level: z.string().max(1),
-  language: z.string().max(1),
-  topic: z.string().max(1),
+  level: z.string().max(2),
+  language: z.string().max(2),
+  topic: z.string().max(2),
   urlCourseImages: z.string(),
   urlPromotionVideos: z.string(),
 });

@@ -1,7 +1,6 @@
 package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
-import com.main.progamming.common.error.exception.DataNotFoundException;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
@@ -11,31 +10,28 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.courseservice.domain.dto.CourseDto;
-import com.programming.courseservice.domain.dto.SearchCourseDto;
+import com.programming.courseservice.domain.dto.*;
+import com.programming.courseservice.domain.mapper.CourseIssueReportMapper;
 import com.programming.courseservice.domain.mapper.CourseMapper;
-import com.programming.courseservice.domain.persistent.entity.Course;
-import com.programming.courseservice.domain.persistent.entity.Language;
-import com.programming.courseservice.domain.persistent.entity.Level;
-import com.programming.courseservice.domain.persistent.entity.Topic;
+import com.programming.courseservice.domain.persistent.entity.*;
+import com.programming.courseservice.domain.persistent.enumrate.FilterSortBy;
 import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.repository.LanguageRepository;
 import com.programming.courseservice.repository.LevelRepository;
 import com.programming.courseservice.repository.TopicRepository;
-import com.programming.courseservice.util.constant.S3Constrant;
-import jakarta.ws.rs.core.Application;
+import com.programming.courseservice.utilities.constant.S3Constrant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,9 +41,11 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
     private final StorageS3Service storageS3Service;
+    private final StorageService storageService;
     private final LanguageRepository languageRepository;
     private final TopicRepository topicRepository;
     private final LevelRepository levelRepository;
+    private final CourseIssueReportMapper courseIssueReportMapper;
     @Override
     protected BaseRepository<Course> getBaseRepository() {
         return courseRepository;
@@ -60,7 +58,13 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     @Override
     protected Page<CourseDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        return null;
+        String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
+        String creator =  searchKeywordDto.getKeyword().get(1) == null ? null : searchKeywordDto.getKeyword().get(1).trim();
+        Boolean isApproved = searchKeywordDto.getKeyword().get(2) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(2).trim());
+        Boolean isAwaitingApproval = searchKeywordDto.getKeyword().get(3) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(3).trim());
+        Boolean isCompletedContent = searchKeywordDto.getKeyword().get(4) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(4).trim());
+        return courseRepository.searchCourseOfAdmin(name, creator, isApproved, isAwaitingApproval, isCompletedContent, pageable)
+                .map(course -> courseMapper.entityToDto(course));
     }
 
     @Override
@@ -70,7 +74,10 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     @Override
     public ListResponse<CourseDto> getAll() {
-        return super.getAll();
+        return ResponseMapper.toListResponseSuccess(courseRepository.getAllCourseIsApproved()
+                .stream()
+                .map(course -> courseMapper.entityToDto(course))
+                .collect(Collectors.toList()));
     }
 
     public ListResponse<List<CourseDto>> getNewestCourse(String topicId, int size) {
@@ -97,15 +104,29 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     }
 
     public ListResponse<CourseDto> getFiltedCourse(SearchCourseDto searchCourseDto) {
-        Pageable pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize());
+        Pageable pageable;
+        if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.NEWEST) {
+            Sort sortCourse = Sort.by(Sort.Direction.DESC, "created");
+            pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize(), sortCourse);
+        } else {
+            pageable = PageRequest.of(searchCourseDto.getPageIndex(), searchCourseDto.getPageSize());
+        }
+
         List<String> levelIds = searchCourseDto.getLevelIds() == null || searchCourseDto.getLevelIds().isEmpty() ? levelRepository.findAll().stream().map(Level::getId).toList() : searchCourseDto.getLevelIds();
         List<String> languageIds = searchCourseDto.getLanguageIds() == null || searchCourseDto.getLanguageIds().isEmpty() ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
         List<String> topicIds = searchCourseDto.getTopicIds() == null || searchCourseDto.getTopicIds().isEmpty() ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
+        Boolean isFree = searchCourseDto.getIsFree();
         String keyword = searchCourseDto.getKeyword();
 
-        Page<Course> courses = courseRepository.filterCourse(levelIds,
-                languageIds, topicIds, keyword, pageable);
+        Page<Course> courses = null;
+        if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
+            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, pageable);
+        } else {
+            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, keyword, pageable);
+        }
+
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
 
     }
@@ -124,23 +145,40 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toDataResponseSuccess(courseMapper.entityToDto(courseRepository.save(course)));
     }
 
+//    public DataResponse<String> uploadCourseImage(MultipartFile file) {
+//        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_IMAGE, file));
+//    }
+//
+//    public DataResponse<String> uploadCourseVideo(MultipartFile file) {
+//        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_VIDEO, file));
+//    }
+
+    public ResponseEntity<?> loadFile(String path) {
+        byte[] file = storageService.loadImageFromFileSystem(path);
+        if(file == null) {
+            return ResponseEntity.ok("Error");
+        }
+        String imageBase64 = Base64.getEncoder().encodeToString(file);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(imageBase64);
+    }
+
     public DataResponse<String> uploadCourseImage(MultipartFile file) {
-        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_IMAGE, file));
+        String filePath = storageService.uploadImageToFileSystem(file);
+        if(filePath.isEmpty()) {
+            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+        }
+        return ResponseMapper.toDataResponseSuccess(filePath);
     }
 
     public DataResponse<String> uploadCourseVideo(MultipartFile file) {
-        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_VIDEO, file));
-    }
-
-    public ResponseEntity<ByteArrayResource> loadFile(String path) {
-        byte[] data = storageS3Service.downloadFile(path);
-        byte[] dataBase64 = Base64.getEncoder().encode(data);
-        ByteArrayResource resource = new ByteArrayResource(dataBase64);
-        return ResponseEntity.ok()
-                .contentLength(dataBase64.length)
-                .header("Content-type", "application/octet-stream")
-                .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
-                .body(resource);
+        String filePath = storageService.uploadVideoToFileSystem(file);
+        if(filePath.isEmpty()) {
+            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+        }
+        return ResponseMapper.toDataResponseSuccess(filePath);
     }
 
     public ListResponse<CourseDto> getCourseAccessByUserId(String userId, Integer pageIndex, Integer pageSize) {
@@ -150,69 +188,126 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
     }
 
-//    @Transactional
-//    public DataResponse<String> uploadImages(MultipartFile[] files, String courseId, Integer defaultUrl) {
-//        String errorMsg = "";
-//
-//        for(MultipartFile file: files) {
-//            if(!storageService.isFileImage(file)) {
-//                errorMsg += file.getOriginalFilename() + ",";
-//            }
-//        }
-//
-//        if(!errorMsg.isEmpty()) {
-//            errorMsg = errorMsg.substring(0, errorMsg.length() - 1);
-//            return ResponseMapper.toDataResponse("List of images is error: " + errorMsg, StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
-//        }
-//
-//        Optional<Course> courseOptional = courseRepository.findById(courseId);
-//        if (courseOptional.isEmpty()) {
-//            throw new DataNotFoundException(courseId + " doesn't exist in DB");
-//        }
-//
-//        Course course = courseOptional.get();
-//
-//        Set<Image> images = new HashSet<>();
-//        int idx = 0;
-//        for (MultipartFile file: files) {
-//            String filePath = storageService.uploadImageToFileSystem(file);
-//            Image image = Image.builder().url(filePath)
-//                    .isDefaultImage(defaultUrl == idx)
-//                    .course(course)
-//                    .build();
-//            idx++;
-//            images.add(image);
-//        }
-//
-//        if(course.getImages().size() > 0) {
-//            for (Image image: course.getImages()) {
-//                storageService.deleteFileFromSystem(image.getUrl());
-//            }
-//        }
-//
-//        course.setImagesAll(images);
-//        System.out.println(course);
-//        courseRepository.save(course);
-//        return ResponseMapper.toDataResponseSuccess("Upload Images Successfully!");
-//    }
-//
-//    public List<byte[]> getImages(String courseId) {
-//        Optional<Course> optionalCourse = courseRepository.findById(courseId);
-//        if(optionalCourse.isEmpty()) {
-//            throw new DataNotFoundException(courseId + " doesn't exists in DB");
-//        }
-//        Course course = optionalCourse.get();
-//        List<byte[]> images = new ArrayList<>();
-//        for (Image image: course.getImages()) {
-//            File file = new File(image.getUrl());
-//            try {
-//                byte[] imageBytes = Files.readAllBytes(file.toPath());
-//                images.add(imageBytes);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//
-//        return images;
-//    }
+    public DataResponse<String> updateIsApproved(String id, boolean isApproved, CourseIssueReportDto courseIssueReportDto) {
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        if(optionalCourse.isEmpty()) {
+            throw new ResourceNotFoundException("Course doesn't exist");
+        }
+        Course course = optionalCourse.get();
+        if(isApproved) {
+            if(course.getIsCompletedContent() && course.getIsAwaitingApproval()) {
+                courseRepository.updateIsApproved(id, isApproved);
+                return ResponseMapper.toDataResponseSuccess("Update succcessful");
+            } else {
+                return ResponseMapper.toDataResponse("Content is in incompleted", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+            }
+        } else {
+            List<CourseIssueReport> courseIssueReports = course.getCourseIssueReports();
+            CourseIssueReport courseIssueReport = courseIssueReportMapper.dtoToEntity(courseIssueReportDto);
+            courseIssueReport.setCourse(course);
+            courseIssueReports.add(courseIssueReport);
+            courseIssueReports.forEach(System.out::println);
+            course.setCourseIssueReports(courseIssueReports);
+            course.setIsAwaitingApproval(false);
+            courseRepository.save(course);
+            return ResponseMapper.toDataResponseSuccess("Update succcessful");
+        }
+    }
+
+    public DataResponse<String> updateAwaitingApproval(String id, boolean isAwaitingApproval) {
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+        if(optionalCourse.isEmpty()) {
+            throw new ResourceNotFoundException("Course doesn't exist");
+        }
+        Course course = optionalCourse.get();
+        if(isAwaitingApproval && !updateCompletedContent(course)) {
+            return ResponseMapper.toDataResponse("Course content is incomplete", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+        }
+        course.setIsAwaitingApproval(isAwaitingApproval);
+        courseRepository.save(course);
+        return ResponseMapper.toDataResponseSuccess("Update succcessful");
+    }
+
+    public boolean updateCompletedContent(Course course) {
+        if(!course.getIsCompletedContent()) {
+            if(course.getContent() != null
+                    && course.getContent().getDescription() != null
+                    && course.getContent().getSections().size() > 0
+                    && course.getContent().getSections().get(0).getLectures().size() > 0) {
+                course.setIsCompletedContent(true);
+                courseRepository.save(course);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public DataResponse<Integer> getTotalApprovedCourseByYearAndMonth(int targetYear, Integer targetMonth) {
+        return ResponseMapper.toDataResponseSuccess(courseRepository.getTotalApprovedCourseByYearAndMonth(targetYear, targetMonth));
+    }
+
+    public DataResponse<List<SalesByTopicResponse>> getSalesByTopics(Integer targetYear) {
+        List<Topic> topics = topicRepository.findAll();
+        List<Object[]> salesByTopics = courseRepository.getMonthlySalesByTopics(targetYear);
+        List<SalesByTopicResponse> salesByTopicResponses = new ArrayList<>();
+        for (Topic topic: topics) {
+            boolean f = false;
+            for(Object[] salesByTopic: salesByTopics) {
+                if(topic.getId().equals(salesByTopic[0])) {
+                    f = true;
+                    salesByTopicResponses.add(new SalesByTopicResponse(topic.getId(), topic.getName(), (Double) salesByTopic[1]));
+                    break;
+                }
+            }
+            if(!f) {
+                salesByTopicResponses.add(new SalesByTopicResponse(topic.getId(), topic.getName(), 0.0));
+            }
+        }
+        return ResponseMapper.toDataResponseSuccess(salesByTopicResponses.stream()
+                .sorted(Comparator.comparingInt(SalesByTopicResponse::convertTopicIdAsInteger))
+                .collect(Collectors.toList()));
+    }
+
+    @SuppressWarnings("unchecked")
+    public DataResponse<List<SalesByTopicSamePeriodResponse>> getSalesSamePeriodByTopics(Integer targetYear) {
+        List<Topic> topics = topicRepository.findAll();
+        List<Object[]> salesTargetYearByTopics = courseRepository.getMonthlySalesByTopics(targetYear);
+        List<Object[]> salesPreviousYearByTopics = courseRepository.getMonthlySalesByTopics(targetYear - 1);
+        List<SalesByTopicSamePeriodResponse> salesByTopicSamePeriodResponses = new ArrayList<>();
+        for (Topic topic: topics) {
+            boolean f = false;
+            SalesByTopicSamePeriodResponse salesByTopicSamePeriodResponse = new SalesByTopicSamePeriodResponse();
+            salesByTopicSamePeriodResponse.setTopicId(topic.getId());
+            salesByTopicSamePeriodResponse.setTopicName(topic.getName());
+            for(Object[] salesTargetYearByTopic : salesTargetYearByTopics) {
+                if(topic.getId().equals(salesTargetYearByTopic[0])) {
+                    f = true;
+                    salesByTopicSamePeriodResponse.setTargetYearTotal((Double) salesTargetYearByTopic[1]);
+                    break;
+                }
+            }
+            if(!f) {
+                salesByTopicSamePeriodResponse.setTargetYearTotal(0.0);
+            }
+            f = false;
+
+            for(Object[] salesPreviousYearByTopic : salesPreviousYearByTopics) {
+                if(topic.getId().equals(salesPreviousYearByTopic[0])) {
+                    f = true;
+                    salesByTopicSamePeriodResponse.setPreviousYearTotal((Double) salesPreviousYearByTopic[1]);
+                    break;
+                }
+            }
+            if(!f) {
+                salesByTopicSamePeriodResponse.setPreviousYearTotal(0.0);
+            }
+
+            salesByTopicSamePeriodResponses.add(salesByTopicSamePeriodResponse);
+        }
+
+        return ResponseMapper.toDataResponseSuccess(salesByTopicSamePeriodResponses.stream()
+                .sorted(Comparator.comparingInt(SalesByTopicSamePeriodResponse::convertTopicIdAsInteger))
+                .collect(Collectors.toList()));
+    }
 }

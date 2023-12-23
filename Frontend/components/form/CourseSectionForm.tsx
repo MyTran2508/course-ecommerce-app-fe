@@ -29,6 +29,7 @@ import { Lecture, Section } from "@/types/section.type";
 import { useUploadSectionFilesMutation } from "@/redux/services/sectionApi";
 import { handleGetDurationFormVideo } from "@/utils/function";
 import { v4 as uuidv4 } from "uuid";
+import Loading from "@/app/(root)/user/personal/loading";
 
 interface CourseSectionProps {
   contentId: string;
@@ -41,7 +42,7 @@ function CourseSectionForm(props: CourseSectionProps) {
   const { contentId, sections } = props;
   const [countLecture, setCountLecture] = useState(0);
   const [sectionFields, setSectionFields] = useState<Section[]>(sections);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [lectureFiles, setLectureFiles] = useState<{
     [sessionIndex: number]: {
       [lectureIndex: number]: { file: File; url: string };
@@ -92,6 +93,7 @@ function CourseSectionForm(props: CourseSectionProps) {
 
   const handleUploadFiles = async () => {
     try {
+      setIsLoading(true);
       const lectureFilesArray: File[] = Object.values(lectureFiles).flatMap(
         (lectureIndexFiles) =>
           Object.values(lectureIndexFiles).map(
@@ -108,7 +110,7 @@ function CourseSectionForm(props: CourseSectionProps) {
         urlList = uploadFilesResponse.data.data as string[];
       }
       setLectureFiles({});
-
+      setIsLoading(false);
       return urlList;
     } catch (error) {
       console.error(error);
@@ -160,10 +162,12 @@ function CourseSectionForm(props: CourseSectionProps) {
       if (contentId) {
         const urlList = await handleUploadFiles();
         if (urlList) {
+          let count = 0;
           const updatedUrlLecture = Object.values(lectureFiles).flatMap(
             (lectureIndexFiles) =>
-              Object.values(lectureIndexFiles).map((lectureFile, index) => {
-                lectureFile.url = urlList[index];
+              Object.values(lectureIndexFiles).map((lectureFile) => {
+                lectureFile.url = urlList[count];
+                count++;
                 return lectureFile;
               })
           );
@@ -331,7 +335,16 @@ function CourseSectionForm(props: CourseSectionProps) {
     }
     setSectionFields(updatedSessionFields);
   };
-
+  if (isLoading) {
+    return (
+      <div>
+        <Loading />
+        <div className="flex-center text-sm italic text-orange-400">
+          Đang lưu
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)} ref={formRef}>

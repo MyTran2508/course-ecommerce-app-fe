@@ -1,14 +1,22 @@
 "use client";
 import CourseCard from "@/components/CourseCard";
-import { useGetNewestCourseQuery } from "@/redux/services/courseApi";
+import {
+  useFilterCourseMutation,
+  useGetAllCourseQuery,
+  useGetNewestCourseQuery,
+} from "@/redux/services/courseApi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Loading from "../user/personal/loading";
 import { Course } from "@/types/course.type";
 import { course } from "@/redux/features/courseSlice";
 import Checkout from "@/components/PayPal";
 import Paginate from "@/components/Paginate";
+import { Fragment, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const router = useRouter();
   const [text] = useTypewriter({
     words: [
       "We accompany you on your learning journey and personal development",
@@ -19,25 +27,63 @@ export default function Home() {
     delaySpeed: 3000,
     deleteSpeed: 20,
   });
-  let newestCourseList: Course[] = [];
-  const { data, isLoading } = useGetNewestCourseQuery({ topicId: 0, size: 4 });
-  if (isLoading) return <Loading />;
+  const [courseNewest, setCourseNewest] = useState<Course[]>([]);
+  const [coursePopular, setCoursePopular] = useState<Course[]>([]);
+  const {
+    data: courseNewestData,
+    isLoading: isCourseNewestLoading,
+    isSuccess: isCourseNewestSuccess,
+  } = useGetNewestCourseQuery({
+    topicId: 0,
+    size: 4,
+  });
+  const {
+    data: coursePopularData,
+    isLoading: isCoursePopularLoading,
+    isSuccess: isCoursePopularSuccess,
+  } = useGetNewestCourseQuery({
+    topicId: 1,
+    size: 4,
+  });
+  useEffect(() => {
+    if (isCourseNewestSuccess) {
+      setCourseNewest(courseNewestData?.data as Course[]);
+    }
+    if (isCoursePopularSuccess) {
+      setCoursePopular(coursePopularData?.data as Course[]);
+    }
+  }, [courseNewestData, coursePopularData]);
+  if (isCourseNewestLoading || isCoursePopularLoading) return <Loading />;
 
-  if (data) {
-    newestCourseList = data?.data as Course[];
-  }
-
-  const renderItem = () => {
+  const renderCourse = (courseList: Course[], title: string) => {
+    console.log(courseList);
     return (
-      <div className="flex justify-center items-center">
-        <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
-          {newestCourseList.map((course) => (
-            <div key={course.id}>
-              <CourseCard course={course} />
+      <Fragment>
+        {courseList ? (
+          <Fragment>
+            <div className="flex-between">
+              <h3 className="text-2xl font-bold ml-6">{title}</h3>
+              <div
+                onClick={() => router.push("/course/search")}
+                className="hover:cursor-pointer hover:text-orange-400"
+              >
+                Xem thêm
+              </div>
             </div>
-          ))}
-        </div>
-      </div>
+            <div className="flex justify-center items-center">
+              <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
+                <Fragment>
+                  {courseList.map((course) => (
+                    <div key={course.id}>
+                      <CourseCard course={course} />
+                    </div>
+                  ))}
+                </Fragment>
+              </div>
+            </div>
+          </Fragment>
+        ) : null}
+      </Fragment>
     );
   };
 
@@ -53,9 +99,9 @@ export default function Home() {
           </p>
         </div>
       </section>
-      <div>
-        <h3 className="text-2xl font-bold ml-6">Khóa Học Mới</h3>
-        {renderItem()}
+      <div className="mx-10">{renderCourse(courseNewest, "Khóa Học Mới")}</div>
+      <div className="mx-10">
+        {renderCourse(coursePopular, "Khóa Học Phổ Biến")}
       </div>
       <div className="flex-center">
         {/* <Paginate totalPage={4} key={"123123"} setPage={setPage} /> */}

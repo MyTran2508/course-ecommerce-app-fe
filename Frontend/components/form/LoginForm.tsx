@@ -59,6 +59,11 @@ function LoginForm() {
 
       route.push("/");
     } else {
+      // if (dataResult?.statusCode === 403) {
+      //   showToast(ToastStatus.ERROR, ToastMessage.ACCESS_DENY);
+      // } else {
+      //   showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
+      // }
       showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
     }
   };
@@ -84,9 +89,9 @@ function LoginForm() {
       >
         <div className="h-1/2 p-5 my-1 w-full lg:w-1/2 2xs:text-[10px] xl:text-sm ">
           <div className="font-mono mb-2 flex-center flex-col ">
-            <div className="text-3xl mb-2 "> LOGIN</div>
-            <p>If you have account member</p>
-            <p> Please Login</p>
+            <div className="text-3xl mb-2 "> Đăng Nhập</div>
+            <p>Nếu bạn đã có tài khoản</p>
+            <p> Vui lòng đăng nhập</p>
           </div>
           <div className="mb-2 ">
             <FormField
@@ -94,7 +99,7 @@ function LoginForm() {
               name="username"
               render={({ field }) => (
                 <FormItem className="mb-3">
-                  <FormLabel className="text-black">Username</FormLabel>
+                  <FormLabel className="text-black">Tên Tài Khoản</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="username"
@@ -111,7 +116,7 @@ function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-black">Password</FormLabel>
+                  <FormLabel className="text-black">Mật Khẩu</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <div className="absolute text-2xl right-1 cursor-pointer mt-1">
@@ -145,7 +150,7 @@ function LoginForm() {
             className="w-full hover:scale-110 transition duration-700 gap-2 mt-1"
           >
             <FiLogIn />
-            Login
+            Đăng Nhập
           </Button>
           <div className="grid grid-cols-3 gap-3 m-2 items-center">
             <hr className="border-gray-400" />
@@ -159,10 +164,10 @@ function LoginForm() {
             containerStyles="xs:text-[10px] bg-white border py-1 w-full rounded-xl mt-2 flex justify-center items-center text-sm font-bold hover:scale-110 duration-300 "
           />
           <div className="text-[12px] mt-2 flex-between xs:text-[10px]">
-            <p>Dont have an account?</p>
+            <p>Bạn chưa có tài khoản?</p>
             <Link href={"/signup"}>
               <CustomButton
-                title="Register"
+                title="Đăng Ký"
                 type="button"
                 containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
               />
