@@ -3,14 +3,48 @@ import CartItem from "@/components/CartItem";
 // import Router from "@/components/router/router";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useGetAllCourseQuery } from "@/redux/services/courseApi";
+import { Cart } from "@/types/cart.type";
+import { Course } from "@/types/course.type";
 import { totalPrice } from "@/utils/function";
 import { useRouter } from "next/navigation";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
+import Loading from "../user/personal/loading";
+import { updatePrice } from "@/redux/features/cartSlice";
 
 const PageCart = () => {
   const route = useRouter();
+  const dispatch = useAppDispatch();
   const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
+  const [cartList, setCartList] = useState<Cart[]>(carts);
+  const { data, isLoading, isSuccess } = useGetAllCourseQuery(null);
 
+  // const updatePrice = () => {
+  //   const courses = data?.data as Course[];
+  //   const updatedCartList = cartList.map((cart) => {
+  //     const matchingCourse = courses.find(
+  //       (course) => course._id === cart.courseId
+  //     );
+  //     if (matchingCourse) {
+  //       return {
+  //         ...cart,
+  //         price: matchingCourse.price,
+  //       };
+  //     }
+  //     return cart;
+  //   });
+  //   setCartList(updatedCartList as Cart[]);
+  // };
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(updatePrice(data?.data as Course[]));
+    }
+  }, [data]);
+  useEffect(() => {}, [carts]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   const renderCartItem = () => {
     return (
       <div>

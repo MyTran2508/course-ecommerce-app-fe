@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { Cart } from "@/types/cart.type";
+import { Course } from "@/types/course.type";
 
 let initialState: Cart[] = [];
 
@@ -25,7 +26,23 @@ export const cartSlice = createSlice({
             }
 
         },
-
+        updatePrice: (state, action: PayloadAction<Course[]>) => {
+                    const courses = action.payload;
+                    const updatedCartList = state.map((cart) => {
+                    const matchingCourse = courses.find(
+                        (course) => course.id === cart.courseId
+                    );
+                    if (matchingCourse) {
+                        
+                        return {
+                        ...cart,
+                        price: matchingCourse.price,
+                        };
+                    }
+                    return cart;
+                    });
+                return updatedCartList as Cart[];
+        },
         setCart: (state, action: PayloadAction<Cart[]>) => {
             return action.payload;
         },
@@ -41,6 +58,6 @@ export const cartSlice = createSlice({
     }
 })
 
-export const { addToCart, removeFromCart, setCheckedFormCart, setCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, setCheckedFormCart, setCart, updatePrice } = cartSlice.actions;
 
 export default cartSlice.reducer;

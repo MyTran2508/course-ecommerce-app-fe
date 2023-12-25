@@ -53,11 +53,8 @@ export const userApi = createApi({
     updateUserAdmin: builder.mutation<DataResponse,  Omit<User, "re_password" | "password" | "photos">>({
       query: (data: Omit<User, "re_password" | "password" | "photos" >) => {
         return {
-          url: `api/users/user/update-admin`,
+          url: `api/users/user/update-admin/${data.id}`,
           method: "PUT",
-          params: {
-            id: data.id
-          },
           body: data,
         };
       },

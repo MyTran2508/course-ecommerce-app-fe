@@ -14,7 +14,7 @@ function MyCourses() {
     (state) => state.persistedReducer.userReducer.user.id
   );
   const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(0);
+  const [totalPage, setTotalPage] = useState(1);
   const [courses, setCourses] = useState<Course[]>([]);
   const {
     data: coursesData,
@@ -49,7 +49,7 @@ function MyCourses() {
             <CourseCard myCourse={true} course={course} />
           </div>
         ))}
-        {page === totalPage ? (
+        {page === totalPage || totalPage === 0 ? (
           <div>
             <Card className="w-full max-w-fit border-0 !bg-transparent sm:max-w-[356px] m-8 border-spacing-3">
               <CardHeader className="flex-center flex-col gap-2.5 !p-0 hover:cursor-pointer">

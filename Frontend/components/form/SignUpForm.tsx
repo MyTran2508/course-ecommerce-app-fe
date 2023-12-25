@@ -55,7 +55,7 @@ function SignUpForm() {
   const [changPage, setChangePage] = useState(false);
   const [changeSchema, setChangeSchema] = useState(false);
   const [newUser, setNewUser] =
-    useState<Omit<User, "id" | "photos">>(initialUser);
+    useState<Omit<User, "id" | "photos" | "roles">>(initialUser);
   const [isUserExisted, setUserExisted] = useState(false);
   const [isSendOTP, setSendOTP] = useState(false);
   const [otp, setOTP] = useState<string[]>(Array(length).fill(""));
@@ -63,7 +63,9 @@ function SignUpForm() {
   const [registerUser, registerUserResult] = useRegisterUserMutation();
   const [validationOTP, validationOTPResult] = useVerifyRegisterOTPMutation();
 
-  const handleRegister = async (newUser: Omit<User, "id" | "photos">) => {
+  const handleRegister = async (
+    newUser: Omit<User, "id" | "photos" | "roles">
+  ) => {
     await registerUser(newUser)
       .unwrap()
       .then((fulfilled) => {
@@ -105,6 +107,7 @@ function SignUpForm() {
       if (action === Action.SENT_OTP) {
         setSendOTP(true);
       } else if (action === Action.REGISTER) {
+        showToast(ToastStatus.SUCCESS, "Đăng Ký Thành Công");
         route.push("/login");
       }
     } else {
@@ -159,24 +162,22 @@ function SignUpForm() {
       addressLine,
     } = values;
 
-    const newUser: Omit<User, "id" | "photos"> = {
+    const newUser: Omit<User, "id" | "photos" | "roles"> = {
       username,
       password,
       email,
       firstName,
       lastName,
       telephone,
-      roles: null,
       addresses: [
         {
-          addressLine,
+          addressLine: addressLine,
           postalCode: null,
           defaultAddress: true,
         },
       ],
     };
 
-    console.log(values);
     setNewUser(newUser);
     handleRegister(newUser);
   }
@@ -189,8 +190,8 @@ function SignUpForm() {
       >
         <div className="h-1/2 p-5 my-1 w-full lg:w-1/2 2xs:text-[10px] xl:text-xs ">
           <div className="font-mono mb-2 flex-center flex-col ">
-            <div className="text-xl mb-2 "> SignUp</div>
-            <p>Create Account So Easy!!!</p>
+            <div className="text-xl mb-2 "> Đăng Ký</div>
+            <p>Tạo Tài Khoản Một Cách Dễ Dàng!!</p>
           </div>
           {isSendOTP === false ? (
             <>
@@ -203,7 +204,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-1 ">
                         <FormLabel className="text-black xl:text-xs ">
-                          Username
+                          Tên Tài Khoản
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -247,7 +248,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-1 ">
                         <FormLabel className="text-black xl:text-xs">
-                          Password
+                          Mật Khẩu
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
@@ -277,7 +278,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-2">
                         <FormLabel className="text-black xl:text-xs h-7">
-                          Re-Password
+                          Nhập Lại Mật Khẩu
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -310,7 +311,7 @@ function SignUpForm() {
                       render={({ field }) => (
                         <FormItem className="mb-1 ">
                           <FormLabel className="text-black xl:text-xs h-7">
-                            First Name
+                            Tên
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -330,7 +331,7 @@ function SignUpForm() {
                       render={({ field }) => (
                         <FormItem className="mb-1 ">
                           <FormLabel className="text-black xl:text-xs h-7">
-                            Last Name
+                            Họ
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -351,7 +352,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-1 ">
                         <FormLabel className="text-black xl:text-xs h-7">
-                          Phone
+                          SĐT
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -371,7 +372,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-1 ">
                         <FormLabel className="text-black xl:text-xs h-7">
-                          Address Line
+                          Địa Chỉ
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -390,7 +391,7 @@ function SignUpForm() {
                     className="hover:scale-110 transition duration-700 gap-2 mt-1 w-full h-7"
                   >
                     <BsPencilSquare />
-                    Register
+                    Đăng Ký
                   </Button>
                   <div className="text-[12px] mt-2 flex-end xs:text-[10px]">
                     <CustomButton
@@ -406,9 +407,7 @@ function SignUpForm() {
             </>
           ) : (
             <div className="flex justify-center h-full flex-col">
-              <div className="flex-center text-md mb-6">
-                Please enter the OTP
-              </div>
+              <div className="flex-center text-md mb-6">Vui Lòng Nhập OTP</div>
               <div className="flex flex-center gap-2">
                 {[...Array(6)].fill(null).map((_, index) => (
                   <Input
@@ -427,7 +426,7 @@ function SignUpForm() {
                   className="bg-gray-100 w-[100px] mt-2 text-[10px] text-black hover:text-orange-600 underline hover:cursor-pointer"
                   onClick={() => handleRegister(newUser)}
                 >
-                  Re-sent OTP
+                  Gửi lại OTP
                 </div>
               </div>
               <Button
@@ -436,7 +435,7 @@ function SignUpForm() {
                 onClick={() => handleValidateOTP()}
               >
                 <HiOutlineArrowUpTray />
-                Sent
+                Gửi
               </Button>
             </div>
           )}

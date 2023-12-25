@@ -6,7 +6,6 @@ export const formSignUpSchema = z.object({
   email: z
     .string()
     .min(10, "Email must contain at least 10 character(s)")
-    .max(30)
     .email(),
   password: z
     .string()

@@ -1,24 +1,33 @@
 "use client";
 import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiRadioCircle, BiRadioCircleMarked } from "react-icons/bi";
 import { GrStatusWarning } from "react-icons/gr";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { convertVNDtoUSD, totalPrice } from "@/utils/function";
 import { Button } from "@/components/ui/button";
 import Checkout from "@/components/PayPal";
+import { updatePrice } from "@/redux/features/cartSlice";
+import { Course } from "@/types/course.type";
+import { useGetAllCourseQuery } from "@/redux/services/courseApi";
 
 function PageCheckout() {
+  const dispatch = useAppDispatch();
   const [open, setOpen] = useState(false);
   const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
   const totalPriceVND = totalPrice(carts);
   const totalPriceUSD = convertVNDtoUSD(totalPriceVND);
-
+  const { data, isLoading, isSuccess } = useGetAllCourseQuery(null);
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(updatePrice(data?.data as Course[]));
+    }
+  }, [data]);
   const handleToggle = () => {
     setOpen(!open);
   };
@@ -46,8 +55,10 @@ function PageCheckout() {
       </div>
       <div className="flex">
         <div className="w-2/4 ml-40 p-10">
-          <div className="text-2xl font-bold">Checkout</div>
-          <div className="text-md font-bold mt-12 mb-4">Payment Method</div>
+          <div className="text-2xl font-bold">Thanh Toán</div>
+          <div className="text-md font-bold mt-12 mb-4">
+            Phương Thức Thanh Toán
+          </div>
           <div>
             <Disclosure>
               {() => (
@@ -76,16 +87,16 @@ function PageCheckout() {
                       <>
                         <div className="p-10 ">
                           <div>
-                            In order to complete your transaction, we will
-                            transfer you over to PayPal secure servers.
+                            Để hoàn tất giao dịch của bạn, chúng tôi sẽ chuyển
+                            bạn đến máy chủ bảo mật của PayPal.
                           </div>
                           <div className="flex gap-1 my-5">
                             <GrStatusWarning className="text-3xl mt-2 mx-2" />
-                            Unfortunately, PayPal does not support payments in
-                            VND therefore your payment will be in USD.
+                            Rất tiếc, PayPal không hỗ trợ thanh toán bằng VNĐ
+                            nên khoản thanh toán của bạn sẽ bằng USD.
                           </div>
                           <div className="font-bold">
-                            The amount you will be charged by Paypal is ${" "}
+                            Số tiền bạn sẽ phải trả bằng Paypal là ${" "}
                             {totalPriceUSD}
                           </div>
                         </div>
@@ -98,18 +109,19 @@ function PageCheckout() {
           </div>
         </div>
         <div className="w-2/4 bg-orange-100 h-screen p-10 pr-40 ">
-          <div className="font-bold text-2xl">Summary</div>
+          <div className="font-bold text-2xl">Tóm Tắt</div>
           <div className="flex-between mt-10 opacity-75 text-[12px] mb-10">
-            <div> Original Price: </div>
+            <div> Giá: </div>
             <div>₫{totalPriceVND.toLocaleString()}</div>
           </div>
           <hr className="border-black" />
           <div className="flex-between mt-5 opacity-75 text-[12px] mb-5 font-bold">
-            <div> Total: </div>
+            <div> Tổng cộng: </div>
             <div>₫{totalPriceVND.toLocaleString()}</div>
           </div>
           <div className="opacity-60 text-[12px]">
-            By completing your purchase you agree to these Terms of Service.
+            Bằng việc hoàn tất giao dịch mua, bạn đồng ý với các Điều khoản dịch
+            vụ này.
           </div>
           {open ? (
             <Checkout price={totalPriceUSD} />
@@ -118,7 +130,7 @@ function PageCheckout() {
               className="w-full h-14 flex items-center justify-center mt-4 rounded-sm"
               onClick={() => handleCheckout()}
             >
-              Complete Checkout
+              Hoàn Thành Thanh Toán
             </Button>
           )}
         </div>

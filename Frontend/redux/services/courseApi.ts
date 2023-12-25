@@ -83,6 +83,19 @@ export const courseApi = createApi({
         return {
           url: `/api/courses/course/newest/${topicId}/${size}`,
         }
+      },
+      providesTags() {
+        return [{type: "Course", id: "course"}]
+      }
+    }),
+    getPopularCourse: builder.query<DataResponse, {topicId: number, size: number}>({
+      query: ({ topicId, size }) => {
+        return {
+          url: `/api/courses/course/popular/${topicId}/${size}`,
+        }
+      },
+       providesTags() {
+        return [{type: "Course", id: "course"}]
       }
     }),
     getCourseByUserId: builder.query<ListResponse, {id: string, pageIndex: number, pageSize: number}>({
@@ -149,12 +162,42 @@ export const courseApi = createApi({
       },
       invalidatesTags: () => [{type: "Course", id: "course"}]
     }),
+    saleByTopics: builder.query<DataResponse, number>({
+      query: (targetYear: number) => {
+        return {
+          url: `/api/courses/course/sales-by-topics`,
+          params: {
+            targetYear: targetYear,
+          },
+        };
+      },
+    }),
+    salesSamePeriodByTopics: builder.query<DataResponse, number>({
+      query: (targetYear: number) => {
+        return {
+          url: `/api/courses/course/sales-same-period-by-topics`,
+          params: {
+            targetYear: targetYear,
+          },
+        };
+      },
+    }),
+    getTotalApprovedCourse: builder.mutation<DataResponse, {targetYear:number}>({
+      query: (data: {targetYear: number}) => {
+        return {
+          url: `/api/courses/course/get-total-approved-course`,
+          method: "POST",
+          body: data
+        };
+      },
+    }),
   }),
 
 });
 
 export const {
   useLoadFileFromCloudQuery,
+  useLazyGetAllCourseQuery,
   useFilterCourseAdminMutation,
   useUploadCourseImageMutation,
   useUploadCourseVideoMutation,
@@ -166,5 +209,11 @@ export const {
   useGetAllCourseQuery,
   useFilterCourseMutation,
   useUpdateApprovedMutation,
-  useUpdateAwaitingApprovalMutation
+  useUpdateAwaitingApprovalMutation,
+  useGetPopularCourseQuery,
+  useSaleByTopicsQuery,
+  useSalesSamePeriodByTopicsQuery,
+  useGetTotalApprovedCourseMutation,
+  useLazySalesSamePeriodByTopicsQuery,
+ useLazySaleByTopicsQuery,
 } = courseApi;

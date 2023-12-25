@@ -10,6 +10,7 @@ import ApprovedButton from "./ApprovedButton";
 import RequestApprovalButton from "./RequestApprovalButton";
 import { handleCountFieldsInSection } from "@/utils/function";
 import { Course } from "@/types/course.type";
+import { Button } from "@/components/ui/button";
 
 function CreateCourseNavBar() {
   const router = useRouter();
@@ -19,6 +20,7 @@ function CreateCourseNavBar() {
   const sections = useAppSelector((state) => state.sectionReducer.section);
   const { totalLectureCount } = handleCountFieldsInSection(sections);
   const course = useAppSelector((state) => state.courseReducer.manageCourse);
+  const courseId = useAppSelector((state) => state.courseReducer.courseId);
   const [courseData, setCourseData] = useState<Course>();
   useEffect(() => {
     setCourseData(course);
@@ -61,11 +63,18 @@ function CreateCourseNavBar() {
                 <SaveButton />
               </Fragment>
             )}
+            <Button
+              onClick={() =>
+                router.push(`/instructor/courses/preview/${courseId}`)
+              }
+              className="bg-blue-600 hover:bg-blue-200"
+            >
+              Xem thử
+            </Button>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
 export default CreateCourseNavBar;

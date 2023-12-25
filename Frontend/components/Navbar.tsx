@@ -110,7 +110,7 @@ function Navbar() {
                 <Fragment>
                   {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
                     <div className="xs:hidden">
-                      <Link href={"/admin"}>Trang Admin</Link>
+                      <Link href={"/admin/overview"}>Trang Admin</Link>
                     </div>
                   ) : (
                     <div className="xs:hidden">
