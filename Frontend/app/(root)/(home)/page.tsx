@@ -4,6 +4,7 @@ import {
   useFilterCourseMutation,
   useGetAllCourseQuery,
   useGetNewestCourseQuery,
+  useGetPopularCourseQuery,
 } from "@/redux/services/courseApi";
 import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Loading from "../user/personal/loading";
@@ -41,7 +42,7 @@ export default function Home() {
     data: coursePopularData,
     isLoading: isCoursePopularLoading,
     isSuccess: isCoursePopularSuccess,
-  } = useGetNewestCourseQuery({
+  } = useGetPopularCourseQuery({
     topicId: 1,
     size: 4,
   });
