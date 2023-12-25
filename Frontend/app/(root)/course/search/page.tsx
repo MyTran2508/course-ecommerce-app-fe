@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FilterSortBy } from "@/utils/resources";
+import Loading from "../../user/personal/loading";
 
 function SearchPage() {
   const searchParams = useSearchParams();
@@ -35,6 +36,7 @@ function SearchPage() {
   const [totalPage, setTotalPage] = useState(0);
   const [coursesSearch, setCourseSearch] = useState<Course[]>([]);
   const [searchCourse] = useFilterCourseMutation();
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleClickOpenFilter = () => {
     setOpenFilter(!isOpenFilter);
@@ -47,13 +49,14 @@ function SearchPage() {
         setCourseSearch(fulfilled.data as Course[]);
         setTotalPage(fulfilled.totalPages);
       });
+    setIsLoading(false);
   };
   // useEffect(() => {
   //   handleSearch();
   // }, []);
 
   useEffect(() => {
-    console.log(searchRequest);
+    setIsLoading(true);
     handleSearch();
   }, [searchRequest]);
 
@@ -111,7 +114,9 @@ function SearchPage() {
                       defaultValue={FilterSortBy.NEWEST}
                     >
                       <SelectTrigger
-                        className={` disabled:opacity-1 disabled:cursor-default w-[150px]`}
+                        className={
+                          "border-none disabled:opacity-1 disabled:cursor-default w-[150px]"
+                        }
                       >
                         <SelectValue
                           placeholder="Sort by"
@@ -152,35 +157,44 @@ function SearchPage() {
               } transition-transform duration-300`}
             >
               <div className={`${isOpenFilter ? "" : "hidden"} sticky top-20 `}>
-                <SideBarFilter setSearchRequest={setSearchRequest} />
+                <SideBarFilter
+                  setSearchRequest={setSearchRequest}
+                  setPage={setPage}
+                />
               </div>
             </div>
             <div className="w-full flex flex-col">
-              {coursesSearch.length !== 0 ? (
-                <Fragment>
-                  {coursesSearch.map((course, index) => {
-                    return (
-                      <div key={index}>
-                        <CourseCardSearch course={course} />
-                        {coursesSearch.length - 1 !== index ? <hr /> : ""}
-                      </div>
-                    );
-                  })}
-                </Fragment>
+              {isLoading ? (
+                <Loading />
               ) : (
-                <div className="text-2xl flex-center">
-                  Không tìm thấy kết quả phù hợp
-                </div>
+                <Fragment>
+                  {coursesSearch.length !== 0 ? (
+                    <Fragment>
+                      {coursesSearch.map((course, index) => {
+                        return (
+                          <div key={index}>
+                            <CourseCardSearch course={course} />
+                            {coursesSearch.length - 1 !== index ? <hr /> : ""}
+                          </div>
+                        );
+                      })}
+                    </Fragment>
+                  ) : (
+                    <div className="text-2xl flex-center">
+                      Không tìm thấy kết quả phù hợp
+                    </div>
+                  )}
+                  <div className="flex-center">
+                    {coursesSearch.length !== 0 ? (
+                      <Paginate
+                        totalPage={totalPage}
+                        currentPage={page}
+                        setCurrentPage={setPage}
+                      />
+                    ) : null}
+                  </div>
+                </Fragment>
               )}
-              <div className="flex-center">
-                {coursesSearch.length !== 0 ? (
-                  <Paginate
-                    totalPage={totalPage}
-                    currentPage={page}
-                    setCurrentPage={setPage}
-                  />
-                ) : null}
-              </div>
             </div>
           </div>
         </div>

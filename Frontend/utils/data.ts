@@ -8,6 +8,11 @@ export const Language: ComboBoxType[] = [
     {id: "0", name: "Vietnamese" },
     {id: "1", name: "English"},
 ]
+
+export const Price: ComboBoxType[] = [
+    {id: "Pain", name: "Pain" },
+    {id: "Free", name: "Free"},
+]
 export const Topic: ComboBoxType[] = [
     { id: "0", name: "Python" },
     { id: "1", name: "Java" },
