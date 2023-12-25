@@ -1,4 +1,4 @@
-import { MonthlySale, SalesByTopic, SalesSamePeriod, SalesSamePeriodByTopics } from "@/app/admin/preview/page";
+import { MonthlySale, SalesByTopic, SalesSamePeriod, SalesSamePeriodByTopics } from "@/app/admin/overview/page";
 import Content from "./content.type";
 import { Course } from "./course.type";
 import { CourseProcess } from "./courseProcess.type";

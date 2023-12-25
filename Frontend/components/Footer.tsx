@@ -25,7 +25,7 @@ function Footer() {
     //     <Link href={"/"}>Privacy Policy</Link>
     //   </div>
     // </footer>
-    <footer>
+    <footer className="py-4 mt-[200px]">
       <div className="content">
         <div className="top">
           <div className="top__logo">

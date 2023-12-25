@@ -84,6 +84,8 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         Sort sortCourse = Sort.by(Sort.Direction.DESC, "created");
         Pageable pageable = PageRequest.of(0, size, sortCourse);
 
+        topicId = topicId.equals("-1") ? null : topicId;
+        System.out.println(topicId);
         List<CourseDto> courseDtos = courseRepository.getCourseByTopicId(topicId, pageable)
                 .stream()
                 .map((course -> courseMapper.entityToDto(course)))
@@ -95,6 +97,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     public ListResponse<List<CourseDto>> getPopularCourse(String topicId, Integer size) {
         Pageable pageable = PageRequest.of(0, size);
 
+        topicId = topicId.equals("-1") ? null : topicId;
         List<CourseDto> courseDtos = courseRepository.findPopularCourses(topicId, pageable)
                 .stream()
                 .map((course -> courseMapper.entityToDto(course)))
@@ -120,6 +123,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
         Page<Course> courses = null;
         if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
+            System.out.println("Vao day");
             courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, pageable);
         } else {
             courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, keyword, pageable);

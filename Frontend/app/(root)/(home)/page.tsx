@@ -35,7 +35,7 @@ export default function Home() {
     isLoading: isCourseNewestLoading,
     isSuccess: isCourseNewestSuccess,
   } = useGetNewestCourseQuery({
-    topicId: 0,
+    topicId: -1,
     size: 4,
   });
   const {
@@ -43,7 +43,7 @@ export default function Home() {
     isLoading: isCoursePopularLoading,
     isSuccess: isCoursePopularSuccess,
   } = useGetPopularCourseQuery({
-    topicId: 1,
+    topicId: -1,
     size: 4,
   });
   useEffect(() => {
@@ -54,7 +54,13 @@ export default function Home() {
       setCoursePopular(coursePopularData?.data as Course[]);
     }
   }, [courseNewestData, coursePopularData]);
-  if (isCourseNewestLoading || isCoursePopularLoading) return <Loading />;
+  if (isCourseNewestLoading || isCoursePopularLoading)
+    return (
+      <Fragment>
+        {" "}
+        <Loading />
+      </Fragment>
+    );
 
   const renderCourse = (courseList: Course[], title: string) => {
     return (

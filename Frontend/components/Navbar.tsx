@@ -23,6 +23,7 @@ import { RoleType, User } from "@/types/user.type";
 import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
 import "./style/category.scss";
+import Loading from "@/app/(root)/user/personal/loading";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
