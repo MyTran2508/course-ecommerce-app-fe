@@ -97,7 +97,7 @@ function Navbar() {
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16">
         <Link href={"/"} className="text-2xl flex items-center">
           <h1 className="uppercase font-medium">E-LEANING</h1>
-          <Category />
+          {/* <Category /> */}
         </Link>
 
         <div className="hidden lg:inline-flex">

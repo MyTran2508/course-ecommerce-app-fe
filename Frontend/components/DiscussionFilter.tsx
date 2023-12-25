@@ -30,7 +30,7 @@ function DiscussionFilter(props: DiscussionFilterProps) {
 
   return (
     <div>
-      <Disclosure>
+      <Disclosure defaultOpen={true}>
         {({ open }) => (
           <>
             <Disclosure.Button className="border-t flex w-full justify-between py-4 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75 border-back">

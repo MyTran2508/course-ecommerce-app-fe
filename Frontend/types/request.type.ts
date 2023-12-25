@@ -19,6 +19,7 @@ export interface SearchCourseRequest {
     levelIds?: string[];
     languageIds?: string[];
     topicIds?: string[];
+    filterSortBy?: string,
     keyword: string | null;
     pageIndex: number;
     pageSize: number;
