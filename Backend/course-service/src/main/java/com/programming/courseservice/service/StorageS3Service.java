@@ -23,23 +23,6 @@ public class StorageS3Service {
     @Autowired
     private FileUtils fileUtils;
 
-//    public Long getVideoDuration(String path) {
-//        String s3VideoUrl= "https://" + bucketName + ".s3.ap-southeast-1.amazonaws.com/" + path;
-//        String s3VideoUrl2 = UriComponentsBuilder.fromUriString(s3VideoUrl).build().encode().toString();
-//        System.out.println(s3VideoUrl2);
-//        try {
-//            // Sử dụng FFmpegFrameGrabber để lấy thời lượng video từ InputStream
-//            try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(s3VideoUrl2)) {
-//                grabber.start();
-//                double duration = grabber.getLengthInTime() / 1000000.0;
-//                return (long) duration;
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
     public String uploadFile(String pathFolder, MultipartFile multipartFile) {
         File file = fileUtils.convertMultipartFiletoFile(multipartFile);
         String path = pathFolder + System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();

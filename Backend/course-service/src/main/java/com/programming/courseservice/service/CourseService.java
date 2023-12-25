@@ -145,41 +145,52 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toDataResponseSuccess(courseMapper.entityToDto(courseRepository.save(course)));
     }
 
-//    public DataResponse<String> uploadCourseImage(MultipartFile file) {
-//        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_IMAGE, file));
-//    }
-//
-//    public DataResponse<String> uploadCourseVideo(MultipartFile file) {
-//        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_VIDEO, file));
-//    }
-
-    public ResponseEntity<?> loadFile(String path) {
-        byte[] file = storageService.loadImageFromFileSystem(path);
-        if(file == null) {
-            return ResponseEntity.ok("Error");
-        }
-        String imageBase64 = Base64.getEncoder().encodeToString(file);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(imageBase64);
-    }
-
     public DataResponse<String> uploadCourseImage(MultipartFile file) {
-        String filePath = storageService.uploadImageToFileSystem(file);
-        if(filePath.isEmpty()) {
-            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
-        }
-        return ResponseMapper.toDataResponseSuccess(filePath);
+        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_IMAGE, file));
     }
 
     public DataResponse<String> uploadCourseVideo(MultipartFile file) {
-        String filePath = storageService.uploadVideoToFileSystem(file);
-        if(filePath.isEmpty()) {
-            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
-        }
-        return ResponseMapper.toDataResponseSuccess(filePath);
+        return ResponseMapper.toDataResponseSuccess(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_VIDEO, file));
     }
+
+    public ResponseEntity<ByteArrayResource> loadFile(String path) {
+        byte[] data = storageS3Service.downloadFile(path);
+        byte[] dataBase64 = Base64.getEncoder().encode(data);
+        ByteArrayResource resource = new ByteArrayResource(dataBase64);
+        return ResponseEntity.ok()
+                .contentLength(dataBase64.length)
+                .header("Content-type", "application/octet-stream")
+                .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
+                .body(resource);
+    }
+
+//    public ResponseEntity<?> loadFile(String path) {
+//        byte[] file = storageService.loadImageFromFileSystem(path);
+//        if(file == null) {
+//            return ResponseEntity.ok("Error");
+//        }
+//        String imageBase64 = Base64.getEncoder().encodeToString(file);
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(imageBase64);
+//    }
+//
+//    public DataResponse<String> uploadCourseImage(MultipartFile file) {
+//        String filePath = storageService.uploadImageToFileSystem(file);
+//        if(filePath.isEmpty()) {
+//            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+//        }
+//        return ResponseMapper.toDataResponseSuccess(filePath);
+//    }
+
+//    public DataResponse<String> uploadCourseVideo(MultipartFile file) {
+//        String filePath = storageService.uploadVideoToFileSystem(file);
+//        if(filePath.isEmpty()) {
+//            return ResponseMapper.toDataResponse("File error!!", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+//        }
+//        return ResponseMapper.toDataResponseSuccess(filePath);
+//    }
 
     public ListResponse<CourseDto> getCourseAccessByUserId(String userId, Integer pageIndex, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageIndex,pageSize);
