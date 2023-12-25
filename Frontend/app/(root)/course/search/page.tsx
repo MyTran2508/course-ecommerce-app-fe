@@ -8,16 +8,28 @@ import { SearchCourseRequest } from "@/types/request.type";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { MdFilterList, MdFilterListOff } from "react-icons/md";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { FilterSortBy } from "@/utils/resources";
 
 function SearchPage() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
   const [keyword, setKeyword] = useState(query);
   const [isOpenFilter, setOpenFilter] = useState(true);
+  const [sortBy, setSortBy] = useState(FilterSortBy.NEWEST.toString());
   const [searchRequest, setSearchRequest] = useState<SearchCourseRequest>({
     keyword: keyword,
     pageIndex: 0,
     pageSize: 5,
+    filterSortBy: sortBy,
   });
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
@@ -36,9 +48,9 @@ function SearchPage() {
         setTotalPage(fulfilled.totalPages);
       });
   };
-  useEffect(() => {
-    handleSearch();
-  }, []);
+  // useEffect(() => {
+  //   handleSearch();
+  // }, []);
 
   useEffect(() => {
     console.log(searchRequest);
@@ -66,6 +78,15 @@ function SearchPage() {
     }
   }, [query]);
 
+  useEffect(() => {
+    if (sortBy !== FilterSortBy.NONE) {
+      setSearchRequest((prevSearchRequest) => ({
+        ...prevSearchRequest,
+        filterSortBy: sortBy,
+      }));
+    }
+  }, [sortBy]);
+
   return (
     <div>
       <div>
@@ -73,11 +94,44 @@ function SearchPage() {
           <div>
             {isOpenFilter ? (
               <Fragment>
-                <div
-                  className="flex gap-2 border px-2 py-3 items-center hover: cursor-pointer border-black w-max"
-                  onClick={() => handleClickOpenFilter()}
-                >
-                  <MdFilterList /> Filter
+                <div className="flex gap-2">
+                  <div
+                    className="flex gap-2 border px-2 py-3 items-center hover: cursor-pointer border-black w-max"
+                    onClick={() => handleClickOpenFilter()}
+                  >
+                    <MdFilterList /> Filter
+                  </div>
+                  <div
+                    className="flex gap-2 border px-2 py-3 items-center hover: cursor-pointer border-black w-max"
+                    onClick={() => handleClickOpenFilter()}
+                  >
+                    Sort by
+                    <Select
+                      onValueChange={(e) => setSortBy(e)}
+                      defaultValue={FilterSortBy.NEWEST}
+                    >
+                      <SelectTrigger
+                        className={` disabled:opacity-1 disabled:cursor-default w-[150px]`}
+                      >
+                        <SelectValue
+                          placeholder="Sort by"
+                          className="text-sm w-full"
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Sort by</SelectLabel>
+
+                          <SelectItem value={FilterSortBy.NEWEST}>
+                            {FilterSortBy.NEWEST}
+                          </SelectItem>
+                          <SelectItem value={FilterSortBy.POPULAR}>
+                            {FilterSortBy.POPULAR}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </Fragment>
             ) : (

@@ -11,19 +11,12 @@ export const Language: ComboBoxType[] = [
 export const Topic: ComboBoxType[] = [
     { id: "0", name: "Python" },
     { id: "1", name: "Java" },
-    { id: "2", name: "C#" },
+    { id: "2", name: "HTML" },
     { id: "3", name: "C++" },
     { id: "4", name: "ReactJS" },
     { id: "5", name: "Angular" },
-    { id: "6", name: "VueJS" },
-    { id: "7", name: "iSO Development" },
-    { id: "8", name: "Android Development" },
-    { id: "9", name: "React Native" },
-    { id: "10", name: "Selenium WebDriver" },
-    { id: "11", name: "Postman" },
-    { id: "12", name: "JUnit" },
-    { id: "13", name: "NodeJS" },
-    { id: "14", name: "HTML" },
+    { id: "6", name: "Android Development" },
+    { id: "7", name: "NodeJS" }
 ]
 
 export const Level: ComboBoxType[] = [

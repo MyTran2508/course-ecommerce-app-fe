@@ -82,3 +82,9 @@ export enum SecurityLevel {
   LOW =("LOW"),
   MEDIUM = ("MEDIUM")
 }
+
+export enum FilterSortBy {
+  NEWEST=("NEWEST"),
+  POPULAR = ("POPULAR"),
+  NONE = "NONE"
+}
