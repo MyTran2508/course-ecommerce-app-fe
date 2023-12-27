@@ -157,7 +157,7 @@ function PersonalForm(props: PersonalProps) {
   return (
     <div>
       <Form {...form}>
-        <form className="mt-5">
+        <form className="mt-5 mx-2">
           <div className="flex flex-col  sticky top-[120px] bg-white">
             {!allowInput ? (
               <Fragment>

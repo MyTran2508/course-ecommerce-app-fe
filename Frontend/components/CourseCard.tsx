@@ -32,7 +32,7 @@ function CourseCard(props: CourseProps) {
       : course.name;
   return (
     <Card
-      className="w-full max-w-fit border-0 !bg-transparent sm:max-w-[356px] m-8 "
+      className="w-full max-w-fit border-0 !bg-transparent xs:max-w-[400px] m-8 "
       key={course.id}
     >
       <CardHeader className="flex-center flex-col gap-2.5 !p-0 hover:cursor-pointer">
@@ -45,8 +45,8 @@ function CourseCard(props: CourseProps) {
                   : "/banner.jpg"
               }
               className="w-60 h-32 rounded-md"
-              width={380}
-              height={440}
+              width={240}
+              height={128}
               alt={course.name}
             />
             <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-md" />
@@ -78,11 +78,20 @@ function CourseCard(props: CourseProps) {
         <CardContent className=" mt-4 p-0 flex-between">
           <div className="flex-start">
             <BsPeopleFill className="text-2xl mr-2" />
-            <div className="text-xl font-normal">{(100).toLocaleString()}</div>
+            <div className="text-xl font-normal"></div>
           </div>
           <div className="flex-end mr-2">
-            <div className="text-xl font-normal">
-              {course.price?.toLocaleString()} đ{" "}
+            <div className="text-xl font-normal xs:text-sm">
+              {course.price === 0 ? (
+                <span className="text-red-500 italic">
+                  <span className="xs:mr-3">F</span>
+                  <span className="xs:mr-3">r</span>
+                  <span className="xs:mr-3">e</span>
+                  <span>e</span>
+                </span>
+              ) : (
+                (course.price as number).toLocaleString() + " đ"
+              )}
             </div>
           </div>
           {/* <div className="flex-center body-medium gap-1.5 text-white">

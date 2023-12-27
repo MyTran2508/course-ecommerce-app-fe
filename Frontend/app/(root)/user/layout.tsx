@@ -3,9 +3,9 @@ import SideBar from "@/components/SideBar";
 
 function layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex">
+    <div className="flex xs:relative">
       <SideBar />
-      {children}
+      <div className="order-2 w-full">{children}</div>
     </div>
   );
 }

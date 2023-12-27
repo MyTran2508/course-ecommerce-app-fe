@@ -7,6 +7,7 @@ import React, { Suspense, useEffect } from "react";
 import Loading from "./loading";
 import { useGetByUserNameQuery } from "@/redux/services/userApi";
 import { useAppSelector } from "@/redux/hooks";
+import { AiOutlineMenu } from "react-icons/ai";
 
 function PagePersonal() {
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
@@ -20,7 +21,9 @@ function PagePersonal() {
   return (
     <div className="mt-10 mr-28 w-full">
       <div className="sticky top-[80px] bg-white h-10">
-        <div className="font-bold"> Thông Tin Cá Nhân </div>
+        <div className="font-bold">
+          <div className="flex-center">Thông Tin Cá Nhân </div>
+        </div>
         <hr />
       </div>
       <PersonalForm userInfor={data?.data as User} />

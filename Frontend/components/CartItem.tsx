@@ -45,10 +45,10 @@ function CartItem(props: CartItemProps) {
             height={20}
           />
           <div>
-            <div className="text-[15px] font-bold mb-1">
+            <div className="text-[15px] font-bold mb-1 xs:w-full xs:text-[10px]">
               {cartItem.nameCourse}
             </div>
-            <div className="flex-start xl:gap-2 xs:gap-0.5 text-[10px] opacity-50">
+            <div className="flex-start xl:gap-2 xs:gap-0.5 text-[10px] opacity-50 xs:hidden">
               <div>{cartItem.totalSection} chương</div>
               <BsDot className="text-[12px]" />
               <div>{cartItem.totalLecture} bài học</div>
@@ -65,7 +65,7 @@ function CartItem(props: CartItemProps) {
             Remove
           </Button>
         </div> */}
-        <div className="flex gap-16 items-center">
+        <div className="flex gap-16 items-center xs:ml-24 xs:gap-3">
           <Button
             className="w-12 h-6 text-[8px] bg-rose-400"
             onClick={() => handleDeleteFromCart()}

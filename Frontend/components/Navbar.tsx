@@ -94,8 +94,8 @@ function Navbar() {
   };
 
   return (
-    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-20 shadow-md">
-      <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16">
+    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-30 shadow-md">
+      <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16 xs:px-5">
         <Link href={"/"} className="text-2xl flex items-center">
           <h1 className="uppercase font-medium">E-LEANING</h1>
           {/* <Category /> */}
@@ -175,16 +175,30 @@ function Navbar() {
                         <hr className="my-4" />
 
                         <div className="flex-col">
-                          <div className="hidden xs:flex xs:flex-col">
-                            <Link href={"/instructor/courses"}>
-                              Quản lý khóa học
-                            </Link>
-                            <hr className="my-4 w-full" />
-                          </div>
-                          <div className="hidden xs:flex xs:flex-col">
-                            <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
-                            <hr className="my-4 w-full" />
-                          </div>
+                          {roles &&
+                          (roles as RoleType[])[0]?.id !== Role.USER ? (
+                            <Fragment>
+                              {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
+                                <div>
+                                  <Link href={"/admin/overview"}>
+                                    Trang Admin
+                                  </Link>
+                                  <hr className="my-4" />
+                                </div>
+                              ) : (
+                                <div>
+                                  <Link href={"/instructor/courses"}>
+                                    Quản lý khóa học
+                                  </Link>
+                                  <hr className="my-4" />
+                                </div>
+                              )}
+                            </Fragment>
+                          ) : (
+                            <div>
+                              <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
+                            </div>
+                          )}
                           <div>
                             <Link href={"/user/personal"}>Trang Cá Nhân </Link>
                             <hr className="my-4" />
@@ -205,7 +219,7 @@ function Navbar() {
               </div>
             </div>
           ) : (
-            <div className="hidden lg:inline-flex gap-3">
+            <div className="lg:inline-flex gap-3 flex">
               <div
                 className="flex relative hover:cursor-pointer flex-center mr-3"
                 onClick={() => handleChangeRouteCart()}
@@ -215,16 +229,17 @@ function Navbar() {
                 </span>
                 <FiShoppingCart className="text-2xl" />
               </div>
+
               <CustomButton
                 title="Login"
-                containerStyles="bg-white-500 border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                containerStyles=" xs:hidden bg-white-500 border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
                 handleClick={() => {
                   router.push("/login");
                 }}
               ></CustomButton>
               <CustomButton
                 title="SignUp"
-                containerStyles="bg-white-500  border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                containerStyles="xs:hidden bg-white-500  border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
                 handleClick={() => {
                   router.push("/signup");
                 }}
