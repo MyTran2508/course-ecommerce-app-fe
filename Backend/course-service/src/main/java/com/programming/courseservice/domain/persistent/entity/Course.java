@@ -68,6 +68,15 @@ public class Course extends BaseModel {
     @OrderBy("created DESC")
     private List<CourseIssueReport> courseIssueReports;
 
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseReview> courseReviews;
+
+    @Column(name = "average_rating")
+    private Float averageRating;
+
+    @Column(name = "total_ratings")
+    private Integer totalRatings;
+
     @Override
     protected void ensureId() {
         this.isApproved = false;

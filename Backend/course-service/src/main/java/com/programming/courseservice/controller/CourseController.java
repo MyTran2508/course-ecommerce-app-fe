@@ -10,7 +10,6 @@ import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.service.CourseService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
