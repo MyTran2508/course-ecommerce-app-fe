@@ -52,16 +52,16 @@ public class StorageService {
         }
     }
 
-    public byte[] loadImageFromFileSystem(String usename) {
-        User user = userRepository.findByUserName(usename);
-        if(user == null || user.getPhotos() == null || user.getPhotos().isEmpty()) {
-            return null;
-        }
-        String filePath= user.getPhotos();
-        try {
-            return Files.readAllBytes(new File(filePath).toPath());
-        } catch (IOException e) {
-            return "Not Found".getBytes();
-        }
-    }
+//    public byte[] loadImageFromFileSystem(String usename) {
+//        User user = userRepository.findByUserName(usename);
+//        if(user == null || user.getPhotos() == null || user.getPhotos().isEmpty()) {
+//            return null;
+//        }
+//        String filePath= user.getPhotos();
+//        try {
+//            return Files.readAllBytes(new File(filePath).toPath());
+//        } catch (IOException e) {
+//            return "Not Found".getBytes();
+//        }
+//    }
 }

@@ -48,8 +48,9 @@ public class User extends BaseModel {
     @Column(name = "telephone")
     private String telephone;
 
-    @Column(length = 512)
-    private String photos;
+    @Lob
+    @Column(name = "file_bytes", columnDefinition = "MEDIUMBLOB")
+    private byte[] avatar;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

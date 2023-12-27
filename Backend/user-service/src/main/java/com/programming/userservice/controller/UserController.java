@@ -153,7 +153,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
     @PostMapping("/photos/{username}")
     public DataResponse<String> uploadAvatar(@PathVariable("username") String username,
-                                          @RequestParam("image")MultipartFile file) {
+                                            @RequestParam("image")MultipartFile file) {
         return userService.uploadAvatar(username, file);
     }
 

@@ -18,6 +18,8 @@ import java.io.IOException;
 public class StorageS3Service {
     @Value("${application.bucket.name}")
     private String bucketName;
+    @Value("${cloud.front.prefix}")
+    private String cloudFrontPrefix;
     @Autowired
     private AmazonS3 s3Client;
     @Autowired
@@ -27,6 +29,11 @@ public class StorageS3Service {
         File file = fileUtils.convertMultipartFiletoFile(multipartFile);
         String path = pathFolder + System.currentTimeMillis() + "_" + multipartFile.getOriginalFilename();
         s3Client.putObject(new PutObjectRequest(bucketName, path, file));
+
+        if(fileUtils.isFileVideo(multipartFile)) {
+            file.delete();
+            return cloudFrontPrefix + path;
+        }
         file.delete();
         return path;
     }
