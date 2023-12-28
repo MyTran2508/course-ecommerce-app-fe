@@ -18,7 +18,7 @@ function PageLogin() {
         <IoChevronBackCircleSharp
           className="text-3xl ml-2 cursor-pointer"
           onClick={() => {
-            route.back();
+            route.push("/");
           }}
         />
         <p className="">Back to Home</p>

@@ -54,7 +54,7 @@ function SideBarFilter(props: SideBarFilterProps) {
   }, [selectedPriceIsFree]);
 
   return (
-    <div className="xs:absolute bg-white h-full xs:w-full xs:z-auto">
+    <div className="p-1">
       <DiscussionFilter
         data={Language}
         selectedList={selectedLanguages}
