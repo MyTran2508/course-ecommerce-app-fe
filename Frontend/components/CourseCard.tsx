@@ -70,7 +70,7 @@ function CourseCard(props: CourseProps) {
           </div>
         </div>
 
-        <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left xs:text-[10px]">
+        <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left xs:text-[14px]">
           {truncatedTitle}
         </CardTitle>
       </CardHeader>

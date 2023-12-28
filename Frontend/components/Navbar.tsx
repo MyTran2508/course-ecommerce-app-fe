@@ -24,6 +24,18 @@ import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
 import "./style/category.scss";
 import Loading from "@/app/(root)/user/personal/loading";
+import { BiSearchAlt } from "react-icons/bi";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "./ui/input";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -41,7 +53,8 @@ function Navbar() {
   const roles = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.roles
   );
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isOpenDialog, setOpenDialog] = useState(false);
   const [getByUserName, { data: userNameData, isSuccess: userNameSuccess }] =
     useLazyGetByUserNameQuery();
 
@@ -92,6 +105,13 @@ function Navbar() {
   const handleChangeRouteCart = () => {
     router.push("/cart");
   };
+  const handleSearch = () => {
+    router.push(`/course/search?q=${searchQuery}`);
+    handleOpenSearchDialog();
+  };
+  const handleOpenSearchDialog = () => {
+    setOpenDialog(!isOpenDialog);
+  };
 
   return (
     <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-30 shadow-md">
@@ -104,6 +124,7 @@ function Navbar() {
         <div className="hidden lg:inline-flex">
           <SearchBar />
         </div>
+
         <div className="">
           {user?.username !== "" ? (
             <div className="flex-center gap-10">
@@ -124,98 +145,118 @@ function Navbar() {
                   <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
                 </div>
               )}
-              <div
-                className="flex relative hover:cursor-pointer"
-                onClick={() => handleChangeRouteCart()}
-              >
-                <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
-                  {cart.length}
-                </span>
-                <FiShoppingCart className="text-2xl" />
-              </div>
-              <div>
-                <Menu>
-                  <Menu.Button>
-                    <Image
-                      src={
-                        currentAvatar !== "Error"
-                          ? `data:image/png;base64,${currentAvatar}`
-                          : "/banner.jpg"
-                      }
-                      width={400}
-                      height={400}
-                      className="w-12 h-12 rounded-full ml-2"
-                      alt="avatar"
-                    />
-                  </Menu.Button>
-                  <Menu.Items className="absolute right-2 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
-                    <div className="px-1 py-1">
-                      <Transition
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                      >
-                        <div className="flex-center gap-4">
-                          <Image
-                            src={
-                              currentAvatar !== "Error"
-                                ? `data:image/png;base64,${currentAvatar}`
-                                : "/banner.jpg"
-                            }
-                            width={400}
-                            height={400}
-                            alt="avt"
-                            className="w-16 h-16 rounded-full"
-                          />
-                          <h4> {userData ? userData.firstName : ""}</h4>
-                        </div>
-                        <hr className="my-4" />
+              <div className="flex-center gap-3">
+                <div
+                  className="lg:hidden xs:text-xl"
+                  onClick={handleOpenSearchDialog}
+                >
+                  <BiSearchAlt />
+                </div>
+                <div
+                  className="flex relative hover:cursor-pointer"
+                  onClick={() => handleChangeRouteCart()}
+                >
+                  <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
+                    {cart.length}
+                  </span>
+                  <FiShoppingCart className="text-2xl" />
+                </div>
 
-                        <div className="flex-col">
-                          {roles &&
-                          (roles as RoleType[])[0]?.id !== Role.USER ? (
-                            <Fragment>
-                              {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
-                                <div>
-                                  <Link href={"/admin/overview"}>
-                                    Trang Admin
+                <div>
+                  <Menu>
+                    <Menu.Button>
+                      <Image
+                        src={
+                          currentAvatar !== "Error"
+                            ? `data:image/png;base64,${currentAvatar}`
+                            : "/banner.jpg"
+                        }
+                        width={400}
+                        height={400}
+                        className="w-12 h-12 rounded-full ml-2"
+                        alt="avatar"
+                      />
+                    </Menu.Button>
+                    <Menu.Items className="absolute right-2 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
+                      <div className="px-1 py-1">
+                        <Transition
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <div className="flex-center gap-4">
+                            <Image
+                              src={
+                                currentAvatar !== "Error"
+                                  ? `data:image/png;base64,${currentAvatar}`
+                                  : "/banner.jpg"
+                              }
+                              width={400}
+                              height={400}
+                              alt="avt"
+                              className="w-16 h-16 rounded-full"
+                            />
+                            <h4> {userData ? userData.firstName : ""}</h4>
+                          </div>
+                          <hr className="my-4" />
+
+                          <div className="flex-col ">
+                            {roles &&
+                            (roles as RoleType[])[0]?.id !== Role.USER ? (
+                              <Fragment>
+                                {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
+                                  <div className="lg:hidden">
+                                    <Link href={"/admin/overview"}>
+                                      Trang Admin
+                                    </Link>
+                                    <hr className="my-4" />
+                                  </div>
+                                ) : (
+                                  <div className="lg:hidden">
+                                    <Link href={"/instructor/courses"}>
+                                      Quản lý khóa học
+                                    </Link>
+                                    <hr className="my-4" />
+                                    <Link href={"/instructor/courses/create"}>
+                                      Tạo khóa học
+                                    </Link>
+                                    <hr className="my-4" />
+                                  </div>
+                                )}
+                              </Fragment>
+                            ) : (
+                              <Fragment>
+                                <div className="lg:hidden">
+                                  <Link href={"/my-courses"}>
+                                    Khóa Học Của Tôi
                                   </Link>
                                   <hr className="my-4" />
                                 </div>
-                              ) : (
-                                <div>
-                                  <Link href={"/instructor/courses"}>
-                                    Quản lý khóa học
-                                  </Link>
-                                  <hr className="my-4" />
-                                </div>
-                              )}
-                            </Fragment>
-                          ) : (
+                              </Fragment>
+                            )}
                             <div>
-                              <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
+                              <Link href={"/user/personal"}>
+                                Trang Cá Nhân{" "}
+                              </Link>
+                              <hr className="my-4" />
                             </div>
-                          )}
-                          <div>
-                            <Link href={"/user/personal"}>Trang Cá Nhân </Link>
-                            <hr className="my-4" />
+                            <div
+                              className="hover:cursor-pointer"
+                              onClick={() => {
+                                handleLogout();
+                              }}
+                            >
+                              Đăng Xuất
+                            </div>
                           </div>
-                          <div
-                            className="hover:cursor-pointer"
-                            onClick={() => {
-                              handleLogout();
-                            }}
-                          >
-                            Đăng Xuất
-                          </div>
-                        </div>
-                      </Transition>
-                    </div>
-                  </Menu.Items>
-                </Menu>
+                        </Transition>
+                      </div>
+                    </Menu.Items>
+                  </Menu>
+                </div>
               </div>
             </div>
           ) : (
@@ -282,6 +323,25 @@ function Navbar() {
             </div>
           )}
         </div>
+      </div>
+      <div>
+        <Dialog open={isOpenDialog} onOpenChange={() => setOpenDialog(false)}>
+          <DialogContent className="">
+            <DialogHeader>
+              <DialogTitle>Tìm Kiếm</DialogTitle>
+            </DialogHeader>
+            <Input
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Tìm Kiếm ..."
+              required={true}
+            />
+            <DialogFooter>
+              <Button type="submit" onClick={handleSearch}>
+                Xác Nhận
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

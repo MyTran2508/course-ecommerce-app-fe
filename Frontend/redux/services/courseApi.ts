@@ -197,6 +197,7 @@ export const courseApi = createApi({
 
 export const {
   useLoadFileFromCloudQuery,
+  useLazyLoadFileFromCloudQuery,
   useLazyGetAllCourseQuery,
   useFilterCourseAdminMutation,
   useUploadCourseImageMutation,

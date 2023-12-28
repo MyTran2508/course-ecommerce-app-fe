@@ -4,17 +4,21 @@ import React, { Fragment, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsFillFilePersonFill } from "react-icons/bs";
 import { GrShieldSecurity } from "react-icons/gr";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 function SideBar() {
   const [activeLink, setActiveLink] = useState<number>(0);
-  const [isOpenMenu, setOpenMenu] = useState(false);
+  const [isOpenMenu, setOpenMenu] = useState<boolean>(true);
 
   const handleLinkClick = (index: number) => {
     setActiveLink(index);
+    handleOpenMenu();
   };
 
   const handleOpenMenu = () => {
-    setOpenMenu(!isOpenMenu);
+    if (window.innerWidth <= 575) {
+      setOpenMenu(!isOpenMenu);
+    }
   };
 
   return (
@@ -25,9 +29,12 @@ function SideBar() {
             <div className="flex h-full">
               <div className="p-4">
                 <div className="sticky top-[96px]  ">
-                  <div className="flex items-center mb-4">
+                  <div className="flex-between items-center mb-4">
                     <h2 className="text-lg font-bold">Cài Đặt</h2>
-                    <div className="flex-end">X</div>
+                    <IoIosCloseCircleOutline
+                      onClick={() => handleOpenMenu()}
+                      className="lg:hidden"
+                    />
                   </div>
                   <nav className="flex flex-col w-max text-md">
                     <Link

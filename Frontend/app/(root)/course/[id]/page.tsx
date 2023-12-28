@@ -30,6 +30,8 @@ import {
   useLazyGetCourseAccessQuery,
 } from "@/redux/services/courseProcessApi";
 import { IoCheckmarkDone } from "react-icons/io5";
+import { Order, OrderStatus, ShippingMethod } from "@/types/order.type";
+import { useAddOrderMutation } from "@/redux/services/orderApi";
 
 const initCourse: Course = {
   id: "0",
@@ -54,9 +56,10 @@ function CoursePage() {
   const [description, setDescription] = useState<Description>();
   const [isAccess, setAccess] = useState<boolean>();
   const [sections, setSections] = useState<Section[]>([]);
-  const { data: videoBase64 } = useLoadFileFromCloudQuery(video);
+  // const { data: videoBase64 } = useLoadFileFromCloudQuery(video);
   const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
   const dispatch = useAppDispatch();
+  const [addOrder] = useAddOrderMutation();
 
   const { data: contentData, isSuccess } = useGetContentByCourseIdQuery(
     param.id as string
@@ -70,6 +73,9 @@ function CoursePage() {
   ] = useLazyGetCourseAccessQuery();
   const { totalDurationCourse, totalLectureCount } =
     handleCountFieldsInSection(sections);
+  const user = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user
+  );
 
   useEffect(() => {
     if (userId) {
@@ -212,6 +218,34 @@ function CoursePage() {
       showToast(ToastStatus.WARNING, ToastMessage.ADD_CART_DUPLICATE);
     }
   };
+
+  const handleAddOrder = async (newOrder: Order) => {
+    await addOrder(newOrder)
+      .unwrap()
+      .then((fulfilled) => {
+        console.log(fulfilled);
+        showToast(ToastStatus.SUCCESS, ToastMessage.PAYMENT_SUCCESS);
+        router.push("/");
+      });
+  };
+
+  const handleRegisterCourseFree = () => {
+    const newOrder: Order = {
+      totalPrice: 0,
+      orderStatus: OrderStatus.PAID,
+      shippingMethod: ShippingMethod.PAYPAL,
+      orderItems: [
+        {
+          price: 0,
+          courseId: course.id as string,
+        },
+      ],
+      user: {
+        id: user.id,
+      },
+    };
+    handleAddOrder(newOrder);
+  };
   return (
     <div className="xl:flex m-2 mt-10 gap-2 font-roboto">
       {!isAccess ? (
@@ -251,21 +285,33 @@ function CoursePage() {
               <CardHeader>
                 <video
                   controls
-                  src={`data:video/mp4;base64,${videoBase64}`}
+                  src={course?.urlPromotionVideos}
                   className="w-96 h-[200px] rounded-md"
                   autoPlay
                 />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold mb-1">
-                  {course?.price?.toLocaleString()} ₫
+                  {course?.price === 0 ? (
+                    <span>Miễn Phí</span>
+                  ) : (
+                    course?.price?.toLocaleString() + "₫"
+                  )}
                 </div>
                 <div className="flex justify-center mb-2 text-white xs:bg-red-950 xs:h-full">
-                  <CustomButton
-                    title="Add To Card"
-                    containerStyles="bg-orange-600 rounded-3xl py-2 px-4 xs:fixed xs:bottom-0 xs:w-full xs:mb-0 xs:rounded-sm xs:ml-[10px]"
-                    handleClick={() => handleAddToCart()}
-                  />
+                  {course?.price === 0 ? (
+                    <CustomButton
+                      title="Đăng Ký Học"
+                      containerStyles="bg-orange-600 rounded-3xl py-2 px-4 xs:fixed xs:bottom-0 xs:w-full xs:mb-0 xs:rounded-sm xs:ml-[10px]"
+                      handleClick={() => handleRegisterCourseFree()}
+                    />
+                  ) : (
+                    <CustomButton
+                      title="Thêm vào giỏ hàng"
+                      containerStyles="bg-orange-600 rounded-3xl py-2 px-4 xs:fixed xs:bottom-0 xs:w-full xs:mb-0 xs:rounded-sm xs:ml-[10px]"
+                      handleClick={() => handleAddToCart()}
+                    />
+                  )}
                 </div>
                 <div className="flex-start text-sm flex-col">
                   <div className="font-semibold mb-2">

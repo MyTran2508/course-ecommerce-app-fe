@@ -1,12 +1,15 @@
 "use client";
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { IoIosArrowBack } from "react-icons/io";
+import { IoIosArrowBack, IoIosCloseCircleOutline } from "react-icons/io";
 import { BiNotepad } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
 import CourseContentLearning from "@/components/CourseContentLearning";
 import DiscussionSheet from "@/components/DiscussionSheet";
 import { useParams, useRouter } from "next/navigation";
-import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
+import {
+  useLazyLoadFileFromCloudQuery,
+  useLoadFileFromCloudQuery,
+} from "@/redux/services/courseApi";
 import { useAppSelector } from "@/redux/hooks";
 import { Lecture, Section } from "@/types/section.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
@@ -20,6 +23,7 @@ import {
 import { CourseProcess } from "@/types/courseProcess.type";
 import PDFViewer from "@/components/PDFviewer";
 import { debounce } from "lodash";
+import { AiOutlineMenu } from "react-icons/ai";
 
 function PageLearning() {
   const param = useParams();
@@ -35,9 +39,10 @@ function PageLearning() {
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.id
   );
+  const [isOpenMenu, setOpenMenu] = useState<boolean>(true);
 
-  const { data: fileBase64, isSuccess: loadFileSuccess } =
-    useLoadFileFromCloudQuery(lecture ? lecture.url : "");
+  const [loadFile, { data: fileBase64, isSuccess: loadFileSuccess }] =
+    useLazyLoadFileFromCloudQuery();
   const { data: courseAccess, isSuccess: getCourseAccessSuccess } =
     useGetCourseAccessQuery({
       userId: userId,
@@ -59,12 +64,25 @@ function PageLearning() {
     });
   };
 
+  const handleOpenMenu = () => {
+    if (window.innerWidth <= 575) {
+      setOpenMenu(!isOpenMenu);
+    }
+  };
+
   useEffect(() => {
     if (getCourseProcessSuccess) {
       console.log(courseProcessData);
       setCourseProcess(courseProcessData.data as CourseProcess);
     }
   }, [courseProcessData]);
+
+  useEffect(() => {
+    if (lecture?.videoDuration === 0) {
+      loadFile(lecture.url);
+    }
+    handleOpenMenu();
+  }, [lecture]);
 
   useEffect(() => {
     if (getCourseAccessSuccess) {
@@ -140,7 +158,7 @@ function PageLearning() {
     <div>
       {isAccess ? (
         <Fragment>
-          <div className="bg-gray-900 text-white py-2 px-2 sticky top-0 z-20">
+          <div className="bg-gray-900 text-white py-2 px-2 sticky top-0 z-20 xs:relative">
             <div className="text-sm flex-between gap-2">
               <div
                 className="flex-start font-bold gap-1 hover:cursor-pointer"
@@ -170,19 +188,19 @@ function PageLearning() {
                     {courseProcess?.totalAmountOfLecture} bài học
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 xs:hidden">
                   <BiNotepad />
                   Ghi Chú
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 xs:hidden">
                   <BsQuestionCircle />
                   Hướng Dẫn
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex">
-            <div className="w-9/12 custom-scrollbar overflow-y-scroll h-2/3">
+          <div className="flex xs:flex-col">
+            <div className="w-9/12 custom-scrollbar overflow-y-scroll h-2/3 xs:w-full xs:overflow-hidden">
               <DiscussionSheet />
               <div>
                 <div>
@@ -190,12 +208,8 @@ function PageLearning() {
                     <video
                       ref={videoRef}
                       controls
-                      src={
-                        loadFileSuccess
-                          ? `data:video/mp4;base64,${fileBase64}`
-                          : ""
-                      }
-                      className="w-full h-[500px]"
+                      src={lecture?.url}
+                      className="w-full h-[500px] xs:h-[200px]"
                       onTimeUpdate={handleTimeUpdate}
                       autoPlay
                     />
@@ -221,12 +235,28 @@ function PageLearning() {
                 </div>
               </div>
             </div>
-            <div className="w-3/12 sticky z-30">
-              <div className=" py-2 ml-4 sticky top-[56px] z-30">
-                Nội dung khóa học
+            {isOpenMenu ? (
+              <Fragment>
+                <div className="w-3/12 sticky z-30 xs:w-full xs:absolute xs:z-30 bg-white h-full">
+                  <div className="flex-between py-2 ml-4 sticky top-[56px] z-30">
+                    <div>Nội dung khóa học</div>
+                    <IoIosCloseCircleOutline
+                      onClick={() => handleOpenMenu()}
+                      className="lg:hidden text-xl mr-2"
+                    />
+                  </div>
+
+                  {renderCourseContent()}
+                </div>
+              </Fragment>
+            ) : (
+              <div
+                className="mx-2 lg:hidden absolute bottom-0 z-30"
+                onClick={() => handleOpenMenu()}
+              >
+                <AiOutlineMenu className="text-3xl" />
               </div>
-              {renderCourseContent()}
-            </div>
+            )}
           </div>
         </Fragment>
       ) : null}
