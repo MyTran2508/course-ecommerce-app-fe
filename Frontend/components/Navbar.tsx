@@ -151,112 +151,109 @@ function Navbar() {
                   <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
                 </div>
               )}
+
+              <div
+                className="flex relative hover:cursor-pointer"
+                onClick={() => handleChangeRouteCart()}
+              >
+                <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
+                  {cart.length}
+                </span>
+                <FiShoppingCart className="text-2xl" />
+              </div>
+
               <div>
-                <div
-                  className="flex relative hover:cursor-pointer"
-                  onClick={() => handleChangeRouteCart()}
-                >
-                  <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
-                    {cart.length}
-                  </span>
-                  <FiShoppingCart className="text-2xl" />
-                </div>
+                <Menu>
+                  <Menu.Button>
+                    <Image
+                      src={
+                        currentAvatar !== "Error"
+                          ? `data:image/png;base64,${currentAvatar}`
+                          : "/banner.jpg"
+                      }
+                      width={400}
+                      height={400}
+                      className="w-12 h-12 rounded-full ml-2"
+                      alt="avatar"
+                    />
+                  </Menu.Button>
+                  <Menu.Items className="absolute right-2 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
+                    <div className="px-1 py-1">
+                      <Transition
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <div className="flex-center gap-4">
+                          <Image
+                            src={
+                              currentAvatar !== "Error"
+                                ? `data:image/png;base64,${currentAvatar}`
+                                : "/banner.jpg"
+                            }
+                            width={400}
+                            height={400}
+                            alt="avt"
+                            className="w-16 h-16 rounded-full"
+                          />
+                          <h4> {userData ? userData.firstName : ""}</h4>
+                        </div>
+                        <hr className="my-4" />
 
-                <div>
-                  <Menu>
-                    <Menu.Button>
-                      <Image
-                        src={
-                          currentAvatar !== "Error"
-                            ? `data:image/png;base64,${currentAvatar}`
-                            : "/banner.jpg"
-                        }
-                        width={400}
-                        height={400}
-                        className="w-12 h-12 rounded-full ml-2"
-                        alt="avatar"
-                      />
-                    </Menu.Button>
-                    <Menu.Items className="absolute right-2 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
-                      <div className="px-1 py-1">
-                        <Transition
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <div className="flex-center gap-4">
-                            <Image
-                              src={
-                                currentAvatar !== "Error"
-                                  ? `data:image/png;base64,${currentAvatar}`
-                                  : "/banner.jpg"
-                              }
-                              width={400}
-                              height={400}
-                              alt="avt"
-                              className="w-16 h-16 rounded-full"
-                            />
-                            <h4> {userData ? userData.firstName : ""}</h4>
-                          </div>
-                          <hr className="my-4" />
-
-                          <div className="flex-col ">
-                            {roles &&
-                            (roles as RoleType[])[0]?.id !== Role.USER ? (
-                              <Fragment>
-                                {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
-                                  <div className="lg:hidden">
-                                    <Link href={"/admin/overview"}>
-                                      Trang Admin
-                                    </Link>
-                                    <hr className="my-4" />
-                                  </div>
-                                ) : (
-                                  <div className="lg:hidden">
-                                    <Link href={"/instructor/courses"}>
-                                      Quản lý khóa học
-                                    </Link>
-                                    <hr className="my-4" />
-                                    <Link href={"/instructor/courses/create"}>
-                                      Tạo khóa học
-                                    </Link>
-                                    <hr className="my-4" />
-                                  </div>
-                                )}
-                              </Fragment>
-                            ) : (
-                              <Fragment>
+                        <div className="flex-col ">
+                          {roles &&
+                          (roles as RoleType[])[0]?.id !== Role.USER ? (
+                            <Fragment>
+                              {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
                                 <div className="lg:hidden">
-                                  <Link href={"/my-courses"}>
-                                    Khóa Học Của Tôi
+                                  <Link href={"/admin/overview"}>
+                                    Trang Admin
                                   </Link>
                                   <hr className="my-4" />
                                 </div>
-                              </Fragment>
-                            )}
-                            <div>
-                              <Link href={"/user/personal"}>
-                                Trang Cá Nhân{" "}
-                              </Link>
-                              <hr className="my-4" />
-                            </div>
-                            <div
-                              className="hover:cursor-pointer"
-                              onClick={() => {
-                                handleLogout();
-                              }}
-                            >
-                              Đăng Xuất
-                            </div>
+                              ) : (
+                                <div className="lg:hidden">
+                                  <Link href={"/instructor/courses"}>
+                                    Quản lý khóa học
+                                  </Link>
+                                  <hr className="my-4" />
+                                  <Link href={"/instructor/courses/create"}>
+                                    Tạo khóa học
+                                  </Link>
+                                  <hr className="my-4" />
+                                </div>
+                              )}
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <div className="lg:hidden">
+                                <Link href={"/my-courses"}>
+                                  Khóa Học Của Tôi
+                                </Link>
+                                <hr className="my-4" />
+                              </div>
+                            </Fragment>
+                          )}
+                          <div>
+                            <Link href={"/user/personal"}>Trang Cá Nhân </Link>
+                            <hr className="my-4" />
                           </div>
-                        </Transition>
-                      </div>
-                    </Menu.Items>
-                  </Menu>
-                </div>
+                          <div
+                            className="hover:cursor-pointer"
+                            onClick={() => {
+                              handleLogout();
+                            }}
+                          >
+                            Đăng Xuất
+                          </div>
+                        </div>
+                      </Transition>
+                    </div>
+                  </Menu.Items>
+                </Menu>
               </div>
             </div>
           ) : (
