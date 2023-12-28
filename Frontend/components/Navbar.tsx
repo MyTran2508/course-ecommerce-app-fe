@@ -125,7 +125,13 @@ function Navbar() {
           <SearchBar />
         </div>
 
-        <div className="">
+        <div className="flex-center gap-3">
+          <div
+            className="lg:hidden xs:text-xl"
+            onClick={handleOpenSearchDialog}
+          >
+            <BiSearchAlt />
+          </div>
           {user?.username !== "" ? (
             <div className="flex-center gap-10">
               {roles && (roles as RoleType[])[0]?.id !== Role.USER ? (
@@ -145,13 +151,7 @@ function Navbar() {
                   <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
                 </div>
               )}
-              <div className="flex-center gap-3">
-                <div
-                  className="lg:hidden xs:text-xl"
-                  onClick={handleOpenSearchDialog}
-                >
-                  <BiSearchAlt />
-                </div>
+              <div>
                 <div
                   className="flex relative hover:cursor-pointer"
                   onClick={() => handleChangeRouteCart()}

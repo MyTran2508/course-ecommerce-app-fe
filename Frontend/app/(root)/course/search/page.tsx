@@ -99,13 +99,13 @@ function SearchPage() {
               <Fragment>
                 <div className="flex gap-2">
                   <div
-                    className="flex gap-2 border px-2 py-3 items-center hover: cursor-pointer border-black w-max"
+                    className="flex gap-2 border px-2 py-1 items-center hover: cursor-pointer border-black w-max"
                     onClick={() => handleClickOpenFilter()}
                   >
                     <MdFilterList /> Filter
                   </div>
                   <div
-                    className="flex gap-2 border px-2 py-3 items-center hover: cursor-pointer border-black w-max"
+                    className="flex gap-2 border px-2 py-1 items-center hover: cursor-pointer border-black w-max"
                     onClick={() => handleClickOpenFilter()}
                   >
                     Sort by
