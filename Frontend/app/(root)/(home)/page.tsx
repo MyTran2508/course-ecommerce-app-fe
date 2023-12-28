@@ -57,7 +57,6 @@ export default function Home() {
   if (isCourseNewestLoading || isCoursePopularLoading)
     return (
       <Fragment>
-        {" "}
         <Loading />
       </Fragment>
     );
@@ -76,16 +75,15 @@ export default function Home() {
                 Xem thêm
               </div>
             </div>
-            <div className="flex justify-center items-center">
-              <div className="grid xl:grid-cols-4 gap-5 md:grid-cols-2">
-                <Fragment>
-                  {courseList.map((course) => (
-                    <div key={course.id}>
-                      <CourseCard course={course} />
-                    </div>
-                  ))}
-                </Fragment>
-              </div>
+
+            <div className="flex justify-center items-center xs:justify-normal xs:items-start w-full xs:overflow-x-scroll xs:gap-5 mb-5">
+              <Fragment>
+                {courseList.map((course) => (
+                  <div key={course.id}>
+                    <CourseCard course={course} />
+                  </div>
+                ))}
+              </Fragment>
             </div>
           </Fragment>
         ) : null}
@@ -100,13 +98,15 @@ export default function Home() {
           <h1 className="sm:heading1 heading2 text-center text-white">
             EXPERT LEARNING
           </h1>
-          <p className="text-white font-semibold">
+          <p className="text-white font-semibold xs:hidden">
             {text} <Cursor cursorColor="rgb(43,43,43)" cursorStyle="|" />
           </p>
         </div>
       </section>
-      <div className="mx-10">{renderCourse(courseNewest, "Khóa Học Mới")}</div>
-      <div className="mx-10">
+      <div className="mx-10 xs:mx-0">
+        {renderCourse(courseNewest, "Khóa Học Mới")}
+      </div>
+      <div className="mx-10 xs:mx-0">
         {renderCourse(coursePopular, "Khóa Học Phổ Biến")}
       </div>
       <div className="flex-center">

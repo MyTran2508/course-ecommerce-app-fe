@@ -6,7 +6,10 @@ import { BsQuestionCircle } from "react-icons/bs";
 import CourseContentLearning from "@/components/CourseContentLearning";
 import DiscussionSheet from "@/components/DiscussionSheet";
 import { useParams, useRouter } from "next/navigation";
-import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
+import {
+  useLazyLoadFileFromCloudQuery,
+  useLoadFileFromCloudQuery,
+} from "@/redux/services/courseApi";
 import { useAppSelector } from "@/redux/hooks";
 import { Lecture, Section } from "@/types/section.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
@@ -31,8 +34,8 @@ function PreviewPage() {
   const [sections, setSections] = useState<Section[]>([]);
   const [lecture, setLecture] = useState<Lecture>();
   const [readdoc, setReadDocComplete] = useState(false);
-  const { data: fileBase64, isSuccess: loadFileSuccess } =
-    useLoadFileFromCloudQuery(lecture ? lecture.url : "");
+  const [loadFile, { data: fileBase64, isSuccess: loadFileSuccess }] =
+    useLazyLoadFileFromCloudQuery();
 
   const { data: contentData, isSuccess: getContentSuccess } =
     useGetContentByCourseIdQuery(courseId);
@@ -47,6 +50,12 @@ function PreviewPage() {
       setNameCourse(((contentData?.data as Content).course as Course)?.name);
     }
   }, [contentData]);
+
+  useEffect(() => {
+    if (lecture?.videoDuration === 0) {
+      loadFile(lecture.url);
+    }
+  }, [lecture]);
 
   const renderCourseContent = () => {
     const { totalLectureCount } = handleCountFieldsInSection(sections);
@@ -106,9 +115,10 @@ function PreviewPage() {
                     ref={videoRef}
                     controls
                     src={
-                      loadFileSuccess
-                        ? `data:video/mp4;base64,${fileBase64}`
-                        : ""
+                      lecture?.url
+                      // loadFileSuccess
+                      //   ? `data:video/mp4;base64,${fileBase64}`
+                      //   : ""
                     }
                     className="w-full h-[500px]"
                     autoPlay

@@ -20,7 +20,7 @@ export interface SearchCourseRequest {
     languageIds?: string[];
     topicIds?: string[];
     filterSortBy?: string,
-    isFree?: boolean,
+    isFree?: boolean | null,
     keyword: string | null;
     pageIndex: number;
     pageSize: number;

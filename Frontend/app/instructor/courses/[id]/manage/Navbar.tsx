@@ -44,7 +44,7 @@ function CreateCourseNavBar() {
             <IoIosArrowBack className="text-xl " />
             <div>Quay Lại</div>
           </div>
-          <div className="flex gap-10 mr-10 items-center">
+          <div className="flex gap-10 xs:gap-1 xs:mr-1 mr-10 items-center">
             {role === Role.ADMIN ? (
               <ApprovedButton course={courseData as Course} />
             ) : (

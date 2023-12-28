@@ -93,25 +93,28 @@ function CourseSectionForm(props: CourseSectionProps) {
 
   const handleUploadFiles = async () => {
     try {
-      setIsLoading(true);
-      const lectureFilesArray: File[] = Object.values(lectureFiles).flatMap(
-        (lectureIndexFiles) =>
-          Object.values(lectureIndexFiles).map(
-            (lectureFile) => lectureFile.file
-          )
-      );
+      if (Object.keys(lectureFiles).length !== 0) {
+        setIsLoading(true);
+        const lectureFilesArray: File[] = Object.values(lectureFiles).flatMap(
+          (lectureIndexFiles) =>
+            Object.values(lectureIndexFiles).map(
+              (lectureFile) => lectureFile.file
+            )
+        );
 
-      const [uploadFilesResponse] = await Promise.all([
-        lectureFilesArray ? uploadFiles(lectureFilesArray) : null,
-      ]);
+        const [uploadFilesResponse] = await Promise.all([
+          lectureFilesArray ? uploadFiles(lectureFilesArray) : null,
+        ]);
 
-      let urlList: string[] = [];
-      if (uploadFilesResponse && "data" in uploadFilesResponse) {
-        urlList = uploadFilesResponse.data.data as string[];
+        let urlList: string[] = [];
+        if (uploadFilesResponse && "data" in uploadFilesResponse) {
+          urlList = uploadFilesResponse.data.data as string[];
+        }
+        setLectureFiles({});
+        setIsLoading(false);
+        return urlList;
       }
-      setLectureFiles({});
-      setIsLoading(false);
-      return urlList;
+      return null;
     } catch (error) {
       console.error(error);
       return null;

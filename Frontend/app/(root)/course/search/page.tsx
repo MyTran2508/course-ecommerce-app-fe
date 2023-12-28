@@ -93,7 +93,7 @@ function SearchPage() {
   return (
     <div>
       <div>
-        <div className="mx-24 mt-10">
+        <div className="mx-24 mt-10 xs:mx-0 xs:relative">
           <div>
             {isOpenFilter ? (
               <Fragment>
@@ -156,7 +156,11 @@ function SearchPage() {
                 isOpenFilter ? "w-3/12" : "transform -translate-x-full "
               } transition-transform duration-300`}
             >
-              <div className={`${isOpenFilter ? "" : "hidden"} sticky top-20 `}>
+              <div
+                className={`${
+                  isOpenFilter ? "" : "hidden"
+                } sticky top-20 xs:absolute bg-white h-full xs:w-full xs:z-30 xs:min-h-[750px]`}
+              >
                 <SideBarFilter
                   setSearchRequest={setSearchRequest}
                   setPage={setPage}

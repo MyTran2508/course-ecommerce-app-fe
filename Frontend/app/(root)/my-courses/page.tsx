@@ -43,7 +43,7 @@ function MyCourses() {
 
   const renderCourse = () => {
     return (
-      <div className="grid grid-cols-4 xs:grid-cols-1">
+      <div className="grid grid-cols-4 xs:grid-cols-2 xs:gap-2 xs:mr-2 xs:ml-[-30px]">
         {courses.map((course) => (
           <div key={course.id}>
             <CourseCard myCourse={true} course={course} />
@@ -75,7 +75,7 @@ function MyCourses() {
   };
   return (
     <div className="container mt-20">
-      <div className="font-bold text-2xl xs:text-[10px]"> Khóa Học Của Tôi</div>
+      <div className="font-bold text-2xl xs:text-[15px]"> Khóa Học Của Tôi</div>
       {renderCourse()}
       <div>
         <div className="flex-center">

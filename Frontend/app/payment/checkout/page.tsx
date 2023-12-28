@@ -53,8 +53,8 @@ function PageCheckout() {
           </div>
         </div>
       </div>
-      <div className="flex">
-        <div className="w-2/4 ml-40 p-10">
+      <div className="flex xs:flex-col">
+        <div className="w-2/4 ml-40 p-10 xs:w-full xs:px-2 xs:ml-0">
           <div className="text-2xl font-bold">Thanh Toán</div>
           <div className="text-md font-bold mt-12 mb-4">
             Phương Thức Thanh Toán
@@ -108,7 +108,7 @@ function PageCheckout() {
             </Disclosure>
           </div>
         </div>
-        <div className="w-2/4 bg-orange-100 h-screen p-10 pr-40 ">
+        <div className="w-2/4 bg-orange-100 h-screen p-10 pr-40 xs:w-full xs:px-2">
           <div className="font-bold text-2xl">Tóm Tắt</div>
           <div className="flex-between mt-10 opacity-75 text-[12px] mb-10">
             <div> Giá: </div>
