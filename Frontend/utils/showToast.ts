@@ -21,5 +21,5 @@ const showToast = debounce((status: ToastStatus, message: string) => {
     default:
       break;
   }
-},5000)
+},1000)
 export default showToast;

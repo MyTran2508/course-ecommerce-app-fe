@@ -63,6 +63,7 @@ function CreateCourseNavBar() {
                 <SaveButton />
               </Fragment>
             )}
+
             <Button
               onClick={() =>
                 router.push(`/instructor/courses/preview/${courseId}`)

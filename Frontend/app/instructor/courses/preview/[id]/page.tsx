@@ -94,20 +94,20 @@ function PreviewPage() {
               {nameCourse}
             </div>
             <div className="flex gap-10 mr-10 items-center">
-              <div className="flex gap-2">
+              {/* <div className="flex gap-2">
                 <BiNotepad />
                 Ghi Chú
               </div>
               <div className="flex gap-2">
                 <BsQuestionCircle />
                 Hướng Dẫn
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
         <div className="flex">
           <div className="w-9/12 custom-scrollbar overflow-y-scroll h-2/3">
-            <DiscussionSheet />
+            {/* <DiscussionSheet /> */}
             <div>
               <div>
                 {lecture?.videoDuration !== 0 ? (
