@@ -29,7 +29,7 @@ function DiscussionSheet() {
     <Sheet>
       <SheetTrigger
         asChild
-        className="fixed bottom-0 right-1/4 mr-5 mb-5 rounded-3xl gap-1 text-orange-500"
+        className="fixed bottom-0 right-1/4 mr-5 mb-5 rounded-3xl gap-1 text-orange-500 xs:hidden"
       >
         <Button variant="outline">
           <AiFillWechat />

@@ -54,7 +54,7 @@ function SideBarFilter(props: SideBarFilterProps) {
   }, [selectedPriceIsFree]);
 
   return (
-    <div>
+    <div className="p-1">
       <DiscussionFilter
         data={Language}
         selectedList={selectedLanguages}

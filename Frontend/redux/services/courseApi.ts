@@ -182,8 +182,8 @@ export const courseApi = createApi({
         };
       },
     }),
-    getTotalApprovedCourse: builder.mutation<DataResponse, {targetYear:number}>({
-      query: (data: {targetYear: number}) => {
+    getTotalApprovedCourse: builder.mutation<DataResponse, {targetMonth:number, targetYear:number}>({
+      query: (data: {targetMonth:number, targetYear: number}) => {
         return {
           url: `/api/courses/course/get-total-approved-course`,
           method: "POST",
@@ -197,6 +197,7 @@ export const courseApi = createApi({
 
 export const {
   useLoadFileFromCloudQuery,
+  useLazyLoadFileFromCloudQuery,
   useLazyGetAllCourseQuery,
   useFilterCourseAdminMutation,
   useUploadCourseImageMutation,

@@ -34,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -58,6 +59,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
+
         return userRepository.searchUser(name, pageable)
                 .map(user -> userMapper.entityToDto(user));
     }
@@ -81,13 +83,16 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         if (!otpUtil.validateOTP(email, otp)) {
             return ResponseMapper.toDataResponse("Otp is not correct", StatusCode.NOT_IMPLEMENTED, StatusMessage.NOT_IMPLEMENTED);
         }
+
         try {
             User user = userMapper.dtoToEntity(userDto);
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             Role role = new Role(RoleUser.USER.getValue());
             user.setRoles(List.of(role));
+
             userRepository.save(user);
             return ResponseMapper.toDataResponseSuccess("Enroll in user successfully");
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new DataAlreadyExistException("User or email already exists");
@@ -98,35 +103,44 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         if(userRepository.findByUserName(userDto.getUsername()) != null) {
             throw new DataAlreadyExistException("User already exists");
         }
+
         if(otpUtil.generateOtp(email, TypeMessage.REGISTER)) {
             return ResponseMapper.toDataResponseSuccess("Send otp to " + email + " successfully");
+
         } else {
             String messageError = "An error occurred while generating and sending OTP";
             return ResponseMapper.toDataResponse(messageError, StatusCode.NOT_IMPLEMENTED, StatusMessage.NOT_IMPLEMENTED);
+
         }
     }
 
     public DataResponse<String> changePassword(String id, ChangePasswordRequest changePasswordRequest) {
         Optional<User> userOptional = userRepository.findById(id);
+
         if(userOptional.isEmpty()) {
             throw new DataNotFoundException(id + " doesn't exist in DB");
         }
+
         if(passwordEncoder.matches(changePasswordRequest.getOldPassword(), userOptional.get().getPassword())) {
             String newPassword = passwordEncoder.encode(changePasswordRequest.getNewPassword());
             userRepository.changePassword(id, newPassword);
         } else {
             throw new DataNotFoundException(id + " password not correct");
         }
+
         return ResponseMapper.toDataResponseSuccess("Update password successfully");
     }
 
     public DataResponse<String> sendOtpForgetPass(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
+
         if(userOptional.isEmpty()) {
             throw new DataNotFoundException("Email is not valid");
         }
+
         if(otpUtil.generateOtp(email, TypeMessage.FORGET_PASSWORD)) {
             return ResponseMapper.toDataResponseSuccess("Send otp to " + email + " successfully");
+
         } else {
             String messageError = "An error occurred while generating and sending OTP";
             return ResponseMapper.toDataResponse(messageError, StatusCode.NOT_IMPLEMENTED, StatusMessage.NOT_IMPLEMENTED);
@@ -137,12 +151,15 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         if (!otpUtil.validateOTP(forgetPasswordRequest.getEmail(), forgetPasswordRequest.getOtp())) {
             return ResponseMapper.toDataResponse("Otp is not correct", StatusCode.NOT_IMPLEMENTED, StatusMessage.NOT_IMPLEMENTED);
         }
+
         Optional<User> userOptional = userRepository.findByEmail(forgetPasswordRequest.getEmail());
         if(userOptional.isEmpty()) {
             throw new DataNotFoundException("User not found");
         }
+
         User user = userOptional.get();
         user.setPassword(passwordEncoder.encode(forgetPasswordRequest.getNewPassword()));
+
         userRepository.save(user);
         return ResponseMapper.toDataResponseSuccess("Update password successfully");
     }
@@ -153,11 +170,17 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     }
 
     public ResponseEntity<?> getAvatar(String username) {
-        byte[] image = storageService.loadImageFromFileSystem(username);
-        if(image == null) {
-            return ResponseEntity.ok("Error");
+        User user = userRepository.findByUserName(username);
+        if(user == null) {
+            throw new DataNotFoundException("User doesn't exists");
         }
-        String imageBase64 = Base64.getEncoder().encodeToString(image);
+
+        byte[] avatar = user.getAvatar();
+        if(avatar == null) {
+            throw new ResourceNotFoundException("Avatar doesn't exists");
+        }
+
+        String imageBase64 = Base64.getEncoder().encodeToString(avatar);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -169,26 +192,38 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         if(user == null) {
             throw new DataNotFoundException(username + " doesn't exists in db");
         }
-        String filePath = storageService.uploadImageToFileSystem(file);
-        if(filePath.isEmpty()) {
+
+        if(!storageService.isFileImage(file)) {
             return ResponseMapper.toDataResponse("File is invalid", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
         }
-        user.setPhotos(filePath);
+
+        try {
+            user.setAvatar(file.getBytes());
+        } catch (IOException e) {
+            return ResponseMapper.toDataResponse("File is invalid", StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
+        }
+
         userRepository.save(user);
         return ResponseMapper.toDataResponseSuccess("Upload avatar succcessfully");
     }
 
     public DataResponse<UserDto> updateAdminUser(UserDto userDto, String id) {
         Optional<User> optionalUser = userRepository.findById(id);
+
         if(optionalUser.isPresent()) {
+
             User savedUser = optionalUser.get();
             savedUser.setUsername(userDto.getUsername());
             savedUser.setEmail(userDto.getEmail());
+
             List<Role> roles = new ArrayList<>();
             roles.add(new Role(userDto.getRoles().get(0).getId()));
+
             savedUser.setRoles(roles);
+
             User updatedUser = userRepository.save(savedUser);
             return ResponseMapper.toDataResponseSuccess(userMapper.entityToDto(updatedUser));
+
         } else {
             throw new ResourceNotFoundException("Data doesn't exists");
         }
@@ -196,17 +231,19 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
     public Integer getTotalRegisteredUsers(int targetYear, Integer targetMonth) {
         return userRepository.countByYearAnhMonth(targetYear, targetMonth);
-//        return null;
     }
 
     public DataResponse<Map<String, Integer>> getStatisticsByYearAndMonth(StatisticsRequest statisticsRequest) {
         Map<String, Double> statisticsMap = new HashMap<>();
+
         statisticsMap.put("totalRegisteredUser", Double.valueOf(getTotalRegisteredUsers(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth())));
         Double totalRevenue = orderService.getTotalRenevueByYearAndMonth(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
+
         statisticsMap.put("totalRevenue", totalRevenue == null ? 0.0 : totalRevenue);
 
         DataResponse<Integer> response = courseAPI.getTotalRegisteredCourseByYearAndMonth(statisticsRequest);
         statisticsMap.put("totalRegisteredCourse", Double.valueOf(response.getData()));
+
         response = courseAPI.getTotalApprovedCourseByYearAndMonth(statisticsRequest);
         statisticsMap.put("totalApprovedCourse", Double.valueOf(response.getData()));
 

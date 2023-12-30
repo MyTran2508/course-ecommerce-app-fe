@@ -73,10 +73,10 @@ function CourseInforForm(props: CourseInfoProps) {
   const [uploadCourseVideo] = useUploadCourseVideoMutation();
   const { data: imageBase64, isSuccess: loadImageSuccess } =
     useLoadFileFromCloudQuery(course ? (course.urlCourseImages as string) : "");
-  const { data: videoBase64, isSuccess: loadVideoSuccess } =
-    useLoadFileFromCloudQuery(
-      course.urlCourseImages ? (course.urlPromotionVideos as string) : ""
-    );
+  // const { data: videoBase64, isSuccess: loadVideoSuccess } =
+  //   useLoadFileFromCloudQuery(
+  //     course.urlCourseImages ? (course.urlPromotionVideos as string) : ""
+  //   );
   const [updateCourse] = useUpdateCourseByIdMutation();
 
   useEffect(() => {
@@ -89,10 +89,10 @@ function CourseInforForm(props: CourseInfoProps) {
       setImageUrl(imageBase64);
     }
 
-    if (loadVideoSuccess) {
-      setVideoUrl(videoBase64);
-    }
-  }, [imageBase64, videoBase64]);
+    // if (loadVideoSuccess) {
+    //   setVideoUrl(videoBase64);
+    // }
+  }, [imageBase64 /*videoBase64*/]);
 
   const handleUploadFile = async () => {
     try {
@@ -359,10 +359,10 @@ function CourseInforForm(props: CourseInfoProps) {
                   <FormLabel className="text-black">Video Intro</FormLabel>
                   <FormControl>
                     <div className="flex gap-6">
-                      {videoBase64 ? (
+                      {course.urlPromotionVideos !== "" ? (
                         <video
                           controls
-                          src={`data:video/mp4;base64, ${videoBase64}`}
+                          src={course.urlPromotionVideos}
                           className="w-[360px] h-[200px]"
                         />
                       ) : (

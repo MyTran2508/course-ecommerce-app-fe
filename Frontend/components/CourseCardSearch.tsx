@@ -40,8 +40,10 @@ function CourseCardSearch(props: CourseCardProps) {
             height={24}
           />
           <div>
-            <div className="text-[20px] font-bold mb-1">{course.name}</div>
-            <div className="flex-start xl:gap-2 xs:gap-0.5  opacity-50">
+            <div className="text-[20px] font-bold mb-1 xs:text-[13px] xs:w-full">
+              {course.name}
+            </div>
+            <div className="flex-start xl:gap-2 xs:gap-0.5 opacity-50 xs:hidden">
               <div>{course.language.name}</div>
               <BsDot className="text-[15px]" />
               <div>{course.topic.name}</div>
@@ -53,8 +55,14 @@ function CourseCardSearch(props: CourseCardProps) {
         <div className="flex gap-16 items-center">
           <div className="flex gap-4 items-center">
             <div className="text-violet-800 font-bold flex gap-2 w-[200px] xs:w-[100px] ml-auto flex-row-reverse text-xl">
-              <BsFillTagFill className="pt-1 text-xl" />
-              {course.price?.toLocaleString()}đ
+              <BsFillTagFill className="pt-1 text-xl xs:text-[13px]" />
+              {course.price ? (
+                <div className="xs:text-[15px]">
+                  {course.price?.toLocaleString()} đ
+                </div>
+              ) : (
+                <span className="xs:text-[15px]">Miễn Phí</span>
+              )}
             </div>
           </div>
         </div>

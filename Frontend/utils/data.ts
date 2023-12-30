@@ -10,7 +10,7 @@ export const Language: ComboBoxType[] = [
 ]
 
 export const Price: ComboBoxType[] = [
-    {id: "Pain", name: "Pain" },
+    {id: "Paid", name: "Paid" },
     {id: "Free", name: "Free"},
 ]
 export const Topic: ComboBoxType[] = [

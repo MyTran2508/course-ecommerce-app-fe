@@ -47,7 +47,7 @@ const PageCart = () => {
   }
   const renderCartItem = () => {
     return (
-      <div>
+      <div className="w-full">
         {carts.map((cartItem, index) => (
           <Fragment key={index}>
             <CartItem cartItem={cartItem} />
@@ -64,9 +64,9 @@ const PageCart = () => {
 
   return (
     // <Router>
-    <div className="mx-28">
-      <div className="flex mt-10">
-        <div className="w-3/4">
+    <div className="mx-28 xs:mx-2">
+      <div className="flex mt-10 xs:flex-col">
+        <div className="w-3/4 xs:w-full">
           <div className="text-2xl font-bold mb-10">Shopping Cart</div>
           <div className="font-bold text-[12px] mb-2">
             {carts.length} Courses in Cart
@@ -74,7 +74,7 @@ const PageCart = () => {
           <hr />
           {renderCartItem()}
         </div>
-        <div className="mt-20 ml-8 w-1/4">
+        <div className="mt-20 ml-8 w-1/4 xs:w-full xs:mx-1">
           <div className="opacity-50">Total:</div>
           <div className="text-2xl font-bold mt-4">
             {totalPrice(carts).toLocaleString()} đ

@@ -13,6 +13,8 @@ import {
   useLazySaleByTopicsQuery,
   useLazySalesSamePeriodByTopicsQuery,
 } from "@/redux/services/courseApi";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 ChartJS.register(CategoryScale);
 
 const getRandomColor = () => {
@@ -42,7 +44,9 @@ export interface SalesByTopic {
   totalPrice: number;
 }
 function OverviewPage() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [monthlySale, setMonthlySale] = useState<MonthlySale[] | []>([]);
   const [salesByTopic, setSalesByTopic] = useState<SalesByTopic[] | []>([]);
   const [salesSamePeriodByTopics, setSalesSamePeriodByTopics] = useState<
@@ -76,7 +80,10 @@ function OverviewPage() {
   const [getTotalApproveCourse] = useGetTotalApprovedCourseMutation();
 
   const handleGetTotalApproveCourse = async () => {
-    await getTotalApproveCourse({ targetYear: parseInt(selectedYear) })
+    await getTotalApproveCourse({
+      targetMonth: parseInt(selectedMonth),
+      targetYear: parseInt(selectedYear),
+    })
       .unwrap()
       .then((fulfilled) => {
         setTotalApproveCourse(fulfilled.data as number);
@@ -89,7 +96,7 @@ function OverviewPage() {
     getSalesSamePeriod(parseInt(selectedYear));
     getSalesSamePeriodByTopics(parseInt(selectedYear));
     handleGetTotalApproveCourse();
-  }, [selectedYear]);
+  }, [selectedYear, selectedMonth]);
 
   useEffect(() => {
     if (isGetMonthlySaleSuccess) {
@@ -219,34 +226,28 @@ function OverviewPage() {
     return renderData(data, 2, label_x, label_y);
   };
 
-  const renderYearOptions = () => {
-    const options = [];
-    for (let year = 2000; year <= 2050; year++) {
-      options.push(
-        <option key={year} value={year}>
-          {year}
-        </option>
-      );
-    }
-    return options;
-  };
-  const handleYearChange = (event: any) => {
-    setSelectedYear(event.target.value);
+  const handleDateChange = (date: any) => {
+    setSelectedDate(date);
+
+    const selectedMonth = date.getMonth() + 1;
+    const selectedYear = date.getFullYear();
+
+    setSelectedMonth(selectedMonth);
+    setSelectedYear(selectedYear);
   };
 
   return (
     <div className="w-full px-10 mt-10  custom-scrollbar overflow-y-scroll h-[800px]">
-      <div>
-        <h2>Chọn năm</h2>
-        <select
-          value={selectedYear}
-          onChange={handleYearChange}
-          className="border-2 rounded-sm px-2 py-2 "
-        >
-          <option value="">Chọn năm </option>
-          {renderYearOptions()}
-        </select>
-      </div>
+      <div className="text-[12px] italic">Vui lòng chọn tháng năm</div>
+      <DatePicker
+        showIcon
+        selected={selectedDate}
+        onChange={handleDateChange}
+        dateFormat="MM/yyyy"
+        className="border rounded-sm text-center"
+        showMonthYearPicker
+      />
+
       {selectedYear ? (
         <Fragment>
           <h5 className="flex-center text-2xl font-bold mb-10">
