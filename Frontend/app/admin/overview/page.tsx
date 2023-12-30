@@ -15,6 +15,7 @@ import {
 } from "@/redux/services/courseApi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useGetStatisticsMutation } from "@/redux/services/userApi";
 ChartJS.register(CategoryScale);
 
 const getRandomColor = () => {
@@ -43,6 +44,12 @@ export interface SalesByTopic {
   topicName: string;
   totalPrice: number;
 }
+export interface Statistics {
+  totalApprovedCourse: number;
+  totalRegisteredCourse: number;
+  totalRegisteredUser: number;
+  totalRevenue: number;
+}
 function OverviewPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedYear, setSelectedYear] = useState("");
@@ -55,7 +62,7 @@ function OverviewPage() {
   const [salesSamePeriod, setSalesSamePeriod] = useState<
     SalesSamePeriod[] | []
   >([]);
-  const [totalApproveCourse, setTotalApproveCourse] = useState(0);
+  const [statisticsData, setStatisticsData] = useState<Statistics>();
 
   const [
     getMonthlySale,
@@ -77,16 +84,16 @@ function OverviewPage() {
     getSalesByTopic,
     { data: salesByTopicData, isSuccess: isGetSalesByTopicSuccess },
   ] = useLazySaleByTopicsQuery();
-  const [getTotalApproveCourse] = useGetTotalApprovedCourseMutation();
+  const [getStatistics] = useGetStatisticsMutation();
 
   const handleGetTotalApproveCourse = async () => {
-    await getTotalApproveCourse({
+    await getStatistics({
       targetMonth: parseInt(selectedMonth),
       targetYear: parseInt(selectedYear),
     })
       .unwrap()
       .then((fulfilled) => {
-        setTotalApproveCourse(fulfilled.data as number);
+        setStatisticsData(fulfilled.data as Statistics);
       });
   };
 
@@ -156,18 +163,18 @@ function OverviewPage() {
   };
   const renderMonthlySales = () => {
     const label_x = [
-      "Tháng 1",
-      "Tháng 2",
-      "Tháng 3",
-      "Tháng 4",
-      "Tháng 5",
-      "Tháng 6",
-      "Tháng 7",
-      "Tháng 8",
-      "Tháng 9",
-      "Tháng 10",
-      "Tháng 11",
-      "Tháng 12",
+      "T1",
+      "T2",
+      "T3",
+      "T4",
+      "T5",
+      "T6",
+      "T7",
+      "T8",
+      "T9",
+      "T10",
+      "T11",
+      "T12",
     ];
     const label_y = ["Tổng"];
     const data: string[][] = [];
@@ -178,18 +185,18 @@ function OverviewPage() {
 
   const renderSalesSamePeriod = () => {
     const label_x = [
-      "Tháng 1",
-      "Tháng 2",
-      "Tháng 3",
-      "Tháng 4",
-      "Tháng 5",
-      "Tháng 6",
-      "Tháng 7",
-      "Tháng 8",
-      "Tháng 9",
-      "Tháng 10",
-      "Tháng 11",
-      "Tháng 12",
+      "T1",
+      "T2",
+      "T3",
+      "T4",
+      "T5",
+      "T6",
+      "T7",
+      "T8",
+      "T9",
+      "T10",
+      "T11",
+      "T12",
     ];
     const label_y = [
       `Tổng Năm ${selectedYear} `,
@@ -253,14 +260,45 @@ function OverviewPage() {
           <h5 className="flex-center text-2xl font-bold mb-10">
             Thống Kê Năm {selectedYear}
           </h5>
-          <div className="block p-6 w-60 bg-red-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col">
-            <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Tổng Khóa Học
-            </h5>
-            <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
-              {totalApproveCourse}
+
+          {statisticsData ? (
+            <div className="flex-center gap-5">
+              <div
+                className={`block p-6 w-60 bg-red-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col`}
+              >
+                <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Khóa Học Đã Duyệt
+                </h5>
+                <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
+                  {statisticsData?.totalApprovedCourse}
+                </div>
+              </div>
+              <div className="block p-6 w-60 bg-yellow-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col">
+                <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Khóa Học Đã Đăng Ký
+                </h5>
+                <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
+                  {statisticsData?.totalRegisteredCourse}
+                </div>
+              </div>
+              <div className="block p-6 w-60 bg-blue-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col">
+                <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Số User
+                </h5>
+                <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
+                  {statisticsData?.totalRegisteredUser}
+                </div>
+              </div>
+              <div className="block p-6 w-60 bg-green-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col">
+                <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  Doanh Thu (VNĐ)
+                </h5>
+                <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
+                  {statisticsData?.totalRevenue}
+                </div>
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <div className="my-5 text-2xl font-bold">Doanh Thu Theo Tháng</div>
           <div className="flex gap-5">

@@ -1,4 +1,4 @@
-import { MonthlySale, SalesByTopic, SalesSamePeriod, SalesSamePeriodByTopics } from "@/app/admin/overview/page";
+import { MonthlySale, SalesByTopic, SalesSamePeriod, SalesSamePeriodByTopics, Statistics } from "@/app/admin/overview/page";
 import Content from "./content.type";
 import { Course } from "./course.type";
 import { CourseProcess } from "./courseProcess.type";
@@ -8,7 +8,7 @@ export interface DataResponse {
     timestamp: number,
     statusCode: number,
     statusMessage: string,
-    data: string |number | string[] | User | Course | Content | Course[] | boolean | CourseProcess | SalesByTopic[] | MonthlySale[] | SalesSamePeriod[] | SalesSamePeriodByTopics[]
+    data: string |number | string[] | User | Course | Content | Course[] | boolean | CourseProcess | SalesByTopic[] | MonthlySale[] | SalesSamePeriod[] | SalesSamePeriodByTopics[] | Statistics
 }
 
 export interface ListResponse {

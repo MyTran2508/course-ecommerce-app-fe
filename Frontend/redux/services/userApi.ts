@@ -91,7 +91,16 @@ export const userApi = createApi({
         };
       },
       invalidatesTags: () =>  [{ type: "User", id: "avatar" }]
-    })
+    }),
+    getStatistics: builder.mutation<DataResponse, {targetMonth:number, targetYear:number}>({
+      query: (data: {targetMonth:number, targetYear: number}) => {
+        return {
+          url: `/api/users/user/get-statistics`,
+          method: "POST",
+          body: data
+        };
+      },
+    }),
   }), 
 });
 
@@ -104,5 +113,6 @@ export const { useUpdateUserMutation,
   useUploadImageMutation,
   useUpdateUserAdminMutation,
   useGetAllUserQuery,
-  useFilterUserMutation
+  useFilterUserMutation,
+  useGetStatisticsMutation
 } = userApi;
