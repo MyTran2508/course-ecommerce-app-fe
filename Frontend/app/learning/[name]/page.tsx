@@ -188,20 +188,20 @@ function PageLearning() {
                     {courseProcess?.totalAmountOfLecture} bài học
                   </div>
                 </div>
-                <div className="flex gap-2 xs:hidden">
+                {/* <div className="flex gap-2 xs:hidden">
                   <BiNotepad />
                   Ghi Chú
                 </div>
                 <div className="flex gap-2 xs:hidden">
                   <BsQuestionCircle />
                   Hướng Dẫn
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
           <div className="flex xs:flex-col">
             <div className="w-9/12 custom-scrollbar overflow-y-scroll h-2/3 xs:w-full xs:overflow-hidden">
-              <DiscussionSheet />
+              {/* <DiscussionSheet /> */}
               <div>
                 <div>
                   {lecture?.videoDuration !== 0 ? (

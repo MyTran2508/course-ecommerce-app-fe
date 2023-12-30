@@ -76,7 +76,7 @@ function CourseSectionForm(props: CourseSectionProps) {
       .unwrap()
       .then((fulfilled) => {
         console.log(fulfilled);
-        handleToast(fulfilled);
+        // handleToast(fulfilled);
         setCreated([]);
       });
   };
@@ -86,7 +86,7 @@ function CourseSectionForm(props: CourseSectionProps) {
       .unwrap()
       .then((fulfilled) => {
         console.log(fulfilled);
-        handleToast(fulfilled);
+        // handleToast(fulfilled);
         setCreated([]);
       });
   };
@@ -112,6 +112,7 @@ function CourseSectionForm(props: CourseSectionProps) {
         }
         setLectureFiles({});
         setIsLoading(false);
+        showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_CONTENT_SUCCESS);
         return urlList;
       }
       return null;

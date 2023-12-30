@@ -157,12 +157,12 @@ function LoginForm() {
             <h3 className="text-center">OR</h3>
             <hr className="border-gray-400" />
           </div>
-          <CustomButton
+          {/* <CustomButton
             title="Login with Google"
             icon="FcGoogle"
             iconStyles="mr-2 xl:text-2xl "
-            containerStyles="xs:text-[10px] bg-white border py-1 w-full rounded-xl mt-2 flex justify-center items-center text-sm font-bold hover:scale-110 duration-300 "
-          />
+            containerStyles=" xs:text-[10px] bg-white border py-1 w-full rounded-xl mt-2 flex justify-center items-center text-sm font-bold hover:scale-110 duration-300 "
+          /> */}
           <div className="text-[12px] mt-2 flex-between xs:text-[10px]">
             <p>Bạn chưa có tài khoản?</p>
             <Link href={"/signup"}>
