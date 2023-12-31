@@ -34,6 +34,7 @@ function SearchPage() {
   });
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
+  const [totalRecord, setTotalRecord] = useState(0);
   const [coursesSearch, setCourseSearch] = useState<Course[]>([]);
   const [searchCourse] = useFilterCourseMutation();
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +49,7 @@ function SearchPage() {
         console.log(fulfilled);
         setCourseSearch(fulfilled.data as Course[]);
         setTotalPage(fulfilled.totalPages);
+        setTotalRecord(fulfilled.totalRecords);
       });
     setIsLoading(false);
   };
@@ -94,7 +96,7 @@ function SearchPage() {
     <div>
       <div>
         <div className="mx-24 mt-10 xs:mx-0 xs:relative">
-          <div>
+          <div className="flex-between">
             {isOpenFilter ? (
               <Fragment>
                 <div className="flex gap-2">
@@ -149,8 +151,10 @@ function SearchPage() {
                 </div>
               </Fragment>
             )}
+            <div>{totalRecord} kết quả</div>
           </div>
-          <div className={`flex mt-2 ${isOpenFilter ? "gap-5" : ""}`}>
+
+          <div className={`flex mt-2 xs:mt-0 ${isOpenFilter ? "gap-5" : ""}`}>
             <div
               className={`${
                 isOpenFilter ? "w-3/12" : "transform -translate-x-full "
@@ -159,7 +163,7 @@ function SearchPage() {
               <div
                 className={`${
                   isOpenFilter ? "" : "hidden"
-                } sticky top-20 xs:absolute bg-white h-full xs:w-full xs:z-30 xs:min-h-[750px]`}
+                } sticky top-20 xs:top-14 xs:absolute bg-white h-full xs:w-full xs:z-30 xs:min-h-[750px]`}
               >
                 <SideBarFilter
                   setSearchRequest={setSearchRequest}
@@ -176,7 +180,7 @@ function SearchPage() {
                     <Fragment>
                       {coursesSearch.map((course, index) => {
                         return (
-                          <div key={index}>
+                          <div key={index} className="xs:mx-1">
                             <CourseCardSearch course={course} />
                             {coursesSearch.length - 1 !== index ? <hr /> : ""}
                           </div>

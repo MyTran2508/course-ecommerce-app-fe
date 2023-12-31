@@ -50,6 +50,9 @@ function Navbar() {
   const [isLogout, setLogout] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState();
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
+  const email = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.email
+  );
   const roles = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.roles
   );
@@ -113,6 +116,11 @@ function Navbar() {
     setOpenDialog(!isOpenDialog);
   };
 
+  const MAX_TITLE_LENGTH = 25;
+  const truncatedEmail =
+    email.length > MAX_TITLE_LENGTH
+      ? email.substring(0, MAX_TITLE_LENGTH) + "..."
+      : email;
   return (
     <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-30 shadow-md">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16 xs:px-5">
@@ -177,7 +185,7 @@ function Navbar() {
                       alt="avatar"
                     />
                   </Menu.Button>
-                  <Menu.Items className="absolute right-2 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
+                  <Menu.Items className="absolute right-2 mt-2 w-80 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
                     <div className="px-1 py-1">
                       <Transition
                         enter="transition ease-out duration-100"
@@ -187,7 +195,7 @@ function Navbar() {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <div className="flex-center gap-4">
+                        <div className="flex gap-3 items-center">
                           <Image
                             src={
                               currentAvatar !== "Error"
@@ -199,7 +207,13 @@ function Navbar() {
                             alt="avt"
                             className="w-16 h-16 rounded-full"
                           />
-                          <h4> {userData ? userData.firstName : ""}</h4>
+                          <div>
+                            <h4 className="font-bold text-orange-400">
+                              {" "}
+                              {userData ? userData.firstName : ""}
+                            </h4>
+                            <h4> {truncatedEmail}</h4>
+                          </div>
                         </div>
                         <hr className="my-4" />
 

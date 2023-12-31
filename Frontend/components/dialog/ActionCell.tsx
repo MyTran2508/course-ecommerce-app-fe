@@ -36,6 +36,7 @@ const ActionsCell = (props: ActionCellProps) => {
     await updateUserAdmin(user)
       .unwrap()
       .then((fulfilled) => {
+        console.log("dzô updateadmin");
         dispatch(updateUser());
         showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_USER_SUCCESS);
       });

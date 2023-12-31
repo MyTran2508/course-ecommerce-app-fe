@@ -45,7 +45,7 @@ export const formLoginSchema = z.object({
 });
 
 export const formPersonalSchema = z.object({
-  username: formSignUpSchema.shape.username,
+  username: z.string(),
   email: formSignUpSchema.shape.email,
   firstName: formSignUpSchema.shape.firstName,
   lastName: formSignUpSchema.shape.lastName,

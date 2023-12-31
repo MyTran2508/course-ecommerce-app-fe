@@ -51,7 +51,7 @@ function CartItem(props: CartItemProps) {
             height={56}
           />
           <div>
-            <div className="text-[15px] font-bold mb-1 xs:w-full xs:text-[10px]">
+            <div className="text-[15px] font-bold mb-1 xs:w-14 xs:text-[10px]">
               {cartItem.nameCourse}
             </div>
             <div className="flex-start xl:gap-2 xs:gap-0.5 text-[10px] opacity-50 xs:hidden">

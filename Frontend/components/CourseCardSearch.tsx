@@ -57,11 +57,11 @@ function CourseCardSearch(props: CourseCardProps) {
             <div className="text-violet-800 font-bold flex gap-2 w-[200px] xs:w-[100px] ml-auto flex-row-reverse text-xl">
               <BsFillTagFill className="pt-1 text-xl xs:text-[13px]" />
               {course.price ? (
-                <div className="xs:text-[15px]">
+                <div className="xs:text-[14px]">
                   {course.price?.toLocaleString()} đ
                 </div>
               ) : (
-                <span className="xs:text-[15px]">Miễn Phí</span>
+                <span className="xs:text-[14px]">Miễn Phí</span>
               )}
             </div>
           </div>

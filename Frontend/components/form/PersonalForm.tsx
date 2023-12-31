@@ -32,6 +32,8 @@ import {
 } from "@/redux/services/userApi";
 import showToast from "@/utils/showToast";
 import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { updateUser } from "@/redux/features/userSlice";
 
 const formSchema = formPersonalSchema;
 
@@ -55,6 +57,7 @@ const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
 
 function PersonalForm(props: PersonalProps) {
   const { userInfor, isAdmin } = props;
+  const dispatch = useAppDispatch();
   const [allowInput, setAllowInput] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [imageError, setImageError] = useState(false);
@@ -65,8 +68,11 @@ function PersonalForm(props: PersonalProps) {
   const [currentAvatar, setCurrentAvatar] = useState();
 
   const [updateAvatar] = useUploadImageMutation();
-  const [updateUser] = useUpdateUserMutation();
+  const [updateInformation] = useUpdateUserMutation();
   const [updateUserAdmin] = useUpdateUserAdminMutation();
+  const roles = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles
+  );
   const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
     userInfor.username
   );
@@ -104,7 +110,9 @@ function PersonalForm(props: PersonalProps) {
     let updateSuccess = true;
 
     await Promise.all([
-      isAdmin ? updateUserAdmin(data).unwrap() : updateUser(data).unwrap(),
+      isAdmin
+        ? updateUserAdmin(data).unwrap()
+        : updateInformation(data).unwrap(),
       file ? updateAvatar({ username: data.username, image: file }) : null,
     ])
       .then(([updateUserResponse, updateAvatarResponse]) => {
@@ -121,6 +129,10 @@ function PersonalForm(props: PersonalProps) {
       showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_USER_SUCCESS);
     } else {
       showToast(ToastStatus.ERROR, ToastMessage.UPDATE_USER_FAIL);
+    }
+
+    if ((roles as RoleType[])[0]?.id === Role.ADMIN) {
+      dispatch(updateUser());
     }
   };
 
