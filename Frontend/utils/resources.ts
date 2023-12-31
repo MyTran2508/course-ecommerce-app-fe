@@ -43,6 +43,7 @@ export enum ToastMessage {
   PAYMENT_SUCCESS = "Thanh Toán Thành Công",
   PAYMENT_FAIL = "Thanh Toán Thất Bại",
   REGISTER_COURSE_SUCCESS = "Khóa Học Đã Được Thêm",
+  CHECK_PRICE = "Vui lòng chọn khóa học để thanh toán",
 }
 
 export enum Role {

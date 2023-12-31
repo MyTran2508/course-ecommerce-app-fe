@@ -3,9 +3,11 @@ import Loading from "@/app/(root)/user/personal/loading";
 import CourseContentForm from "@/components/form/CourseContentForm";
 import { setContentId } from "@/redux/features/contentSlice";
 import { setParamCourseId } from "@/redux/features/courseSlice";
+import { setSections } from "@/redux/features/sectionSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content from "@/types/content.type";
+import { Section } from "@/types/section.type";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -15,9 +17,13 @@ function CourseContentPage() {
   const dispatch = useAppDispatch();
   dispatch(setParamCourseId(courseId));
   const { data, isLoading } = useGetContentByCourseIdQuery(courseId);
+  const { data: contentData, isLoading: isContentLoading } =
+    useGetContentByCourseIdQuery(courseId);
 
-  if (isLoading) return <Loading />;
+  if (isLoading && isContentLoading) return <Loading />;
   dispatch(setContentId((data?.data as Content).id as string));
+  dispatch(setSections((contentData?.data as Content).sections as Section[]));
+  console.log((contentData?.data as Content).sections as Section[]);
 
   return (
     <div className="mt-10 shadow-xl w-full mx-5 ">

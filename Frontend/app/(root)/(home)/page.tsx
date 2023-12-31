@@ -70,7 +70,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold ml-6">{title}</h3>
               <div
                 onClick={() => router.push("/course/search")}
-                className="hover:cursor-pointer hover:text-orange-400"
+                className="hover:cursor-pointer hover:text-orange-400 xs:mr-4"
               >
                 Xem thêm
               </div>

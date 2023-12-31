@@ -84,9 +84,9 @@ function CourseCard(props: CourseProps) {
             <div className="text-xl font-normal xs:text-sm">
               {course.price === 0 ? (
                 <span className="text-red-500 italic">
-                  <span className="xs:mr-3">F</span>
-                  <span className="xs:mr-3">r</span>
-                  <span className="xs:mr-3">e</span>
+                  <span className="xs:mr-2">F</span>
+                  <span className="xs:mr-2">r</span>
+                  <span className="xs:mr-2">e</span>
                   <span>e</span>
                 </span>
               ) : (

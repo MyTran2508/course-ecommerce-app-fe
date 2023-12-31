@@ -61,7 +61,7 @@ function InstructorCourses() {
     sortBy: "",
     isDecrease: true,
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
   const isUpdateCourse = useAppSelector(
     (state) => state.courseReducer.updateCourse

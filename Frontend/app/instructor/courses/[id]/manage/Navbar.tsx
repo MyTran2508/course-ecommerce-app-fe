@@ -11,9 +11,11 @@ import RequestApprovalButton from "./RequestApprovalButton";
 import { handleCountFieldsInSection } from "@/utils/function";
 import { Course } from "@/types/course.type";
 import { Button } from "@/components/ui/button";
+import { updateSection } from "@/redux/features/sectionSlice";
 
 function CreateCourseNavBar() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const role = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.roles as RoleType[]
   )[0].id;
@@ -25,6 +27,7 @@ function CreateCourseNavBar() {
   useEffect(() => {
     setCourseData(course);
   }, [course]);
+  useEffect(() => {}, [sections]);
 
   const handleClickBack = () => {
     if (role === Role.ADMIN) {
@@ -63,15 +66,16 @@ function CreateCourseNavBar() {
                 <SaveButton />
               </Fragment>
             )}
-
-            <Button
-              onClick={() =>
-                router.push(`/instructor/courses/preview/${courseId}`)
-              }
-              className="bg-blue-600 hover:bg-blue-200"
-            >
-              Xem thử
-            </Button>
+            {totalLectureCount !== 0 ? (
+              <Button
+                onClick={() =>
+                  router.push(`/instructor/courses/preview/${courseId}`)
+                }
+                className="bg-blue-600 hover:bg-blue-200"
+              >
+                Xem thử
+              </Button>
+            ) : null}
           </div>
         </div>
       </div>

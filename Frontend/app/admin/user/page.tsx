@@ -54,7 +54,7 @@ function UserAdmin() {
     sortBy: "",
     isDecrease: true,
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
   const isUpdateUser = useAppSelector(
     (state) => state.persistedReducer.userReducer.updateUser

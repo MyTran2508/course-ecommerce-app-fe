@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import Loading from "../user/personal/loading";
 import { updatePrice } from "@/redux/features/cartSlice";
+import showToast from "@/utils/showToast";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
 
 const PageCart = () => {
   const route = useRouter();
@@ -59,7 +61,11 @@ const PageCart = () => {
   };
 
   const handleChangeRouteCheckout = () => {
-    route.push("/payment/checkout");
+    if (totalPrice(carts) !== 0) {
+      route.push("/payment/checkout");
+    } else {
+      showToast(ToastStatus.WARNING, ToastMessage.CHECK_PRICE);
+    }
   };
 
   return (
@@ -74,7 +80,7 @@ const PageCart = () => {
           <hr />
           {renderCartItem()}
         </div>
-        <div className="mt-20 ml-8 w-1/4 xs:w-full xs:mx-1">
+        <div className="mt-20 ml-8 w-1/4 xs:w-full xs:mx-0">
           <div className="opacity-50">Total:</div>
           <div className="text-2xl font-bold mt-4">
             {totalPrice(carts).toLocaleString()} đ

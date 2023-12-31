@@ -148,12 +148,12 @@ function CoursePage() {
           <div className="text-2xl font-bold md-6 mt-10 mb-5">
             Bạn sẽ học được những gì?
           </div>
-          <div className="grid grid-cols-2 gap-10 mb-10">
+          <div className="grid grid-cols-2 gap-2 mb-10">
             {targetConsumersList.map((targetConsumer, index) => {
               if (targetConsumer !== "") {
                 return (
                   <div key={index} className="flex gap-2">
-                    <IoCheckmarkDone className="text-orange-500 text-xl" />
+                    <IoCheckmarkDone className="text-orange-500 flex-shrink-0" />
                     {targetConsumer}
                   </div>
                 );
@@ -182,8 +182,38 @@ function CoursePage() {
             if (requirement !== "") {
               return (
                 <div key={index} className="flex gap-2 mb-5">
-                  <IoCheckmarkDone className="text-orange-500 text-xl" />
+                  <IoCheckmarkDone className="text-orange-500 flex-shrink-0" />
                   {requirement}
+                </div>
+              );
+            }
+            return null;
+          })}
+        </Fragment>
+      );
+    }
+    return null;
+  };
+
+  const renderDetails = () => {
+    if (description) {
+      const details = description.details;
+      const detailsList = details.split("/n");
+      if (details.length === 2) {
+        return null;
+      }
+      return (
+        <Fragment>
+          <div className="text-2xl font-bold md-6 mt-10 mb-5">
+            Khóa học giành cho ai?
+          </div>
+
+          {detailsList.map((detail, index) => {
+            if (detail !== "") {
+              return (
+                <div key={index} className="flex gap-2 mb-5">
+                  <IoCheckmarkDone className="text-orange-500  flex-shrink-0" />
+                  {detail}
                 </div>
               );
             }
@@ -224,27 +254,31 @@ function CoursePage() {
       .unwrap()
       .then((fulfilled) => {
         console.log(fulfilled);
-        showToast(ToastStatus.SUCCESS, ToastMessage.PAYMENT_SUCCESS);
+        showToast(ToastStatus.SUCCESS, ToastMessage.REGISTER_COURSE_SUCCESS);
         router.push("/");
       });
   };
 
   const handleRegisterCourseFree = () => {
-    const newOrder: Order = {
-      totalPrice: 0,
-      orderStatus: OrderStatus.PAID,
-      shippingMethod: ShippingMethod.PAYPAL,
-      orderItems: [
-        {
-          price: 0,
-          courseId: course.id as string,
+    if (user.id !== "") {
+      const newOrder: Order = {
+        totalPrice: 0,
+        orderStatus: OrderStatus.PAID,
+        shippingMethod: ShippingMethod.PAYPAL,
+        orderItems: [
+          {
+            price: 0,
+            courseId: course.id as string,
+          },
+        ],
+        user: {
+          id: user.id,
         },
-      ],
-      user: {
-        id: user.id,
-      },
-    };
-    handleAddOrder(newOrder);
+      };
+      handleAddOrder(newOrder);
+    } else {
+      router.push("/login");
+    }
   };
   return (
     <div className="xl:flex m-2 mt-10 gap-2 font-roboto">
@@ -276,6 +310,7 @@ function CoursePage() {
             </div>
             <div className="w-full">{renderCourseContent()}</div>
             {renderRequirement()}
+            {renderDetails()}
           </div>
           <div className="xl:w-1/3 flex mr-2">
             <Card className="p-4 max-w-md mx-auto shadow-md sticky top-[65px] z-10 max-h-[550px]">

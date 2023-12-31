@@ -16,6 +16,8 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useGetStatisticsMutation } from "@/redux/services/userApi";
+import { FaCalendar } from "react-icons/fa";
+
 ChartJS.register(CategoryScale);
 
 const getRandomColor = () => {
@@ -50,8 +52,9 @@ export interface Statistics {
   totalRegisteredUser: number;
   totalRevenue: number;
 }
+
 function OverviewPage() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [monthlySale, setMonthlySale] = useState<MonthlySale[] | []>([]);
@@ -235,30 +238,55 @@ function OverviewPage() {
 
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
-
-    const selectedMonth = date.getMonth() + 1;
     const selectedYear = date.getFullYear();
-
-    setSelectedMonth(selectedMonth);
     setSelectedYear(selectedYear);
+  };
+  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const month = event.target.value;
+    setSelectedMonth(month);
   };
 
   return (
     <div className="w-full px-10 mt-10  custom-scrollbar overflow-y-scroll h-[800px]">
-      <div className="text-[12px] italic">Vui lòng chọn tháng năm</div>
-      <DatePicker
-        showIcon
-        selected={selectedDate}
-        onChange={handleDateChange}
-        dateFormat="MM/yyyy"
-        className="border rounded-sm text-center"
-        showMonthYearPicker
-      />
+      <div className="flex gap-5">
+        <div>
+          <div className="text-[12px] italic">Vui lòng chọn tháng năm</div>
+          <DatePicker
+            showIcon
+            selected={selectedDate}
+            onChange={handleDateChange}
+            dateFormat="yyyy"
+            className="border rounded-sm pl-4 items-center w-44 h-10 mb-2"
+            showYearPicker
+            placeholderText="Chọn năm"
+          />
+        </div>
+        <div className="relative inline-block w-44 ">
+          <span className="absolute inset-y-0 left-0 flex items-center px-2 pointer-events-none">
+            <FaCalendar className="h-4 w-4 " />
+          </span>
+          <select
+            value={selectedMonth}
+            onChange={handleMonthChange}
+            className="w-full h-10 pl-0 pr-8 text-center border rounded-sm appearance-none mt-[18px]"
+          >
+            <option value="" className="text-gray-300 text-center">
+              Chọn tháng
+            </option>
+            {[...Array(12)].map((_, index) => (
+              <option key={index + 1} value={String(index + 1)}>
+                Tháng {index + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {selectedYear ? (
         <Fragment>
           <h5 className="flex-center text-2xl font-bold mb-10">
-            Thống Kê Năm {selectedYear}
+            Thống Kê {selectedMonth ? `Tháng ${selectedMonth}` : null} Năm{" "}
+            {selectedYear}
           </h5>
 
           {statisticsData ? (
