@@ -197,7 +197,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 //    }
 
     public ListResponse<CourseDto> getCourseAccessByUserId(String userId, Integer pageIndex, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex,pageSize);
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<Course> courses = courseRepository.getCourseAccessByUserId(userId, pageable);
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
