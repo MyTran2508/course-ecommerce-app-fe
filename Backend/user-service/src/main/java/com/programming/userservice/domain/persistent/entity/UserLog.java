@@ -20,7 +20,6 @@ public class UserLog {
     @Column(name = "action_object", length = 32)
     private String actionObject;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "action_name", length = 32)
     private ActionName actionName;
 

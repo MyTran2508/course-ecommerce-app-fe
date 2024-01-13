@@ -9,6 +9,7 @@ import com.programming.userservice.domain.dto.OrderDto;
 import com.programming.userservice.domain.dto.StatictisSamePeriodDto;
 import com.programming.userservice.domain.persistent.entity.Order;
 import com.programming.userservice.service.OrderService;
+import com.programming.userservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,31 +29,37 @@ public class OrderController extends BaseApiImpl<Order, OrderDto> {
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<OrderDto> add(OrderDto objectDTO) {
         return super.add(objectDTO);
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<OrderDto> update(OrderDto objectDTO, String id) {
         return super.update(objectDTO, id);
     }
 
     @Override
+    @ShowOpenAPI
     public ListResponse<OrderDto> getAll() {
         return super.getAll();
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<OrderDto> getById(String id) {
         return super.getById(id);
     }
 
     @GetMapping("/monthly-sales")
+    @ShowOpenAPI
     public DataResponse<List<MonthlyStatisticDto>> getMonthlySales(@Param("targetYear") int targetYear) {
         return orderService.getMonthlySales(targetYear);
     }
 
     @GetMapping("/sales-same-period")
+    @ShowOpenAPI
     public DataResponse<List<StatictisSamePeriodDto>> getSalesSamePeriod(@Param("targetYear") int targetYear) {
         return orderService.getSalesInSamePeriod(targetYear);
     }

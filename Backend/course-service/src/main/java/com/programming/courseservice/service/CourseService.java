@@ -123,7 +123,6 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
         Page<Course> courses = null;
         if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
-            System.out.println("Vao day");
             courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, pageable);
         } else {
             courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, keyword, pageable);

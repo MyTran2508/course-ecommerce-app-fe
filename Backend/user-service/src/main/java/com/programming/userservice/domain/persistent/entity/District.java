@@ -1,11 +1,24 @@
 package com.programming.userservice.domain.persistent.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Table(name = "districts")
+@Table(
+        name = "districts",
+        indexes = {
+                @Index (name = "idx_districts_province_code", columnList = "province_code")
+        }
+)
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class District {
     @Id
     @Column(length = 16)
@@ -29,6 +42,9 @@ public class District {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "province_code", foreignKey = @ForeignKey(name = "fk_districts_provinces"))
     private Province province;
+
+    @Column(name = "administrative_unit_id", length = 16)
+    private Integer administrativeUnitId;
 
     @OneToMany(mappedBy = "district", fetch = FetchType.LAZY)
     private List<Ward> wardList;

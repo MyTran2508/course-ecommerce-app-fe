@@ -1,6 +1,10 @@
 package com.programming.userservice.domain.persistent.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -8,6 +12,10 @@ import java.util.List;
 @Table(
         name = "provinces"
 )
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Province {
     @Id
     @Column(length = 16)
@@ -27,6 +35,12 @@ public class Province {
 
     @Column(name = "code_name", length = 32)
     private String codeName;
+
+    @Column(name = "administrative_unit_id", length = 16)
+    private Integer administrativeUnitId;
+
+    @Column(name = "administrative_region_id", length = 16)
+    private Integer administrativeRegionId;
 
     @OneToMany(mappedBy = "province", fetch = FetchType.LAZY)
     private List<District> districtList;
