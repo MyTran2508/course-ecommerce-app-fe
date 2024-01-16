@@ -36,12 +36,6 @@ public class Province {
     @Column(name = "code_name", length = 32)
     private String codeName;
 
-    @Column(name = "administrative_unit_id", length = 16)
-    private Integer administrativeUnitId;
-
-    @Column(name = "administrative_region_id", length = 16)
-    private Integer administrativeRegionId;
-
     @OneToMany(mappedBy = "province", fetch = FetchType.LAZY)
     private List<District> districtList;
 }

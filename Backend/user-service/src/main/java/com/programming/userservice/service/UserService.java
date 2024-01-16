@@ -56,6 +56,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     protected BaseMapper<User, UserDto> getBaseMapper() {
         return userMapper;
     }
+
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();

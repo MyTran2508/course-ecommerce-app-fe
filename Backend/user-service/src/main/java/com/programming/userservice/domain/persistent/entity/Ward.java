@@ -37,9 +37,6 @@ public class Ward {
     @Column(name = "code_name", length = 32)
     private String codeName;
 
-    @Column(name = "administrative_unit_id", length = 16)
-    private Integer administrativeUnitId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_code", foreignKey = @ForeignKey(name = "fk_wards_districts"))
     private District district;

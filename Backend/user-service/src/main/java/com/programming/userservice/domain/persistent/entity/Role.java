@@ -1,6 +1,7 @@
 package com.programming.userservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,8 +25,11 @@ import java.util.Set;
 public class Role extends BaseModel {
     @Column(length = 64)
     private String name;
+
     @Column(length = 512)
+    @ExcludeFromComparisonField
     private String description;
+
     @ManyToMany
     @JoinTable(
             name = "users_roles",
@@ -35,6 +39,7 @@ public class Role extends BaseModel {
             inverseForeignKey = @ForeignKey(name = "fk_users_roles_users")
     )
     @ToString.Exclude
+    @ExcludeFromComparisonField
     private List<User> users;
 
     public Role(String id) {

@@ -43,9 +43,6 @@ public class District {
     @JoinColumn(name = "province_code", foreignKey = @ForeignKey(name = "fk_districts_provinces"))
     private Province province;
 
-    @Column(name = "administrative_unit_id", length = 16)
-    private Integer administrativeUnitId;
-
     @OneToMany(mappedBy = "district", fetch = FetchType.LAZY)
     private List<Ward> wardList;
 }

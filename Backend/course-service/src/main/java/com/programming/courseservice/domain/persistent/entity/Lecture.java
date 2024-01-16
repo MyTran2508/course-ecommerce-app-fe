@@ -4,6 +4,8 @@ import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(
         name = "lecture"
@@ -16,12 +18,16 @@ import lombok.*;
 public class Lecture extends BaseModel {
     @Column(name = "ordinal_number")
     private Integer ordinalNumber;
-    @Column(nullable = false)
+
     private String name;
-    @Column(nullable = false)
+
     private String url;
-    @Column(nullable = false)
+
     private String fileName;
+
     @Column(name = "video_duration")
     private Long videoDuration;
+
+    @OneToMany(mappedBy = "lecture", fetch = FetchType.LAZY)
+    private List<ExQuiz> exQuizList;
 }
