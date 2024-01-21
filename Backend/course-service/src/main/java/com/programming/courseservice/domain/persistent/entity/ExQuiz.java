@@ -19,6 +19,9 @@ import java.util.List;
         name = "ex_quiz"
 )
 public class ExQuiz extends BaseModel {
+    @Column(name = "quiz_name", length = 64)
+    private String quizName;
+
     @Column(length = 16)
     private DifficultyType difficulty;
 
@@ -28,11 +31,6 @@ public class ExQuiz extends BaseModel {
     @Column(name = "limit_time")
     private Long limitTime;
 
-    @OneToMany(targetEntity = Quiz.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_quiz_ex_quiz_id"))
-    private List<Quiz> quizList;
-
-    @ManyToOne(targetEntity = Lecture.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id", foreignKey = @ForeignKey(name = "fk_ex_quiz_lecture_id"))
-    private Lecture lecture;
+    @OneToMany(mappedBy = "exQuiz", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Question> questionList;
 }

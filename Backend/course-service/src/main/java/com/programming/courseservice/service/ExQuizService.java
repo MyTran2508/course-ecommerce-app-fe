@@ -34,10 +34,7 @@ public class ExQuizService extends BaseServiceImpl<ExQuiz, ExQuizDto> {
 
     @Override
     protected Page<ExQuizDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        String lectureId = searchKeywordDto.getKeyword().get(0);
-
-        return exQuizRepository.searchExQuiz(lectureId, pageable)
-                .map(quiz -> exQuizMapper.entityToDto(quiz));
+        return null;
     }
 
     @Override

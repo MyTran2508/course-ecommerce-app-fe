@@ -1,10 +1,6 @@
 package com.programming.courseservice.domain.persistent.entity;
 
-import com.main.progamming.common.model.BaseModel;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,21 +8,24 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-@Table(
-        name = "user_wrong_answer"
-)
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserWrongAnswer {
+@NoArgsConstructor
+public class UserAnswer {
     @Id
     private String id;
 
-    private Integer wrongAnswer;
+    @Column(name = "current_answer")
+    private String currentAnswer;
 
-    private Integer userAnswer;
+    @Column(name = "is_correct")
+    private Boolean isCorrect;
+
+    @OneToOne(targetEntity = Question.class)
+    @JoinColumn(name = "question_id", foreignKey = @ForeignKey(name = "fk_user_answer_question_id"))
+    private Question question;
 
     @PrePersist
     private void ensureId() {

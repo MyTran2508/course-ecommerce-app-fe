@@ -1,6 +1,5 @@
 package com.programming.courseservice.domain.persistent.entity;
 
-import com.programming.courseservice.domain.persistent.enumrate.DifficultyType;
 import com.programming.courseservice.domain.persistent.enumrate.QuizType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,10 +14,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Quiz {
+public class Question {
     @Id
-    private String id;
-
     @Column(name = "ordinal_number")
     private Integer ordinalNumber;
 
@@ -37,8 +34,7 @@ public class Quiz {
     @Column(name = "quiz_type")
     private QuizType quizType;
 
-    @PrePersist
-    private void ensureId() {
-        this.id = UUID.randomUUID().toString();
-    }
+    @ManyToOne(targetEntity = ExQuiz.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_question_ex_quiz_id"))
+    private ExQuiz exQuiz;
 }

@@ -17,18 +17,22 @@ import java.util.List;
 @Table(
         name = "user_ex_quiz"
 )
-public class UserExQuiz extends BaseModel {
+public class UserQuiz extends BaseModel {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
     @Column(name = "count_answer_count", nullable = false)
     private Short correctAnswerCount;
 
-    @OneToMany(targetEntity = UserWrongAnswer.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_ex_quiz_id", foreignKey = @ForeignKey(name = "fk_user_wrong_answer_user_ex_quiz_id"))
-    private List<UserWrongAnswer> userWrongAnswerList;
+    @Column(name = "start_time")
+    private Long startTime;
 
-    @OneToOne(targetEntity = ExQuiz.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_user_ex_quiz_ex_quiz_id"))
+    @OneToMany(targetEntity = UserAnswer.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_quiz_id", foreignKey = @ForeignKey(name = "fk_user_answer_user_quiz_id"))
+    @OrderBy("question.ordinalNumber ASC")
+    private List<UserAnswer> userAnswers;
+
+    @OneToOne(targetEntity = ExQuiz.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_user_quiz_ex_quiz_id"))
     private ExQuiz exQuiz;
 }
