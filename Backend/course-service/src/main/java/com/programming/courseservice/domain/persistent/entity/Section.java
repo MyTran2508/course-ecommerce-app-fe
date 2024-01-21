@@ -1,12 +1,10 @@
 package com.programming.courseservice.domain.persistent.entity;
+
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(
@@ -38,13 +36,25 @@ public class Section extends BaseModel {
 
     @Override
     protected void ensureId() {
-        this.totalDurationVideoLectures = this.lectures.stream().mapToLong(Lecture::getVideoDuration).sum();
+        long totalDurationVideoLectures = 0L;
+        for (Lecture lecture: lectures) {
+            if (lecture.getVideoDuration() != null) {
+                totalDurationVideoLectures = totalDurationVideoLectures + lecture.getVideoDuration();
+            }
+        }
+        this.totalDurationVideoLectures = totalDurationVideoLectures;
         super.ensureId();
     }
 
     @Override
     protected void setUpdated() {
-        this.totalDurationVideoLectures = this.lectures.stream().mapToLong(Lecture::getVideoDuration).sum();
+        long totalDurationVideoLectures = 0L;
+        for (Lecture lecture: lectures) {
+            if (lecture.getVideoDuration() != null) {
+                totalDurationVideoLectures = totalDurationVideoLectures + lecture.getVideoDuration();
+            }
+        }
+        this.totalDurationVideoLectures = totalDurationVideoLectures;
         super.setUpdated();
     }
 }

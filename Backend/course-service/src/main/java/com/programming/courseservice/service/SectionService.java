@@ -20,14 +20,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -90,11 +87,10 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
                 .body(resource);
     }
 
-    public SectionDto deleteLectures(SectionDto sectionDto) {
+    public SectionDto updateSection(SectionDto sectionDto) {
         for (LectureDto lectureDto: sectionDto.getLectures()) {
             if(lectureDto.getOrdinalNumber() < 1) {
                 storageS3Service.deleteFile(lectureDto.getUrl());
-//                storageService.deleteFileFromSystem(lectureDto.getUrl());
                 lectureRepository.deleteById(lectureDto.getId());
                 sectionDto.getLectures().remove(lectureDto);
             }

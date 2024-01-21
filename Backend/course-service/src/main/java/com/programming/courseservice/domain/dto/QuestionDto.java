@@ -13,7 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionDto {
-    private String id;
 
     private Integer ordinalNumber;
 

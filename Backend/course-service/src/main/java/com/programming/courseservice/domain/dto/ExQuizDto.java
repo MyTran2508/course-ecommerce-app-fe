@@ -22,5 +22,5 @@ public class ExQuizDto {
 
     private Long limitTime;
 
-    private List<QuestionDto> questionList;
+    private List<QuestionDto> questions;
 }

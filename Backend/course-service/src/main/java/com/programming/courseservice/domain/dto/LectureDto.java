@@ -9,9 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LectureDto {
     private String id;
+
     private Integer ordinalNumber;
+
     private String name;
+
     private String url;
+
     private String fileName;
+
     private Long videoDuration;
+
+    private ExQuizDto exQuiz;
 }

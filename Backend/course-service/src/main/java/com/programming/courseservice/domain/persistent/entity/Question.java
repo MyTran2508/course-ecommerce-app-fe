@@ -33,8 +33,4 @@ public class Question {
 
     @Column(name = "quiz_type")
     private QuizType quizType;
-
-    @ManyToOne(targetEntity = ExQuiz.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_question_ex_quiz_id"))
-    private ExQuiz exQuiz;
 }

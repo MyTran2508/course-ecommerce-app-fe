@@ -12,10 +12,15 @@ import java.util.List;
 @AllArgsConstructor
 public class SectionDto {
     private String id;
+
     private Integer ordinalNumber;
+
     private String name;
+
     private List<LectureDto> lectures;
+
     @JsonBackReference
     private ContentDto content;
+
     private Long totalDurationVideoLectures;
 }

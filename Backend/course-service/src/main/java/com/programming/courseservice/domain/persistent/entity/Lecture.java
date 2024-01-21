@@ -31,7 +31,7 @@ public class Lecture extends BaseModel {
 
     private LectureType lectureType;
 
-    @OneToOne(targetEntity = ExQuiz.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = ExQuiz.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_lecture_ex_quiz_id"))
     private ExQuiz exQuiz;
 }

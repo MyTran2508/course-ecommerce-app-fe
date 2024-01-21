@@ -3,6 +3,7 @@ package com.programming.courseservice.service;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
+import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.courseservice.domain.dto.ExQuizDto;
 import com.programming.courseservice.domain.mapper.ExQuizMapper;
@@ -41,4 +42,5 @@ public class ExQuizService extends BaseServiceImpl<ExQuiz, ExQuizDto> {
     protected List<ExQuizDto> getListSearchResults(String keyword) {
         return null;
     }
+
 }

@@ -16,7 +16,10 @@ import java.util.Set;
 public class ContentDto {
     private String id;
     @JsonManagedReference
+
     private List<SectionDto> sections;
+
     private DescriptionDto description;
+
     private CourseDto course;
 }
