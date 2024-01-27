@@ -1,10 +1,7 @@
 package com.programming.courseservice.domain.dto;
 
-import com.programming.courseservice.domain.persistent.entity.Language;
-import com.programming.courseservice.domain.persistent.entity.Level;
-import com.programming.courseservice.domain.persistent.entity.Topic;
 import com.programming.courseservice.domain.persistent.enumrate.FilterSortBy;
-import com.programming.courseservice.domain.persistent.enumrate.Ratings;
+import com.programming.courseservice.domain.persistent.enumrate.RatingsLevel;
 import com.programming.courseservice.domain.persistent.enumrate.VideoDuration;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +18,7 @@ public class SearchCourseDto {
     private List<String> topicIds;
     private Boolean isFree;
     private VideoDuration videoDuration;
-    private Ratings ratings;
+    private RatingsLevel ratingsLevel;
     private FilterSortBy filterSortBy;
     private String keyword;
     private int pageIndex;

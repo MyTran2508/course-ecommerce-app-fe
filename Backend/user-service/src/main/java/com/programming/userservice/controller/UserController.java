@@ -3,13 +3,20 @@ package com.programming.userservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.NotPermissionException;
+import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
+import com.main.progamming.common.util.SystemUtil;
 import com.programming.userservice.domain.dto.*;
+import com.programming.userservice.domain.mapper.UserMapper;
 import com.programming.userservice.domain.persistent.entity.User;
+import com.programming.userservice.domain.persistent.entity.UserLog;
+import com.programming.userservice.domain.persistent.enumrate.ActionName;
+import com.programming.userservice.domain.persistent.enumrate.ActionObject;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.service.StorageService;
+import com.programming.userservice.service.UserLogService;
 import com.programming.userservice.service.UserService;
 import com.programming.userservice.utilities.annotation.ShowOpenAPI;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,9 +44,15 @@ import java.util.Map;
 @RequestMapping("/api/users/user")
 public class UserController extends BaseApiImpl<User, UserDto> {
     private final UserService userService;
+
     private final PasswordEncoder passwordEncoder;
+
     private final AuthenticationManager authenticationManager;
-    private final StorageService storageService;
+
+    private final UserLogService userLogService;
+
+    private final UserMapper userMapper;
+
     @Override
     protected BaseService<User, UserDto> getBaseService() {
         return userService;
@@ -62,7 +75,22 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<UserDto> add(@Valid UserDto objectDTO) {
         objectDTO.setPassword(passwordEncoder.encode(objectDTO.getPassword()));
-        return super.add(objectDTO);
+        DataResponse<UserDto> response = super.add(objectDTO);
+
+        User entity = userMapper.dtoToEntity(response.getData());
+
+        UserLog userLog = UserLog.builder()
+                .userName(SystemUtil.getCurrentUsername())
+                .ip(SystemUtil.getUserIP())
+                .actionKey(entity.getId())
+                .actionObject(ActionObject.USER)
+                .actionName(ActionName.CREATE)
+                .description(userLogService.writePersistLog(User.class, entity, true, 0))
+                .build();
+        userLogService.addLog(userLog);
+
+        return response;
+
     }
 
     @Override
@@ -87,6 +115,15 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     public DataResponse<String> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         if(authentication.isAuthenticated()) {
+            UserLog userLog = UserLog.builder()
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.LOGIN)
+                    .ip(SystemUtil.getUserIP())
+                    .userName(loginRequest.getUsername())
+                    .description(userLogService.writeLoginLog())
+                    .build();
+            userLogService.addLog(userLog);
+
             return userService.generateToken(loginRequest.getUsername());
         } else {
             throw new NotPermissionException("invalid access");

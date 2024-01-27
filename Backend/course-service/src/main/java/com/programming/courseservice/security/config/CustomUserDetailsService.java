@@ -1,8 +1,7 @@
 package com.programming.courseservice.security.config;
 
 import com.main.progamming.common.error.exception.DataNotFoundException;
-import com.main.progamming.common.response.DataResponse;
-import com.programming.courseservice.communication.OpenFeign.UserApi;
+import com.programming.courseservice.utilities.communication.UserApi;
 import com.programming.courseservice.domain.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

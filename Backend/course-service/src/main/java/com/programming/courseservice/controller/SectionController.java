@@ -20,10 +20,12 @@ import java.util.List;
 @RequestMapping("/api/courses/section")
 public class SectionController extends BaseApiImpl<Section, SectionDto> {
     private final SectionService sectionService;
+
     @Override
     protected BaseService<Section, SectionDto> getBaseService() {
         return sectionService;
     }
+
     @Override
     @ShowOpenAPI
     public DataResponse<SectionDto> getById(String id) {
@@ -33,22 +35,18 @@ public class SectionController extends BaseApiImpl<Section, SectionDto> {
     @Override
     @ShowOpenAPI
     public DataResponse<SectionDto> add(SectionDto objectDTO) {
-//        List<LectureDto> lectureDtos = sectionService.getVideoDuration(objectDTO.getLectures());
-//        objectDTO.setLectures(lectureDtos);
         return super.add(objectDTO);
     }
 
     @Override
     @ShowOpenAPI
     public DataResponse<SectionDto> update(SectionDto objectDTO, String id) {
-//        List<LectureDto> lectureDtos = sectionService.getVideoDuration(objectDTO.getLectures());
-//        objectDTO.setLectures(lectureDtos);
-        SectionDto sectionDtos = sectionService.deleteLectures(objectDTO);
+        SectionDto sectionDtos = sectionService.updateSection(objectDTO);
         return super.update(sectionDtos, id);
     }
 
-    @PostMapping("/upload")
     @ShowOpenAPI
+    @PostMapping("/upload")
     public DataResponse<List<String>> uploadFileSection(@RequestParam("files") MultipartFile[] files) {
         return sectionService.uploadFileSection(files);
     }

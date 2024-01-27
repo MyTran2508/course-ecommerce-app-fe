@@ -27,7 +27,7 @@ public class Content extends BaseModel {
     @JoinColumn(name = "description_id", foreignKey = @ForeignKey(name = "fk_content_description"))
     private Description description;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_content_course"))
     @ToString.Exclude
     private Course course;

@@ -26,8 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -123,7 +121,6 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
         Page<Course> courses = null;
         if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
-            System.out.println("Vao day");
             courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, pageable);
         } else {
             courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, keyword, pageable);
@@ -197,7 +194,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 //    }
 
     public ListResponse<CourseDto> getCourseAccessByUserId(String userId, Integer pageIndex, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageIndex,pageSize);
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
         Page<Course> courses = courseRepository.getCourseAccessByUserId(userId, pageable);
         Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
         return ResponseMapper.toPagingResponseSuccess(courseDtos);

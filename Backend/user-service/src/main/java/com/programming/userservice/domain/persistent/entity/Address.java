@@ -20,8 +20,28 @@ import lombok.experimental.SuperBuilder;
 public class Address extends BaseModel {
     @Column(name = "address_line", length = 255)
     private String addressLine;
+
     @Column(name = "postal_code", length = 16)
     private String postalCode;
+
     @Column(name = "default_address", columnDefinition = "bit default 0 not null")
     private boolean defaultAddress;
+
+    @Column(name = "province_name", length = 32)
+    private String provinceName;
+
+    @Column(name = "province_name_en", length = 32)
+    private String provinceNameEn;
+
+    @Column(name = "district_name", length = 32)
+    private String districtName;
+
+    @Column(name = "district_name_en", length = 32)
+    private String districtNameEn;
+
+    @Column(name = "ward_name", length = 32)
+    private String wardName;
+
+    @Column(name = "ward_name_en", length = 32)
+    private String wardNameEn;
 }
