@@ -32,9 +32,18 @@ public class UserQuiz extends BaseModel {
     @Column(name = "count_answer_count")
     private Short correctAnswerCount;
 
+    @Column(name = "is_completed")
+    private Boolean isCompleted;
+
     private Double score;
 
     @OneToMany(mappedBy = "userQuiz", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("question.ordinalNumber ASC")
     private List<UserAnswer> userAnswers;
+
+    @Override
+    protected void ensureId() {
+        super.ensureId();
+        this.setIsCompleted(false);
+    }
 }

@@ -16,7 +16,9 @@ public class UserAnswerController {
 
     @PostMapping("/upsert")
     public DataResponse<String> upsertUserAnswer(@RequestParam("user-quiz-id") String userQuizId,
-                                                @RequestBody List<UserAnswerDto> userAnswerDtoList) {
-        return userAnswerService.upsertUserAnswer(userAnswerDtoList, userQuizId);
+                                                 @RequestParam("is-submit") Boolean isSubmit,
+                                                 @RequestBody List<UserAnswerDto> userAnswerDtoList) {
+
+        return userAnswerService.upsertUserAnswer(userAnswerDtoList, userQuizId, isSubmit);
     }
 }

@@ -11,6 +11,10 @@ public class CourseConstrant {
         public static final String CONTENT_NOT_FOUND = "Content not found";
 
         public static final String SAVE_USER_ANSWER_FAIL = "Error!! Save user answer fail";
+
+        public static final String TIME_OUT = "Quiz time is over";
+
+        public static final String QUIZ_HAS_ENDED = "Quiz has ended";
     }
 
     public static final class SuccessConstrant {
