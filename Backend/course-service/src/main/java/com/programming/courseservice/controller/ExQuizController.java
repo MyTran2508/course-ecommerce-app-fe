@@ -29,4 +29,9 @@ public class ExQuizController extends BaseApiImpl<ExQuiz, ExQuizDto> {
     public ListResponse<ExQuizDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
         return super.searchByKeyword(searchKeywordDto);
     }
+
+    @Override
+    public DataResponse<ExQuizDto> getById(String id) {
+        return super.getById(id);
+    }
 }

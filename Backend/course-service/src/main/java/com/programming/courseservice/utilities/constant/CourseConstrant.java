@@ -9,10 +9,14 @@ public class CourseConstrant {
         public static final String CONTENT_NOT_COMPLETE = "Content not yet completed";
 
         public static final String CONTENT_NOT_FOUND = "Content not found";
+
+        public static final String SAVE_USER_ANSWER_FAIL = "Error!! Save user answer fail";
     }
 
     public static final class SuccessConstrant {
-        public static final String UPDATE_SUCCESS = "Update success";
+        public static final String UPDATE_SUCCESS = "Update successfully";
+
+        public static final String UPSERT_SUCCESS = "Upsert successfully";
     }
 
     public static final class S3Constrant {

@@ -2,10 +2,8 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -17,22 +15,26 @@ import java.util.List;
 @Table(
         name = "user_ex_quiz"
 )
+@SuperBuilder(toBuilder = true)
 public class UserQuiz extends BaseModel {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(name = "count_answer_count", nullable = false)
-    private Short correctAnswerCount;
-
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private Long startTime;
 
-    @OneToMany(targetEntity = UserAnswer.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_quiz_id", foreignKey = @ForeignKey(name = "fk_user_answer_user_quiz_id"))
+    @Column(name = "limit_time", nullable = false)
+    private Long limitTime;
+
+    @Column(name = "ex_quiz_id", nullable = false)
+    private String exQuizId;
+
+    @Column(name = "count_answer_count")
+    private Short correctAnswerCount;
+
+    private Double score;
+
+    @OneToMany(mappedBy = "userQuiz", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("question.ordinalNumber ASC")
     private List<UserAnswer> userAnswers;
-
-    @OneToOne(targetEntity = ExQuiz.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_user_quiz_ex_quiz_id"))
-    private ExQuiz exQuiz;
 }

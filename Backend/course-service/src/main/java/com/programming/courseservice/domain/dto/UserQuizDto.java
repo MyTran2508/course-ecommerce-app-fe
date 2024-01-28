@@ -1,5 +1,6 @@
 package com.programming.courseservice.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.programming.courseservice.domain.persistent.entity.ExQuiz;
 import com.programming.courseservice.domain.persistent.entity.UserAnswer;
 import jakarta.persistence.*;
@@ -24,11 +25,16 @@ public class UserQuizDto implements Serializable {
 
     private String userId;
 
-    private Short correctAnswerCount;
-
     private Long startTime;
 
-    private List<UserAnswerDto> userAnswers;
+    private Long limitTime;
 
-    private ExQuiz exQuiz;
+    private String exQuizId;
+
+    private Short correctAnswerCount;
+
+    private Double score;
+
+    @JsonManagedReference
+    private List<UserAnswerDto> userAnswers;
 }

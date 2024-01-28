@@ -30,9 +30,6 @@ public class ExQuiz extends BaseModel {
     @Column(name = "limit_time")
     private Long limitTime;
 
-    @OneToOne(mappedBy = "exQuiz", fetch = FetchType.LAZY)
-    private Lecture lecture;
-
     @OneToMany(targetEntity = Question.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_question_ex_quiz_id"))
     private List<Question> questions;

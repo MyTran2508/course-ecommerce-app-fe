@@ -13,10 +13,17 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+        name = "user_answer"
+)
 public class UserAnswer {
+
     @Id
     private String id;
 
+    /**
+     * currentAnswer >< rightAnswer
+     */
     @Column(name = "current_answer")
     private String currentAnswer;
 
@@ -26,6 +33,10 @@ public class UserAnswer {
     @OneToOne(targetEntity = Question.class)
     @JoinColumn(name = "question_id", foreignKey = @ForeignKey(name = "fk_user_answer_question_id"))
     private Question question;
+
+    @ManyToOne(targetEntity = UserQuiz.class)
+    @JoinColumn(name = "user_quiz_id", foreignKey = @ForeignKey(name = "fk_user_answer_user_quiz_id"))
+    private UserQuiz userQuiz;
 
     @PrePersist
     private void ensureId() {

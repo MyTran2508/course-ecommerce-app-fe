@@ -8,6 +8,8 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.courseservice.domain.dto.ContentDto;
+import com.programming.courseservice.domain.dto.LectureDto;
+import com.programming.courseservice.domain.dto.SectionDto;
 import com.programming.courseservice.domain.mapper.ContentMapper;
 import com.programming.courseservice.domain.persistent.entity.Content;
 import com.programming.courseservice.domain.persistent.entity.Course;
@@ -28,7 +30,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ContentService extends BaseServiceImpl<Content, ContentDto> {
-
     private final ContentRepository contentRepository;
 
     private final ContentMapper contentMapper;
@@ -53,24 +54,24 @@ public class ContentService extends BaseServiceImpl<Content, ContentDto> {
         return null;
     }
 
-    @Transactional
     public DataResponse<ContentDto> getByCourseId(String courseId) {
-        System.out.println("courseId: " + courseId);
         Optional<Content> contentOptional = contentRepository.findContentByCourseId(courseId);
+
         if(contentOptional.isEmpty()) {
             throw new DataNotFoundException(CourseConstrant.ErrorConstrant.CONTENT_NOT_FOUND);
         } else {
-            Content content = contentOptional.get();
+            ContentDto contentDto = contentMapper.entityToDto(contentOptional.get());
+            contentDto.setCourse(null);
 
-            content.setCourse(null);
-
-            for (Section section: content.getSections()) {
-                for (Lecture lecture: section.getLectures()) {
-                    lecture.setExQuiz(null);
+            for (SectionDto sectionDto : contentDto.getSections()) {
+                for (LectureDto lectureDto : sectionDto.getLectures()) {
+                    if(lectureDto.getExQuiz() != null) {
+                        lectureDto.getExQuiz().setQuestions(null);
+                    }
                 }
             }
 
-            return ResponseMapper.toDataResponseSuccess(contentMapper.entityToDto(contentOptional.get()));
+            return ResponseMapper.toDataResponseSuccess(contentDto);
         }
     }
 }

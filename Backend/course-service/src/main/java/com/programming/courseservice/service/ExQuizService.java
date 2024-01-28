@@ -43,4 +43,11 @@ public class ExQuizService extends BaseServiceImpl<ExQuiz, ExQuizDto> {
         return null;
     }
 
+    @Override
+    public DataResponse<ExQuizDto> getById(String id) {
+        DataResponse<ExQuizDto> response = super.getById(id);
+        response.getData().setQuestions(null);
+
+        return response;
+    }
 }

@@ -1,6 +1,7 @@
 package com.programming.courseservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
+import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.UserQuizDto;
 import com.programming.courseservice.domain.persistent.entity.UserQuiz;
@@ -18,5 +19,10 @@ public class UserQuizController extends BaseApiImpl<UserQuiz, UserQuizDto> {
     @Override
     protected BaseService<UserQuiz, UserQuizDto> getBaseService() {
         return userQuizService;
+    }
+
+    @Override
+    public DataResponse<String> add(UserQuizDto objectDTO) {
+        return super.add(objectDTO);
     }
 }
