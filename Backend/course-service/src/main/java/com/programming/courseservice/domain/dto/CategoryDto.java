@@ -18,9 +18,13 @@ import java.util.Set;
 public class CategoryDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
+
     private String id;
     @NotEmpty(message = "CategoryName is required")
+
     private String name;
+
     private String description;
+
     private List<TopicDto> topics;
 }

@@ -24,7 +24,7 @@ public class CourseReviewController extends BaseApiImpl<CourseReview, CourseRevi
     }
 
     @Override
-    public DataResponse<CourseReviewDto> add(CourseReviewDto objectDTO) {
+    public DataResponse<String> add(CourseReviewDto objectDTO) {
         return super.add(objectDTO);
     }
 

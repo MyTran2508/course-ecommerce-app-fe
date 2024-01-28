@@ -1,16 +1,24 @@
 package com.programming.courseservice.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+import java.io.Serial;
+import java.io.Serializable;
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SalesByTopicSamePeriodResponse {
+public class SalesByTopicSamePeriodResponse implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String topicId;
+
     private String topicName;
+
     private Double targetYearTotal;
+
     private Double previousYearTotal;
 
     public Integer convertTopicIdAsInteger() {

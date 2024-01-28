@@ -22,7 +22,7 @@ public class Section extends BaseModel {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(targetEntity = Lecture.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Lecture.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_lecture_section"))
     @OrderBy("ordinalNumber ASC")
     private List<Lecture> lectures;

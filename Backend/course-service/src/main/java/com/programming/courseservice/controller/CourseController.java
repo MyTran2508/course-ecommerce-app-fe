@@ -42,10 +42,9 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-    public DataResponse<CourseDto> add(CourseDto objectDTO) {
+    public DataResponse<String> add(CourseDto objectDTO) {
         return super.add(objectDTO);
     }
-
 
     @ShowOpenAPI
     @PostMapping("/images")

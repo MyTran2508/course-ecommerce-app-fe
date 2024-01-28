@@ -7,8 +7,9 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.courseservice.domain.dto.CourseProgressListDto;
+import com.main.progamming.common.util.CommonConstrant;
 import com.programming.courseservice.domain.dto.CourseProgressDto;
+import com.programming.courseservice.domain.dto.CourseProgressListDto;
 import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.mapper.CourseProgressMapper;
 import com.programming.courseservice.domain.persistent.entity.Course;
@@ -62,18 +63,21 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
     }
 
     @Override
-    public DataResponse<CourseProgressDto> create(CourseProgressDto dto) {
+    public DataResponse<String> create(CourseProgressDto dto) {
         return super.create(dto);
     }
 
     public DataResponse<CourseProgressDto> updateCurrentProgress(String userId, String courseId) {
         Optional<CourseProgress> courseProgressOptional = courseProgressRepository.findByUserIdAndCourseId(userId, courseId);
-        if(courseProgressOptional.isPresent()) {
+
+        if (courseProgressOptional.isPresent()) {
             CourseProgress courseProgress = courseProgressOptional.get();
+
             if(courseProgress.getCurrentProgress() < courseProgress.getTotalAmountOfLecture()) {
                 courseProgress.setCurrentProgress(courseProgress.getCurrentProgress() + 1);
             }
             CourseProgress savedCourseProgress = courseProgressRepository.save(courseProgress);
+
             return ResponseMapper.toDataResponseSuccess(courseProgressMapper.entityToDto(savedCourseProgress));
         } else {
             throw new ResourceNotFoundException("Data doesn't exists");
@@ -82,7 +86,6 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
 
     @Transactional
     public DataResponse<String> addList(CourseProgressListDto courseProgressListDto) {
-        System.out.println(courseProgressListDto.toString());
         for (String courseId: courseProgressListDto.getCourseId()) {
             Course course = courseRepository.findById(courseId).get();
 
@@ -90,27 +93,32 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
             for(Section section: course.getContent().getSections()) {
                 totalAmountOfLecture += section.getLectures().size();
             }
+
             CourseProgress courseProgress = CourseProgress.builder()
                     .userId(courseProgressListDto.getUserId())
                     .course(course)
                     .currentProgress(0)
                     .totalAmountOfLecture(totalAmountOfLecture)
                     .build();
+
             courseProgressRepository.save(courseProgress);
         }
-        return ResponseMapper.toDataResponseSuccess("Success");
+
+        return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS);
     }
 
     public DataResponse<Boolean> hasAccessToCourse(String userId, String courseId) {
         Optional<CourseProgress> optionalCourseAccess = courseProgressRepository.findByUserIdAndCourseId(userId, courseId);
+
         if(optionalCourseAccess.isPresent()) {
-            return ResponseMapper.toDataResponseSuccess(true);
+            return ResponseMapper.toDataResponseSuccess(CommonConstrant.IS_TRUE);
         } else {
-            return ResponseMapper.toDataResponseSuccess(false);
+            return ResponseMapper.toDataResponseSuccess(CommonConstrant.IS_FALSE);
         }
     }
 
     public DataResponse<Integer> getTotalRegisteredCourseByYearAndMonth(int targetYear, Integer targetMonth) {
-        return ResponseMapper.toDataResponseSuccess(courseProgressRepository.getTotalRegisteredCourseByYearAndMonth(targetYear, targetMonth));
+        return ResponseMapper.toDataResponseSuccess(
+                courseProgressRepository.getTotalRegisteredCourseByYearAndMonth(targetYear, targetMonth));
     }
 }

@@ -18,10 +18,13 @@ import java.io.IOException;
 public class StorageS3Service {
     @Value("${application.bucket.name}")
     private String bucketName;
+
     @Value("${cloud.front.prefix}")
     private String cloudFrontPrefix;
+
     @Autowired
     private AmazonS3 s3Client;
+
     @Autowired
     private FileUtils fileUtils;
 
@@ -40,17 +43,20 @@ public class StorageS3Service {
     public byte[] downloadFile(String fileName) {
         S3Object s3Object = s3Client.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
+
         try {
             byte[] content = IOUtils.toByteArray(inputStream);
             return content;
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
     public String deleteFile(String fileName) {
         s3Client.deleteObject(bucketName, fileName);
+
         return fileName + "remove";
     }
 }

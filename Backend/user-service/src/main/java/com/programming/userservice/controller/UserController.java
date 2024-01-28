@@ -15,6 +15,7 @@ import com.programming.userservice.domain.persistent.entity.UserLog;
 import com.programming.userservice.domain.persistent.enumrate.ActionName;
 import com.programming.userservice.domain.persistent.enumrate.ActionObject;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
+import com.programming.userservice.repository.UserRepository;
 import com.programming.userservice.service.StorageService;
 import com.programming.userservice.service.UserLogService;
 import com.programming.userservice.service.UserService;
@@ -45,13 +46,13 @@ import java.util.Map;
 public class UserController extends BaseApiImpl<User, UserDto> {
     private final UserService userService;
 
+    private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
 
     private final UserLogService userLogService;
-
-    private final UserMapper userMapper;
 
     @Override
     protected BaseService<User, UserDto> getBaseService() {
@@ -73,16 +74,19 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public DataResponse<UserDto> add(@Valid UserDto objectDTO) {
+    public DataResponse<String> add(@Valid UserDto objectDTO) {
         objectDTO.setPassword(passwordEncoder.encode(objectDTO.getPassword()));
-        DataResponse<UserDto> response = super.add(objectDTO);
 
-        User entity = userMapper.dtoToEntity(response.getData());
+        DataResponse<String> response = super.add(objectDTO);
+
+        String stResult = response.getData();
+        String userId = stResult.split(": ")[1].trim();
+        User entity = userRepository.findById(userId).orElse(null);
 
         UserLog userLog = UserLog.builder()
                 .userName(SystemUtil.getCurrentUsername())
                 .ip(SystemUtil.getUserIP())
-                .actionKey(entity.getId())
+                .actionKey(userId)
                 .actionObject(ActionObject.USER)
                 .actionName(ActionName.CREATE)
                 .description(userLogService.writePersistLog(User.class, entity, true, 0))
@@ -114,6 +118,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
     public DataResponse<String> login(@RequestBody @Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
         if(authentication.isAuthenticated()) {
             UserLog userLog = UserLog.builder()
                     .actionObject(ActionObject.USER)

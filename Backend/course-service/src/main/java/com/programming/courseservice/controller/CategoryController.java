@@ -35,8 +35,7 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public DataResponse<CategoryDto> add(@Valid CategoryDto categoryDto) {
-        System.out.println("Vao day");
+    public DataResponse<String> add(@Valid CategoryDto categoryDto) {
         return super.add(categoryDto);
     }
 

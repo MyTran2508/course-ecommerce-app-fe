@@ -10,6 +10,7 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
+import com.main.progamming.common.util.CommonConstrant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,10 +34,12 @@ public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseSer
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public DataResponse<D> create(D dto) {
+    public DataResponse<String> create(D dto) {
         E entity = getBaseMapper().dtoToEntity(dto);
+
         getBaseRepository().save(entity);
-        return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
+
+        return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS + " ID: " + entity.getId());
     }
 
     @Override

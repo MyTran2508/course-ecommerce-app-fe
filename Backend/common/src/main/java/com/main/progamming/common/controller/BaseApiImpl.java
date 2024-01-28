@@ -16,7 +16,7 @@ public abstract class BaseApiImpl<E, D> implements BaseApi<E, D> {
 
     @Override
     @PostMapping(ApiResources.ADD)
-    public DataResponse<D> add(D objectDTO) {
+    public DataResponse<String> add(D objectDTO) {
         return this.getBaseService().create(objectDTO);
     }
 

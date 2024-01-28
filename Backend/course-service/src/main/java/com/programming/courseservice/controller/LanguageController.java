@@ -28,7 +28,7 @@ public class LanguageController extends BaseApiImpl<Language, LanguageDto> {
     }
 
     @Override
-    public DataResponse<LanguageDto> add(LanguageDto objectDTO) {
+    public DataResponse<String> add(LanguageDto objectDTO) {
         return super.add(objectDTO);
     }
 

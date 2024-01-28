@@ -34,7 +34,7 @@ public class SectionController extends BaseApiImpl<Section, SectionDto> {
 
     @Override
     @ShowOpenAPI
-    public DataResponse<SectionDto> add(SectionDto objectDTO) {
+    public DataResponse<String> add(SectionDto objectDTO) {
         return super.add(objectDTO);
     }
 

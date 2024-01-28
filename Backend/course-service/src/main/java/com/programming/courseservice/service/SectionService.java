@@ -15,7 +15,7 @@ import com.programming.courseservice.domain.persistent.entity.Section;
 import com.programming.courseservice.repository.LectureRepository;
 import com.programming.courseservice.repository.SectionRepository;
 import com.programming.courseservice.utilities.FileUtils;
-import com.programming.courseservice.utilities.constant.S3Constrant;
+import com.programming.courseservice.utilities.constant.CourseConstrant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -63,9 +63,9 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
         Integer idx = 0;
         for (MultipartFile file: files) {
             if(fileUtils.isFileVideo(file)) {
-                listPath.add(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_LECTURE, file));
+                listPath.add(storageS3Service.uploadFile(CourseConstrant.S3Constrant.PATH_COURSE_LECTURE, file));
             } else if (fileUtils.isFileDocument(file)){
-                listPath.add(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_DOCUMENT, file));
+                listPath.add(storageS3Service.uploadFile(CourseConstrant.S3Constrant.PATH_COURSE_DOCUMENT, file));
             } else {
                 listError.add(idx.toString());
             }

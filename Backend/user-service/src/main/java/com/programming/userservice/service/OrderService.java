@@ -31,8 +31,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService extends BaseServiceImpl<Order, OrderDto> {
     private final OrderMapper orderMapper;
+
     private final CourseAPI courseAPI;
+
     private final OrdersRepository orderRepository;
+
     private final UserRepository userRepository;
 
     @Override
@@ -57,21 +60,27 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
 
     @Override
     @Transactional
-    public DataResponse<OrderDto> create(OrderDto dto) {
+    public DataResponse<String> create(OrderDto dto) {
         Optional<User> optionalUser = userRepository.findById(dto.getUser().getId());
+
         if(optionalUser.isEmpty()) {
             throw new ResourceNotFoundException("User doesn't exists.");
         }
-        DataResponse<OrderDto> response = super.create(dto);
-        if(response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
+        DataResponse<String> response = super.create(dto);
 
+        if(response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
             // Setup to call API add course progress
-            String userId = response.getData().getUser().getId();
-            List<OrderItemDto> orderItemDtos = response.getData().getOrderItems();
+            String stResult = response.getData();
+
+            String orderId = stResult.split(": ")[1].trim();
+            Order order = orderRepository.findById(orderId).get();
+            List<OrderItemDto> orderItemDtos = orderMapper.entityToDto(order).getOrderItems();
+
             List<String> courseIds = orderItemDtos.stream()
                     .map(OrderItemDto::getCourseId)
                     .collect(Collectors.toList());
-            CourseProgressListDto courseProgressListDto = new CourseProgressListDto(userId, courseIds);
+
+            CourseProgressListDto courseProgressListDto = new CourseProgressListDto(order.getUser().getId(), courseIds);
 
             // Call API
             courseAPI.addList(courseProgressListDto);
@@ -104,6 +113,7 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
         List<Object[]> totalPriceByMonthTargetYear = orderRepository.getTotalPriceByMonth(targetYear);
         List<Object[]> totalPriceByMonthPreviousYear = orderRepository.getTotalPriceByMonth(targetYear - 1);
         List<StatictisSamePeriodDto> results = new ArrayList<>();
+
         for (int i = 1; i <= 12; i++) {
             StatictisSamePeriodDto statisticSamePeriodDto = new StatictisSamePeriodDto();
             statisticSamePeriodDto.setMonth(i);

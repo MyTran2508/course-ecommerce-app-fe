@@ -1,7 +1,7 @@
 package com.programming.courseservice.controller;
 
 import com.programming.courseservice.service.StorageS3Service;
-import com.programming.courseservice.utilities.constant.S3Constrant;
+import com.programming.courseservice.utilities.constant.CourseConstrant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -19,12 +19,12 @@ public class StorageController {
     @PostMapping("/upload")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> uploadFile(@RequestParam("file")MultipartFile file) {
-        return new ResponseEntity<>(storageS3.uploadFile(S3Constrant.PATH_COURSE_LECTURE, file), HttpStatus.OK);
+        return new ResponseEntity<>(storageS3.uploadFile(CourseConstrant.S3Constrant.PATH_COURSE_LECTURE, file), HttpStatus.OK);
     }
 
     @GetMapping("/download/{fileName}")
     public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
-        byte[] data = storageS3.downloadFile(S3Constrant.PATH_COURSE_LECTURE + fileName);
+        byte[] data = storageS3.downloadFile(CourseConstrant.S3Constrant.PATH_COURSE_LECTURE + fileName);
         ByteArrayResource resource = new ByteArrayResource(data);
         return ResponseEntity.ok()
                 .contentLength(data.length)
@@ -36,6 +36,6 @@ public class StorageController {
     @DeleteMapping("/delete/{fileName}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
-        return new ResponseEntity<>(storageS3.deleteFile(S3Constrant.PATH_COURSE_LECTURE + fileName), HttpStatus.OK);
+        return new ResponseEntity<>(storageS3.deleteFile(CourseConstrant.S3Constrant.PATH_COURSE_LECTURE + fileName), HttpStatus.OK);
     }
 }

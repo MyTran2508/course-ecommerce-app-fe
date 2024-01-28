@@ -4,6 +4,10 @@ import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import java.util.List;
 
@@ -31,7 +35,7 @@ public class Lecture extends BaseModel {
 
     private LectureType lectureType;
 
-    @OneToOne(targetEntity = ExQuiz.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_lecture_ex_quiz_id"))
     private ExQuiz exQuiz;
 }

@@ -8,7 +8,7 @@ import com.main.progamming.common.response.ListResponse;
 import java.util.List;
 
 public interface BaseService<E, D> {
-    DataResponse<D> create(D dto);
+    DataResponse<String> create(D dto);
 
     DataResponse<D> addAll(List<D> listDto);
 

@@ -1,13 +1,22 @@
 package com.programming.courseservice.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.programming.courseservice.domain.persistent.enumrate.LectureType;
+import lombok.*;
 
-@Data
+import java.io.Serial;
+import java.io.Serializable;
+
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LectureDto {
+public class LectureDto implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String id;
 
     private Integer ordinalNumber;
@@ -20,5 +29,8 @@ public class LectureDto {
 
     private Long videoDuration;
 
+    private LectureType lectureType;
+
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private ExQuizDto exQuiz;
 }

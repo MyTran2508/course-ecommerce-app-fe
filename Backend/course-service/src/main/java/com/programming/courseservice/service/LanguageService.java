@@ -20,7 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LanguageService extends BaseServiceImpl<Language, LanguageDto> {
     private final LanguageRepository languageRepository;
+
     private final LanguageMapper languageMapper;
+
     @Override
     protected BaseRepository<Language> getBaseRepository() {
         return languageRepository;

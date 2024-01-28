@@ -1,19 +1,23 @@
 package com.programming.courseservice.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class UserDto implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String username;
+
     private String password;
+
     private List<RoleDto> roles;
 }

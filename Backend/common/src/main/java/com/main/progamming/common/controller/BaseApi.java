@@ -12,9 +12,11 @@ import java.util.List;
 
 public interface BaseApi<E,D> {
     @PostMapping(ApiResources.ADD)
-    public DataResponse<D> add(@RequestBody D objectDTO);
+    public DataResponse<String> add(@RequestBody D objectDTO);
+
     @PostMapping(ApiResources.ADD_ALL)
     public DataResponse<D> addAll(@RequestBody List<D> listDto);
+
     @PutMapping(ApiResources.UPDATE)
     public DataResponse<D> update(@Valid @RequestBody D objectDTO, @PathVariable("id") String id);
 

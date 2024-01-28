@@ -30,7 +30,7 @@ public class OrderController extends BaseApiImpl<Order, OrderDto> {
 
     @Override
     @ShowOpenAPI
-    public DataResponse<OrderDto> add(OrderDto objectDTO) {
+    public DataResponse<String> add(OrderDto objectDTO) {
         return super.add(objectDTO);
     }
 

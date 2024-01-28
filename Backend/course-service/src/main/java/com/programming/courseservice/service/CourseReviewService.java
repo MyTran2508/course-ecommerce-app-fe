@@ -53,8 +53,8 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
     }
 
     @Override
-    public DataResponse<CourseReviewDto> create(CourseReviewDto dto) {
-        DataResponse<CourseReviewDto> response = super.create(dto);
+    public DataResponse<String> create(CourseReviewDto dto) {
+        DataResponse<String> response = super.create(dto);
 
         Course course = courseRepository.findById(dto.getCourseDto().getId()).get();
 
@@ -81,8 +81,8 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
                 .sum();
 
         course.setAverageRating((float) (totalRating / course.getTotalRatings()));
-        courseRepository.save(course);
 
+        courseRepository.save(course);
         return response;
     }
 }
