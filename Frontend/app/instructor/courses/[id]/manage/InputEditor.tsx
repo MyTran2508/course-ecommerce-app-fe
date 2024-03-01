@@ -9,7 +9,7 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 function InputEditor() {
-  const data = `{"blocks":[{"key":"dc7dv","text":"Trần Chí Mỹ","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":0,"length":11,"style":"BOLD"},{"offset":0,"length":11,"style":"ITALIC"}],"entityRanges":[],"data":{}}],"entityMap":{}}`;
+  const data = `{"blocks":[{"key":"dc7dv","text":"Thảo Cute","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":0,"length":11,"style":"BOLD"},{"offset":0,"length":11,"style":"ITALIC"}],"entityRanges":[],"data":{}}],"entityMap":{}}`;
   const convertData1 = JSON.parse(data);
   const raw = convertFromRaw(convertData1);
   const [text, setText] = useState<EditorState>(
