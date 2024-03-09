@@ -38,7 +38,6 @@ public class UserQuiz extends BaseModel {
     private Double score;
 
     @OneToMany(mappedBy = "userQuiz", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OrderBy("question.ordinalNumber ASC")
     private List<UserAnswer> userAnswers;
 
     @Override

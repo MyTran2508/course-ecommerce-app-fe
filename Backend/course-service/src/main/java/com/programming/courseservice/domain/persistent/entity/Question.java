@@ -1,5 +1,6 @@
 package com.programming.courseservice.domain.persistent.entity;
 
+import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.QuizType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,15 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Question {
-    @Id
+public class Question extends BaseModel {
     @Column(name = "ordinal_number")
     private Integer ordinalNumber;
 

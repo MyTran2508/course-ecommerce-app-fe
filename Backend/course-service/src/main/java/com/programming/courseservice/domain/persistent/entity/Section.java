@@ -37,6 +37,11 @@ public class Section extends BaseModel {
     @Override
     protected void ensureId() {
         long totalDurationVideoLectures = 0L;
+        if (lectures == null) {
+            this.totalDurationVideoLectures = 0L;
+            super.ensureId();
+            return;
+        }
         for (Lecture lecture: lectures) {
             if (lecture.getVideoDuration() != null) {
                 totalDurationVideoLectures = totalDurationVideoLectures + lecture.getVideoDuration();
@@ -49,6 +54,11 @@ public class Section extends BaseModel {
     @Override
     protected void setUpdated() {
         long totalDurationVideoLectures = 0L;
+        if (lectures == null) {
+            this.totalDurationVideoLectures = 0L;
+            super.ensureId();
+            return;
+        }
         for (Lecture lecture: lectures) {
             if (lecture.getVideoDuration() != null) {
                 totalDurationVideoLectures = totalDurationVideoLectures + lecture.getVideoDuration();
