@@ -51,9 +51,7 @@ public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
         return null;
     }
 
-    /**
-     * update or insert lecture by section id
-     */
+    /** update or insert lecture by section id */
     public DataResponse<String> insert(String sectionId, LectureDto lectureDto) {
         Section section = sectionRepository.findById(sectionId).orElse(null);
 
@@ -62,6 +60,12 @@ public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
             // save lecture to section
             Lecture lecture = lectureMapper.dtoToEntity(lectureDto);
             section.getLectures().add(lecture);
+
+            // update total duration video lectures
+            Long totalDurationVideo = section.getTotalDurationVideoLectures() + lecture.getVideoDuration();
+            section.setTotalDurationVideoLectures(totalDurationVideo);
+
+            // save section
             sectionRepository.save(section);
 
             return ResponseMapper.toDataResponseSuccess(StatusMessage.REQUEST_SUCCESS);
@@ -72,18 +76,39 @@ public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
         }
     }
 
-    /**
-     * Update list of lecture by section id
-     */
+    // update total duration video lectures for update
+    public void updateTotalDurationVideoLecturesForUpdate(LectureDto lectureDto, String lectureId) {
+        Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
+
+        if (lecture != null && lecture.getVideoDuration() != lectureDto.getVideoDuration()) {
+            // get section from lecture id
+            String sectionId = lectureRepository.getSectionIdByLectureId(lectureId);
+            System.out.println(sectionId);
+            Section section = sectionRepository.findById(sectionId).orElse(null);
+
+            // update total duration video lectures
+            Long totalDurationVideo = section.getTotalDurationVideoLectures() - lecture.getVideoDuration() + lectureDto.getVideoDuration();
+            System.out.println(totalDurationVideo);
+            section.setTotalDurationVideoLectures(totalDurationVideo);
+
+            // save section
+            sectionRepository.save(section);
+        }
+    }
+
+    /** Update list of lecture by section id */
     public DataResponse<String> updateList(String sectionId, List<LectureDto> lectureDtos) {
         Section section = sectionRepository.findById(sectionId).orElse(null);
 
         // Convert list dto to list entity
         List<Lecture> listLecture = new ArrayList<>();
+        Long totalDurationVideo = 0L;
         for (LectureDto lectureDto : lectureDtos) {
             listLecture.add(lectureMapper.dtoToEntity(lectureDto));
+            totalDurationVideo += lectureDto.getVideoDuration();
         }
 
+        section.setTotalDurationVideoLectures(totalDurationVideo);
         // save list if section is not null
         if (section != null) {
             section.setLectures(listLecture);

@@ -6,6 +6,7 @@ import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.persistent.entity.Lecture;
 import com.programming.courseservice.service.LectureService;
+import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,11 +30,15 @@ public class LectureController extends BaseApiImpl<Lecture, LectureDto> {
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<LectureDto> update(LectureDto objectDTO, String id) {
+        lectureService.updateTotalDurationVideoLecturesForUpdate(objectDTO, id);
+
         return super.update(objectDTO, id);
     }
 
     @PostMapping("/insert/{sectionId}")
+    @ShowOpenAPI
     public DataResponse<String> insert(@PathVariable("sectionId") String sectionId,
             @RequestBody LectureDto lectureDto) {
 
@@ -41,7 +46,8 @@ public class LectureController extends BaseApiImpl<Lecture, LectureDto> {
     }
 
     @PutMapping("/update-list/{sectionId}")
-    public DataResponse<String> updateList(@RequestParam("sectionId") String sectionId,
+    @ShowOpenAPI
+    public DataResponse<String> updateList(@PathVariable("sectionId") String sectionId,
             @RequestBody List<LectureDto> lectureDtos) {
 
         return lectureService.updateList(sectionId, lectureDtos);
