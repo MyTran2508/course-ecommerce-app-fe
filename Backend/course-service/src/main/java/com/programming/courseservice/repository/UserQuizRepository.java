@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserQuizRepository extends BaseRepository<UserQuiz> {
+
+    UserQuiz findByUserIdAndExQuizId(String userId, String exQuizId);
 }
