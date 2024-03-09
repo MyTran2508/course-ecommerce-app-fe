@@ -9,6 +9,7 @@ import com.main.progamming.common.util.ApiResources;
 import com.programming.courseservice.domain.dto.ExQuizDto;
 import com.programming.courseservice.domain.persistent.entity.ExQuiz;
 import com.programming.courseservice.service.ExQuizService;
+import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,13 +30,21 @@ public class ExQuizController extends BaseApiImpl<ExQuiz, ExQuizDto> {
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<ExQuizDto> getById(String id) {
         return super.getById(id);
     }
 
     @PostMapping(ApiResources.ADD + "/{lectureId}")
+    @ShowOpenAPI
     public DataResponse<String> add(@PathVariable("lectureId") String lectureId, @RequestBody ExQuizDto exQuizDto) {
 
         return exQuizService.create(lectureId, exQuizDto);
+    }
+
+    @Override
+    @ShowOpenAPI
+    public DataResponse<ExQuizDto> update(ExQuizDto objectDTO, String id) {
+        return super.update(objectDTO, id);
     }
 }

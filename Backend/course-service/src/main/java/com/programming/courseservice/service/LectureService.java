@@ -12,6 +12,7 @@ import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.mapper.LectureMapper;
 import com.programming.courseservice.domain.persistent.entity.Lecture;
 import com.programming.courseservice.domain.persistent.entity.Section;
+import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import com.programming.courseservice.repository.LectureRepository;
 import com.programming.courseservice.repository.SectionRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,8 +63,10 @@ public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
             section.getLectures().add(lecture);
 
             // update total duration video lectures
-            Long totalDurationVideo = section.getTotalDurationVideoLectures() + lecture.getVideoDuration();
-            section.setTotalDurationVideoLectures(totalDurationVideo);
+            if (lectureDto.getLectureType() == LectureType.VIDEO) {
+                Long totalDurationVideo = section.getTotalDurationVideoLectures() + lecture.getVideoDuration();
+                section.setTotalDurationVideoLectures(totalDurationVideo);
+            }
 
             // save section
             sectionRepository.save(section);
@@ -80,7 +83,7 @@ public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
     public void updateTotalDurationVideoLecturesForUpdate(LectureDto lectureDto, String lectureId) {
         Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
 
-        if (lecture != null && lecture.getVideoDuration() != lectureDto.getVideoDuration()) {
+        if (lecture != null && lecture.getLectureType() == LectureType.VIDEO && lecture.getVideoDuration() != lectureDto.getVideoDuration()) {
             // get section from lecture id
             String sectionId = lectureRepository.getSectionIdByLectureId(lectureId);
             System.out.println(sectionId);
@@ -105,7 +108,10 @@ public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
         Long totalDurationVideo = 0L;
         for (LectureDto lectureDto : lectureDtos) {
             listLecture.add(lectureMapper.dtoToEntity(lectureDto));
-            totalDurationVideo += lectureDto.getVideoDuration();
+
+            if (lectureDto.getLectureType() == LectureType.VIDEO) {
+                totalDurationVideo += lectureDto.getVideoDuration();
+            }
         }
 
         section.setTotalDurationVideoLectures(totalDurationVideo);

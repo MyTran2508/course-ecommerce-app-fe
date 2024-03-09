@@ -63,13 +63,18 @@ public class ExQuizService extends BaseServiceImpl<ExQuiz, ExQuizDto> {
      * Create ex-quiz by lecture id
      */
     public DataResponse<String> create(String lectureId, ExQuizDto dto) {
+        // find lecture by id
         Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
 
         if (lecture != null) {
-            // save ex-quiz to lecture
+            // convert dto to entity
             ExQuiz exQuiz = exQuizMapper.dtoToEntity(dto);
-            exQuizRepository.save(exQuiz);
+            lecture.setExQuiz(exQuiz);
 
+            // save lecture
+            lectureRepository.save(lecture);
+
+            // return success response
             return ResponseMapper.toDataResponseSuccess(StatusMessage.REQUEST_SUCCESS);
         } else {
             // throw exception if lecture not found

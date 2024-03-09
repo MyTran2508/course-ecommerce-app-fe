@@ -3,6 +3,7 @@ package com.programming.courseservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseService;
+import com.main.progamming.common.util.ApiResources;
 import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.persistent.entity.Lecture;
 import com.programming.courseservice.service.LectureService;
@@ -37,7 +38,7 @@ public class LectureController extends BaseApiImpl<Lecture, LectureDto> {
         return super.update(objectDTO, id);
     }
 
-    @PostMapping("/insert/{sectionId}")
+    @PostMapping(ApiResources.ADD + "/{sectionId}")
     @ShowOpenAPI
     public DataResponse<String> insert(@PathVariable("sectionId") String sectionId,
             @RequestBody LectureDto lectureDto) {
