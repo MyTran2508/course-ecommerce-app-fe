@@ -36,6 +36,6 @@ public class ForumLecture extends BaseModel {
 
     @OneToMany(targetEntity = CommentReply.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "forum_lecture_id", foreignKey = @ForeignKey(name = "fk_comment_reply_forum_lecture_id"))
-    @OrderBy("created DESC")
+    @OrderBy("created ASC")
     private List<CommentReply> commentReplies;
 }
