@@ -13,16 +13,18 @@ const Workspace: React.FC<WorkspaceProps> = ({ problem }) => {
   const [solved, setSolved] = useState(false);
 
   return (
-    <Split className="split">
-      <ProblemDescription problem={problem} _solved={solved} />
-      <div className="bg-black">
-        <Playground
-          problem={problem}
-          setSuccess={setSuccess}
-          setSolved={setSolved}
-        />
-      </div>
-    </Split>
+    <>
+      <Split className="split bg-dark-layer-1">
+        <ProblemDescription problem={problem} _solved={solved} />
+        <div className="bg-black">
+          <Playground
+            problem={problem}
+            setSuccess={setSuccess}
+            setSolved={setSolved}
+          />
+        </div>
+      </Split>
+    </>
   );
 };
 export default Workspace;

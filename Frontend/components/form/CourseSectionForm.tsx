@@ -1,5 +1,6 @@
 import React, {
   ChangeEvent,
+  Fragment,
   MouseEvent,
   useEffect,
   useRef,
@@ -11,8 +12,9 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { course, setStatusSaveCourse } from "@/redux/features/courseSlice";
 import { BiMessageSquareAdd } from "react-icons/bi";
 import {
+  Constant,
   CourseLectureField,
-  CourseSessionField,
+  LectureType,
   StatusCode,
   ToastMessage,
   ToastStatus,
@@ -29,7 +31,14 @@ import { Lecture, Section } from "@/types/section.type";
 import { useUploadSectionFilesMutation } from "@/redux/services/sectionApi";
 import { handleGetDurationFormVideo } from "@/utils/function";
 import { v4 as uuidv4 } from "uuid";
+import { IoAddOutline } from "react-icons/io5";
 import Loading from "@/app/(root)/user/personal/loading";
+import LectureTypeBox from "../Lecture/LectureTypeBox";
+import Quiz from "../Lecture/Quiz/Quiz";
+import Sorttable from "../Lecture/DragAndDrop/Sorttable";
+import SectionComponent from "../Section/Section";
+import CreateTitle from "../Lecture/CreateTitle";
+import Sortable from "../Lecture/DragAndDrop/Sorttable";
 
 interface CourseSectionProps {
   contentId: string;
@@ -49,7 +58,7 @@ function CourseSectionForm(props: CourseSectionProps) {
     };
   }>({});
   const [isCreated, setCreated] = useState<number[]>([]);
-
+  const [isCreatedNewLecture, setNewCreatedLecture] = useState([false, 0]);
   const formRef = useRef<HTMLFormElement>(null);
   const inputFileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
@@ -71,6 +80,14 @@ function CourseSectionForm(props: CourseSectionProps) {
       }
     }
   }, [sections]);
+
+  const handleOpenOptionsAddLecture = (
+    isOpen: boolean,
+    sectionIndex: number
+  ) => {
+    setNewCreatedLecture([isOpen, sectionIndex]);
+  };
+
   const handleAddSection = async (newSection: Section) => {
     await addSection(newSection)
       .unwrap()
@@ -235,7 +252,7 @@ function CourseSectionForm(props: CourseSectionProps) {
   };
 
   const handleAddField = (fieldType: string, sectionIndex: number) => {
-    if (fieldType === CourseSessionField.LECTURE) {
+    if (fieldType === LectureType.LECTURE) {
       const fieldName = `Tên Bài Học`;
       setCountLecture(countLecture + 1);
       const updatedSessionFields = [...sectionFields];
@@ -246,7 +263,7 @@ function CourseSectionForm(props: CourseSectionProps) {
       });
       setSectionFields(updatedSessionFields);
     }
-    if (fieldType === CourseSessionField.SESSION) {
+    if (fieldType === LectureType.SESSION) {
       const newSessionField = {
         name: `Tên Chương`,
         lectures: [],
@@ -264,7 +281,7 @@ function CourseSectionForm(props: CourseSectionProps) {
     lectureIndex?: number
   ) => {
     if (
-      fieldType === CourseSessionField.LECTURE &&
+      fieldType === LectureType.LECTURE &&
       typeof lectureIndex !== "undefined"
     ) {
       const updatedSessionFields = [...sectionFields];
@@ -285,7 +302,7 @@ function CourseSectionForm(props: CourseSectionProps) {
       setCountLecture(countLecture - 1);
     }
 
-    if (fieldType === CourseSessionField.SESSION) {
+    if (fieldType === LectureType.SESSION) {
       const updatedSessionFields = [...sectionFields];
       if (updatedSessionFields[sectionIndex].id) {
         updatedSessionFields[sectionIndex].ordinalNumber = -1;
@@ -339,161 +356,157 @@ function CourseSectionForm(props: CourseSectionProps) {
     }
     setSectionFields(updatedSessionFields);
   };
-  if (isLoading) {
-    return (
-      <div>
-        <Loading />
-        <div className="flex-center text-sm italic text-orange-400">
-          Đang lưu
-        </div>
-      </div>
-    );
-  }
+
+  // if (isLoading) {
+  //   return (
+  //     <div>
+  //       <Loading />
+  //       <div className="flex-center text-sm italic text-orange-400">
+  //         Đang lưu
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
+  const [isCreateNewSection, setCreateNewSection] = useState(false);
+  const handleAddNewSection = () => {
+    setCreateNewSection(!isCreateNewSection);
+  };
+  const [listTest, setListTest] = useState<Section[]>([
+    {
+      id: "1s",
+      name: "1s",
+      ordinalNumber: 1,
+      lectures: [
+        {
+          ordinalNumber: 1,
+          name: "Bai Tap 1",
+          url: null,
+          fileName: null,
+          videoDuration: 0,
+          lectureType: LectureType.VIDEO,
+        },
+        {
+          ordinalNumber: 2,
+          name: "Bai Tap 1",
+          url: null,
+          fileName: null,
+          videoDuration: 0,
+          lectureType: LectureType.VIDEO,
+        },
+      ],
+      content: {
+        id: "1",
+      },
+    },
+    {
+      id: "2s",
+      name: "2s",
+      ordinalNumber: 2,
+      lectures: [
+        {
+          ordinalNumber: 1,
+          name: "Bai Tap 1",
+          url: null,
+          fileName: null,
+          videoDuration: 0,
+          lectureType: LectureType.VIDEO,
+        },
+      ],
+      content: {
+        id: "2",
+      },
+    },
+    {
+      id: "3s",
+      name: "3s",
+      ordinalNumber: -1,
+      lectures: [
+        {
+          ordinalNumber: 1,
+          name: "Bai Tap 1",
+          url: null,
+          fileName: null,
+          videoDuration: 0,
+          lectureType: LectureType.VIDEO,
+        },
+        {
+          ordinalNumber: 2,
+          name: "Bai Tap 1",
+          url: null,
+          fileName: null,
+          videoDuration: 0,
+          lectureType: LectureType.VIDEO,
+        },
+        {
+          ordinalNumber: 3,
+          name: "Bai Tap 2",
+          url: null,
+          fileName: null,
+          videoDuration: 0,
+          lectureType: LectureType.QUIZ_TEST,
+        },
+      ],
+      content: {
+        id: "3",
+      },
+    },
+    {
+      id: "4s",
+      name: "4s",
+      ordinalNumber: 4,
+      lectures: [
+        {
+          ordinalNumber: 3,
+          name: "Bai Tap 2",
+          url: null,
+          fileName: null,
+          videoDuration: 0,
+          lectureType: LectureType.QUIZ_TEST,
+        },
+      ],
+      content: {
+        id: "3",
+      },
+    },
+  ]);
+
+  useEffect(() => {
+    console.log(listTest);
+  }, [listTest]);
+
   return (
     <div>
       <form onSubmit={(e) => onSubmit(e)} ref={formRef}>
         <div>
-          {sectionFields.map((sectionField, sectionIndex) =>
-            !sectionField.ordinalNumber || sectionField.ordinalNumber !== -1 ? (
-              <div
-                key={sectionIndex}
-                className="bg-gray-100 flex flex-col py-4 px-3 my-4 mr-20"
-              >
-                <div className="flex items-center gap-3 ">
-                  <Label className="">
-                    Chương {sectionField.ordinalNumber}:{" "}
-                  </Label>
-                  <Input
-                    value={sectionField.name}
-                    onChange={(e) => {
-                      const updatedSessionFields = [...sectionFields];
-                      updatedSessionFields[sectionIndex].name = e.target.value;
-                      setSectionFields(updatedSessionFields);
-                    }}
-                    className="w-30 focus-visible:ring-1 focus-visible:ring-orange-200 disabled:opacity-1 disabled:cursor-default border-none rounded-md"
-                    autoComplete="off"
-                  />
-                  <div
-                    className="hover:cursor-pointer  text-3xl pb-3"
-                    onClick={() =>
-                      handleRemoveField(
-                        CourseSessionField.SESSION,
-                        sectionIndex
-                      )
-                    }
-                  >
-                    <AiTwotoneDelete className="pt-1" />
-                  </div>
-                  <div>
-                    {isCreated.map((index) => {
-                      return index === sectionIndex ? (
-                        <div key={index} className="text-orange-300">
-                          Bấm <span className="italic font-bold">lưu</span> để
-                          cập nhật
-                        </div>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-                <div className="flex flex-col mx-10">
-                  {sectionField.lectures.map((lecture, lectureIndex) =>
-                    !lecture.ordinalNumber || lecture.ordinalNumber !== -1 ? (
-                      <div
-                        key={lectureIndex}
-                        className="bg-white my-2 px-3 py-3 rounded-sm"
-                      >
-                        <div className="flex items-center gap-2 ">
-                          <Label className="">
-                            {lecture.ordinalNumber ? (
-                              `Bài Học ${lecture.ordinalNumber}`
-                            ) : (
-                              <span className="text-orange-400">
-                                Bài Học Mới
-                              </span>
-                            )}
-                          </Label>
-                          <Input
-                            className="w-30 rounded-md focus-visible:ring-orange-200 focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
-                            value={lecture.name}
-                            onChange={(event) =>
-                              handleInputChange(
-                                sectionIndex,
-                                lectureIndex,
-                                event,
-                                CourseLectureField.NAME
-                              )
-                            }
-                            autoComplete="off"
-                          />
-                          <div
-                            className="hover:cursor-pointer text-3xl pb-3"
-                            onClick={() =>
-                              handleRemoveField(
-                                CourseSessionField.LECTURE,
-                                sectionIndex,
-                                lectureIndex
-                              )
-                            }
-                          >
-                            <AiTwotoneDelete className="pt-1" />
-                          </div>
-                        </div>
-                        <div className="px-20 mt-3">
-                          <div className="flex gap-4 items-center">
-                            <Label>
-                              File Bài Học
-                              <span className="italic">
-                                (có thể là file video hoặc document):
-                              </span>
-                            </Label>
-                          </div>
-                          <Label className="pl-8 italic pt-4 font-bold">
-                            {lecture.fileName
-                              ? lecture.fileName
-                              : "Chưa có file tải lên"}
-                          </Label>
-
-                          <Input
-                            className="w-70 my-5 mx-5"
-                            type="File"
-                            accept=".mp4, .pdf"
-                            placeholder="Video URL"
-                            onChange={(event) =>
-                              handleInputChange(
-                                sectionIndex,
-                                lectureIndex,
-                                event,
-                                CourseLectureField.FILENAME
-                              )
-                            }
-                            ref={(ref) =>
-                              (inputFileRefs.current[uuidv4()] = ref)
-                            }
-                          />
-                        </div>
-                      </div>
-                    ) : null
-                  )}
-                  <div
-                    className="hover: cursor-pointer flex items-center text-orange-500 gap-1 mb-5"
-                    onClick={() =>
-                      handleAddField(CourseSessionField.LECTURE, sectionIndex)
-                    }
-                  >
-                    <BiMessageSquareAdd /> Bài Học
-                  </div>
-                </div>
-              </div>
+          <Sortable
+            data={listTest}
+            key={uuidv4()}
+            type={Constant.SECTION}
+            onDataChange={setListTest}
+          />
+          {/* {listTest.map((section, sectionIndex) =>
+            !section.ordinalNumber || section.ordinalNumber !== -1 ? (
+              <SectionComponent key={sectionIndex} section={section} />
             ) : null
+          )} */}
+          {isCreateNewSection ? (
+            <CreateTitle
+              handleIsOpen={setCreateNewSection}
+              type={Constant.SECTION}
+              key={uuidv4()}
+              parentId={contentId}
+            />
+          ) : (
+            <div
+              className="hover: cursor-pointer flex items-center text-orange-500 gap-1 my-5"
+              onClick={() => handleAddNewSection()}
+            >
+              <BiMessageSquareAdd /> Chương
+            </div>
           )}
-
-          <div
-            className="hover: cursor-pointer flex items-center text-orange-500 gap-1 mb-5"
-            onClick={() => handleAddField(CourseSessionField.SESSION, 1)}
-          >
-            <BiMessageSquareAdd /> Chương
-          </div>
         </div>
+        <Quiz />
       </form>
     </div>
   );

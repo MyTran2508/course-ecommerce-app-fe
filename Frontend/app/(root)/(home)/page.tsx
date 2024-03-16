@@ -1,5 +1,5 @@
 "use client";
-import CourseCard from "@/components/CourseCard";
+import CourseCard from "@/components/Card/CourseCard";
 import {
   useFilterCourseMutation,
   useGetAllCourseQuery,
@@ -10,8 +10,8 @@ import { useTypewriter, Cursor } from "react-simple-typewriter";
 import Loading from "../user/personal/loading";
 import { Course } from "@/types/course.type";
 import { course } from "@/redux/features/courseSlice";
-import Checkout from "@/components/PayPal";
-import Paginate from "@/components/Paginate";
+import Checkout from "@/components/Checkout/PayPal";
+import Paginate from "@/components/Paginate/Paginate";
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";

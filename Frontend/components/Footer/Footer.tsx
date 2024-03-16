@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import "./style/footer.scss";
+import "../style/footer.scss";
 import ReactDOM from "react-dom";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {

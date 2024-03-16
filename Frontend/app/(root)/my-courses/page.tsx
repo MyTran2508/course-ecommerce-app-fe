@@ -1,6 +1,6 @@
 "use client";
-import CourseCard from "@/components/CourseCard";
-import Paginate from "@/components/Paginate";
+import CourseCard from "@/components/Card/CourseCard";
+import Paginate from "@/components/Paginate/Paginate";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useAppSelector } from "@/redux/hooks";
 import { useGetCourseByUserIdQuery } from "@/redux/services/courseApi";

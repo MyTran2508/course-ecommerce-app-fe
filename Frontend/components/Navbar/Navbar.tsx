@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import React, { Fragment, use, useEffect, useState } from "react";
-import CustomButton from "./CustomButton";
-import SearchBar from "./SearchBar";
+import CustomButton from "../CustomButton";
+import SearchBar from "../SearchBar/SearchBar";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ import {
 import { RoleType, User } from "@/types/user.type";
 import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
-import "./style/category.scss";
+import "../style/category.scss";
 import Loading from "@/app/(root)/user/personal/loading";
 import { BiSearchAlt } from "react-icons/bi";
 import {
@@ -35,7 +35,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
