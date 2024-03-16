@@ -33,28 +33,4 @@ public class Section extends BaseModel {
     private Content content;
 
     private Long totalDurationVideoLectures;
-
-    @Override
-    protected void ensureId() {
-        long totalDurationVideoLectures = 0L;
-        for (Lecture lecture: lectures) {
-            if (lecture.getVideoDuration() != null) {
-                totalDurationVideoLectures = totalDurationVideoLectures + lecture.getVideoDuration();
-            }
-        }
-        this.totalDurationVideoLectures = totalDurationVideoLectures;
-        super.ensureId();
-    }
-
-    @Override
-    protected void setUpdated() {
-        long totalDurationVideoLectures = 0L;
-        for (Lecture lecture: lectures) {
-            if (lecture.getVideoDuration() != null) {
-                totalDurationVideoLectures = totalDurationVideoLectures + lecture.getVideoDuration();
-            }
-        }
-        this.totalDurationVideoLectures = totalDurationVideoLectures;
-        super.setUpdated();
-    }
 }

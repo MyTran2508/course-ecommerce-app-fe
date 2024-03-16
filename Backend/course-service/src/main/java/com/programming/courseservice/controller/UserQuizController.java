@@ -3,11 +3,15 @@ package com.programming.courseservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseService;
+import com.main.progamming.common.util.ApiResources;
 import com.programming.courseservice.domain.dto.UserQuizDto;
 import com.programming.courseservice.domain.persistent.entity.UserQuiz;
 import com.programming.courseservice.service.UserQuizService;
+import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,7 +26,14 @@ public class UserQuizController extends BaseApiImpl<UserQuiz, UserQuizDto> {
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<String> add(UserQuizDto objectDTO) {
         return super.add(objectDTO);
+    }
+
+    @ShowOpenAPI
+    @GetMapping("/get")
+    public DataResponse<UserQuizDto> getByUserIdAndExQuizId(@RequestParam String userId, @RequestParam String exQuizId) {
+        return userQuizService.getByUserIdAndExQuizId(userId, exQuizId);
     }
 }

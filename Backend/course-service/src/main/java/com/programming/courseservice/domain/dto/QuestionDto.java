@@ -20,6 +20,8 @@ public class QuestionDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private String id;
+
     private Integer ordinalNumber;
 
     private String title;

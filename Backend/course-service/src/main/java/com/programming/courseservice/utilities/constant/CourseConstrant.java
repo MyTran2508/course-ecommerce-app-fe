@@ -21,6 +21,10 @@ public class CourseConstrant {
         public static final String UPDATE_SUCCESS = "Update successfully";
 
         public static final String UPSERT_SUCCESS = "Upsert successfully";
+
+        public static final String INSERT_SUCCES = "Insert successfully";
+
+        public static final String DELETE_SUCCESS = "Delete successfully";
     }
 
     public static final class S3Constrant {

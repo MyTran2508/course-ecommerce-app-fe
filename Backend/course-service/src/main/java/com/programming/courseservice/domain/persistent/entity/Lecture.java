@@ -4,12 +4,6 @@ import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
-
-import java.util.List;
 
 @Entity
 @Table(

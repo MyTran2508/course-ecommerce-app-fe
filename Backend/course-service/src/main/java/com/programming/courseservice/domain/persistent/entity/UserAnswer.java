@@ -1,5 +1,6 @@
 package com.programming.courseservice.domain.persistent.entity;
 
+import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,10 +17,7 @@ import java.util.UUID;
 @Table(
         name = "user_answer"
 )
-public class UserAnswer {
-
-    @Id
-    private String id;
+public class UserAnswer extends BaseModel {
 
     /**
      * currentAnswer >< rightAnswer
@@ -37,9 +35,4 @@ public class UserAnswer {
     @ManyToOne(targetEntity = UserQuiz.class)
     @JoinColumn(name = "user_quiz_id", foreignKey = @ForeignKey(name = "fk_user_answer_user_quiz_id"))
     private UserQuiz userQuiz;
-
-    @PrePersist
-    private void ensureId() {
-        this.id = UUID.randomUUID().toString();
-    }
 }
