@@ -1,7 +1,7 @@
 "use client";
-import CourseCardSearch from "@/components/CourseCardSearch";
-import Paginate from "@/components/Paginate";
-import SideBarFilter from "@/components/SideBarFilter";
+import CourseCardSearch from "@/components/Card/CourseCardSearch";
+import Paginate from "@/components/Paginate/Paginate";
+import SideBarFilter from "@/components/SideBar/SideBarFilter";
 import { useFilterCourseMutation } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
 import { SearchCourseRequest } from "@/types/request.type";

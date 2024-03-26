@@ -11,7 +11,7 @@ import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { convertVNDtoUSD, totalPrice } from "@/utils/function";
 import { Button } from "@/components/ui/button";
-import Checkout from "@/components/PayPal";
+import Checkout from "@/components/Checkout/PayPal";
 import { updatePrice } from "@/redux/features/cartSlice";
 import { Course } from "@/types/course.type";
 import { useGetAllCourseQuery } from "@/redux/services/courseApi";

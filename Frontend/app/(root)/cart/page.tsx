@@ -1,5 +1,5 @@
 "use client";
-import CartItem from "@/components/CartItem";
+import CartItem from "@/components/Card/CartItem";
 // import Router from "@/components/router/router";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";

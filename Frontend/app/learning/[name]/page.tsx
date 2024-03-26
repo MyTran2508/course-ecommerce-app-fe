@@ -4,7 +4,7 @@ import { IoIosArrowBack, IoIosCloseCircleOutline } from "react-icons/io";
 import { BiNotepad } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
 import CourseContentLearning from "@/components/CourseContentLearning";
-import DiscussionSheet from "@/components/DiscussionSheet";
+import DiscussionSheet from "@/components/Discussion/DiscussionSheet";
 import { useParams, useRouter } from "next/navigation";
 import {
   useLazyLoadFileFromCloudQuery,
@@ -21,7 +21,7 @@ import {
   useUpdateCurrentProgressMutation,
 } from "@/redux/services/courseProcessApi";
 import { CourseProcess } from "@/types/courseProcess.type";
-import PDFViewer from "@/components/PDFviewer";
+import PDFViewer from "@/components/PDF/PDFviewer";
 import { debounce } from "lodash";
 import { AiOutlineMenu } from "react-icons/ai";
 

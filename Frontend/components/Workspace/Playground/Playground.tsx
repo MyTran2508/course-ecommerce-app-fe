@@ -75,7 +75,7 @@ const Playground: React.FC<PlaygroundProps> = ({
       <PreferenceNav settings={settings} setSettings={setSettings} />
 
       <Split
-        className="h-[calc(100vh-94px)]"
+        className="h-[calc(109vh-94px)]"
         direction="vertical"
         sizes={[60, 40]}
         minSize={60}

@@ -6,6 +6,7 @@ import userReducer, { UserState } from "./features/userSlice";
 import courseReducer from "./features/courseSlice";
 import contentReducer from "./features/contentSlice";
 import sectionReducer from "./features/sectionSlice";
+import quizReducer from "./features/quizSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { AuthMiddleware, rtkQueryErrorLogger } from "@/config/middleware";
 import { userApi } from "./services/userApi";
@@ -42,6 +43,7 @@ export const store = configureStore({
     courseReducer,
     contentReducer,
     sectionReducer,
+    quizReducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [courseApi.reducerPath]: courseApi.reducer,

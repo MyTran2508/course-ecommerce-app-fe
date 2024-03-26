@@ -1,8 +1,8 @@
 import { Disclosure, RadioGroup } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import { HiChevronUp } from "react-icons/hi";
-import { Language, Level, Price, Topic } from "../utils/data";
-import DiscussionFilter from "./DiscussionFilter";
+import { Language, Level, Price, Topic } from "../../utils/data";
+import DiscussionFilter from "../Discussion/DiscussionFilter";
 import { SearchCourseRequest } from "@/types/request.type";
 
 interface SideBarFilterProps {

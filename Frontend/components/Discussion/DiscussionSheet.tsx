@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import { AiFillWechat } from "react-icons/ai";
-import Comment from "./Comment";
+import Comment from "../Comment";
 
 function DiscussionSheet() {
   const renderComment = () => {

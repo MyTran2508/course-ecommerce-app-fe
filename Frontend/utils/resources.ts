@@ -1,4 +1,13 @@
-import { User } from './../types/user.type';
+// import { SECTION } from './resources';
+// import { Content } from '@/types/content.type';
+// import { User } from './../types/user.type';
+
+export enum Constant{
+  SECTION = "Chương",
+  LECTURE = "Bài học",
+  QUESTION = "Câu hỏi",
+}
+
 export enum Action {
   SENT_OTP = 'SENT_OTP',
   REGISTER = 'REGISTER',
@@ -63,9 +72,14 @@ export enum CourseDescriptionField {
   TARGET_CONSUMER = "TARGET_CONSUMER"
 }
 
-export enum CourseSessionField {
-  SESSION = "SESSION",
-  LECTURE = "LECTURE",
+export enum LectureType {
+  // SESSION = "SESSION",
+  // LECTURE = "LECTURE",
+  VIDEO = ("Video bài giảng"),
+  DOCUMENT = ("Tài liệu"),
+  EXERCISE_CODING = ("Bài tập lập trình tư duy"),
+  EXERCISE_PRACTICAL = ("Bài tập thực hành"),
+  QUIZ_TEST = ("Bài tập trắc nghiệm")
 }
 
 export enum CourseLectureField {
