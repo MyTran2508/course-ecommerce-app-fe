@@ -96,6 +96,10 @@ public class UserLogService {
         return "- Đăng nhập thành công";
     }
 
+    public String writeSignUpLog() {
+        return "- Đăng ký tài khoản thành công";
+    }
+
     public String writeForgetPassword(boolean isSuccess) {
         return isSuccess ? "- Lấy mật khẩu thành công" : "- Lấy mật khẩu thất bại";
     }

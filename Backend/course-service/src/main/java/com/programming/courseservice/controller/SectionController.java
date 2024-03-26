@@ -19,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/section")
 public class SectionController extends BaseApiImpl<Section, SectionDto> {
+    
     private final SectionService sectionService;
 
     @Override
@@ -43,6 +44,14 @@ public class SectionController extends BaseApiImpl<Section, SectionDto> {
     public DataResponse<SectionDto> update(SectionDto objectDTO, String id) {
         SectionDto sectionDtos = sectionService.updateSection(objectDTO);
         return super.update(sectionDtos, id);
+    }
+
+    @PutMapping("/update-list/{contentId}")
+    @ShowOpenAPI
+    public DataResponse<String> updateList(@RequestBody List<SectionDto> sectionDtoList,
+            @PathVariable String contentId) {
+
+        return sectionService.updateList(sectionDtoList, contentId);
     }
 
     @ShowOpenAPI
