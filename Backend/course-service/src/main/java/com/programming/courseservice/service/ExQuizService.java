@@ -25,6 +25,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ExQuizService extends BaseServiceImpl<ExQuiz, ExQuizDto> {
+
     private final ExQuizRepository exQuizRepository;
 
     private final ExQuizMapper exQuizMapper;

@@ -22,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AddressService {
+
     private final ProvinceRepository provinceRepository;
 
     private final DistrictRepository districtRepository;

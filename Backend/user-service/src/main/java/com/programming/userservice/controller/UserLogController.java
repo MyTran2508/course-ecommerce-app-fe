@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/users/user-log")
 public class UserLogController {
+
     private final UserLogService userLogService;
 
     @PostMapping(ApiResources.ADD)

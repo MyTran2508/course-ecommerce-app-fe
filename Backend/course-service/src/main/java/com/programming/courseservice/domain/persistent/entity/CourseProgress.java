@@ -15,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class CourseProgress extends BaseModel {
+
     private String userId;
 
     @ManyToOne(targetEntity = Course.class)

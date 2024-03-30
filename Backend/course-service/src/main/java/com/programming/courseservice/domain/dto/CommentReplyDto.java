@@ -1,16 +1,21 @@
 package com.programming.courseservice.domain.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class CommentReplyDto {
+public class CommentReplyDto implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private String id;
 

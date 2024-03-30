@@ -16,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 public class ExQuizDto implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

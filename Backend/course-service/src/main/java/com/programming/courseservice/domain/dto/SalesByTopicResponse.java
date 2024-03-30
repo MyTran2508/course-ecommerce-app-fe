@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class SalesByTopicResponse implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

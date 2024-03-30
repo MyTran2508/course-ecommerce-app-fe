@@ -35,6 +35,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class SectionService extends BaseServiceImpl<Section, SectionDto> {
+
     private final SectionRepository sectionRepository;
 
     private final LectureRepository lectureRepository;

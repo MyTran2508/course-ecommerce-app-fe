@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/course")
 public class CourseController extends BaseApiImpl<Course, CourseDto> {
+
     private final CourseService courseService;
 
     @Override

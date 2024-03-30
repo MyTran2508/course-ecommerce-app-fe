@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface WardRepository extends JpaRepository<Ward, String> {
+
     @Query("""
                 SELECT w
                 FROM Ward w

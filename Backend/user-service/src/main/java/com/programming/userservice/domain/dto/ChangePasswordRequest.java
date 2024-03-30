@@ -11,6 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChangePasswordRequest implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

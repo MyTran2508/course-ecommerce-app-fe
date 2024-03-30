@@ -23,6 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserLogService {
+
     private final UserLogRepository userLogRepository;
 
     public DataResponse<String> addLog(UserLog userLog) {

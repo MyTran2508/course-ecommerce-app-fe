@@ -10,6 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SalesByTopicSamePeriodResponse implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

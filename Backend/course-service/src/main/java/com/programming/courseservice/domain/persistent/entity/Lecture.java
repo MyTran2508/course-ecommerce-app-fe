@@ -15,6 +15,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Lecture extends BaseModel {
+
     @Column(name = "ordinal_number")
     private Integer ordinalNumber;
 

@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class StatisticsRequest implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

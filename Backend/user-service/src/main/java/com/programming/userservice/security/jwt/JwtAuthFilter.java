@@ -22,9 +22,13 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
+
     private final JwtService jwtService;
+
     private final CustomUserDetailsService userDetailsService;
+
     private final JwtConfiguration jwtConfiguration;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(jwtConfiguration.getAuthorizationHeader());

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/courses/user-quiz")
 @RequiredArgsConstructor
 public class UserQuizController extends BaseApiImpl<UserQuiz, UserQuizDto> {
+
     private final UserQuizService userQuizService;
 
     @Override

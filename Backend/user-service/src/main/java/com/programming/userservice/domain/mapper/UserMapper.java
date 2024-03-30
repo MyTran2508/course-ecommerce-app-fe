@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserMapper extends BaseMapperImpl<User, UserDto> {
+
     public UserMapper(ModelMapper modelMapper) {
         super(modelMapper);
     }

@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface OrdersRepository extends BaseRepository<Order> {
+
     @Query(value = "SELECT MONTH(FROM_UNIXTIME(created / 1000)) as month, SUM(total_price) as total " +
             "FROM orders " +
             "WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +

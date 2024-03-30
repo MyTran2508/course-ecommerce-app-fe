@@ -9,7 +9,6 @@ import com.programming.courseservice.domain.dto.CourseReviewDto;
 import com.programming.courseservice.domain.persistent.entity.CourseReview;
 import com.programming.courseservice.service.CourseReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/course-review")
 public class CourseReviewController extends BaseApiImpl<CourseReview, CourseReviewDto> {
+
     private final CourseReviewService courseReviewService;
+
     @Override
     protected BaseService<CourseReview, CourseReviewDto> getBaseService() {
         return courseReviewService;
