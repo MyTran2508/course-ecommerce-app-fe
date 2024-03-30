@@ -68,6 +68,7 @@ public class AuthConfig {
                                         "/api/users/user/register/**",
                                         "/api/users/user/forget-password/**",
                                         "/api/users/user/get-by-username/**",
+                                        "/api/users/user/photos/**",
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**")
                         .permitAll()

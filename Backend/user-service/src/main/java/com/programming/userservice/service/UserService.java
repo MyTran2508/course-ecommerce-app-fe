@@ -11,13 +11,10 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.userservice.domain.dto.ChangePasswordRequest;
-import com.programming.userservice.domain.dto.ForgetPasswordRequest;
-import com.programming.userservice.domain.dto.StatisticsRequest;
+import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.persistent.entity.Role;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.security.jwt.JwtService;
-import com.programming.userservice.domain.dto.UserDto;
 import com.programming.userservice.domain.mapper.UserMapper;
 import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.repository.UserRepository;
@@ -180,7 +177,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         return super.update(id, dto);
     }
 
-    public ResponseEntity<?> getAvatar(String username) {
+    public ResponseEntity<AvatarDto> getAvatar(String username) {
         User user = userRepository.findByUserName(username);
         if(user == null) {
             throw new DataNotFoundException("User doesn't exists");
@@ -193,12 +190,16 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
         String imageBase64 = Base64.getEncoder().encodeToString(avatar);
 
+        AvatarDto avatarDto = new AvatarDto();
+        avatarDto.setRawAvatar(imageBase64);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(imageBase64);
+                .body(avatarDto);
     }
 
     public DataResponse<String> uploadAvatar(String username, MultipartFile file) {
+
         User user = userRepository.findByUserName(username);
         if(user == null) {
             throw new DataNotFoundException(username + " doesn't exists in db");
@@ -219,6 +220,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     }
 
     public DataResponse<UserDto> updateAdminUser(UserDto userDto, String id) {
+
         Optional<User> optionalUser = userRepository.findById(id);
 
         if(optionalUser.isPresent()) {
@@ -241,10 +243,12 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     }
 
     public Integer getTotalRegisteredUsers(int targetYear, Integer targetMonth) {
+
         return userRepository.countByYearAnhMonth(targetYear, targetMonth);
     }
 
     public DataResponse<Map<String, Integer>> getStatisticsByYearAndMonth(StatisticsRequest statisticsRequest) {
+
         Map<String, Double> statisticsMap = new HashMap<>();
 
         statisticsMap.put("totalRegisteredUser", Double.valueOf(getTotalRegisteredUsers(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth())));

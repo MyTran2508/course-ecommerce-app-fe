@@ -1,6 +1,5 @@
 package com.programming.courseservice.domain.dto;
 
-import com.programming.courseservice.domain.persistent.entity.Course;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,11 +19,13 @@ public class CourseReviewDto implements Serializable {
 
     private String id;
 
-    private CourseDto courseDto;
+    private CourseDto course;
 
     private String message;
 
-    private Short rating;
+    private Float rating;
 
     private String username;
+
+    private String userAvatar;
 }

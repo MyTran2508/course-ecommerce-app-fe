@@ -15,4 +15,6 @@ public interface CourseReviewRepository extends BaseRepository<CourseReview> {
                 WHERE cr.course.id = :courseId
             """)
     Page<CourseReview> findCourseReviewByCourseId(String courseId, Pageable pageable);
+
+    CourseReview findCourseReviewsByUsername(String username);
 }

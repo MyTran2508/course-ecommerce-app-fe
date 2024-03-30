@@ -21,7 +21,7 @@ public class CourseReview extends BaseModel {
 
     private String message;
 
-    private Short rating;
+    private Float rating;
 
     private String username;
 }

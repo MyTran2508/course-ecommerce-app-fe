@@ -11,8 +11,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
+
     @Autowired
     UserApi userApi;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDto userDto = userApi.getByUsername(username).getData();
