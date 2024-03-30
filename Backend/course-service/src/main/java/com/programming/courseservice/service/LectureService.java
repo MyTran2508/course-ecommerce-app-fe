@@ -26,6 +26,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
+
     private final LectureRepository lectureRepository;
 
     private final LectureMapper lectureMapper;

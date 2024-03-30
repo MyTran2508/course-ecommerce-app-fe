@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrderItemMapper extends BaseMapperImpl<OrderItem, OrderItemDto> {
+
     public OrderItemMapper(ModelMapper modelMapper) {
         super(modelMapper);
     }

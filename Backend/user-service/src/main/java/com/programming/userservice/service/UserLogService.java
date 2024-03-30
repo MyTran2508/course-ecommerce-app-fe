@@ -23,6 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserLogService {
+
     private final UserLogRepository userLogRepository;
 
     public DataResponse<String> addLog(UserLog userLog) {
@@ -94,6 +95,10 @@ public class UserLogService {
 
     public String writeLoginLog() {
         return "- Đăng nhập thành công";
+    }
+
+    public String writeSignUpLog() {
+        return "- Đăng ký tài khoản thành công";
     }
 
     public String writeForgetPassword(boolean isSuccess) {

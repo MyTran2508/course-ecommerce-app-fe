@@ -43,6 +43,7 @@ public class AuthConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsService();

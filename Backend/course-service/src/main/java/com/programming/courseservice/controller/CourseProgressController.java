@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/courses/course-progress")
 @RequiredArgsConstructor
 public class CourseProgressController extends BaseApiImpl<CourseProgress, CourseProgressDto> {
+
     private final CourseProgressService courseProgressService;
+
     @Override
     protected BaseService<CourseProgress, CourseProgressDto> getBaseService() {
         return courseProgressService;

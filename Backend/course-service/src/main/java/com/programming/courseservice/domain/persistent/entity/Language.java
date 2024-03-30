@@ -24,6 +24,7 @@ import java.util.Set;
 )
 @ToString(callSuper = true)
 public class Language extends BaseModel {
+
     @Column(length = 32, nullable = false)
     private String name;
 }

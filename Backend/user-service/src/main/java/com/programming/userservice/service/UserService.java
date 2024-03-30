@@ -40,18 +40,28 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class UserService extends BaseServiceImpl<User, UserDto> {
+
     private final UserMapper userMapper;
+
     private final UserRepository userRepository;
+
     private final JwtService jwtService;
+
     private final OtpUtil otpUtil;
+
     private final PasswordEncoder passwordEncoder;
+
     private final StorageService storageService;
+
     private final OrderService orderService;
+
     private final CourseAPI courseAPI;
+
     @Override
     protected BaseRepository<User> getBaseRepository() {
         return userRepository;
     }
+
     @Override
     protected BaseMapper<User, UserDto> getBaseMapper() {
         return userMapper;

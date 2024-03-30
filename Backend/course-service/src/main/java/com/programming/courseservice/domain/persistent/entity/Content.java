@@ -16,6 +16,7 @@ import java.util.List;
         name = "content"
 )
 public class Content extends BaseModel {
+
     @OneToMany(mappedBy = "content", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("ordinalNumber ASC")
     private List<Section> sections;

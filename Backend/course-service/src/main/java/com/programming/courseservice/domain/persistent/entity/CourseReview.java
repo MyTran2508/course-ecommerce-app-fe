@@ -14,6 +14,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "course_review")
 public class CourseReview extends BaseModel {
+
     @ManyToOne(targetEntity = Course.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_course_review_course"))
     private Course course;

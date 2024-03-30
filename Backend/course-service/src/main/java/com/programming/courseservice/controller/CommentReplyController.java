@@ -23,7 +23,8 @@ public class CommentReplyController extends BaseApiImpl<CommentReply, CommentRep
     }
 
     @PostMapping(ApiResources.ADD + "/{forumLectureId}")
-    public DataResponse<String> insert(@PathVariable("forumLectureId") String forumLectureId, @RequestBody CommentReplyDto commentReplyDto) {
+    public DataResponse<String> insert(@PathVariable("forumLectureId") String forumLectureId,
+            @RequestBody CommentReplyDto commentReplyDto) {
         return commentReplyService.insert(forumLectureId, commentReplyDto);
     }
 

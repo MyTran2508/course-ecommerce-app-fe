@@ -5,6 +5,8 @@ import com.programming.userservice.domain.persistent.entity.Role;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +14,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class UserDto {
+public class UserDto implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String id;
 
 //    @NotEmpty(message = "Password is required")

@@ -11,6 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DescriptionDto implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

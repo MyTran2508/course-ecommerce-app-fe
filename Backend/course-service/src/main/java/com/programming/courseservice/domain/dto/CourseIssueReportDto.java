@@ -1,8 +1,6 @@
 package com.programming.courseservice.domain.dto;
 
 import com.programming.courseservice.domain.persistent.enumrate.IssueType;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CourseIssueReportDto implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

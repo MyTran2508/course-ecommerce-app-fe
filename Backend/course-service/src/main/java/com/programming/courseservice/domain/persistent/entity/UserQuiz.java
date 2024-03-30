@@ -17,6 +17,7 @@ import java.util.List;
 )
 @SuperBuilder(toBuilder = true)
 public class UserQuiz extends BaseModel {
+
     @Column(name = "user_id", nullable = false)
     private String userId;
 

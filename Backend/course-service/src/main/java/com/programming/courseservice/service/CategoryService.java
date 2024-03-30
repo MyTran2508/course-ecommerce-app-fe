@@ -29,9 +29,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
+
     private final CategoryRepository categoryRepository;
+
     private final CategoryMapper categoryMapper;
+
     private final TopicMapper topicMapper;
+
     @Override
     protected BaseRepository<Category> getBaseRepository() {
         return categoryRepository;

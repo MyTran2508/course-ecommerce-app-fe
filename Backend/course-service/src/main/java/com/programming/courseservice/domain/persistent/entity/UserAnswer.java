@@ -19,9 +19,7 @@ import java.util.UUID;
 )
 public class UserAnswer extends BaseModel {
 
-    /**
-     * currentAnswer >< rightAnswer
-     */
+    /** currentAnswer >< rightAnswer */
     @Column(name = "current_answer")
     private String currentAnswer;
 

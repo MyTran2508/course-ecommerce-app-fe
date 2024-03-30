@@ -15,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Question extends BaseModel {
+
     @Column(name = "ordinal_number")
     private Integer ordinalNumber;
 

@@ -22,7 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/users/order")
 public class OrderController extends BaseApiImpl<Order, OrderDto> {
+
     private final OrderService orderService;
+
     @Override
     protected BaseService<Order, OrderDto> getBaseService() {
         return orderService;

@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SectionDto implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

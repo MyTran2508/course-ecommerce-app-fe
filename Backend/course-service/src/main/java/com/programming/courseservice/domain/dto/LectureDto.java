@@ -1,8 +1,5 @@
 package com.programming.courseservice.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import lombok.*;
 
@@ -14,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LectureDto implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum QuizType {
+
     SINGLE_CHOICE("Trắc nghiệm một đáp án"),
 
     MULTIPLE_CHOICE("Trắc nghiệm nhiều đáp án");

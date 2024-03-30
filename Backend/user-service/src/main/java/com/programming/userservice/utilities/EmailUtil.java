@@ -11,8 +11,10 @@ import java.text.MessageFormat;
 
 @Component
 public class EmailUtil {
+
     @Autowired
     private JavaMailSender emailSender;
+
     public static final String FORMATTED_TIME = DateUtil.getTimeExpTime5Minutes();
 
     @Value("${spring.mail.username}")

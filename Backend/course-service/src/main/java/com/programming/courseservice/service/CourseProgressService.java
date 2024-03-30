@@ -29,10 +29,15 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CourseProgressService extends BaseServiceImpl<CourseProgress, CourseProgressDto> {
+
     private final CourseProgressRepository courseProgressRepository;
+
     private final CourseProgressMapper courseProgressMapper;
+
     private final CourseRepository courseRepository;
+
     private final CourseMapper courseMapper;
+
     @Override
     protected BaseRepository<CourseProgress> getBaseRepository() {
         return courseProgressRepository;

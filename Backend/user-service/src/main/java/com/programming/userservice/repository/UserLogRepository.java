@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 
 public interface UserLogRepository extends BaseRepository<UserLog> {
+
     @Query("""
                 SELECT ul FROM UserLog ul
                 WHERE (:startTime IS NULL OR (ul.created >= :startTime AND ul.created <= :endTime))

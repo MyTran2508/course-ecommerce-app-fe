@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/courses/user-quiz")
 @RequiredArgsConstructor
 public class UserQuizController extends BaseApiImpl<UserQuiz, UserQuizDto> {
+
     private final UserQuizService userQuizService;
 
     @Override
@@ -35,5 +36,11 @@ public class UserQuizController extends BaseApiImpl<UserQuiz, UserQuizDto> {
     @GetMapping("/get")
     public DataResponse<UserQuizDto> getByUserIdAndExQuizId(@RequestParam String userId, @RequestParam String exQuizId) {
         return userQuizService.getByUserIdAndExQuizId(userId, exQuizId);
+    }
+
+    @ShowOpenAPI
+    @GetMapping("/is-complete")
+    public DataResponse<Boolean> isCompleteQuiz(@RequestParam String userId, @RequestParam String exQuizId) {
+        return userQuizService.isCompleteQuiz(userId, exQuizId);
     }
 }

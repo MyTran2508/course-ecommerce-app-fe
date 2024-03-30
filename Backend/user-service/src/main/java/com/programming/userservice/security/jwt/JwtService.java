@@ -18,7 +18,9 @@ import java.util.function.Function;
 @Component
 @RequiredArgsConstructor
 public class JwtService {
+
     private final JwtConfiguration jwtConfiguration;
+
     public static final String SECRET = "38b49ee78fc593692b9bdd533cb71c2630d0f4f3c596a1ad1a484c889361a281";
 
     public String extractUsername(String token) {
