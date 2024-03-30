@@ -10,7 +10,7 @@ import {
   useLazyLoadFileFromCloudQuery,
   useLoadFileFromCloudQuery,
 } from "@/redux/services/courseApi";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Lecture, Section } from "@/types/section.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content from "@/types/content.type";

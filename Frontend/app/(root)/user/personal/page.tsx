@@ -6,7 +6,7 @@ import { User } from "@/types/user.type";
 import React, { Suspense, useEffect } from "react";
 import Loading from "./loading";
 import { useGetByUserNameQuery } from "@/redux/services/userApi";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { AiOutlineMenu } from "react-icons/ai";
 
 function PagePersonal() {

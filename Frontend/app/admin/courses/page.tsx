@@ -36,7 +36,7 @@ import {
 } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
 import { SearchRequest } from "@/types/request.type";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateCourse } from "@/redux/features/courseSlice";
 
 function CoursesAdmin() {

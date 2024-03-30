@@ -8,7 +8,7 @@ import { GoVideo, GoInfinity } from "react-icons/go";
 import { HiOutlineFilm } from "react-icons/hi";
 import { GrCertificate } from "react-icons/gr";
 import { v4 as uuidv4 } from "uuid";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Cart } from "@/types/cart.type";
 import { addToCart } from "@/redux/features/cartSlice";
 import showToast from "@/utils/showToast";

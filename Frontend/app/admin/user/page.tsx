@@ -36,7 +36,7 @@ import {
 } from "@/redux/services/userApi";
 import { userColumns } from "@/components/Table/Columns";
 import { SearchRequest } from "@/types/request.type";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 
 function UserAdmin() {

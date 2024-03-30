@@ -2,7 +2,7 @@
 import CourseCard from "@/components/Card/CourseCard";
 import Paginate from "@/components/Paginate/Paginate";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useGetCourseByUserIdQuery } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
 import Link from "next/link";
