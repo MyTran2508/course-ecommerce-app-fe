@@ -3,6 +3,7 @@ package com.programming.userservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.NotPermissionException;
+import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
@@ -41,6 +42,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/users/user")
 public class UserController extends BaseApiImpl<User, UserDto> {
+
     private final UserService userService;
 
     private final UserRepository userRepository;
@@ -80,6 +82,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         String userId = stResult.split(": ")[1].trim();
         User entity = userRepository.findById(userId).orElse(null);
 
+        // Add log
         UserLog userLog = UserLog.builder()
                 .userName(SystemUtil.getCurrentUsername())
                 .ip(SystemUtil.getUserIP())
@@ -120,6 +123,8 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         if(authentication.isAuthenticated()) {
+
+            // Add log
             UserLog userLog = UserLog.builder()
                     .actionObject(ActionObject.USER)
                     .actionName(ActionName.LOGIN)
@@ -149,14 +154,44 @@ public class UserController extends BaseApiImpl<User, UserDto> {
                                          @RequestParam String email,
                                          @RequestParam Integer otp) {
 
-        return userService.verifyAndSaveRegister(userDto, email, otp);
+        DataResponse<String> response = userService.verifyAndSaveRegister(userDto, email, otp);
+
+        if (response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
+            //  Add log
+            UserLog userLog = UserLog.builder()
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.SIGNUP)
+                    .ip(SystemUtil.getUserIP())
+                    .userName(userDto.getUsername())
+                    .description(userLogService.writeSignUpLog())
+                    .build();
+            userLogService.addLog(userLog);
+        }
+
+        return response;
     }
 
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<UserDto> setRemoved(String id) {
-        return super.setRemoved(id);
+        DataResponse<UserDto> response = super.setRemoved(id);
+
+        if (response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
+
+            // Add log
+            UserLog userLog = UserLog.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionKey(id)
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.REMOVED)
+                    .description(userLogService.writeRemoveLog(true))
+                    .build();
+            userLogService.addLog(userLog);
+        }
+
+        return response;
     }
 
     @ShowOpenAPI
@@ -164,7 +199,22 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     public DataResponse<String> changePassword(@PathVariable("id") String id,
                                                @RequestBody ChangePasswordRequest changePasswordRequest) {
 
-        return userService.changePassword(id, changePasswordRequest);
+        DataResponse<String> response = userService.changePassword(id, changePasswordRequest);
+        if (response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
+
+            // Add log
+            UserLog userLog = UserLog.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionKey(id)
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.RESET_PASSWORD)
+                    .description(userLogService.writeResetPassword(true))
+                    .build();
+            userLogService.addLog(userLog);
+        }
+
+        return response;
     }
 
     @ShowOpenAPI
@@ -177,7 +227,20 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PostMapping("/forget-password/verify")
     public DataResponse<String> verifyAndSaveForgetPass(@RequestBody ForgetPasswordRequest forgetPasswordRequest) {
 
-        return userService.verifyAndSaveForgetPass(forgetPasswordRequest);
+        DataResponse<String> response = userService.verifyAndSaveForgetPass(forgetPasswordRequest);
+        if (response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
+            // Add log
+            UserLog userLog = UserLog.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.FORGET_PASSWORD)
+                    .description(userLogService.writeForgetPassword(true))
+                    .build();
+            userLogService.addLog(userLog);
+        }
+
+        return response;
     }
 
     @Override

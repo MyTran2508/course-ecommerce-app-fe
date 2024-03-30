@@ -73,7 +73,7 @@ public class UserLogService {
                         merginCount += 2;
                         if(newFieldValue != null) {
                             for(Object object: (List<?>) newFieldValue) {
-                                result.append(field.getName().trim().toUpperCase()).append(": <\\n");
+                                result.append(field.getName().trim()).append(": <\\n");
                                 result.append("\\ml-").append(merginCount)
                                         .append(writePersistLog(object.getClass(), object, false, merginCount));
                                 result.append("\\eml").append("\\n>; ");
@@ -81,7 +81,7 @@ public class UserLogService {
                         }
                         merginCount -= 2;
                     } else {
-                        result.append(field.getName().trim().toUpperCase()).append(": <")
+                        result.append(field.getName().trim()).append(": <")
                                 .append(newFieldValue == null ? "N/A" : newFieldValue).append(">; ");
                     }
                 }

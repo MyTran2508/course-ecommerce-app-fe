@@ -1,6 +1,7 @@
 package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.DataConflictException;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
@@ -15,8 +16,10 @@ import com.programming.courseservice.domain.mapper.CourseProgressMapper;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.domain.persistent.entity.CourseProgress;
 import com.programming.courseservice.domain.persistent.entity.Section;
+import com.programming.courseservice.domain.persistent.entity.UserQuiz;
 import com.programming.courseservice.repository.CourseProgressRepository;
 import com.programming.courseservice.repository.CourseRepository;
+import com.programming.courseservice.repository.UserQuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +38,8 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
     private final CourseProgressMapper courseProgressMapper;
 
     private final CourseRepository courseRepository;
+
+    private final UserQuizRepository userQuizRepository;
 
     private final CourseMapper courseMapper;
 
@@ -72,11 +77,20 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
         return super.create(dto);
     }
 
-    public DataResponse<CourseProgressDto> updateCurrentProgress(String userId, String courseId) {
+    public DataResponse<CourseProgressDto> updateCurrentProgress(String userId, String courseId, String exQuizId) {
         Optional<CourseProgress> courseProgressOptional = courseProgressRepository.findByUserIdAndCourseId(userId, courseId);
 
         if (courseProgressOptional.isPresent()) {
             CourseProgress courseProgress = courseProgressOptional.get();
+
+            if (exQuizId != null) {
+                UserQuiz userQuiz = userQuizRepository.findByUserIdAndExQuizId(userId, exQuizId);
+
+                if (userQuiz == null || userQuiz.getIsCompleted() == null ||
+                        !userQuiz.getIsCompleted() || userQuiz.getScore() == null || userQuiz.getScore() < 7) {
+                    throw new DataConflictException("User quiz is not completed or score is less than 7");
+                }
+            }
 
             if(courseProgress.getCurrentProgress() < courseProgress.getTotalAmountOfLecture()) {
                 courseProgress.setCurrentProgress(courseProgress.getCurrentProgress() + 1);

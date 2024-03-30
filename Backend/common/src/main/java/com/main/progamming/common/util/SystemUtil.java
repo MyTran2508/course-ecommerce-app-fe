@@ -20,17 +20,24 @@ public class SystemUtil {
     }
 
     public static String getUserIP() {
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//
+//        // get user ip from header "X-FORWARDED-FOR
+//        String userIp = request.getHeader("X-FORWARDED-FOR");
+//
+//        // if user ip is null or empty get user ip from request.getRemoteAddr()
+//        if (userIp == null || userIp.isEmpty() || "unknown".equalsIgnoreCase(userIp)) {
+//            userIp = request.getRemoteAddr();
+//        }
+//
+//        // return user ip
+//        return userIp;
+
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        // get user ip from header "X-FORWARDED-FOR
-        String userIp = request.getHeader("X-FORWARDED-FOR");
-
-        // if user ip is null or empty get user ip from request.getRemoteAddr()
-        if (userIp == null || userIp.isEmpty() || "unknown".equalsIgnoreCase(userIp)) {
-            userIp = request.getRemoteAddr();
+        if (request != null ) {
+            return request.getRemoteAddr();
         }
-
-        // return user ip
-        return userIp;
+        return null;
     }
 }
