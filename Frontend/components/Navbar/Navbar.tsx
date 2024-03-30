@@ -7,7 +7,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { Menu, Transition } from "@headlessui/react";
 import { useRouter } from "next/navigation";
 import { iconMap } from "@/utils/map";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { setCredential, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
 import { Role, ToastMessage, ToastStatus } from "@/utils/resources";

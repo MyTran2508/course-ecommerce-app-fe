@@ -6,7 +6,7 @@ import {
 } from "@paypal/react-paypal-js";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useRouter } from "next/navigation";
 import { setCart, updatePrice } from "@/redux/features/cartSlice";
 import { useAddOrderMutation } from "@/redux/services/orderApi";

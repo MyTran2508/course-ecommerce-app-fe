@@ -1,27 +1,57 @@
 import { Disclosure } from "@headlessui/react";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, use, useEffect, useState } from "react";
 import { HiChevronUp } from "react-icons/hi";
 import { IoIosMenu } from "react-icons/io";
 import { CiCircleQuestion } from "react-icons/ci";
 import { Button } from "../../ui/button";
 import { IoAddOutline } from "react-icons/io5";
 import SelectTypeQuestion from "../Quiz/SelectTypeQuestion";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Constant, LectureType, QuizType } from "@/utils/resources";
 import { setTypeQuizCreate } from "@/redux/features/quizSlice";
-import Question, { ques } from "./Question";
 import Sortable from "../DragAndDrop/Sorttable";
+import { ExQuiz, Lecture, Question } from "@/types/section.type";
+import ActionButtons from "../ActionButtons";
+import { v4 as uuidv4 } from "uuid";
+import { useExQuizHooks } from "@/redux/hooks/courseHooks/quizHooks";
+import { useGetExQuizByIdQuery } from "@/redux/services/quizApi";
+import _ from "lodash";
 
-function Quiz() {
+interface QuizProps {
+  lecture: Lecture;
+  index: number;
+  attributes?: any;
+  listeners?: any;
+}
+function Quiz(props: QuizProps) {
+  const { index, lecture, attributes, listeners } = props;
   const dispatch = useAppDispatch();
   const [isSelectTypeQuestion, setSelectTypeQuestion] = useState(false);
+  const { data: exQuizData } = useGetExQuizByIdQuery(lecture.exQuiz?.id || "");
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [isEdit, setEdit] = useState(false);
   const quizType = useAppSelector((state) => state.quizReducer.typeQuizCreate);
+  const { handleUpdateListQuestion } = useExQuizHooks();
+
   const handleSelectType = (close: boolean = false) => {
     setSelectTypeQuestion(!isSelectTypeQuestion);
     if (close) {
       dispatch(setTypeQuizCreate(null));
     }
   };
+
+  useEffect(() => {
+    if (exQuizData) {
+      setQuestions(_.cloneDeep(exQuizData?.data as Question[]));
+    }
+  }, [exQuizData]);
+
+  useEffect(() => {
+    if (isEdit) {
+      handleUpdateListQuestion(lecture.exQuiz?.id as string, questions);
+      setEdit(false);
+    }
+  }, [questions]);
 
   const handleAddQuestion = () => {};
   return (
@@ -31,10 +61,15 @@ function Quiz() {
           "flex w-full border border-black bg-white px-2 py-4 text-sm font-medium"
         }
       >
-        <div className="flex gap-2">
-          <p>Quiz 1: </p>
-          <CiCircleQuestion className={"text-xl"} />
-          <label>Bài tập 1</label>
+        <div className="flex gap-4 group w-full">
+          <div className="flex w-max gap-2">
+            <p>
+              <strong>{index}.</strong> Quiz{" "}
+            </p>
+            <CiCircleQuestion className={"text-xl"} />
+            <label>{lecture.name}</label>
+          </div>
+          <ActionButtons attributes={attributes} listeners={listeners} />
         </div>
         {isSelectTypeQuestion ? (
           <div className="right-1/4 border-b-0 border absolute py-2 px-2 border-black flex gap-2 w-[180px] justify-center items-center">
@@ -52,11 +87,7 @@ function Quiz() {
               onClick={() => handleSelectType(true)}
             />
           </div>
-        ) : (
-          <Fragment>
-            <IoIosMenu className={"text-xl ml-auto"} />
-          </Fragment>
-        )}
+        ) : null}
       </div>
 
       <Disclosure>
@@ -66,7 +97,7 @@ function Quiz() {
               className={
                 !open
                   ? "border-y-0"
-                  : "flex flex-col border-t-0 border border-black p-2 bg-white"
+                  : "flex flex-col border-t-0 border border-black p-2 bg-white mb-5"
               }
             >
               {!isSelectTypeQuestion ? (
@@ -84,7 +115,11 @@ function Quiz() {
                 {open ? (
                   <>
                     {isSelectTypeQuestion ? (
-                      <SelectTypeQuestion />
+                      <SelectTypeQuestion
+                        ordinalNumber={questions.length + 1}
+                        exQuizId={lecture.exQuiz?.id as string}
+                        handleOpen={setSelectTypeQuestion}
+                      />
                     ) : (
                       <Fragment>
                         <div className="mb-2">
@@ -99,9 +134,11 @@ function Quiz() {
                           </div>
                         </div>
                         <Sortable
-                          key={"1"}
-                          data={ques}
+                          data={questions}
                           type={Constant.QUESTION}
+                          key={uuidv4()}
+                          onDataChange={setQuestions}
+                          onDataUpdate={setEdit}
                         />
                       </Fragment>
                     )}

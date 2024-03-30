@@ -4,7 +4,7 @@ import CourseContentForm from "@/components/Form/CourseContentForm";
 import { setContentId } from "@/redux/features/contentSlice";
 import { setParamCourseId } from "@/redux/features/courseSlice";
 import { setSections } from "@/redux/features/sectionSlice";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content from "@/types/content.type";
 import { Section } from "@/types/section.type";

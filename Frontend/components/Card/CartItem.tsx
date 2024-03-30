@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { BsDot, BsFillTagFill } from "react-icons/bs";
 import { Button } from "../ui/button";
 import { Cart } from "@/types/cart.type";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { removeFromCart, setCheckedFormCart } from "@/redux/features/cartSlice";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";

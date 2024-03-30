@@ -1,3 +1,4 @@
+import { QuizType } from "@/utils/resources";
 import Content from "./content.type";
 
 export interface Section {
@@ -5,13 +6,14 @@ export interface Section {
   ordinalNumber?: number;
   name?: string;
   lectures?: Lecture[];
-  content?: Pick<Content, "id">
+  content?: Pick<Content, "id">;
+  totalDurationVideoLectures?: number
 }
 
 export interface Lecture {
   id?: string;
   ordinalNumber?: number;
-  name: string;
+  name?: string;
   fileName?: string | null;
   url?: string | null;
   videoDuration?: number | 0;
@@ -33,5 +35,5 @@ export interface Question {
   options?: string;
   rightAnswer?: string;
   answerExplanation?: string;
-  quizType?: number;
+  quizType?: QuizType;
 }

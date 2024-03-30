@@ -32,7 +32,7 @@ import {
 } from "@/redux/services/userApi";
 import showToast from "@/utils/showToast";
 import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 
 const formSchema = formPersonalSchema;

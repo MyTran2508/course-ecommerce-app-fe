@@ -11,10 +11,11 @@ interface SortableItemProp {
   id: string;
   type?: LectureType | Constant;
   data?: object;
+  index: number;
 }
 
 export function SortableItem(props: SortableItemProp) {
-  const { id, type, data } = props;
+  const { id, type, data, index } = props;
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: id });
 
@@ -26,13 +27,17 @@ export function SortableItem(props: SortableItemProp) {
 
   return (
     <div>
-      <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <div ref={setNodeRef} style={style}>
         {type === Constant.SECTION && (
-          <SectionComponent section={data as object} />
+          <SectionComponent section={data as object} index={index} attributes={attributes} listeners={listeners}/>
         )}
-        {type === LectureType.QUIZ_TEST && <Quiz />}
-        {type === LectureType.VIDEO && <VideoLecture />}
-        {type === Constant.QUESTION && <Question question={data as object} />}
+        {type === LectureType.QUIZ_TEST && (
+          <Quiz index={index} lecture={data as object} attributes={attributes} listeners={listeners}/>
+        )}
+        {type === LectureType.VIDEO && (
+          <VideoLecture lecture={data as object} index={index} attributes={attributes} listeners={listeners}/>
+        )}
+        {type === Constant.QUESTION && <Question question={data as object} attributes={attributes} listeners={listeners} />}
       </div>
     </div>
   );
