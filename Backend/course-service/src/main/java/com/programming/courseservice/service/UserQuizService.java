@@ -62,4 +62,19 @@ public class UserQuizService extends BaseServiceImpl<UserQuiz, UserQuizDto> {
         // return success response
         return ResponseMapper.toDataResponseSuccess(userQuizDto);
     }
+
+    public DataResponse<Boolean> isCompleteQuiz(String userId, String exQuizId) {
+        UserQuiz userQuiz = userQuizRepository.findByUserIdAndExQuizId(userId, exQuizId);
+
+        if (userQuiz == null) {
+            // throw exception if user quiz not found
+            throw new ResourceNotFoundException(StatusMessage.DATA_NOT_FOUND);
+        }
+
+        // check if user quiz is complete
+        boolean isComplete = userQuiz.getIsCompleted();
+
+        // return success response
+        return ResponseMapper.toDataResponseSuccess(isComplete);
+    }
 }

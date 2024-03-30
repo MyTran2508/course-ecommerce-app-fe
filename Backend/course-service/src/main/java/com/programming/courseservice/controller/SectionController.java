@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/section")
 public class SectionController extends BaseApiImpl<Section, SectionDto> {
-    
+
     private final SectionService sectionService;
 
     @Override

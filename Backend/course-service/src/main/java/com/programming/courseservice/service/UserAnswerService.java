@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserAnswerService {
+
     private final UserAnswerRepository userAnswerRepository;
 
     private final UserQuizRepository userQuizRepository;

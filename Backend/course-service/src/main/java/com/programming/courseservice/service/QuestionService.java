@@ -10,6 +10,7 @@ import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.main.progamming.common.util.CommonConstrant;
+import com.main.progamming.common.util.SystemUtil;
 import com.programming.courseservice.domain.dto.QuestionDto;
 import com.programming.courseservice.domain.mapper.QuestionMapper;
 import com.programming.courseservice.domain.persistent.entity.ExQuiz;
@@ -37,6 +38,8 @@ public class QuestionService extends BaseServiceImpl<Question, QuestionDto> {
 
     private final QuestionMapper questionMapper;
 
+    private final UserQuizService userQuizService;
+
     @Override
     protected BaseRepository<Question> getBaseRepository() {
         return questionRepository;
@@ -59,16 +62,36 @@ public class QuestionService extends BaseServiceImpl<Question, QuestionDto> {
 
 
     @SuppressWarnings("unchecked")
-    public ListResponse<QuestionDto> getByExQuizId(String exQuizId, Integer pageIndex, Integer pageSize) {
+    public ListResponse<QuestionDto> getByExQuizId(String userId, String exQuizId, Integer pageIndex, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+
+        Boolean isCompleteQuiz = userQuizService.isCompleteQuiz(userId, exQuizId).getData();
+
+        Page<QuestionDto> dataResult = null;
+        // get questions by exQuizId
+        if (!isCompleteQuiz) {
+            dataResult = questionRepository.findByExQuizId(exQuizId, pageable).map(
+                    question -> {
+                        question.setAnswerExplanation(null);
+                        question.setRightAnswer(null);
+                        return questionMapper.entityToDto(question);
+                    }
+            );
+        } else {
+            dataResult = questionRepository.findByExQuizId(exQuizId, pageable).map(
+                    question -> questionMapper.entityToDto(question));
+        }
+
+        return ResponseMapper.toPagingResponseSuccess(dataResult);
+    }
+
+    @SuppressWarnings("unchecked")
+    public ListResponse<QuestionDto> getByExQuizIdManager(String exQuizId, Integer pageIndex, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
 
         // get questions by exQuizId
         Page<QuestionDto> dataResult = questionRepository.findByExQuizId(exQuizId, pageable).map(
-                question -> {
-                    question.setAnswerExplanation(null);
-                    question.setRightAnswer(null);
-                    return questionMapper.entityToDto(question);
-                }
+                question -> questionMapper.entityToDto(question)
         );
 
         return ResponseMapper.toPagingResponseSuccess(dataResult);

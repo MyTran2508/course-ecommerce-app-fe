@@ -27,12 +27,23 @@ public class QuestionController extends BaseApiImpl<Question, QuestionDto> {
         return questionService;
     }
 
-    @GetMapping("/get-by-ex-quiz-id/{exQuizId}/{pageIndex}/{pageSize}")
+    @GetMapping("/get-by-ex-quiz-id/{userId}/{exQuizId}/{pageIndex}/{pageSize}")
     @ShowOpenAPI
-    public ListResponse<QuestionDto> getByExQuizId(@PathVariable("exQuizId") String exQuizId, @PathVariable("pageIndex") Integer pageIndex,
+    public ListResponse<QuestionDto> getByExQuizId(@PathVariable("userId") String userId,
+            @PathVariable("exQuizId") String exQuizId,
+            @PathVariable("pageIndex") Integer pageIndex,
             @PathVariable("pageSize") Integer pageSize) {
 
-        return questionService.getByExQuizId(exQuizId, pageIndex, pageSize);
+        return questionService.getByExQuizId(userId, exQuizId, pageIndex, pageSize);
+    }
+
+
+    @GetMapping("/manager/get-by-ex-quiz-id/{exQuizId}/{pageIndex}/{pageSize}")
+    @ShowOpenAPI
+    public ListResponse<QuestionDto> getByExQuizIdManager(@PathVariable("exQuizId") String exQuizId, @PathVariable("pageIndex") Integer pageIndex,
+            @PathVariable("pageSize") Integer pageSize) {
+
+        return questionService.getByExQuizIdManager(exQuizId, pageIndex, pageSize);
     }
 
     @PostMapping(ApiResources.ADD + "/{exQuizId}")

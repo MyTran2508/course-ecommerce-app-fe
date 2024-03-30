@@ -36,4 +36,10 @@ public class UserQuizController extends BaseApiImpl<UserQuiz, UserQuizDto> {
     public DataResponse<UserQuizDto> getByUserIdAndExQuizId(@RequestParam String userId, @RequestParam String exQuizId) {
         return userQuizService.getByUserIdAndExQuizId(userId, exQuizId);
     }
+
+    @ShowOpenAPI
+    @GetMapping("/is-complete")
+    public DataResponse<Boolean> isCompleteQuiz(@RequestParam String userId, @RequestParam String exQuizId) {
+        return userQuizService.isCompleteQuiz(userId, exQuizId);
+    }
 }
