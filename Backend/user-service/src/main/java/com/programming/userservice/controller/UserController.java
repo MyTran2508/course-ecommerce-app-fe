@@ -98,8 +98,10 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
+
         RoleDto role = new RoleDto(RoleUser.USER.getValue());
         objectDTO.setRoles(List.of(role));
+
         return super.update(objectDTO, id);
     }
 
@@ -108,6 +110,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PutMapping("/update-admin/{id}")
     public DataResponse<UserDto> updateAdminUser(@Valid @RequestBody UserDto userDto,
                                                     @PathVariable("id") String id) {
+
         return userService.updateAdminUser(userDto, id);
     }
 
@@ -136,6 +139,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
     public DataResponse<String> sendOtpRegister(@RequestParam String email,
                                         @RequestBody @Valid UserDto userDto) {
+
         return userService.sendOtpRegister(email, userDto);
     }
 
@@ -144,6 +148,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     public DataResponse<String> verifyAndSaveRegister(@RequestBody @Valid UserDto userDto,
                                          @RequestParam String email,
                                          @RequestParam Integer otp) {
+
         return userService.verifyAndSaveRegister(userDto, email, otp);
     }
 
@@ -158,6 +163,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PutMapping("/change-password/{id}")
     public DataResponse<String> changePassword(@PathVariable("id") String id,
                                                @RequestBody ChangePasswordRequest changePasswordRequest) {
+
         return userService.changePassword(id, changePasswordRequest);
     }
 
@@ -170,12 +176,14 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
     @PostMapping("/forget-password/verify")
     public DataResponse<String> verifyAndSaveForgetPass(@RequestBody ForgetPasswordRequest forgetPasswordRequest) {
+
         return userService.verifyAndSaveForgetPass(forgetPasswordRequest);
     }
 
     @Override
     @ShowOpenAPI
     public ListResponse<UserDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
+
         /*
          * List<String> keyword:
          * index 1: key of username or email
@@ -185,7 +193,8 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @ShowOpenAPI
     @GetMapping("/photos/{username}")
-    public ResponseEntity<?> getAvatar(@PathVariable("username") String username)  {
+    public ResponseEntity<AvatarDto> getAvatar(@PathVariable("username") String username)  {
+
         return userService.getAvatar(username);
     }
 
@@ -193,6 +202,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PostMapping("/photos/{username}")
     public DataResponse<String> uploadAvatar(@PathVariable("username") String username,
                                             @RequestParam("image")MultipartFile file) {
+
         return userService.uploadAvatar(username, file);
     }
 
