@@ -25,6 +25,9 @@ public class Lecture extends BaseModel {
 
     private String fileName;
 
+    @Column(length = 5000)
+    private String description;
+
     @Column(name = "video_duration")
     private Long videoDuration;
 

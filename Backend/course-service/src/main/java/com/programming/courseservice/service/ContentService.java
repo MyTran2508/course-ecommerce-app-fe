@@ -15,6 +15,7 @@ import com.programming.courseservice.domain.persistent.entity.Content;
 import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.domain.persistent.entity.Lecture;
 import com.programming.courseservice.domain.persistent.entity.Section;
+import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import com.programming.courseservice.repository.ContentRepository;
 import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.utilities.constant.CourseConstrant;
@@ -65,7 +66,10 @@ public class ContentService extends BaseServiceImpl<Content, ContentDto> {
 
             for (SectionDto sectionDto : contentDto.getSections()) {
                 for (LectureDto lectureDto : sectionDto.getLectures()) {
-                    if(lectureDto.getExQuiz() != null) {
+                    if (lectureDto.getLectureType() == LectureType.QUIZ_TEST) {
+                        lectureDto.getExQuiz().setTotalQuestion(lectureDto.getExQuiz().getQuestions().size())  ;
+                    }
+                    if (lectureDto.getExQuiz() != null) {
                         lectureDto.getExQuiz().setQuestions(null);
                     }
                 }

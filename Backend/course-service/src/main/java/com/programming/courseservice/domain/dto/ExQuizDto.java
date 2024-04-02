@@ -29,4 +29,6 @@ public class ExQuizDto implements Serializable {
     private Long limitTime;
 
     private List<QuestionDto> questions;
+
+    private Integer totalQuestion;
 }

@@ -27,6 +27,8 @@ public class LectureDto implements Serializable {
 
     private Long videoDuration;
 
+    private String description;
+
     private LectureType lectureType;
 
 //    @JsonInclude(JsonInclude.Include.NON_NULL)
