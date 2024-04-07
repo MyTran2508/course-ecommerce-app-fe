@@ -3,7 +3,6 @@ package com.programming.courseservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseService;
-import com.main.progamming.common.util.ApiResources;
 import com.programming.courseservice.domain.dto.UserQuizDto;
 import com.programming.courseservice.domain.persistent.entity.UserQuiz;
 import com.programming.courseservice.service.UserQuizService;

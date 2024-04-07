@@ -24,4 +24,25 @@ public class CourseReview extends BaseModel {
     private Float rating;
 
     private String username;
+
+    @Column(name = "like_amount")
+    private Integer likeAmount;
+
+    @Column(name = "dislike_amount")
+    private Integer disLikeAmount;
+
+    @Column(name = "user_likes")
+    private String userLikes;
+
+    @Column(name = "user_dislikes")
+    private String userDislikes;
+
+    @Override
+    protected void ensureId() {
+        this.likeAmount = 0;
+        this.disLikeAmount = 0;
+        this.userLikes = "";
+        this.userDislikes = "";
+        super.ensureId();
+    }
 }

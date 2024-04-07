@@ -10,22 +10,21 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.main.progamming.common.util.SystemUtil;
 import com.programming.courseservice.domain.dto.*;
 import com.programming.courseservice.domain.mapper.CourseIssueReportMapper;
 import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.*;
 import com.programming.courseservice.domain.persistent.enumrate.FilterSortBy;
-import com.programming.courseservice.repository.CourseRepository;
-import com.programming.courseservice.repository.LanguageRepository;
-import com.programming.courseservice.repository.LevelRepository;
-import com.programming.courseservice.repository.TopicRepository;
+import com.programming.courseservice.domain.persistent.enumrate.RatingsLevel;
+import com.programming.courseservice.domain.persistent.enumrate.VideoDuration;
+import com.programming.courseservice.repository.*;
+import com.programming.courseservice.utilities.EnumUtils;
+import com.programming.courseservice.utilities.TimeUtils;
 import com.programming.courseservice.utilities.constant.CourseConstrant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,14 +35,25 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CourseService extends BaseServiceImpl<Course, CourseDto> {
+
     private final CourseRepository courseRepository;
+
     private final CourseMapper courseMapper;
+
     private final StorageS3Service storageS3Service;
+
     private final StorageService storageService;
+
     private final LanguageRepository languageRepository;
+
     private final TopicRepository topicRepository;
+
     private final LevelRepository levelRepository;
+
     private final CourseIssueReportMapper courseIssueReportMapper;
+
+    private final CourseReviewRepository courseReviewRepository;
+
     @Override
     protected BaseRepository<Course> getBaseRepository() {
         return courseRepository;
@@ -83,7 +93,6 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         Pageable pageable = PageRequest.of(0, size, sortCourse);
 
         topicId = topicId.equals("-1") ? null : topicId;
-        System.out.println(topicId);
         List<CourseDto> courseDtos = courseRepository.getCourseByTopicId(topicId, pageable)
                 .stream()
                 .map((course -> courseMapper.entityToDto(course)))
@@ -117,18 +126,38 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         List<String> languageIds = searchCourseDto.getLanguageIds() == null || searchCourseDto.getLanguageIds().isEmpty() ? languageRepository.findAll().stream().map(Language::getId).toList() : searchCourseDto.getLanguageIds();
         List<String> topicIds = searchCourseDto.getTopicIds() == null || searchCourseDto.getTopicIds().isEmpty() ? topicRepository.findAll().stream().map(Topic::getId).toList() : searchCourseDto.getTopicIds();
         Boolean isFree = searchCourseDto.getIsFree();
+        VideoDuration videoDuration = searchCourseDto.getVideoDuration();
+        RatingsLevel ratingsLevel = searchCourseDto.getRatingsLevel();
+        Float minRatingValue = EnumUtils.getMinRating(ratingsLevel);
+
         String keyword = searchCourseDto.getKeyword();
 
         Page<Course> courses = null;
         if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
-            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, pageable);
+            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, minRatingValue, pageable);
         } else {
-            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, keyword, pageable);
+            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, minRatingValue, keyword, pageable);
         }
 
-        Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+        Long minVideoDuration = TimeUtils.converHoursToMilliseconds(EnumUtils.getMinVideoDurationHour(videoDuration));
+        Long maxVideoDuration = TimeUtils.converHoursToMilliseconds(EnumUtils.getMaxVideoDurationHour(videoDuration));
 
-        return ResponseMapper.toPagingResponseSuccess(courseDtos);
+        List<CourseDto> courseDtos = courses.stream()
+                .filter(course -> {
+                    Long totalDurationVideos = course.getContent().getSections().stream()
+                            .mapToLong(Section::getTotalDurationVideoLectures)
+                            .sum();
+                    if (totalDurationVideos <= minVideoDuration || totalDurationVideos > maxVideoDuration) {
+                        return false;
+                    }
+                    return true;
+                })
+                .map(course -> courseMapper.entityToDto(course))
+                .toList();
+
+        Page<CourseDto> courseDtoPage = new PageImpl<>(courseDtos, pageable, courses.getTotalElements());
+
+        return ResponseMapper.toPagingResponseSuccess(courseDtoPage);
 
     }
 
@@ -200,7 +229,14 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
 
         Page<Course> courses = courseRepository.getCourseAccessByUserId(userId, pageable);
-        Page<CourseDto> courseDtos = courses.map(course -> courseMapper.entityToDto(course));
+        Page<CourseDto> courseDtos = courses.map(course -> {
+            CourseDto courseDto = courseMapper.entityToDto(course);
+            CourseReview courseReview = courseReviewRepository.findCourseReviewsByUsernameAndCourseId(SystemUtil.getCurrentUsername(), course.getId());
+            if (courseReview != null) {
+                courseDto.setIsAlreadyReviewed(true);
+            }
+            return courseDto;
+        });
 
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
     }

@@ -1,14 +1,13 @@
 package com.programming.courseservice.service;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataConflictException;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.main.progamming.common.util.SystemUtil;
 import com.programming.courseservice.domain.dto.AvatarDto;
 import com.programming.courseservice.domain.dto.CourseReviewDto;
 import com.programming.courseservice.domain.mapper.CourseReviewMapper;
@@ -16,16 +15,19 @@ import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.domain.persistent.entity.CourseReview;
 import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.repository.CourseReviewRepository;
+import com.programming.courseservice.utilities.StringUtils;
 import com.programming.courseservice.utilities.communication.UserApi;
+import com.programming.courseservice.utilities.constant.CourseConstrant;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -54,8 +56,9 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
 
         // get course id
         String courseId = searchKeywordDto.getKeyword().get(0).trim();
+        Long currentTime = System.currentTimeMillis();
 
-        return courseReviewRepository.findCourseReviewByCourseId(courseId, pageable)
+        return courseReviewRepository.findCourseReviewByCourseId(courseId, currentTime, pageable)
                 .map(courseReview ->  {
                     CourseReviewDto courseReviewDto = courseReviewMapper.entityToDto(courseReview);
 
@@ -73,6 +76,21 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
                     // set user avatar
                     courseReviewDto.setCourse(null);
                     courseReviewDto.setUserAvatar(rawAvatar);
+
+                    // get current username from token
+                    String username = SystemUtil.getCurrentUsername();
+
+                    // set user liking
+                    String[] userLikeArr = courseReview.getUserLikes().split(CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+                    Boolean isUserLiking = Arrays.stream(userLikeArr)
+                            .anyMatch(userLike -> Objects.equals(userLike, username));
+                    courseReviewDto.setIsUserLiking(isUserLiking);
+
+                    // set user disliking
+                    String[] userDislikeArr = courseReview.getUserDislikes().split(CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+                    Boolean isUserDisliking = Arrays.stream(userDislikeArr)
+                            .anyMatch(userDislike -> Objects.equals(userDislike, username));
+                    courseReviewDto.setIsUserDisliking(isUserDisliking);
 
                     return courseReviewDto;
                 });
@@ -94,6 +112,8 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
             throw new DataConflictException("Rating must be between 1 and 5");
         }
 
+        courseReviewDto.setLikeAmount(0);
+        courseReviewDto.setDisLikeAmount(0);
         // save course review
         DataResponse<String> response = super.create(courseReviewDto);
 
@@ -139,5 +159,93 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
         // save course
         courseRepository.save(course);
         return response;
+    }
+
+    // set like review
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public DataResponse<String> setLike(String courseReviewId, String userName, Boolean isCancel) {
+
+        CourseReview courseReview = courseReviewRepository.findById(courseReviewId).get();
+        Integer likeAmount = courseReview.getLikeAmount();
+        String userLikes = courseReview.getUserLikes();
+        String[] userLikeArr = courseReview.getUserLikes().split(CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+        Boolean isUserLiking = Arrays.stream(userLikeArr)
+                .anyMatch(userLike -> Objects.equals(userLike, userName));
+
+        String userDislikes = courseReview.getUserDislikes();
+        Integer disLikeAmount = courseReview.getDisLikeAmount();
+        String[] userDislikeArr = courseReview.getUserDislikes().split(CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+        Boolean isUserDisliking = Arrays.stream(userDislikeArr)
+                .anyMatch(userDislike -> Objects.equals(userDislike, userName));
+
+        // has already like and cancel like
+        if (isCancel && isUserLiking) {
+            userLikes = userLikes.replace(userName + CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE, "")
+                    .replace(userName, "");
+            likeAmount--;
+        }
+        // not like and like
+        if (!isCancel && !isUserLiking) {
+            userLikes = userLikes.concat(userName + CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+            likeAmount++;
+
+            if (isUserDisliking) {
+                userDislikes = userDislikes.replace(userName + CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE, "")
+                        .replace(userName, "");
+                disLikeAmount--;
+                courseReview.setDisLikeAmount(disLikeAmount);
+            }
+        }
+        courseReview.setUserLikes(userLikes);
+        courseReview.setLikeAmount(likeAmount);
+        courseReview.setUserDislikes(userDislikes);
+
+        courseReviewRepository.save(courseReview);
+        return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPDATE_SUCCESS);
+    }
+
+    // set dislike review
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public DataResponse<String> setDislike(String courseReviewId, String userName, Boolean isCancel) {
+        CourseReview courseReview = courseReviewRepository.findById(courseReviewId).get();
+
+        Integer likeAmount = courseReview.getLikeAmount();
+        String userLikes = courseReview.getUserLikes();
+        String[] userLikeArr = courseReview.getUserLikes().split(CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+        Boolean isUserLiking = Arrays.stream(userLikeArr)
+                .anyMatch(userLike -> Objects.equals(userLike, userName));
+
+        Integer disLikeAmount = courseReview.getDisLikeAmount();
+        String userDislikes = courseReview.getUserDislikes();
+        String[] userDislikeArr = courseReview.getUserDislikes().split(CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+        Boolean isUserDisliking = Arrays.stream(userDislikeArr)
+                .anyMatch(userDislike -> Objects.equals(userDislike, userName));
+
+        // has already dislike and cancel dislike
+        if (isCancel && isUserDisliking) {
+            userDislikes = userDislikes.replace(userName + CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE, "")
+                    .replace(userName, "");
+            disLikeAmount--;
+        }
+        // not dislike and dislike
+        if (!isCancel && !isUserDisliking) {
+            userDislikes = userDislikes.concat(userName + CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE);
+            disLikeAmount++;
+
+            if (isUserLiking) {
+                userLikes = userLikes.replace(userName + CourseConstrant.RegexConstrant.USERNAME_LIKE_REVIEW_SEPERATE, "")
+                        .replace(userDislikes, "");
+                likeAmount--;
+                courseReview.setLikeAmount(likeAmount);
+            }
+        }
+        courseReview.setUserLikes(userLikes);
+        courseReview.setUserDislikes(userDislikes);
+        courseReview.setDisLikeAmount(disLikeAmount);
+
+        courseReviewRepository.save(courseReview);
+        return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPDATE_SUCCESS);
     }
 }

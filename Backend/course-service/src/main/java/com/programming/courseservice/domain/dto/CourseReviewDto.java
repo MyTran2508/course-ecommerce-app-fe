@@ -28,4 +28,12 @@ public class CourseReviewDto implements Serializable {
     private String username;
 
     private String userAvatar;
+
+    private Integer likeAmount;
+
+    private Integer disLikeAmount;
+
+    private Boolean isUserLiking;
+
+    private Boolean isUserDisliking;
 }

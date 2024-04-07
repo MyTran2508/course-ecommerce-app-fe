@@ -89,7 +89,11 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @GetMapping("/get-all-by-user-id")
-    public ListResponse<CourseDto> getAllCourseProgressByUserId(@RequestParam("userId") String userId,@RequestParam("pageIndex")Integer pageIndex, @RequestParam("pageSize") Integer pageSize ) {
+    public ListResponse<CourseDto> getCourseAccessByUserId(
+            @RequestParam("userId") String userId,
+            @RequestParam("pageIndex") Integer pageIndex,
+            @RequestParam("pageSize") Integer pageSize
+    ) {
         return courseService.getCourseAccessByUserId(userId, pageIndex, pageSize);
     }
 

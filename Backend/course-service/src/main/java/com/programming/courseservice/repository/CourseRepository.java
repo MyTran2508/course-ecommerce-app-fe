@@ -48,12 +48,14 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND c.topic.id IN :topicIds
                 AND ((:isFree = false AND c.price > 0) OR (:isFree = true AND c.price = 0) OR (:isFree IS NULL))
                 AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                AND (c.averageRating >= :minRatingValue OR :ratingValue IS NULL)
                 AND c.isApproved = true
             """)
     Page<Course> filterCourse(@Param("levelIds") List<String> levelIds,
                               @Param("languageIds") List<String> languageIds,
                               @Param("topicIds") List<String> topicIds,
                               @Param("isFree") Boolean isFree,
+                              @Param("minRatingValue") Float minRatingValue,
                               @Param("keyword") String keyword,
                               Pageable pageable);
 
@@ -65,6 +67,7 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND c.topic.id IN :topicIds
                 AND ((:isFree = false AND c.price > 0) OR (:isFree = true AND c.price = 0) OR (:isFree IS NULL))
                 AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                AND (c.averageRating >= :minRatingValue OR :ratingValue IS NULL)
                 GROUP BY c.id
                 ORDER BY COUNT(c.id) DESC
             """)
@@ -73,9 +76,10 @@ public interface CourseRepository extends BaseRepository<Course> {
                               @Param("topicIds") List<String> topicIds,
                               @Param("isFree") Boolean isFree,
                               @Param("keyword") String keyword,
+                              @Param("minRatingValue") Float minRatingValue,
                               Pageable pageable);
     @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id and cg.course.isApproved = true")
-    Page<Course> getCourseAccessByUserId(@Param("userId") String topicId, Pageable pageable);
+    Page<Course> getCourseAccessByUserId(@Param("userId") String userId, Pageable pageable);
 
     @Transactional
     @Modifying

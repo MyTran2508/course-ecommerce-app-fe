@@ -1,6 +1,11 @@
 package com.programming.courseservice.utilities.constant;
 
 public class CourseConstrant {
+
+    public static final class RegexConstrant {
+        public static final String USERNAME_LIKE_REVIEW_SEPERATE = "///n";
+    }
+
     public static final class ErrorConstrant {
         public static final String ID_NOT_FOUND = "ID doesn't exists in DB";
 

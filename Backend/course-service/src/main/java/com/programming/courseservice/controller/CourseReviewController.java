@@ -9,8 +9,7 @@ import com.programming.courseservice.domain.dto.CourseReviewDto;
 import com.programming.courseservice.domain.persistent.entity.CourseReview;
 import com.programming.courseservice.service.CourseReviewService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +36,23 @@ public class CourseReviewController extends BaseApiImpl<CourseReview, CourseRevi
     @Override
     public ListResponse<CourseReviewDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
         return super.searchByKeyword(searchKeywordDto);
+    }
+
+    @PostMapping("/set-like")
+    public DataResponse<String> setLikeReview(
+            @RequestParam("courseReviewId") String courseReviewId,
+            @RequestParam("username") String username,
+            @RequestParam("isCancel") Boolean isCancel
+    ) {
+        return courseReviewService.setLike(courseReviewId, username, isCancel);
+    }
+
+    @PostMapping("/set-dislike")
+    public DataResponse<String> setDisLikeReview(
+            @RequestParam("courseReviewId") String courseReviewId,
+            @RequestParam("username") String username,
+            @RequestParam("isCancel") Boolean isCancel
+    ) {
+        return courseReviewService.setDislike(courseReviewId, username, isCancel);
     }
 }

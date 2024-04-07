@@ -43,4 +43,6 @@ public class CourseDto implements Serializable {
     private Boolean isAwaitingApproval;
 
     private List<CourseIssueReportDto> courseIssueReports;
+
+    private Boolean isAlreadyReviewed;
 }
