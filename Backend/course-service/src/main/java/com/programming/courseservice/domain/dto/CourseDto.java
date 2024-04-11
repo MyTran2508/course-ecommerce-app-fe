@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -44,5 +45,11 @@ public class CourseDto implements Serializable {
 
     private List<CourseIssueReportDto> courseIssueReports;
 
+    private Float averageRating;
+
+    private Integer totalRatings;
+
     private Boolean isAlreadyReviewed;
+
+    private Map<Integer, Integer> ratingNumbersByStar;
 }

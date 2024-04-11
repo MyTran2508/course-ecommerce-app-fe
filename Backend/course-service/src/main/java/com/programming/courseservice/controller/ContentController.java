@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/content")
 public class ContentController extends BaseApiImpl<Content, ContentDto> {
+
     private final ContentService contentService;
+
     @Override
     protected BaseService<Content, ContentDto> getBaseService() {
         return contentService;

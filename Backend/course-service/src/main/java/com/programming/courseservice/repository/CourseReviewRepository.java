@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CourseReviewRepository extends BaseRepository<CourseReview> {
 
@@ -17,9 +19,7 @@ public interface CourseReviewRepository extends BaseRepository<CourseReview> {
                  + (cr.rating * (1 + ((cr.likeAmount - cr.disLikeAmount) * (cr.likeAmount / (cr.likeAmount + cr.disLikeAmount))) / 20))
                  + (1 / ((:currentTime - cr.created) / (1000 * 60 * 60 * 24) + 1)) * 100  DESC
            """)
-    Page<CourseReview> findCourseReviewByCourseId(String courseId, Long currentTime, Pageable pageable);
-
-    CourseReview findCourseReviewsByUsername(String username);
+    Page<CourseReview> filterCourseReview(String courseId, Long currentTime, Pageable pageable);
 
     @Query("""
                 SELECT cr FROM CourseReview cr
@@ -27,4 +27,7 @@ public interface CourseReviewRepository extends BaseRepository<CourseReview> {
                 AND cr.course.id = :courseId
           """)
     CourseReview findCourseReviewsByUsernameAndCourseId(String username, String courseId);
+
+    @Query("SELECT cr FROM CourseReview cr WHERE cr.course.id = :courseId")
+    List<CourseReview> findCourseReviewsByCourseId(String courseId);
 }

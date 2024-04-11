@@ -20,6 +20,8 @@ public class CourseConstrant {
         public static final String TIME_OUT = "Quiz time is over";
 
         public static final String QUIZ_HAS_ENDED = "Quiz has ended";
+
+        public static final String COURSE_REVIEW_NOT_FOUND = "Course review not found";
     }
 
     public static final class SuccessConstrant {

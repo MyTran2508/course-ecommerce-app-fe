@@ -2,6 +2,7 @@ package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataConflictException;
+import com.main.progamming.common.error.exception.DataNotFoundException;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
@@ -58,7 +59,7 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
         String courseId = searchKeywordDto.getKeyword().get(0).trim();
         Long currentTime = System.currentTimeMillis();
 
-        return courseReviewRepository.findCourseReviewByCourseId(courseId, currentTime, pageable)
+        return courseReviewRepository.filterCourseReview(courseId, currentTime, pageable)
                 .map(courseReview ->  {
                     CourseReviewDto courseReviewDto = courseReviewMapper.entityToDto(courseReview);
 
@@ -74,8 +75,8 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
                     }
 
                     // set user avatar
-                    courseReviewDto.setCourse(null);
                     courseReviewDto.setUserAvatar(rawAvatar);
+                    courseReviewDto.setCourse(null);
 
                     // get current username from token
                     String username = SystemUtil.getCurrentUsername();
@@ -96,6 +97,33 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
                 });
     }
 
+    // get course review by course id and user id
+    public DataResponse<CourseReviewDto> getByUsernameAndCourseId(String userName, String courseId) {
+
+        CourseReview courseReview = courseReviewRepository.findCourseReviewsByUsernameAndCourseId(userName, courseId);
+
+        if (courseReview == null) {
+            throw new DataNotFoundException(CourseConstrant.ErrorConstrant.COURSE_REVIEW_NOT_FOUND);
+        }
+
+        courseReview.setCourse(null);
+        CourseReviewDto courseReviewDto = courseReviewMapper.entityToDto(courseReview);
+
+        // get user avatar from user service
+        ResponseEntity<AvatarDto> responseAvatar = userApi.getAvatar(courseReview.getUsername());
+        AvatarDto avatarDto = responseAvatar.getBody();
+        String rawResponse = avatarDto.toString();
+        String rawAvatar = null;
+        if (!rawResponse.contains("statusCode")) {
+            rawAvatar = avatarDto.getRawAvatar();
+        }
+
+        // set user avatar
+        courseReviewDto.setUserAvatar(rawAvatar);
+
+        return ResponseMapper.toDataResponseSuccess(courseReviewDto);
+    }
+
     @Override
     protected List<CourseReviewDto> getListSearchResults(String keyword) {
         return null;
@@ -103,7 +131,8 @@ public class CourseReviewService extends BaseServiceImpl<CourseReview, CourseRev
 
     @Override
     public DataResponse<String> create(CourseReviewDto courseReviewDto) {
-        CourseReview courseReview = courseReviewRepository.findCourseReviewsByUsername(courseReviewDto.getUsername());
+        CourseReview courseReview = courseReviewRepository.findCourseReviewsByUsernameAndCourseId(courseReviewDto.getUsername(), courseReviewDto.getCourse().getId());
+
         if (courseReview != null) {
             throw new DataConflictException("You have already reviewed this course");
         }

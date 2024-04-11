@@ -8,6 +8,7 @@ import com.main.progamming.common.service.BaseService;
 import com.programming.courseservice.domain.dto.CourseReviewDto;
 import com.programming.courseservice.domain.persistent.entity.CourseReview;
 import com.programming.courseservice.service.CourseReviewService;
+import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ public class CourseReviewController extends BaseApiImpl<CourseReview, CourseRevi
     }
 
     @Override
+    @ShowOpenAPI
     public DataResponse<CourseReviewDto> update(CourseReviewDto objectDTO, String id) {
         return super.update(objectDTO, id);
     }
@@ -54,5 +56,13 @@ public class CourseReviewController extends BaseApiImpl<CourseReview, CourseRevi
             @RequestParam("isCancel") Boolean isCancel
     ) {
         return courseReviewService.setDislike(courseReviewId, username, isCancel);
+    }
+
+    @GetMapping("/get-by-username-courseId")
+    public DataResponse<CourseReviewDto> getByCourseIdAndUserId(
+            @RequestParam("courseId") String courseId,
+            @RequestParam("username") String username
+    ) {
+        return courseReviewService.getByUsernameAndCourseId(username, courseId);
     }
 }

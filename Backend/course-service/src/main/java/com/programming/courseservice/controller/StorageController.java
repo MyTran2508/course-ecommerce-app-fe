@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/courses/store")
 public class StorageController {
+
     @Autowired
     private StorageS3Service storageS3;
 
