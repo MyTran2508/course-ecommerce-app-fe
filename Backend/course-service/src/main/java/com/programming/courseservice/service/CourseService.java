@@ -139,25 +139,29 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
             courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, minRatingValue, keyword, pageable);
         }
 
-        Long minVideoDuration = TimeUtils.converHoursToMilliseconds(EnumUtils.getMinVideoDurationHour(videoDuration));
-        Long maxVideoDuration = TimeUtils.converHoursToMilliseconds(EnumUtils.getMaxVideoDurationHour(videoDuration));
+        if (videoDuration != null) {
+            Long minVideoDuration = TimeUtils.converHoursToMilliseconds(EnumUtils.getMinVideoDurationHour(videoDuration));
+            Long maxVideoDuration = TimeUtils.converHoursToMilliseconds(EnumUtils.getMaxVideoDurationHour(videoDuration));
 
-        List<CourseDto> courseDtos = courses.stream()
-                .filter(course -> {
-                    Long totalDurationVideos = course.getContent().getSections().stream()
-                            .mapToLong(Section::getTotalDurationVideoLectures)
-                            .sum();
-                    if (totalDurationVideos <= minVideoDuration || totalDurationVideos > maxVideoDuration) {
-                        return false;
-                    }
-                    return true;
-                })
-                .map(course -> courseMapper.entityToDto(course))
-                .toList();
+            List<CourseDto> courseDtos = courses.stream()
+                    .filter(course -> {
+                        Long totalDurationVideos = course.getContent().getSections().stream()
+                                .mapToLong(Section::getTotalDurationVideoLectures)
+                                .sum();
+                        if (totalDurationVideos <= minVideoDuration || totalDurationVideos > maxVideoDuration) {
+                            return false;
+                        }
+                        return true;
+                    })
+                    .map(course -> courseMapper.entityToDto(course))
+                    .toList();
 
-        Page<CourseDto> courseDtoPage = new PageImpl<>(courseDtos, pageable, courses.getTotalElements());
+            Page<CourseDto> courseDtoPage = new PageImpl<>(courseDtos, pageable, courses.getTotalElements());
 
-        return ResponseMapper.toPagingResponseSuccess(courseDtoPage);
+            return ResponseMapper.toPagingResponseSuccess(courseDtoPage);
+        }
+
+        return ResponseMapper.toPagingResponseSuccess(courses);
 
     }
 

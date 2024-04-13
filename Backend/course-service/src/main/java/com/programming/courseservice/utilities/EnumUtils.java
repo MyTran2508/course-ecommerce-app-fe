@@ -16,7 +16,7 @@ public class EnumUtils {
             case RATINGS_3_TO_UP:
                 return 3.0F;
             default:
-                throw new IllegalArgumentException("Invalid rating");
+                return null;
         }
     }
 

@@ -79,34 +79,38 @@ public class ContentService extends BaseServiceImpl<Content, ContentDto> {
             }
 
             List<CourseReview> courseReviews = courseReviewRepository.findCourseReviewsByCourseId(courseId);
-            Map<Integer, Integer> ratingReviewByStar = new HashMap<>() {
-                {
-                    put(5, 0);
-                    put(4, 0);
-                    put(3, 0);
-                    put(2, 0);
-                    put(1, 0);
+
+
+            if (courseReviews.size() > 0) {
+                Map<Integer, Integer> ratingReviewByStar = new HashMap<>() {
+                    {
+                        put(5, 0);
+                        put(4, 0);
+                        put(3, 0);
+                        put(2, 0);
+                        put(1, 0);
+                    }
+                };
+
+                for (CourseReview courseReview: courseReviews) {
+
+                    float roundedNumber = (float) Math.ceil(courseReview.getRating());
+
+                    Integer countRatingByStar = ratingReviewByStar.get((int) roundedNumber);
+                    ratingReviewByStar.put((int) roundedNumber, countRatingByStar + 1);
                 }
-            };
 
-            for (CourseReview courseReview: courseReviews) {
-
-                float roundedNumber = (float) Math.ceil(courseReview.getRating());
-
-                Integer countRatingByStar = ratingReviewByStar.get((int) roundedNumber);
-                ratingReviewByStar.put((int) roundedNumber, countRatingByStar + 1);
+                Map<Integer, Integer> ratingReviewByStarPercent = new HashMap<>() {
+                    {
+                        put(5, ratingReviewByStar.get(5) * 100 / courseReviews.size());
+                        put(4, ratingReviewByStar.get(4) * 100 / courseReviews.size());
+                        put(3, ratingReviewByStar.get(3) * 100 / courseReviews.size());
+                        put(2, ratingReviewByStar.get(2) * 100 / courseReviews.size());
+                        put(1, ratingReviewByStar.get(1) * 100 / courseReviews.size());
+                    }
+                };
+                contentDto.getCourse().setRatingNumbersByStar(ratingReviewByStarPercent);
             }
-
-            Map<Integer, Integer> ratingReviewByStarPercent = new HashMap<>() {
-                {
-                    put(5, ratingReviewByStar.get(5) * 100 / courseReviews.size());
-                    put(4, ratingReviewByStar.get(4) * 100 / courseReviews.size());
-                    put(3, ratingReviewByStar.get(3) * 100 / courseReviews.size());
-                    put(2, ratingReviewByStar.get(2) * 100 / courseReviews.size());
-                    put(1, ratingReviewByStar.get(1) * 100 / courseReviews.size());
-                }
-            };
-            contentDto.getCourse().setRatingNumbersByStar(ratingReviewByStarPercent);
 
             return ResponseMapper.toDataResponseSuccess(contentDto);
         }
