@@ -59,9 +59,13 @@ public class UserAnswerService {
         }
 
         List<UserAnswer> listSave = new ArrayList<>();
-        for (UserAnswerDto userAnswerDto : userAnswerDtoList) {
-            UserAnswer userAnswer = userAnswerMapper.dtoToEntity(userAnswerDto);
-            userAnswer.setUserQuiz(userQuiz);
+        for (UserAnswer userAnswer : userQuiz.getUserAnswers()) {
+
+            UserAnswerDto userAnswerDto = userAnswerDtoList.stream()
+                    .filter(dto -> dto.getId().equals(userAnswer.getId()))
+                    .findFirst().orElseThrow(() -> new ResourceNotFoundException(CourseConstrant.ErrorConstrant.ID_NOT_FOUND));
+
+            userAnswer.setCurrentAnswer(userAnswerDto.getCurrentAnswer());
             listSave.add(userAnswer);
         }
 
@@ -74,6 +78,7 @@ public class UserAnswerService {
             }
             return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPSERT_SUCCESS);
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             throw new DataConflictException(CourseConstrant.ErrorConstrant.SAVE_USER_ANSWER_FAIL);
         }
     }

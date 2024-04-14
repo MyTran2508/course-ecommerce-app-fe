@@ -33,4 +33,8 @@ public class QuestionDto implements Serializable {
     private String answerExplanation;
 
     private QuizType quizType;
+
+    public QuestionDto(String id) {
+        this.id = id;
+    }
 }

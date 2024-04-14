@@ -71,6 +71,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         Boolean isApproved = searchKeywordDto.getKeyword().get(2) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(2).trim());
         Boolean isAwaitingApproval = searchKeywordDto.getKeyword().get(3) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(3).trim());
         Boolean isCompletedContent = searchKeywordDto.getKeyword().get(4) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(4).trim());
+
         return courseRepository.searchCourseOfAdmin(name, creator, isApproved, isAwaitingApproval, isCompletedContent, pageable)
                 .map(course -> courseMapper.entityToDto(course));
     }
@@ -82,10 +83,11 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     @Override
     public ListResponse<CourseDto> getAll() {
+
         return ResponseMapper.toListResponseSuccess(courseRepository.getAllCourseIsApproved()
                 .stream()
                 .map(course -> courseMapper.entityToDto(course))
-                .collect(Collectors.toList()));
+                .toList());
     }
 
     public ListResponse<List<CourseDto>> getNewestCourse(String topicId, int size) {
