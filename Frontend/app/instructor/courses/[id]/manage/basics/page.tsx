@@ -15,7 +15,7 @@ function BasicsPage() {
   const params = useParams();
   const dispatch = useAppDispatch();
   const { data, isLoading } = useGetCourseByIdQuery(params.id as string);
-  // if (isLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   dispatch(setManageCourse(data?.data as Course));
   dispatch(setParamCourseId(params.id as string));
   return (

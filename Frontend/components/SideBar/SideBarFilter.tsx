@@ -8,12 +8,15 @@ import { SearchCourseRequest } from "@/types/request.type";
 interface SideBarFilterProps {
   setSearchRequest: React.Dispatch<React.SetStateAction<SearchCourseRequest>>;
   setPage: (page: number) => void;
+  topicId?: string;
 }
 
 function SideBarFilter(props: SideBarFilterProps) {
-  const { setSearchRequest, setPage } = props;
+  const { setSearchRequest, setPage, topicId } = props;
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [selectedTopics, setSelectedTopics] = useState<string[]>(
+    topicId ? [topicId] : []
+  );
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [selectedPriceIsFree, setSelectedPriceIsFree] = useState<string[]>([]);
 
@@ -23,6 +26,7 @@ function SideBarFilter(props: SideBarFilterProps) {
       languageIds: selectedLanguages,
       topicIds: selectedTopics,
       levelIds: selectedLevels,
+      ratingsLevel: null,
       pageIndex: 0,
     }));
     setPage(1);
