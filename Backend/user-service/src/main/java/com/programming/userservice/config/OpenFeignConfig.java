@@ -15,7 +15,9 @@ public class OpenFeignConfig implements RequestInterceptor{
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     public static String getBearerTokenHeader() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getHeader("Authorization");
+        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+                .getRequest()
+                .getHeader("Authorization");
     }
 
     @Override

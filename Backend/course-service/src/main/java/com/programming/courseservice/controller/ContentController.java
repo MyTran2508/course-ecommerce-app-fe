@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/content")
 public class ContentController extends BaseApiImpl<Content, ContentDto> {
+
     private final ContentService contentService;
+
     @Override
     protected BaseService<Content, ContentDto> getBaseService() {
         return contentService;
@@ -34,13 +36,13 @@ public class ContentController extends BaseApiImpl<Content, ContentDto> {
 
     @Override
     @ShowOpenAPI
-    public DataResponse<ContentDto> add(ContentDto objectDTO) {
+    public DataResponse<String> add(ContentDto objectDTO) {
         return super.add(objectDTO);
     }
 
     @GetMapping("/get-by-course-id")
     @ShowOpenAPI
-    public DataResponse<ContentDto> getByCourseId(@RequestParam("id") String id) {
-        return contentService.getByCourseId(id);
+    public DataResponse<ContentDto> getByCourseId(@RequestParam("id") String courseId) {
+        return contentService.getByCourseId(courseId);
     }
 }

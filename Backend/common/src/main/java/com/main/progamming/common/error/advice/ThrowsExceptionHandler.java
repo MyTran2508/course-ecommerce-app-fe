@@ -1,9 +1,6 @@
 package com.main.progamming.common.error.advice;
 
-import com.main.progamming.common.error.exception.DataAlreadyExistException;
-import com.main.progamming.common.error.exception.DataNotFoundException;
-import com.main.progamming.common.error.exception.NotPermissionException;
-import com.main.progamming.common.error.exception.ResourceNotFoundException;
+import com.main.progamming.common.error.exception.*;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.response.DataResponse;
@@ -31,6 +28,13 @@ public class ThrowsExceptionHandler {
     public ResponseEntity<DataResponse<?>> handleDataNotFoundException(final RuntimeException e) {
         DataResponse<?> errorResponse = ResponseMapper.toDataResponse(e.getMessage(),
                 StatusCode.DATA_NOT_FOUND, StatusMessage.DATA_NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(DataConflictException.class)
+    public ResponseEntity<DataResponse<?>> handleDataConflictException(final RuntimeException e) {
+        DataResponse<?> errorResponse = ResponseMapper.toDataResponse(e.getMessage(),
+                StatusCode.DATA_CONFLICT, StatusMessage.DATA_CONFLICT);
         return new ResponseEntity<>(errorResponse, HttpStatus.OK);
     }
 

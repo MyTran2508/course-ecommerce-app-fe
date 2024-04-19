@@ -1,7 +1,6 @@
 package com.main.progamming.common.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
-import com.main.progamming.common.error.exception.DataAlreadyExistException;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
@@ -11,7 +10,7 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.main.progamming.common.util.CommonConstrant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,15 +28,18 @@ import java.util.stream.Collectors;
 
 public abstract class BaseServiceImpl<E extends BaseModel, D> implements BaseService<E, D> {
     protected abstract BaseRepository<E> getBaseRepository();
+
     protected abstract BaseMapper<E, D> getBaseMapper();
+
     @Override
     @Transactional
     @SuppressWarnings("unchecked")
-    public DataResponse<D> create(D dto) {
+    public DataResponse<String> create(D dto) {
         E entity = getBaseMapper().dtoToEntity(dto);
-        System.out.println(entity);
+
         getBaseRepository().save(entity);
-        return ResponseMapper.toDataResponseSuccess(getBaseMapper().entityToDto(entity));
+
+        return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS + " ID: " + entity.getId());
     }
 
     @Override

@@ -4,13 +4,13 @@ import { IoIosArrowBack } from "react-icons/io";
 import { BiNotepad } from "react-icons/bi";
 import { BsQuestionCircle } from "react-icons/bs";
 import CourseContentLearning from "@/components/CourseContentLearning";
-import DiscussionSheet from "@/components/DiscussionSheet";
+import DiscussionSheet from "@/components/Discussion/DiscussionSheet";
 import { useParams, useRouter } from "next/navigation";
 import {
   useLazyLoadFileFromCloudQuery,
   useLoadFileFromCloudQuery,
 } from "@/redux/services/courseApi";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Lecture, Section } from "@/types/section.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content from "@/types/content.type";
@@ -21,7 +21,7 @@ import {
   useUpdateCurrentProgressMutation,
 } from "@/redux/services/courseProcessApi";
 import { CourseProcess } from "@/types/courseProcess.type";
-import PDFViewer from "@/components/PDFviewer";
+import PDFViewer from "@/components/PDF/PDFviewer";
 import { debounce } from "lodash";
 import { handleCountFieldsInSection } from "@/utils/function";
 

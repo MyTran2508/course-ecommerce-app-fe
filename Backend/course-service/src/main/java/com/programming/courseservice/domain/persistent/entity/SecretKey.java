@@ -16,8 +16,10 @@ import lombok.NoArgsConstructor;
 public class SecretKey {
     @Id
     private String id;
+
     @Column(name = "key_secret")
     private String keySecret;
+
     @Column(name = "value_secret")
     private String valueSecret;
 }

@@ -1,17 +1,20 @@
 package com.programming.courseservice.domain.dto;
 
-import com.programming.courseservice.domain.persistent.entity.Course;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+import java.io.Serial;
+import java.io.Serializable;
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CourseProgressDto {
+public class CourseProgressDto implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String userId;
 
     private Integer currentProgress;

@@ -14,6 +14,7 @@ public class AppConfig  {
     @Bean
     public ModelMapper getModelMapper() {
         ModelMapper mapper = new ModelMapper();
+
         mapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setAmbiguityIgnored(true)
@@ -21,6 +22,7 @@ public class AppConfig  {
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
                 .setMethodAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
                 .setSkipNullEnabled(true);
+
         return mapper;
     }
     @Bean
@@ -36,6 +38,7 @@ public class AppConfig  {
                 // Ẩn hoàn toàn các phương thức không có chú thích @ApiShow
                 return null;
             }
+
             return operation;
         };
     }

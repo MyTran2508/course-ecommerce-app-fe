@@ -21,9 +21,11 @@ import lombok.*;
         }
 )
 public class Level extends BaseModel {
+
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private LevelName name;
+
     @Column(length = 512)
     private String description;
 }

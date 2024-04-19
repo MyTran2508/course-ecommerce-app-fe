@@ -3,6 +3,7 @@ package com.programming.userservice.domain.persistent.entity;
 import com.main.progamming.common.model.BaseModel;
 import com.programming.userservice.domain.persistent.enumrate.OrderStatus;
 import com.programming.userservice.domain.persistent.enumrate.ShippingMethod;
+import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -20,6 +21,7 @@ import java.util.List;
         name = "orders"
 )
 public class Order extends BaseModel {
+
     @Column(name = "total_price")
     private Double totalPrice;
 
@@ -35,5 +37,6 @@ public class Order extends BaseModel {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_order_user"))
+    @ExcludeFromComparisonField
     private User user;
 }

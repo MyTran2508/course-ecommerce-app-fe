@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/course")
 public class CourseController extends BaseApiImpl<Course, CourseDto> {
+
     private final CourseService courseService;
 
     @Override
@@ -42,10 +43,9 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
-    public DataResponse<CourseDto> add(CourseDto objectDTO) {
+    public DataResponse<String> add(CourseDto objectDTO) {
         return super.add(objectDTO);
     }
-
 
     @ShowOpenAPI
     @PostMapping("/images")
@@ -89,7 +89,11 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @GetMapping("/get-all-by-user-id")
-    public ListResponse<CourseDto> getAllCourseProgressByUserId(@RequestParam("userId") String userId,@RequestParam("pageIndex")Integer pageIndex, @RequestParam("pageSize") Integer pageSize ) {
+    public ListResponse<CourseDto> getCourseAccessByUserId(
+            @RequestParam("userId") String userId,
+            @RequestParam("pageIndex") Integer pageIndex,
+            @RequestParam("pageSize") Integer pageSize
+    ) {
         return courseService.getCourseAccessByUserId(userId, pageIndex, pageSize);
     }
 

@@ -1,23 +1,39 @@
 package com.programming.courseservice.domain.dto;
 
-import com.programming.courseservice.domain.persistent.entity.Course;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class CourseReviewDto {
+public class CourseReviewDto implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private String id;
 
-    private CourseDto courseDto;
+    private CourseDto course;
 
     private String message;
 
-    private Short rating;
+    private Float rating;
 
     private String username;
+
+    private String userAvatar;
+
+    private Integer likeAmount;
+
+    private Integer disLikeAmount;
+
+    private Boolean isUserLiking;
+
+    private Boolean isUserDisliking;
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/courses/categories")
 @RequiredArgsConstructor
 public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
+
     private final CategoryService categoryService;
 
     @Override
@@ -35,8 +36,7 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     @Override
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public DataResponse<CategoryDto> add(@Valid CategoryDto categoryDto) {
-        System.out.println("Vao day");
+    public DataResponse<String> add(@Valid CategoryDto categoryDto) {
         return super.add(categoryDto);
     }
 
@@ -44,7 +44,6 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     @ShowOpenAPI
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> update(@Valid CategoryDto categoryDto, String id) {
-        System.out.println("Vao day");
         return super.update(categoryDto, id);
     }
 

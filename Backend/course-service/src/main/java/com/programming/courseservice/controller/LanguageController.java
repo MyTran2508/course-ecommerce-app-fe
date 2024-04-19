@@ -21,14 +21,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/language")
 public class LanguageController extends BaseApiImpl<Language, LanguageDto> {
+
     private final LanguageService languageService;
+
     @Override
     protected BaseService<Language, LanguageDto> getBaseService() {
         return languageService;
     }
 
     @Override
-    public DataResponse<LanguageDto> add(LanguageDto objectDTO) {
+    public DataResponse<String> add(LanguageDto objectDTO) {
         return super.add(objectDTO);
     }
 

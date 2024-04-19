@@ -29,6 +29,7 @@ import static java.util.Collections.emptySet;
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 public class Category extends BaseModel {
+
     @Column(nullable = false, length = 64)
     private String name;
 

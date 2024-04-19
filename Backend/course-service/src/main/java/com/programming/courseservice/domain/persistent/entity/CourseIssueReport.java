@@ -18,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @ToString
 public class CourseIssueReport extends BaseModel {
+
     @Column(name = "issue_type")
     private IssueType issueType;
 

@@ -23,10 +23,15 @@ import java.util.UUID;
 public class BaseModel {
     @Id
     private String id;
+
     private Long created;
+
     private String creator;
+
     private Long updated;
+
     private String modifier;
+
     private Boolean removed;
 
     @PrePersist

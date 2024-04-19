@@ -13,13 +13,17 @@ import static com.google.common.net.HttpHeaders.USER_AGENT;
 @Configuration
 @EnableConfigurationProperties
 public class JwtConfiguration {
+
     private final String secretKey = SecurityConstrant.secretKey;
+
     private final String tokenPrefix = SecurityConstrant.tokenPrefix;
+
     private final Integer tokenExpirationAfterDays = SecurityConstrant.tokenExpirationAfterDays;
 
     public String getAuthorizationHeader() {
         return AUTHORIZATION;
     }
+
     public String getUserAgent() {
         return USER_AGENT;
     }

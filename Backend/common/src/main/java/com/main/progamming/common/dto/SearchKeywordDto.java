@@ -7,8 +7,12 @@ import java.util.List;
 @Data
 public class SearchKeywordDto {
     private List<String> keyword;
+
     private String sortBy = "";
+
     private Boolean isDecrease = true;
+
     private int pageIndex;
+
     private int pageSize;
 }

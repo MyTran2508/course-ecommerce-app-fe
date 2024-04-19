@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/courses/course-progress")
 @RequiredArgsConstructor
 public class CourseProgressController extends BaseApiImpl<CourseProgress, CourseProgressDto> {
+
     private final CourseProgressService courseProgressService;
+
     @Override
     protected BaseService<CourseProgress, CourseProgressDto> getBaseService() {
         return courseProgressService;
@@ -39,8 +41,8 @@ public class CourseProgressController extends BaseApiImpl<CourseProgress, Course
 
     @PostMapping("/update-current-progress")
     public DataResponse<CourseProgressDto> updateCurrentProgress(@RequestParam String userId,
-                                                                 @RequestParam String courseId) {
-        return courseProgressService.updateCurrentProgress(userId, courseId);
+            @RequestParam String courseId, @RequestParam String exQuizId) {
+        return courseProgressService.updateCurrentProgress(userId, courseId, exQuizId);
     }
 
     @PostMapping("/add-list")

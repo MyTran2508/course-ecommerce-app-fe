@@ -41,17 +41,17 @@ public class Topic extends BaseModel {
         this.description = description;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if(this == o) return true;
-        if(o == null || getClass() != o.getClass()) return false;
-        Topic user = (Topic) o;
-
-        return Objects.equals(this.getId(), user.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getId() != null ? getId().hashCode() : 0;
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if(this == o) return true;
+//        if(o == null || getClass() != o.getClass()) return false;
+//        Topic user = (Topic) o;
+//
+//        return Objects.equals(this.getId(), user.getId());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return this.getId() != null ? getId().hashCode() : 0;
+//    }
 }

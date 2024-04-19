@@ -1,12 +1,10 @@
 package com.programming.courseservice.domain.persistent.entity;
+
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(
@@ -24,7 +22,7 @@ public class Section extends BaseModel {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(targetEntity = Lecture.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Lecture.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "section_id", foreignKey = @ForeignKey(name = "fk_lecture_section"))
     @OrderBy("ordinalNumber ASC")
     private List<Lecture> lectures;
@@ -35,16 +33,4 @@ public class Section extends BaseModel {
     private Content content;
 
     private Long totalDurationVideoLectures;
-
-    @Override
-    protected void ensureId() {
-        this.totalDurationVideoLectures = this.lectures.stream().mapToLong(Lecture::getVideoDuration).sum();
-        super.ensureId();
-    }
-
-    @Override
-    protected void setUpdated() {
-        this.totalDurationVideoLectures = this.lectures.stream().mapToLong(Lecture::getVideoDuration).sum();
-        super.setUpdated();
-    }
 }

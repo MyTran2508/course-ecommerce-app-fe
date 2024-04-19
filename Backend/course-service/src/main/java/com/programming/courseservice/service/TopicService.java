@@ -18,8 +18,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TopicService extends BaseServiceImpl<Topic, TopicDto> {
+
     private final TopicRepository topicRepository;
+
     private final TopicMapper topicMapper;
+
     @Override
     protected BaseRepository<Topic> getBaseRepository() {
         return topicRepository;

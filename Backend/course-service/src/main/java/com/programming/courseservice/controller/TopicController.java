@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/courses/topic")
 public class TopicController extends BaseApiImpl<Topic, TopicDto> {
+
     private final TopicService topicService;
+
     @Override
     protected BaseService<Topic, TopicDto> getBaseService() {
         return topicService;

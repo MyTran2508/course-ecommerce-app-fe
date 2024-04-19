@@ -24,6 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
 public class Course extends BaseModel {
+
     private String name;
 
     @Column(name = "sub_title")

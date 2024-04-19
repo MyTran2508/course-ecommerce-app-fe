@@ -7,8 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class OtpUtil {
+
     private final OtpGenerator otpGenerator;
+
     private final EmailUtil emailUtil;
+
     private final UserRepository userRepository;
 
 

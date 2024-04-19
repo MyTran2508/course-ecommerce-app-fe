@@ -14,6 +14,7 @@ import com.programming.courseservice.domain.mapper.TopicMapper;
 import com.programming.courseservice.domain.persistent.entity.Category;
 import com.programming.courseservice.domain.persistent.entity.Topic;
 import com.programming.courseservice.repository.CategoryRepository;
+import com.programming.courseservice.utilities.constant.CourseConstrant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +29,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
+
     private final CategoryRepository categoryRepository;
+
     private final CategoryMapper categoryMapper;
+
     private final TopicMapper topicMapper;
+
     @Override
     protected BaseRepository<Category> getBaseRepository() {
         return categoryRepository;
@@ -109,9 +114,11 @@ public class CategoryService extends BaseServiceImpl<Category, CategoryDto> {
 //    }
     public DataResponse<CategoryDto> getByName(String name) {
         Optional<Category> optionalCategory = categoryRepository.findByName(name);
+
         if(optionalCategory.isEmpty()) {
-            throw new ResourceNotFoundException("Category with name " + name + " does not exists in DB");
+            throw new ResourceNotFoundException(CourseConstrant.ErrorConstrant.NAME_NOT_FOUND);
         }
+
         Category category = optionalCategory.get();
         return ResponseMapper.toDataResponseSuccess(categoryMapper.entityToDto(category));
     }

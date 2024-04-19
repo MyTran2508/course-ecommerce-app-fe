@@ -1,6 +1,7 @@
 package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
@@ -11,35 +12,44 @@ import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.dto.SectionDto;
 import com.programming.courseservice.domain.mapper.SectionMapper;
+import com.programming.courseservice.domain.persistent.entity.Content;
 import com.programming.courseservice.domain.persistent.entity.Section;
+import com.programming.courseservice.repository.ContentRepository;
 import com.programming.courseservice.repository.LectureRepository;
 import com.programming.courseservice.repository.SectionRepository;
 import com.programming.courseservice.utilities.FileUtils;
-import com.programming.courseservice.utilities.constant.S3Constrant;
+import com.programming.courseservice.utilities.constant.CourseConstrant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class SectionService extends BaseServiceImpl<Section, SectionDto> {
+
     private final SectionRepository sectionRepository;
+
     private final LectureRepository lectureRepository;
+
     private final SectionMapper sectionMapper;
+
     private final StorageS3Service storageS3Service;
+
     private final StorageService storageService;
+
     private final FileUtils fileUtils;
+
+    private final ContentRepository contentRepository;
+
     @Override
     protected BaseRepository<Section> getBaseRepository() {
         return sectionRepository;
@@ -66,9 +76,9 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
         Integer idx = 0;
         for (MultipartFile file: files) {
             if(fileUtils.isFileVideo(file)) {
-                listPath.add(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_LECTURE, file));
+                listPath.add(storageS3Service.uploadFile(CourseConstrant.S3Constrant.PATH_COURSE_LECTURE, file));
             } else if (fileUtils.isFileDocument(file)){
-                listPath.add(storageS3Service.uploadFile(S3Constrant.PATH_COURSE_DOCUMENT, file));
+                listPath.add(storageS3Service.uploadFile(CourseConstrant.S3Constrant.PATH_COURSE_DOCUMENT, file));
             } else {
                 listError.add(idx.toString());
             }
@@ -90,15 +100,43 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
                 .body(resource);
     }
 
-    public SectionDto deleteLectures(SectionDto sectionDto) {
+    public SectionDto updateSection(SectionDto sectionDto) {
         for (LectureDto lectureDto: sectionDto.getLectures()) {
             if(lectureDto.getOrdinalNumber() < 1) {
                 storageS3Service.deleteFile(lectureDto.getUrl());
-//                storageService.deleteFileFromSystem(lectureDto.getUrl());
                 lectureRepository.deleteById(lectureDto.getId());
                 sectionDto.getLectures().remove(lectureDto);
             }
         }
         return sectionDto;
+    }
+
+    // update list section
+    public DataResponse<String> updateList(List<SectionDto> sectionDtoList, String contentId) {
+
+        // get content by id
+        Content savedContent = contentRepository.findById(contentId).orElse(null);
+
+        // throw exception if content is not found
+        if (savedContent == null) {
+            throw new ResourceNotFoundException(StatusMessage.DATA_NOT_FOUND);
+        }
+
+        // Convert list dto to list entity
+        List<Section> sectionList = new ArrayList<>();
+        for (SectionDto sectionDto: sectionDtoList) {
+            Section section = sectionRepository.findById(sectionDto.getId()).orElse(null);
+            if (section != null) {
+                section.setOrdinalNumber(sectionDto.getOrdinalNumber());
+                sectionList.add(section);
+            }
+        }
+
+        // save content
+        savedContent.setSections(sectionList);
+        contentRepository.save(savedContent);
+
+        // return success
+        return ResponseMapper.toDataResponseSuccess(StatusMessage.REQUEST_SUCCESS);
     }
 }
