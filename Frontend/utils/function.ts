@@ -90,9 +90,26 @@ export const handleCountFieldsInSection = (
   return { totalLectureCount: 0, totalDurationCourse: "0" };
 };
 
-export const convertLongToTime = (longValue: number): string => {
+export const convertLongToTime = (
+  longValue: number,
+  showHoursMinutesSeconds: boolean = false,
+  showSeconds: boolean = true
+): string => {
+  if (!longValue) return "";
   const date = new Date(longValue * 1000);
   const timeString = date.toISOString().substr(11, 8);
+
+  if (!showSeconds) {
+    return timeString.slice(0, -3);
+  }
+
+  if (showHoursMinutesSeconds) {
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+
+    return `${hours}h ${minutes}p ${seconds}s`;
+  }
 
   if (timeString.startsWith("00")) {
     return timeString.substr(3);
@@ -104,4 +121,30 @@ export const convertLongToTime = (longValue: number): string => {
 export function extractId(message: string) {
   const parts = message.split(": ");
   return parts[1];
+}
+
+export const getCurrentTimeInMillisecondsFromAPI = async () => {
+  const response = await fetch(
+    "http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh"
+  );
+  const data = await response.json();
+  const date = new Date(data.datetime);
+  return date.getTime();
+};
+
+export const convertToMilliseconds = (timeString: string) => {
+  const [hours, minutes] = timeString.split(":").map(Number);
+  return (hours * 60 * 60 + minutes * 60) * 1000;
+};
+
+export function formatTime(seconds: number) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+
+  const hours = h < 10 ? "0" + h : h;
+  const minutes = m < 10 ? "0" + m : m;
+  const secs = s < 10 ? "0" + s : s;
+
+  return `${hours}:${minutes}:${secs}`;
 }
