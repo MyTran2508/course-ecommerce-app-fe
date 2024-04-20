@@ -45,7 +45,11 @@ public class CommentReplyService extends BaseServiceImpl<CommentReply, CommentRe
 
     @Override
     protected Page<CommentReplyDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        return null;
+
+        String forumLectureId = searchKeywordDto.getKeyword().get(0) == null ? null
+                : searchKeywordDto.getKeyword().get(0).trim();
+
+        return commentReplyRepository.findByForumLectureId(forumLectureId, pageable).map(commentReplyMapper::entityToDto);
     }
 
     @Override
@@ -64,6 +68,7 @@ public class CommentReplyService extends BaseServiceImpl<CommentReply, CommentRe
 
         // convert dto to entity
         CommentReply commentReply = commentReplyMapper.dtoToEntity(commentReplyDto);
+        commentReply.setForumLecture(forumLecture);
 
         // set forumLecture to commentReply and save
         forumLecture.getCommentReplies().add(commentReply);

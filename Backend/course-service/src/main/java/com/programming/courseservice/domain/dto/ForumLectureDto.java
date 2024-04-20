@@ -30,8 +30,6 @@ public class ForumLectureDto implements Serializable {
 
     private String comment;
 
-    private List<CommentReplyDto> commentReplies;
-
     private Long created;
 
     private Long updated;
