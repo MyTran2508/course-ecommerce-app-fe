@@ -22,6 +22,8 @@ public class CourseConstrant {
         public static final String QUIZ_HAS_ENDED = "Quiz has ended";
 
         public static final String COURSE_REVIEW_NOT_FOUND = "Course review not found";
+
+        public static final String OVER_LIMIT_ATTEMPT_NUMBER = "Over limit attempt number";
     }
 
     public static final class SuccessConstrant {

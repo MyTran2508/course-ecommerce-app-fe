@@ -38,6 +38,8 @@ public class UserQuizDto implements Serializable {
 
     private Integer attemptNumber;
 
+    private Boolean isCompleted;
+
     @JsonManagedReference
     private List<UserAnswerDto> userAnswers;
 }

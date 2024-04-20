@@ -117,7 +117,13 @@ public class UserAnswerService {
         // save the score and set the quiz as completed
         userQuiz.setCorrectAnswerCount((short) correctAnswerCount);
         userQuiz.setScore(roundedScore);
-        userQuiz.setIsCompleted(true);
+
+        if (exQuiz.getRequiredScore() <= roundedScore) {
+            userQuiz.setIsCompleted(true);
+        } else {
+            userQuiz.setIsCompleted(false);
+        }
+
         userQuizRepository.save(userQuiz);
     }
 }
