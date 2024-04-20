@@ -158,13 +158,13 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
                     .map(course -> courseMapper.entityToDto(course))
                     .toList();
 
-            Page<CourseDto> courseDtoPage = new PageImpl<>(courseDtos, pageable, courses.getTotalElements());
+            Page<CourseDto> courseDtoPage = new PageImpl<>(courseDtos, pageable, courseDtos.size());
 
             return ResponseMapper.toPagingResponseSuccess(courseDtoPage);
         }
 
-        return ResponseMapper.toPagingResponseSuccess(courses);
 
+        return ResponseMapper.toPagingResponseSuccess(courses.map(course -> courseMapper.entityToDto(course)));
     }
 
     @Override

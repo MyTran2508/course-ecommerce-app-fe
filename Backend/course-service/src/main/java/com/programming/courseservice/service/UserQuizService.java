@@ -101,10 +101,19 @@ public class UserQuizService extends BaseServiceImpl<UserQuiz, UserQuizDto> {
 
         ExQuiz exQuiz = exQuizRepository.findById(dto.getExQuizId())
                 .orElseThrow(() -> new ResourceNotFoundException(StatusMessage.DATA_NOT_FOUND));
+
+        // get next value of attempt number for user quiz
+        Integer attemptNumber = userQuizRepository.getNextAttemptNumber(dto.getUserId(), dto.getExQuizId());
+
+        // set value for user quiz
         dto.setScore(0.0);
+        dto.setAttemptNumber(attemptNumber);
+
+        // convert entity and save user quiz
         UserQuiz userQuiz = userQuizMapper.dtoToEntity(dto);
         UserQuiz savedUserQuiz = userQuizRepository.save(userQuiz);
 
+        // create user answer for each question in ex quiz
         List<UserAnswer> userAnswers = new ArrayList<>();
         for (Question question: exQuiz.getQuestions()) {
             UserAnswer userAnswer = new UserAnswer();
@@ -120,8 +129,10 @@ public class UserQuizService extends BaseServiceImpl<UserQuiz, UserQuizDto> {
             userAnswers.add(userAnswer);
         }
 
+        // save user answers
         userQuiz.setUserAnswers(userAnswers);
         userQuizRepository.save(userQuiz);
-        return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.INSERT_SUCCES);
+
+        return ResponseMapper.toDataResponseSuccess(userQuizMapper.entityToDto(userQuiz));
     }
 }

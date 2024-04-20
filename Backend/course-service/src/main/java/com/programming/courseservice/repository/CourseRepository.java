@@ -48,8 +48,9 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND c.topic.id IN :topicIds
                 AND ((:isFree = false AND c.price > 0) OR (:isFree = true AND c.price = 0) OR (:isFree IS NULL))
                 AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
-                AND (c.averageRating >= :minRatingValue OR :ratingValue IS NULL)
+                AND (c.averageRating >= :minRatingValue OR :minRatingValue IS NULL)
                 AND c.isApproved = true
+                ORDER BY ((c.totalRatings * 0.6) + (c.averageRating * 0.4)) DESC
             """)
     Page<Course> filterCourse(@Param("levelIds") List<String> levelIds,
                               @Param("languageIds") List<String> languageIds,

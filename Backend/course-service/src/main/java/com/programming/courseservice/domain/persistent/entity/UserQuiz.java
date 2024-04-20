@@ -21,14 +21,17 @@ public class UserQuiz extends BaseModel {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
+    @Column(name = "ex_quiz_id", nullable = false)
+    private String exQuizId;
+
+    @Column(name = "attempt_number")
+    private Integer attemptNumber;
+
     @Column(name = "start_time", nullable = false)
     private Long startTime;
 
     @Column(name = "limit_time", nullable = false)
     private Long limitTime;
-
-    @Column(name = "ex_quiz_id", nullable = false)
-    private String exQuizId;
 
     @Column(name = "count_answer_count")
     private Short correctAnswerCount;
