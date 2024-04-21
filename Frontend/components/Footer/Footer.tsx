@@ -55,11 +55,6 @@ function Footer() {
                 <FontAwesomeIcon icon="fa-brands fa-linkedin-in" />
               </div>
             </Link>
-            <Link href={"/"}>
-              <div className="icon youtube">
-                <FontAwesomeIcon icon="fa-brands fa-youtube" />
-              </div>
-            </Link>
           </div>
         </div>
         <div className="body">
@@ -119,13 +114,13 @@ function Footer() {
           </ul>
         </div>
       </div>
-      <div className="policy">
+      {/* <div className="policy">
         <div className="policy__details">
           <span>Copy right @ 2023 | ALL Right Reserved</span>
           <Link href={"/"}>Privacy policy</Link>
           <Link href={"/"}>Terms & condition</Link>
         </div>
-      </div>
+      </div> */}
     </footer>
   );
 }

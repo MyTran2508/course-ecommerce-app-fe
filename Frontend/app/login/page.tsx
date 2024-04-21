@@ -4,7 +4,7 @@ import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useLoginUserMutation } from "@/redux/services/authApi";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { IoChevronBackCircleSharp, IoCloseOutline } from "react-icons/io5";
+import { IoCloseOutline } from "react-icons/io5";
 import "../../components/style/LoginForm.scss";
 
 function PageLogin() {
