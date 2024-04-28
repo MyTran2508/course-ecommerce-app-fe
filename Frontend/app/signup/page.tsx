@@ -2,22 +2,22 @@
 import SignUpForm from "@/components/Form/SignUpForm";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { IoChevronBackCircleSharp } from "react-icons/io5";
+import { IoCloseOutline } from "react-icons/io5";
+import "../../components/style/signup.scss";
 
 function PageSignUp() {
   const route = useRouter();
   return (
-    <div className=" bg-blue-100 border-6 p-2">
-      <div className="flex justify-start items-center gap-2 font-normal">
-        <IoChevronBackCircleSharp
-          className="text-3xl ml-2 cursor-pointer"
+    <div className="border-6 sign-up-page w-full">
+      <div className="flex justify-start items-center gap-2 font-normal fixed">
+        <IoCloseOutline
+          className="text-3xl ml-3 mt-3 cursor-pointer btn-back text-6xl"
           onClick={() => {
             route.back();
           }}
         />
-        <p className="">Back to Home</p>
       </div>
-      <div className="flex justify-center mt-10 h-screen">
+      <div className="flex justify-center h-screen w-full sign-up-main ">
         <SignUpForm />
       </div>
     </div>

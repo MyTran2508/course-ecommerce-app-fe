@@ -178,12 +178,12 @@ function LoginForm() {
               </Link>
             </div>
 
-            <footer id="main-footer">
+            <div id="main-footer">
               <p>Copyright &copy; 2024, All Rights Reserved</p>
               <div>
                 <a>terms of use</a> | <a>Privacy Policy</a>
               </div>
-            </footer>
+            </div>
           </div>
         </div>
         <div className="w-3/5 lg:block hidden right-login-form">
