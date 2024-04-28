@@ -1,24 +1,33 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Question } from "@/types/section.type";
-import SelectTypeQuestion from "../Quiz/SelectTypeQuestion";
-import ActionButtons from "../ActionButtons";
+import SelectTypeQuestion from "./SelectTypeQuestion";
+import ActionButtons from "../../ActionButtons";
 import { Action } from "@/utils/resources";
+import { useExQuizHooks } from "@/redux/hooks/courseHooks/quizHooks";
 
-interface QuestionProps {
+interface AddQuestionProps {
   question: Question;
   attributes?: any;
   listeners?: any;
 }
-function Question(props: QuestionProps) {
+function AddQuestion(props: AddQuestionProps) {
   const { question, attributes, listeners } = props;
   const [isEdit, setEdit] = useState(false);
+  const [isDelete, setDelete] = useState(false);
+  const { handleUpdateQuestion } = useExQuizHooks();
+
+  useEffect(() => {
+    if (isDelete) {
+      question.ordinalNumber = -1;
+      handleUpdateQuestion(question);
+      setDelete(false);
+    }
+  }, [isDelete]);
   return (
     <Fragment>
       {isEdit ? (
         <SelectTypeQuestion
           action={Action.UPDATE}
-          exQuizId="123"
-          ordinalNumber={1}
           questionData={question}
           handleOpen={setEdit}
         />
@@ -34,6 +43,7 @@ function Question(props: QuestionProps) {
             attributes={attributes}
             listeners={listeners}
             handleEdit={setEdit}
+            handleDelete={setDelete}
           />
         </div>
       )}
@@ -41,4 +51,4 @@ function Question(props: QuestionProps) {
   );
 }
 
-export default Question;
+export default AddQuestion;

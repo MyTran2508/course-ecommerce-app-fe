@@ -7,7 +7,7 @@ export interface Section {
   name?: string;
   lectures?: Lecture[];
   content?: Pick<Content, "id">;
-  totalDurationVideoLectures?: number
+  totalDurationVideoLectures?: number;
 }
 
 export interface Lecture {
@@ -20,15 +20,19 @@ export interface Lecture {
   lectureType?: string;
   exQuiz?: ExQuiz;
   isSuccess?: boolean;
+  description?: string;
 }
-export interface ExQuiz { 
+export interface ExQuiz {
   id?: string;
   difficulty?: string;
   category?: string;
   limitTime?: number;
-  questions?: Question[],
+  questions?: Question[];
+  totalQuestion?: number;
+  maxAttemptNumber?: number;
+  requiredScore?: number;
 }
-export interface Question { 
+export interface Question {
   id?: string;
   ordinalNumber?: number;
   title?: string;
@@ -36,4 +40,23 @@ export interface Question {
   rightAnswer?: string;
   answerExplanation?: string;
   quizType?: QuizType;
+}
+
+export interface UserQuiz {
+  id?: string;
+  userId?: string;
+  startTime?: number;
+  limitTime?: number;
+  ezQuizId?: string;
+  correctAnswerCount?: number;
+  score?: number;
+  userAnswers?: UserAnswer[];
+  attemptNumber?: number;
+  isCompleted?: boolean;
+}
+export interface UserAnswer {
+  id?: string;
+  currentAnswer?: string;
+  isCorrect?: boolean;
+  question?: Question;
 }

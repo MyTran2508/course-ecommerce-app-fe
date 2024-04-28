@@ -1,7 +1,13 @@
 import { Disclosure, RadioGroup } from "@headlessui/react";
 import React, { Fragment, useEffect, useState } from "react";
-import { HiChevronUp } from "react-icons/hi";
-import { Language, Level, Price, Topic } from "../../utils/data";
+import {
+  Language,
+  Level,
+  Price,
+  Topic,
+  Rating,
+  VideoDuration,
+} from "../../utils/data";
 import DiscussionFilter from "../Discussion/DiscussionFilter";
 import { SearchCourseRequest } from "@/types/request.type";
 
@@ -19,6 +25,8 @@ function SideBarFilter(props: SideBarFilterProps) {
   );
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [selectedPriceIsFree, setSelectedPriceIsFree] = useState<string[]>([]);
+  const [selectedRating, setSelectedRating] = useState<string | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
 
   useEffect(() => {
     setSearchRequest((prevSearchRequest) => ({
@@ -26,11 +34,18 @@ function SideBarFilter(props: SideBarFilterProps) {
       languageIds: selectedLanguages,
       topicIds: selectedTopics,
       levelIds: selectedLevels,
-      ratingsLevel: null,
+      ratingsLevel: selectedRating,
+      videoDuration: selectedDuration,
       pageIndex: 0,
     }));
     setPage(1);
-  }, [selectedLanguages, selectedTopics, selectedLevels]);
+  }, [
+    selectedLanguages,
+    selectedTopics,
+    selectedLevels,
+    selectedRating,
+    selectedDuration,
+  ]);
 
   useEffect(() => {
     if (selectedPriceIsFree.length === 0 || selectedPriceIsFree.length === 2) {
@@ -60,6 +75,12 @@ function SideBarFilter(props: SideBarFilterProps) {
   return (
     <div className="p-1">
       <DiscussionFilter
+        data={Rating}
+        selected={selectedRating}
+        label={"Ratings"}
+        setSelected={setSelectedRating}
+      />
+      <DiscussionFilter
         data={Language}
         selectedList={selectedLanguages}
         label={"Language"}
@@ -82,6 +103,12 @@ function SideBarFilter(props: SideBarFilterProps) {
         selectedList={selectedPriceIsFree}
         label={"Price"}
         setSelectedList={setSelectedPriceIsFree}
+      />
+      <DiscussionFilter
+        data={VideoDuration}
+        selected={selectedDuration}
+        label={"Video Duration"}
+        setSelected={setSelectedDuration}
       />
     </div>
   );

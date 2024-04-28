@@ -65,7 +65,7 @@ function PersonalForm(props: PersonalProps) {
     handleSetDefaultValueFrom(userInfor)
   );
   const [file, setFile] = useState<File>();
-  const [currentAvatar, setCurrentAvatar] = useState();
+  const [currentAvatar, setCurrentAvatar] = useState<string>();
 
   const [updateAvatar] = useUploadImageMutation();
   const [updateInformation] = useUpdateUserMutation();
@@ -90,7 +90,7 @@ function PersonalForm(props: PersonalProps) {
   useEffect(() => {
     setDefaultValueFrom(handleSetDefaultValueFrom(userInfor));
     handleImageError(false);
-    setCurrentAvatar(avatarData);
+    setCurrentAvatar(avatarData.rawAvatar as string);
   }, [userInfor, avatarData]);
 
   const handleClickEdit = () => {

@@ -79,7 +79,7 @@ function PageLearning() {
 
   useEffect(() => {
     if (lecture?.videoDuration === 0) {
-      loadFile(lecture.url);
+      loadFile(lecture?.url as string);
     }
     handleOpenMenu();
   }, [lecture]);
@@ -131,7 +131,7 @@ function PageLearning() {
                   section={section}
                   setLecture={setLecture}
                   currentProgress={courseProcess?.currentProgress as number}
-                  lectureActive={lecture?.ordinalNumber as number}
+                  lectureActive={lecture?.id as string}
                 />
               </div>
             );
@@ -208,7 +208,7 @@ function PageLearning() {
                     <video
                       ref={videoRef}
                       controls
-                      src={lecture?.url}
+                      src={lecture?.url as string}
                       className="w-full h-[500px] xs:h-[200px]"
                       onTimeUpdate={handleTimeUpdate}
                       autoPlay
@@ -225,7 +225,7 @@ function PageLearning() {
                     <PDFViewer
                       fileBase64={fileBase64 as string}
                       setReadDocComplete={setReadDocComplete}
-                      lectureUrl={lecture?.url}
+                      lectureUrl={lecture?.url as string}
                     />
                   )}
                 </div>

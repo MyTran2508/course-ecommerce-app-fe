@@ -28,7 +28,7 @@ function InstructorNavbar() {
   const dispatch = useAppDispatch();
   const [userData, setUserData] = useState<User>();
   const [isLogout, setLogout] = useState(false);
-  const [currentAvatar, setCurrentAvatar] = useState();
+  const [currentAvatar, setCurrentAvatar] = useState<string>();
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
   const email = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.email
@@ -64,7 +64,7 @@ function InstructorNavbar() {
       setUserData(userNameData.data as User);
     }
     if (avatarSuccess) {
-      setCurrentAvatar(avatarData);
+      setCurrentAvatar(avatarData.rawAvatar as string);
     }
   }, [userNameData, avatarData]);
 

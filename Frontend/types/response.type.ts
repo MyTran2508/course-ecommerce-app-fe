@@ -1,3 +1,4 @@
+import { Page } from "react-pdf";
 import {
   MonthlySale,
   SalesByTopic,
@@ -9,7 +10,9 @@ import Content from "./content.type";
 import { Course } from "./course.type";
 import { CourseProcess } from "./courseProcess.type";
 import { User } from "./user.type";
-import { Question } from "./section.type";
+import { Question, UserQuiz } from "./section.type";
+import { Review } from "./review.type";
+import { ForumLecture } from "./forumLecture";
 
 export interface DataResponse {
   timestamp: number;
@@ -30,7 +33,9 @@ export interface DataResponse {
     | SalesSamePeriod[]
     | SalesSamePeriodByTopics[]
     | Statistics
-    | Question[];
+    | Question[]
+    | UserQuiz
+    | Review;
 }
 
 export interface ListResponse {
@@ -39,5 +44,14 @@ export interface ListResponse {
   statusMessage: string;
   totalRecords: number;
   totalPages: number;
-  data: Course[] | User[];
+  data: Course[] | User[] | Review[] | ForumLecture[];
+}
+
+export interface PageResponse {
+  pageIndex: number;
+  pageSize: number;
+}
+
+export interface AvatarResponse {
+  rawAvatar: string;
 }

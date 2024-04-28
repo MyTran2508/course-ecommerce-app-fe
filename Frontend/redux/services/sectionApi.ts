@@ -21,10 +21,10 @@ export const sectionApi = createApi({
         };
       },
     }),
-    loadFileFromCloud: builder.query<string, string>({
+    loadFileDocumentFromCloud: builder.query<string, string>({
       query: (path: string) => {
         return {
-          url: "/api/courses/course/download",
+          url: "/api/courses/section/download",
           params: {
             path: path,
           },
@@ -57,5 +57,6 @@ export const sectionApi = createApi({
 
 export const {
   useUploadSectionFilesMutation,
+  useLazyLoadFileDocumentFromCloudQuery,
   // useAddSectionMutation,
 } = sectionApi;

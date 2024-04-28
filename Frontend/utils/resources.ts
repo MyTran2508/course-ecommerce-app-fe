@@ -8,6 +8,9 @@ export enum Constant {
   QUESTION = "Câu hỏi",
 }
 
+export const DEFAULT_PAGE_SIZE = 100;
+export const DEFAULT_PAGE_INDEX = 0;
+
 export enum Action {
   SENT_OTP = "SENT_OTP",
   REGISTER = "REGISTER",
@@ -15,6 +18,10 @@ export enum Action {
   CREATE = "CREATE",
   UPDATE = "UPDATE",
   DELETE = "DELETE",
+  NEXT = "NEXT",
+  PREVIOUS = "PREVIOUS",
+  LIKE = "LIKE",
+  DISLIKE = "DISLIKE",
 }
 
 export enum StatusCode {
@@ -36,6 +43,7 @@ export enum ToastMessage {
   //Login
   LOGIN_SUCCESS = "Đăng Nhập Thành Công",
   LOGIN_FAIL = "Đăng Nhập Thất Bại",
+  LOGIN_REQUIRED = "Vui Lòng Đăng Nhập",
   LOGOUT_SUCCESS = "Đăng Xuất Thành Công",
 
   //Payment
@@ -73,6 +81,16 @@ export enum ToastMessage {
   ENTER_RIGHT_ANSWER = "Vui lòng chọn câu trả lời đúng",
   ENTER_ANSWER = "Vui lòng nhập đầy đủ câu trả lời",
   ENTER_EXPLANATION = "Vui lòng nhập giải thích cho câu trả lời đúng",
+
+  //Quiz
+  SUBMIT_SUCCESS = "Thời gian làm bài đã hết",
+  REQUIRED_SCORE = "Điểm số cần đạt từ 1 đến 10",
+  MAX_ATTEMPT_NUMBER = "Số lần tối đa phải lớn hơn 0",
+
+  //Review
+  REVIEW_SUCCESS = "Đánh giá thành công",
+  UPDATE_REVIEW_SUCCESS = "Cập nhật đánh giá thành công",
+  PLEASE_WAIT = "Vui lòng chờ trong giây lát",
 }
 
 export enum Role {

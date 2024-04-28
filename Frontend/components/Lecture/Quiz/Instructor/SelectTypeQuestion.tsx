@@ -11,8 +11,8 @@ import { useExQuizHooks } from "@/redux/hooks/courseHooks/quizHooks";
 import { Question } from "@/types/section.type";
 
 interface SelectTypeQuizProps {
-  ordinalNumber: number;
-  exQuizId: string;
+  ordinalNumber?: number;
+  exQuizId?: string;
   handleOpen?: (isOpen: boolean) => void;
   questionData?: Question;
   action: Action;
@@ -51,7 +51,7 @@ function SelectTypeQuiz(props: SelectTypeQuizProps) {
       ? (questionData && questionData.options?.split("\n").length) || 1
       : 1
   );
-  const { handleAddQuestion } = useExQuizHooks();
+  const { handleAddQuestion, handleUpdateQuestion } = useExQuizHooks();
 
   const handleChoiceTypeQuestion = (type: QuizType) => {
     setIsChoiceTypeQuestion(true);
@@ -161,15 +161,22 @@ function SelectTypeQuiz(props: SelectTypeQuizProps) {
       .join("\n");
 
     const newQuestion: Question = {
-      ordinalNumber: ordinalNumber,
       title: question,
       options: options,
       rightAnswer: rightAnswer,
       answerExplanation: answerExplanation,
-      quizType: typeQuestion as QuizType,
     };
 
-    handleAddQuestion(exQuizId, newQuestion);
+    if (action === Action.UPDATE) {
+      newQuestion.id = questionData?.id;
+      const updatedQuestion = { ...questionData, ...newQuestion };
+      handleUpdateQuestion(updatedQuestion);
+    } else {
+      newQuestion.ordinalNumber = ordinalNumber;
+      newQuestion.quizType = typeQuestion as QuizType;
+      handleAddQuestion(exQuizId as string, newQuestion);
+    }
+
     handleOpen && handleOpen(false);
   };
 
@@ -254,7 +261,7 @@ function SelectTypeQuiz(props: SelectTypeQuizProps) {
                 </button>
 
                 <Button onClick={() => handleSubmit()} className="w-max">
-                  Thêm câu hỏi
+                  {action === Action.UPDATE ? "Cập nhật" : "Thêm câu hỏi"}
                 </Button>
               </div>
             </div>

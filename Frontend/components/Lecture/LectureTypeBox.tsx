@@ -1,9 +1,9 @@
 import { Action, LectureType } from "@/utils/resources";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { IoAddOutline } from "react-icons/io5";
 import { v4 as uuidv4 } from "uuid";
 import CreateTitle from "./CreateTitle";
-import Quiz from "./Quiz/Quiz";
+import AddQuiz from "./Quiz/Instructor/AddQuiz";
 
 interface LectureTypeProps {
   // key: number;
@@ -48,10 +48,11 @@ function LectureTypeBox(props: LectureTypeProps) {
           action={Action.CREATE}
         />
       ) : (
-        // <Quiz />
-        <div className="flex-between gap-5 border-dashed border-2 border-gray-400 p-2 w-max">
-          {renderLectureTypes()}
-        </div>
+        <Fragment>
+          <div className="flex-between gap-5 border-dashed border-2 border-gray-400 p-2 w-max">
+            {renderLectureTypes()}
+          </div>
+        </Fragment>
       )}
     </div>
   );

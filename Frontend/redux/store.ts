@@ -6,7 +6,7 @@ import userReducer, { UserState } from "./features/userSlice";
 import courseReducer from "./features/courseSlice";
 import contentReducer from "./features/contentSlice";
 import sectionReducer from "./features/sectionSlice";
-import quizReducer from "./features/quizSlice";
+import quizReducer, { QuizState } from "./features/quizSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { AuthMiddleware, rtkQueryErrorLogger } from "@/config/middleware";
 import { userApi } from "./services/userApi";
@@ -15,11 +15,13 @@ import { contentApi } from "./services/contentApi";
 import { sectionApi } from "./services/sectionApi";
 import { orderApi } from "./services/orderApi";
 import { quizApi } from "./services/quizApi";
+import { reviewApi } from "./services/reviewApi";
+import { forumApi } from "./services/forumApi";
+import { userQuizApi } from "./services/userQuizApi";
 import { courseProcessApi } from "./services/courseProcessApi";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { Cart } from "@/types/cart.type";
-import { User } from "@/types/user.type";
 
 const persistConfig = {
   key: "root",
@@ -29,12 +31,14 @@ export interface RootStateReduxPersist {
   cartReducer: Cart[];
   authReducer: AuthState;
   userReducer: UserState;
+  quizReducer: QuizState;
 }
 
 const rootReducer = combineReducers<RootStateReduxPersist>({
   cartReducer,
   authReducer,
   userReducer,
+  quizReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
@@ -44,7 +48,6 @@ export const store = configureStore({
     courseReducer,
     contentReducer,
     sectionReducer,
-    quizReducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [courseApi.reducerPath]: courseApi.reducer,
@@ -52,6 +55,9 @@ export const store = configureStore({
     [sectionApi.reducerPath]: sectionApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
     [quizApi.reducerPath]: quizApi.reducer,
+    [reviewApi.reducerPath]: reviewApi.reducer,
+    [forumApi.reducerPath]: forumApi.reducer,
+    [userQuizApi.reducerPath]: userQuizApi.reducer,
     [courseProcessApi.reducerPath]: courseProcessApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -64,6 +70,9 @@ export const store = configureStore({
       orderApi.middleware,
       courseProcessApi.middleware,
       quizApi.middleware,
+      reviewApi.middleware,
+      userQuizApi.middleware,
+      forumApi.middleware,
       rtkQueryErrorLogger,
       AuthMiddleware,
     ]),

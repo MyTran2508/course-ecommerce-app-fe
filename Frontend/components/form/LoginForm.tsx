@@ -177,20 +177,21 @@ function LoginForm() {
                 </button>
               </Link>
             </div>
-
-            <div id="main-footer">
+            {/* <div id="main-footer"> */}
+            {/* <footer id="main-footer">
               <p>Copyright &copy; 2024, All Rights Reserved</p>
               <div>
                 <a>terms of use</a> | <a>Privacy Policy</a>
               </div>
             </div>
+            </footer> */}
           </div>
         </div>
         <div className="w-3/5 lg:block hidden right-login-form">
           <div id="showcase">
             <div className="showcase-content">
               <h1 className="showcase-text">
-                Let's create the future <strong>together</strong>
+                {"Let's create the future"} <strong>together</strong>
               </h1>
               <a href="#" className="secondary-btn">
                 Start a free trial with us

@@ -4,11 +4,18 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface QuizState {
   typeQuizCreate: QuizType | null;
   isEdit: boolean;
+  quiz: {
+    exQuizId: string;
+    userQuizId: string;
+    expiryTime: number;
+    attemptNumber?: number;
+  }[];
 }
 
 const initialState: QuizState = {
   typeQuizCreate: null,
   isEdit: false,
+  quiz: [],
 };
 
 export const quiz = createSlice({
@@ -21,9 +28,36 @@ export const quiz = createSlice({
     setQuestionIsEdit: (state, action: PayloadAction<boolean>) => {
       state.isEdit = action.payload;
     },
+    setUserQuiz: (
+      state,
+      action: PayloadAction<{
+        exQuizId: string;
+        userQuizId: string;
+        expiryTime: number;
+        attemptNumber?: number;
+      }>
+    ) => {
+      const { exQuizId, userQuizId, expiryTime, attemptNumber } =
+        action.payload;
+      const existingQuiz = state.quiz.find((q) => q.exQuizId === exQuizId);
+      if (existingQuiz) {
+        existingQuiz.userQuizId = userQuizId;
+        existingQuiz.expiryTime = expiryTime;
+      } else {
+        state.quiz.push({ exQuizId, userQuizId, expiryTime, attemptNumber });
+      }
+    },
+    deleteUserQuiz: (state, action: PayloadAction<string>) => {
+      state.quiz = state.quiz.filter((q) => q.exQuizId !== action.payload);
+    },
   },
 });
 
-export const { setTypeQuizCreate, setQuestionIsEdit } = quiz.actions;
+export const {
+  setTypeQuizCreate,
+  setQuestionIsEdit,
+  setUserQuiz,
+  deleteUserQuiz,
+} = quiz.actions;
 
 export default quiz.reducer;
