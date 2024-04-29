@@ -1,14 +1,10 @@
 package com.programming.userservice.domain.dto;
 
-import com.programming.userservice.domain.persistent.entity.Address;
-import com.programming.userservice.domain.persistent.entity.Role;
-import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +13,7 @@ import java.util.Set;
 public class UserDto implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     private String id;
 
@@ -25,12 +21,7 @@ public class UserDto implements Serializable {
 //    @Size(min = 2, max = 32, message = "Password must be between 2 and 32 characters")
     private String password;
 
-    @Email(message = "Invalid email address")
-    @NotEmpty(message = "Email is required")
     private String email;
-
-    @NotEmpty(message = "Username is required")
-    @Size(min = 4, message = "Username must be at least 4 characters")
 
     private String username;
 

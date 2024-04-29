@@ -42,7 +42,6 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     public DataResponse<String> add(CourseDto objectDTO) {
         return super.add(objectDTO);
     }
@@ -67,7 +66,6 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     public DataResponse<CourseDto> update(CourseDto objectDTO, String id) {
         return super.update(objectDTO, id);
     }

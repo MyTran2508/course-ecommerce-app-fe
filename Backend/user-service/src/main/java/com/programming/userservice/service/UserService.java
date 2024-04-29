@@ -11,6 +11,7 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.main.progamming.common.util.CommonConstrant;
 import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.persistent.entity.Role;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
@@ -21,6 +22,7 @@ import com.programming.userservice.repository.UserRepository;
 import com.programming.userservice.utilities.OtpUtil;
 import com.programming.userservice.utilities.communication.CourseAPI;
 import com.programming.userservice.utilities.constant.TypeMessage;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -80,6 +82,45 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     public DataResponse<UserDto> getUserByUsername(String username) {
         UserDto userDto = userMapper.entityToDto(userRepository.findByUserName(username));
         return ResponseMapper.toDataResponseSuccess(userDto);
+    }
+
+//    @Override
+//    public DataResponse<String> create(UserDto userDto) {
+//
+//        User user = userMapper.dtoToEntity(userDto);
+//        List<Role> roles = user.getRoles();
+//
+//        user.setRoles(new ArrayList<>());
+//        roles.stream().forEach(role -> user.addRole(role));
+//
+//        User savedUser = userRepository.save(user);
+//
+//        return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS + " ID: " + savedUser.getId());
+//    }
+
+    @Override
+    @Transactional
+    public DataResponse<UserDto> update(String id, UserDto userDto) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("User doesn't exists"));
+
+        List<Role> roles = userMapper.dtoToEntity(userDto).getRoles();
+        userMapper.dtoToEntity(userDto, user);
+        user.setId(id);
+
+        user.removeRole();
+        userRepository.save(user);
+
+        user.setRoles(new ArrayList<>());
+        if (roles != null && roles.size() > 0) {
+            roles.stream()
+                    .forEach(role -> user.addRole(role));
+        }
+
+        User savedUser2 = userRepository.save(user);
+
+        return ResponseMapper.toDataResponseSuccess(userMapper.entityToDto(savedUser2));
     }
 
     public DataResponse<String> generateToken(String username) {
@@ -170,11 +211,6 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
         userRepository.save(user);
         return ResponseMapper.toDataResponseSuccess("Update password successfully");
-    }
-
-    @Override
-    public DataResponse<UserDto> update(String id, UserDto dto) {
-        return super.update(id, dto);
     }
 
     public ResponseEntity<AvatarDto> getAvatar(String username) {

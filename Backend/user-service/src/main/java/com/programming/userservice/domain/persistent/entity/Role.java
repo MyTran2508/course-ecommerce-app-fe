@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -23,6 +22,7 @@ import java.util.Set;
 )
 @ToString(callSuper = true)
 public class Role extends BaseModel {
+
     @Column(length = 64)
     private String name;
 
@@ -30,7 +30,7 @@ public class Role extends BaseModel {
     @ExcludeFromComparisonField
     private String description;
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
@@ -41,6 +41,11 @@ public class Role extends BaseModel {
     @ToString.Exclude
     @ExcludeFromComparisonField
     private List<User> users;
+
+    @OneToMany(targetEntity = RoleDetail.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "fk_role_details_role"))
+    @OrderBy("module.id DESC ")
+    private List<RoleDetail> roleDetails;
 
     public Role(String id) {
         super(id);

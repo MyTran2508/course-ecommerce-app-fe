@@ -35,14 +35,12 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<String> add(@Valid CategoryDto categoryDto) {
         return super.add(categoryDto);
     }
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> update(@Valid CategoryDto categoryDto, String id) {
         return super.update(categoryDto, id);
     }
@@ -66,7 +64,6 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> setRemoved(String id) {
         return super.setRemoved(id);
     }

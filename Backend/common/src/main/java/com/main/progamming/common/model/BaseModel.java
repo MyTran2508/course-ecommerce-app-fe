@@ -21,6 +21,7 @@ import java.util.UUID;
 @SuperBuilder(toBuilder = true)
 @ToString
 public class BaseModel {
+
     @Id
     private String id;
 

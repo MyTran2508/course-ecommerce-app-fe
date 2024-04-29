@@ -72,7 +72,6 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<String> add(@Valid UserDto objectDTO) {
         objectDTO.setPassword(passwordEncoder.encode(objectDTO.getPassword()));
 
@@ -99,17 +98,16 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
 
-        RoleDto role = new RoleDto(RoleUser.USER.getValue());
-        objectDTO.setRoles(List.of(role));
+//        RoleDto role = new RoleDto(RoleUser.USER.getValue());
+//        objectDTO.setRoles(List.of(role));
 
         return super.update(objectDTO, id);
     }
 
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-admin/{id}")
     public DataResponse<UserDto> updateAdminUser(@Valid @RequestBody UserDto userDto,
                                                     @PathVariable("id") String id) {
@@ -173,7 +171,6 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<UserDto> setRemoved(String id) {
         DataResponse<UserDto> response = super.setRemoved(id);
 

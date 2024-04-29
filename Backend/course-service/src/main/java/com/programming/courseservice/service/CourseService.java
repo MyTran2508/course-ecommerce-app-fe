@@ -148,7 +148,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
             List<CourseDto> courseDtos = courses.stream()
                     .filter(course -> {
                         Long totalDurationVideos = course.getContent().getSections().stream()
-                                .mapToLong(Section::getTotalDurationVideoLectures)
+                                    .mapToLong(Section::getTotalDurationVideoLectures)
                                 .sum();
                         if (totalDurationVideos <= minVideoDuration || totalDurationVideos > maxVideoDuration) {
                             return false;
