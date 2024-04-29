@@ -2,10 +2,10 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Constant, LectureType } from "@/utils/resources";
-import Question from "../Quiz/Question";
+import AddQuestion from "../Quiz/Instructor/AddQuestion";
 import SectionComponent from "../../Section/Section";
-import Quiz from "../Quiz/Quiz";
-import VideoLecture from "../Video/VideoLecture";
+import AddQuiz from "../Quiz/Instructor/AddQuiz";
+import FileLecture from "../File/FileLecture";
 
 interface SortableItemProp {
   id: string;
@@ -29,15 +29,44 @@ export function SortableItem(props: SortableItemProp) {
     <div>
       <div ref={setNodeRef} style={style}>
         {type === Constant.SECTION && (
-          <SectionComponent section={data as object} index={index} attributes={attributes} listeners={listeners}/>
+          <SectionComponent
+            section={data as object}
+            index={index}
+            attributes={attributes}
+            listeners={listeners}
+          />
         )}
         {type === LectureType.QUIZ_TEST && (
-          <Quiz index={index} lecture={data as object} attributes={attributes} listeners={listeners}/>
+          <AddQuiz
+            index={index}
+            lecture={data as object}
+            attributes={attributes}
+            listeners={listeners}
+          />
         )}
-        {type === LectureType.VIDEO && (
-          <VideoLecture lecture={data as object} index={index} attributes={attributes} listeners={listeners}/>
+        {(type === LectureType.VIDEO || type === LectureType.DOCUMENT) && (
+          <FileLecture
+            data={data as object}
+            index={index}
+            attributes={attributes}
+            listeners={listeners}
+            type={type}
+          />
         )}
-        {type === Constant.QUESTION && <Question question={data as object} attributes={attributes} listeners={listeners} />}
+        {type === Constant.QUESTION && (
+          <AddQuestion
+            question={data as object}
+            attributes={attributes}
+            listeners={listeners}
+          />
+        )}
+        {/* {type === LectureType.DOCUMENT && (
+          <DocumentComponent
+            doc={data as object}
+            attributes={attributes}
+            listeners={listeners}
+          />
+        )} */}
       </div>
     </div>
   );

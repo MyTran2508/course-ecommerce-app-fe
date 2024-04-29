@@ -55,9 +55,6 @@ function SearchPage() {
       });
     setIsLoading(false);
   };
-  // useEffect(() => {
-  //   handleSearch();
-  // }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -65,18 +62,21 @@ function SearchPage() {
   }, [searchRequest]);
 
   useEffect(() => {
-    setSearchRequest((prevSearchRequest) => ({
-      ...prevSearchRequest,
-      pageIndex: page - 1,
-    }));
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (page !== (searchRequest.pageIndex as number) + 1) {
+      setSearchRequest((prevSearchRequest) => ({
+        ...prevSearchRequest,
+        pageIndex: page - 1,
+      }));
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   }, [page]);
 
   useEffect(() => {
-    if (query !== keyword) {
+    if (query !== keyword && query !== null) {
+      console.log("keyword", query);
       setKeyword(query as string);
       setSearchRequest((prevSearchRequest) => ({
         ...prevSearchRequest,
@@ -86,7 +86,8 @@ function SearchPage() {
   }, [query]);
 
   useEffect(() => {
-    if (sortBy !== FilterSortBy.NONE) {
+    if (sortBy !== FilterSortBy.NONE && sortBy !== searchRequest.filterSortBy) {
+      console.log("sortBy", sortBy);
       setSearchRequest((prevSearchRequest) => ({
         ...prevSearchRequest,
         filterSortBy: sortBy,

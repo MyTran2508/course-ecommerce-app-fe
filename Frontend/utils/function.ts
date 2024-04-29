@@ -148,3 +148,8 @@ export function formatTime(seconds: number) {
 
   return `${hours}:${minutes}:${secs}`;
 }
+
+export function convertMillisToDateTime(millis: number) {
+  const date = new Date(millis);
+  return date.toLocaleString();
+}

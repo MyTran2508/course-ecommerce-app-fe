@@ -2,6 +2,7 @@ import { useAddExQuizMutation } from "@/redux/services/contentApi";
 import {
   useAddQuestionMutation,
   useUpdateListQuestionMutation,
+  useUpdateQuestionMutation,
 } from "@/redux/services/quizApi";
 import { ExQuiz, Question } from "@/types/section.type";
 
@@ -16,6 +17,8 @@ export function useExQuizHooks() {
 
   const [updateListQuestion, { isLoading: isUpdatingListQuestion }] =
     useUpdateListQuestionMutation();
+
+  const [updateQuestion] = useUpdateQuestionMutation();
 
   // const [getExQuizById, { data: exQuizData }] = useLazyGetExQuizByIdQuery();
 
@@ -41,6 +44,7 @@ export function useExQuizHooks() {
         console.log(fulfilled);
       });
   };
+
   const handleUpdateListQuestion = async (
     exQuizId: string,
     data: Question[]
@@ -52,10 +56,19 @@ export function useExQuizHooks() {
       });
   };
 
+  const handleUpdateQuestion = async (data: Question) => {
+    await updateQuestion(data)
+      .unwrap()
+      .then((fulfilled) => {
+        console.log(fulfilled);
+      });
+  };
+
   return {
     handleAddExQuiz,
     handleAddQuestion,
     handleUpdateListQuestion,
+    handleUpdateQuestion,
     // handleGetExQuizById,
   };
 }
