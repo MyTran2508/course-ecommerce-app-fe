@@ -18,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 public class Address extends BaseModel {
+
     @Column(name = "address_line", length = 255)
     private String addressLine;
 

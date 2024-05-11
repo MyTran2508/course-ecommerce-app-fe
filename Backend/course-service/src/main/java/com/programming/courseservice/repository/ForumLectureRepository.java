@@ -15,4 +15,6 @@ public interface ForumLectureRepository extends BaseRepository<ForumLecture> {
                 WHERE fl.lectureId = :lectureId
          """)
     Page<ForumLecture> findByLectureId(String lectureId, Pageable pageable);
+
+
 }

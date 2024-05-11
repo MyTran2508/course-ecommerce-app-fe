@@ -6,13 +6,14 @@ import Image from "next/image";
 import { Course } from "@/types/course.type";
 import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
-// import ReviewDialog from "../Dialog/ReviewDialog";
+import ReviewDialog from "../Dialog/ReviewDialog";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
-// import {
-//   useGetReviewByUserNameAndCourseIdQuery,
-//   useLazyGetReviewByUserNameAndCourseIdQuery,
-// } from "@/redux/services/reviewApi";
-// import { Review } from "@/types/review.type";
+import {
+  useGetReviewByUserNameAndCourseIdQuery,
+  useLazyGetReviewByUserNameAndCourseIdQuery,
+} from "@/redux/services/reviewApi";
+import { Review } from "@/types/review.type";
+import { v4 as uuidv4 } from "uuid";
 import { useLazyGetCourseAccessQuery } from "@/redux/services/courseProcessApi";
 import { useRouter } from "next/navigation";
 

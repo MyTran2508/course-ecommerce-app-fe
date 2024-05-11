@@ -33,10 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-@Tag(
-        name = "User Service - User Controller",
-        description = "User Controller Exposes Rest APIs for User-Service"
-)
 @RestController
 @CrossOrigin("*")
 @RequiredArgsConstructor

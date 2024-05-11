@@ -3,6 +3,7 @@ package com.programming.courseservice.service;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
+import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.courseservice.domain.dto.ForumLectureDto;
 import com.programming.courseservice.domain.mapper.ForumLectureMapper;
@@ -43,5 +44,15 @@ public class ForumLectureService extends BaseServiceImpl<ForumLecture, ForumLect
     @Override
     protected List<ForumLectureDto> getListSearchResults(String keyword) {
         return null;
+    }
+
+    @Override
+    public DataResponse<String> create(ForumLectureDto dto) {
+        return super.create(dto);
+    }
+
+    @Override
+    public DataResponse<ForumLectureDto> update(String id, ForumLectureDto dto) {
+        return super.update(id, dto);
     }
 }
