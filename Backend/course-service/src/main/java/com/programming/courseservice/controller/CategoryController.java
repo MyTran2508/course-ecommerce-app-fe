@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag (
-        name = "Course Service - Category Controller",
-        description = "Category Controller Exposes Rest APIs for Course-Service"
-)
 @RestController
 @RequestMapping("/api/courses/categories")
 @RequiredArgsConstructor

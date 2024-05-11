@@ -1,12 +1,9 @@
 package com.programming.userservice.domain.persistent.entity;
 
-import com.main.progamming.common.util.SystemUtil;
 import com.programming.userservice.domain.persistent.enumrate.ModuleName;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import java.util.UUID;
 
 @Entity
 @NoArgsConstructor

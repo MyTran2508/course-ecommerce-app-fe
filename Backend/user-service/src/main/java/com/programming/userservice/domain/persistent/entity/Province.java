@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Province {
+
     @Id
     @Column(length = 16)
     private String code;
