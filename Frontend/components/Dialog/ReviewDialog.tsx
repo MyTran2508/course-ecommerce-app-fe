@@ -74,7 +74,7 @@ function ReviewDialog(props: ReviewDialogProps) {
   return (
     <div>
       <Dialog open={isRating} onOpenChange={() => setIsRating(false)}>
-        <DialogContent className="w-[500px] flex flex-col">
+        <DialogContent className="w-[500px] flex flex-col xs:w-[300px]">
           <DialogHeader>
             <DialogTitle className="text-2xl">
               How would you rate this course?

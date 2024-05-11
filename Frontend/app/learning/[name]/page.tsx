@@ -11,9 +11,9 @@ import {
   useLoadFileFromCloudQuery,
 } from "@/redux/services/courseApi";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
-import { Lecture, Section } from "@/types/section.type";
+import { ExQuiz, Lecture, Section } from "@/types/section.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
-import Content from "@/types/content.type";
+import Content, { Description } from "@/types/content.type";
 import { Course } from "@/types/course.type";
 import {
   useGetByUserIdAndCourseIdQuery,
@@ -24,6 +24,14 @@ import { CourseProcess } from "@/types/courseProcess.type";
 import PDFViewer from "@/components/PDF/PDFviewer";
 import { debounce } from "lodash";
 import { AiOutlineMenu } from "react-icons/ai";
+import { LectureType } from "@/utils/resources";
+import Quiz from "@/components/Lecture/Quiz/Client/Quiz";
+import {
+  renderDetails,
+  renderRequirement,
+  renderTargetConsumers,
+} from "@/app/(root)/course/[id]/page";
+import { current } from "@reduxjs/toolkit";
 
 function PageLearning() {
   const param = useParams();
@@ -34,7 +42,10 @@ function PageLearning() {
   const [isAccess, setAccess] = useState<boolean>();
   const [sections, setSections] = useState<Section[]>([]);
   const [lecture, setLecture] = useState<Lecture>();
+  const [course, setCourse] = useState<Course>();
+  const [description, setDescription] = useState<Description>();
   const [readDocComplete, setReadDocComplete] = useState(false);
+  const [quizIsComplete, setQuizIsComplete] = useState(false);
   const [courseProcess, setCourseProcess] = useState<CourseProcess>();
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.id
@@ -61,6 +72,7 @@ function PageLearning() {
     await updateCourseProcess({
       userId: userId,
       courseId: courseId,
+      exQuizId: lecture?.exQuiz?.id ?? "",
     });
   };
 
@@ -95,6 +107,8 @@ function PageLearning() {
           (section) => section.ordinalNumber !== -1
         )
       );
+      setCourse((contentData?.data as Content).course as Course);
+      setDescription((contentData?.data as Content).description);
       setNameCourse(((contentData?.data as Content).course as Course)?.name);
     }
   }, [courseAccess, contentData]);
@@ -107,17 +121,41 @@ function PageLearning() {
 
   useEffect(() => {
     if (readDocComplete) {
-      if (
-        !lecture?.isSuccess &&
-        lecture?.videoDuration === 0 &&
-        (lecture?.ordinalNumber as number) >
-          (courseProcess as CourseProcess).currentProgress
-      ) {
+      const ordinalNumber = calculateProgress(lecture?.id as string, sections);
+      if (ordinalNumber > (courseProcess as CourseProcess).currentProgress) {
         handleUpdateCourseProcess();
         setReadDocComplete(false);
       }
+      // if (
+      //   !lecture?.isSuccess &&
+      //   lecture?.videoDuration === 0 &&
+      //   (lecture?.ordinalNumber as number) >
+      //     (courseProcess as CourseProcess).currentProgress
+      // ) {
+      //   handleUpdateCourseProcess();
+      //   setReadDocComplete(false);
+      // }
     }
   }, [readDocComplete]);
+
+  useEffect(() => {
+    if (quizIsComplete) {
+      const progress = calculateProgress(lecture?.id as string, sections);
+      if (progress > (courseProcess as CourseProcess).currentProgress) {
+        handleUpdateCourseProcess();
+        setQuizIsComplete(false);
+      }
+      // if (
+      //   !lecture?.isSuccess &&
+      //   lecture?.videoDuration === 0 &&
+      //   (lecture?.ordinalNumber as number) >
+      //     (courseProcess as CourseProcess).currentProgress
+      // ) {
+      //   handleUpdateCourseProcess();
+      //   setQuizIsComplete(false);
+      // }
+    }
+  }, [quizIsComplete]);
 
   const renderCourseContent = () => {
     return (
@@ -126,12 +164,13 @@ function PageLearning() {
           ?.filter((section) => section.ordinalNumber !== -1)
           .map((section) => {
             return (
-              <div key={section.id} className="">
+              <div key={section.id}>
                 <CourseContentLearning
                   section={section}
                   setLecture={setLecture}
                   currentProgress={courseProcess?.currentProgress as number}
                   lectureActive={lecture?.id as string}
+                  dataGetOrdinalNumber={sections}
                 />
               </div>
             );
@@ -141,13 +180,13 @@ function PageLearning() {
   };
 
   const handleTimeUpdate = debounce(() => {
+    const progress = calculateProgress(lecture?.id as string, sections);
     if (videoRef.current) {
       const currentTime = videoRef.current.currentTime;
 
       if (
         currentTime / (lecture?.videoDuration as number) > 0.98 &&
-        (lecture?.ordinalNumber as number) >
-          (courseProcess as CourseProcess).currentProgress
+        progress > (courseProcess as CourseProcess).currentProgress
       ) {
         handleUpdateCourseProcess();
       }
@@ -158,7 +197,7 @@ function PageLearning() {
     <div>
       {isAccess ? (
         <Fragment>
-          <div className="bg-gray-900 text-white py-2 px-2 sticky top-0 z-20 xs:relative">
+          <div className="bg-gray-900 text-white py-2 px-2 sticky top-0 z-40 xs:relative ">
             <div className="text-sm flex-between gap-2">
               <div
                 className="flex-start font-bold gap-1 hover:cursor-pointer"
@@ -201,18 +240,27 @@ function PageLearning() {
           </div>
           <div className="flex xs:flex-col">
             <div className="w-9/12 custom-scrollbar overflow-y-scroll h-2/3 xs:w-full xs:overflow-hidden">
-              {/* <DiscussionSheet /> */}
+              {lecture && <DiscussionSheet lectureId={lecture?.id as string} />}
               <div>
                 <div>
                   {lecture?.videoDuration !== 0 ? (
-                    <video
-                      ref={videoRef}
-                      controls
-                      src={lecture?.url as string}
-                      className="w-full h-[500px] xs:h-[200px]"
-                      onTimeUpdate={handleTimeUpdate}
-                      autoPlay
-                    />
+                    <Fragment>
+                      {(lecture?.url?.length as number) > 0 ? (
+                        <video
+                          ref={videoRef}
+                          controls
+                          src={
+                            lecture?.url as string
+                            // loadFileSuccess
+                            //   ? `data:video/mp4;base64,${fileBase64}`
+                            //   : ""
+                          }
+                          className="w-full h-[500px] xs:h-[200px]"
+                          onTimeUpdate={handleTimeUpdate}
+                          autoPlay
+                        />
+                      ) : null}
+                    </Fragment>
                   ) : (
                     // <div>
                     //   <object
@@ -222,23 +270,48 @@ function PageLearning() {
                     //   />
                     // </div>
 
-                    <PDFViewer
-                      fileBase64={fileBase64 as string}
-                      setReadDocComplete={setReadDocComplete}
-                      lectureUrl={lecture?.url as string}
-                    />
+                    <Fragment>
+                      {lecture.lectureType === LectureType.DOCUMENT ? (
+                        <PDFViewer
+                          fileBase64={fileBase64 as string}
+                          setReadDocComplete={setReadDocComplete}
+                          lectureUrl={lecture?.url as string}
+                        />
+                      ) : (
+                        <Fragment>
+                          <div className="text-xl font-bold my-2 ml-10 xs:ml-[20px]">
+                            {"Bài Kiểm Tra: " + lecture?.name}
+                          </div>
+                          <Quiz
+                            exQuiz={lecture.exQuiz as ExQuiz}
+                            setQuizIsCompleted={setQuizIsComplete}
+                          />
+                        </Fragment>
+                      )}
+                    </Fragment>
                   )}
                 </div>
 
                 <div className="text-xl font-bold mt-2 ml-4">
-                  {lecture?.name}
+                  {lecture?.lectureType !== LectureType.QUIZ_TEST
+                    ? lecture?.name
+                    : null}
+                </div>
+                <hr className="border-gray-300 my-10" />
+                <div className="xl:w-2/3 ml-10 xs:m-6">
+                  <h2 className="text-2xl font-bold">Mô tả khóa học</h2>
+                  <div className="text-3xl font-bold mb-6">{course?.name}</div>
+                  <div className="font-light mb-2">{course?.subTitle}</div>
+                  {renderTargetConsumers(description as Description)}
+                  {renderRequirement(description as Description)}
+                  {renderDetails(description as Description)}
                 </div>
               </div>
             </div>
             {isOpenMenu ? (
               <Fragment>
                 <div className="w-3/12 sticky z-30 xs:w-full xs:absolute xs:z-30 bg-white h-full">
-                  <div className="flex-between py-2 ml-4 sticky top-[56px] z-30">
+                  <div className="flex-between py-2 ml-4 sticky top-[56px] z-30 bg-white">
                     <div>Nội dung khóa học</div>
                     <IoIosCloseCircleOutline
                       onClick={() => handleOpenMenu()}
@@ -251,7 +324,7 @@ function PageLearning() {
               </Fragment>
             ) : (
               <div
-                className="mx-2 lg:hidden absolute bottom-0 z-30"
+                className="mx-2 lg:hidden fixed bottom-0 z-30"
                 onClick={() => handleOpenMenu()}
               >
                 <AiOutlineMenu className="text-3xl" />
@@ -263,5 +336,26 @@ function PageLearning() {
     </div>
   );
 }
+export const calculateProgress = (
+  lectureId: string,
+  sections: Section[]
+): number => {
+  let progress = 0;
+  const targetLectureNumber = lectureId;
+
+  if (targetLectureNumber === undefined) return 0;
+  sections.some((section) => {
+    return (section.lectures as Lecture[])
+      .filter((lecture) => lecture.ordinalNumber !== -1)
+      .some((lecture, index) => {
+        progress++;
+        if (lecture.id === targetLectureNumber) {
+          return true;
+        }
+        return false;
+      });
+  });
+  return progress;
+};
 
 export default PageLearning;

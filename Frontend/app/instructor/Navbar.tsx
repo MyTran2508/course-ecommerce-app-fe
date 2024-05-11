@@ -77,7 +77,7 @@ function InstructorNavbar() {
   };
 
   return (
-    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-20 shadow-md">
+    <div className="border-b w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-20 shadow-md">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16 xs:px-5">
         <Link href={"/"} className="text-2xl flex items-center">
           <h1 className="uppercase font-medium">E-LEANING</h1>

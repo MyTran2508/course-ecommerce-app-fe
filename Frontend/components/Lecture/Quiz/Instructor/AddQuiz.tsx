@@ -205,7 +205,7 @@ function AddQuiz(props: AddQuizProps) {
                               {description ? "Đổi Mô tả" : "Thêm Mô tả"}
                             </h1>
                             <InputEditor
-                              lectureId={lecture.id as string}
+                              parentId={lecture.id as string}
                               setIsOpenInputEditor={setIsOpenInputEditor}
                               setTextInput={setDescription}
                               text={description}

@@ -3,19 +3,16 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
-
-import { BsPeopleFill } from "react-icons/bs";
 import { Course } from "@/types/course.type";
 import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
-import ReviewDialog from "../Dialog/ReviewDialog";
+// import ReviewDialog from "../Dialog/ReviewDialog";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
-import {
-  useGetReviewByUserNameAndCourseIdQuery,
-  useLazyGetReviewByUserNameAndCourseIdQuery,
-} from "@/redux/services/reviewApi";
-import { Review } from "@/types/review.type";
-import { v4 as uuidv4 } from "uuid";
+// import {
+//   useGetReviewByUserNameAndCourseIdQuery,
+//   useLazyGetReviewByUserNameAndCourseIdQuery,
+// } from "@/redux/services/reviewApi";
+// import { Review } from "@/types/review.type";
 import { useLazyGetCourseAccessQuery } from "@/redux/services/courseProcessApi";
 import { useRouter } from "next/navigation";
 
@@ -100,7 +97,7 @@ function CourseCard(props: CourseProps) {
   return (
     <Fragment>
       <Card
-        className="w-full max-w-fit border-0 !bg-transparent xs:max-w-[400px] m-8 hover:scale-105 duration-300 p-4 "
+        className="w-full max-w-fit border-0 !bg-transparent hover:scale-105 duration-300 p-4 mb-8"
         key={course.id}
         style={{
           background:
@@ -219,14 +216,16 @@ function CourseCard(props: CourseProps) {
             <div className="flex-end mr-2">
               <div className="text-xl font-normal xs:text-sm">
                 {course.price === 0 ? (
-                  <span className="text-red-500 italic">
+                  <span className="text-red-500 italic xs:min-w-[75px]">
                     <span className="xs:mr-2">F</span>
                     <span className="xs:mr-2">r</span>
                     <span className="xs:mr-2">e</span>
                     <span>e</span>
                   </span>
                 ) : (
-                  (course.price as number).toLocaleString() + " đ"
+                  <p className="flex xs:min-w-[75px]">
+                    {(course.price as number).toLocaleString() + " đ"}
+                  </p>
                 )}
               </div>
             </div>

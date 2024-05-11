@@ -1,7 +1,9 @@
 import { Lecture, Section } from "@/types/section.type";
 import { convertLongToTime } from "@/utils/function";
+import { LectureType } from "@/utils/resources";
 import { Disclosure } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
+import { CiCircleQuestion } from "react-icons/ci";
 import { HiChevronUp } from "react-icons/hi";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { MdOutlineOndemandVideo } from "react-icons/md";
@@ -49,28 +51,30 @@ function DisclosureCourseContent(props: DisclosureCourseContentProps) {
                       .filter((lecture) => lecture.ordinalNumber !== -1)
                       .map((lecture, index) => {
                         let durationLecture: string = "";
-                        let isVideo: boolean = false;
+
                         if (lecture.videoDuration !== 0) {
                           durationLecture = convertLongToTime(
                             lecture.videoDuration as number
                           );
-                          isVideo = true;
                         }
 
                         return (
                           <Fragment key={lecture.id}>
                             <div className="px-2 pt-4 pb-2 pl-5 flex justify-between">
                               <div className="flex gap-3">
-                                {isVideo ? (
+                                {lecture.lectureType === LectureType.VIDEO ? (
                                   <MdOutlineOndemandVideo />
-                                ) : (
+                                ) : lecture.lectureType ===
+                                  LectureType.DOCUMENT ? (
                                   <IoDocumentTextSharp />
+                                ) : (
+                                  <CiCircleQuestion />
                                 )}
                                 <Disclosure.Panel>
                                   {lecture.ordinalNumber}. {lecture.name}
                                 </Disclosure.Panel>
                               </div>
-                              {isVideo ? (
+                              {lecture.lectureType === LectureType.VIDEO ? (
                                 <Fragment>{durationLecture}</Fragment>
                               ) : null}
                             </div>

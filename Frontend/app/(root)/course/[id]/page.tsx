@@ -13,7 +13,7 @@ import { Cart } from "@/types/cart.type";
 import { addToCart } from "@/redux/features/cartSlice";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import {
   useGetCourseByIdQuery,
   useLoadFileFromCloudQuery,
@@ -55,6 +55,7 @@ const initCourse: Course = {
 function CoursePage() {
   const param = useParams();
   const router = useRouter();
+  const path = usePathname();
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.id
   );
@@ -180,7 +181,7 @@ function CoursePage() {
       };
       handleAddOrder(newOrder);
     } else {
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(path)}`);
     }
   };
   return (
