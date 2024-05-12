@@ -26,15 +26,16 @@ export const courseProcessApi = createApi({
     }),
     updateCurrentProgress: builder.mutation<
       DataResponse,
-      { courseId: string; userId: string }
+      { courseId: string; userId: string; exQuizId: string | null }
     >({
-      query: ({ courseId, userId }) => {
+      query: ({ courseId, userId, exQuizId }) => {
         return {
           url: `/api/courses/course-progress/update-current-progress`,
           method: "POST",
           params: {
             userId: userId,
             courseId: courseId,
+            exQuizId: exQuizId,
           },
         };
       },

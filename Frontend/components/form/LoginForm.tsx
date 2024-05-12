@@ -16,9 +16,7 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { FiLogIn } from "react-icons/fi";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { SiMediafire } from "react-icons/si";
-import CustomButton from "../CustomButton";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLoginUserMutation } from "@/redux/services/authApi";
 import { LoginRequest } from "@/types/request.type";
@@ -33,6 +31,8 @@ import "../../components/style/loginForm.scss";
 function LoginForm() {
   const formSchema = formLoginSchema;
   const route = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const [openEye, setOpenEye] = useState(false);
   const [loginUser, loginUserResults] = useLoginUserMutation();
   const dispatch = useAppDispatch();
@@ -58,8 +58,11 @@ function LoginForm() {
       };
       dispatch(setCredential(auth));
       showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
-
-      route.push("/");
+      if (redirect) {
+        route.push(redirect);
+      } else {
+        route.push("/");
+      }
     } else {
       // if (dataResult?.statusCode === 403) {
       //   showToast(ToastStatus.ERROR, ToastMessage.ACCESS_DENY);

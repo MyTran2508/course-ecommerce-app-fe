@@ -10,7 +10,7 @@ import { baseQueryWithToken } from "../baseQuery";
 import { Review } from "@/types/review.type";
 import { argv } from "process";
 import { SearchRequest } from "@/types/request.type";
-import { ForumLecture } from "@/types/forumLecture";
+import { CommentReply, ForumLecture } from "@/types/forumLecture";
 
 export const forumApi = createApi({
   reducerPath: "FORUM_API",
@@ -26,12 +26,33 @@ export const forumApi = createApi({
         };
       },
     }),
+    getCommentReplyByCommentId: builder.mutation<ListResponse, SearchRequest>({
+      query: (commentId: SearchRequest) => {
+        return {
+          url: `/api/courses/comment-reply/search-by-keyword`,
+          body: commentId,
+          method: "POST",
+        };
+      },
+    }),
     addForumLecture: builder.mutation<DataResponse, ForumLecture>({
       query: (data: ForumLecture) => {
         return {
           url: `/api/courses/forum-lecture/add`,
           method: "POST",
           body: data,
+        };
+      },
+    }),
+    addCommentReply: builder.mutation<
+      DataResponse,
+      { commentId: string; commentReply: CommentReply }
+    >({
+      query: ({ commentId, commentReply }) => {
+        return {
+          url: `/api/courses/comment-reply/add/${commentId}`,
+          method: "POST",
+          body: commentReply,
         };
       },
     }),
@@ -44,6 +65,15 @@ export const forumApi = createApi({
         };
       },
     }),
+    updateCommentReply: builder.mutation<DataResponse, CommentReply>({
+      query: (data: CommentReply) => {
+        return {
+          url: `/api/courses/comment-reply/update/${data.id}`,
+          body: data,
+          method: "PUT",
+        };
+      },
+    }),
   }),
 });
 
@@ -51,4 +81,7 @@ export const {
   useAddForumLectureMutation,
   useGetForumLectureByIdMutation,
   useUpdateForumLectureMutation,
+  useAddCommentReplyMutation,
+  useUpdateCommentReplyMutation,
+  useGetCommentReplyByCommentIdMutation,
 } = forumApi;

@@ -166,7 +166,7 @@ function SearchPage() {
               <div
                 className={`${
                   isOpenFilter ? "" : "hidden"
-                } sticky top-20 xs:top-14 xs:absolute h-full xs:w-full xs:z-30 xs:min-h-[750px]`}
+                } sticky top-20 xs:top-14 xs:absolute h-full xs:w-full xs:z-30 xs:min-h-[1200px] xs:bg-white`}
               >
                 <SideBarFilter
                   setSearchRequest={setSearchRequest}

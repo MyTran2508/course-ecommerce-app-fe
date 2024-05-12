@@ -10,20 +10,24 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "../ui/button";
 import { useAddForumLectureMutation } from "@/redux/services/forumApi";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
+import showToast from "@/utils/showToast";
+import { ToastMessage, ToastStatus } from "@/utils/resources";
 
 interface InputEditorProps {
   setIsOpenInputEditor: (value: boolean) => void;
-  lectureId: string;
+  parentId?: string;
   text?: string;
   setTextInput?: (value: string) => void;
+  setIsCreateComment?: (value: boolean) => void;
 }
 
 function InputEditor(props: InputEditorProps) {
   const {
     setIsOpenInputEditor,
     text: comment,
-    lectureId,
+    parentId,
     setTextInput,
+    setIsCreateComment,
   } = props;
   const user = useAppSelector(
     (state) => state.persistedReducer.userReducer.user
@@ -40,34 +44,32 @@ function InputEditor(props: InputEditorProps) {
     setText(text);
   };
 
-  // useEffect(() => {
-  //   if (text) {
-  //     console.log(
-  //       JSON.stringify(convertToRaw(text?.getCurrentContent() as ContentState))
-  //     );
-  //   }
-  // }, [text]);
-
   const handleComment = () => {
-    const data = JSON.stringify(
-      convertToRaw(text.getCurrentContent() as ContentState)
-    );
-    if (setTextInput) {
-      setTextInput(data);
-    } else {
-      addForumLecture({
-        comment: data,
-        avatarUrl: "",
-        lectureId: lectureId,
-        userId: user.id,
-        userName: user.username,
-      });
+    if (text) {
+      const data = convertToRaw(text.getCurrentContent() as ContentState);
+      if (data.blocks[0].text === "") {
+        showToast(ToastStatus.WARNING, ToastMessage.EMPTY_COMMENT);
+        return;
+      }
+      if (setTextInput) {
+        setTextInput(JSON.stringify(data));
+      } else {
+        addForumLecture({
+          comment: JSON.stringify(data),
+          avatarUrl: "",
+          lectureId: parentId,
+          userId: user.id,
+          userName: user.username,
+        });
+        setIsCreateComment && setIsCreateComment(true);
+      }
       setIsOpenInputEditor(false);
     }
   };
+
   return (
     <div className="">
-      <div className="border-2 w-max-[80%] h-[300px] p-2">
+      <div className="border-2 w-max-[75%] h-[300px] p-2">
         <Editor
           editorState={text}
           toolbarClassName="toolbarClassName"

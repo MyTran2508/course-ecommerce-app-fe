@@ -37,6 +37,7 @@ function PreviewPage() {
     useGetContentByCourseIdQuery(courseId);
 
   const [getExQuizById, { data: exQuiz }] = useLazyGetExQuizByIdQuery();
+
   useEffect(() => {
     if (getContentSuccess) {
       setSections(

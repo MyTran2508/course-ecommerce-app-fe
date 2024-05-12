@@ -11,20 +11,28 @@ import { Action, Constant } from "@/utils/resources";
 import {
   useAddCommentReplyMutation,
   useGetCommentReplyByCommentIdMutation,
+  useUpdateCommentReplyMutation,
   useUpdateForumLectureMutation,
 } from "@/redux/services/forumApi";
 import { is } from "immutable";
 import { convertMillisToDateTime, formatTime } from "@/utils/function";
 import { HiChevronUp } from "react-icons/hi";
-import CommentRep from "./CommentReply";
 
-interface CommentProps {
-  data: ForumLecture;
+interface CommentReplyProps {
+  data: CommentReply;
   setIsEditComment: (data: boolean) => void;
+  commentId: string;
+  setTextCommentReply?: (data: string) => void;
+  setIsCreateCommentReply?: (data: boolean) => void;
 }
 
-function Comment(props: CommentProps) {
-  const { data, setIsEditComment } = props;
+function CommentRep(props: CommentReplyProps) {
+  const {
+    data,
+    setIsEditComment,
+    setIsCreateCommentReply,
+    setTextCommentReply,
+  } = props;
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.id
   );
@@ -44,22 +52,11 @@ function Comment(props: CommentProps) {
     (state) => state.persistedReducer.userReducer.user.photos
   );
   const [isOpenReply, setIsOpenReply] = useState(false);
-  const [replyText, setReplyText] = useState<string>("");
-  const [pageIndex, setPageIndex] = useState(0);
-  const [isCreateReplyComment, setIsCreateReplyComment] = useState(false);
-  const [updateComment] = useUpdateForumLectureMutation();
-  const [createReplyComment] = useAddCommentReplyMutation();
-  const [
-    getCommentReplyByCommentId,
-    { data: commentReplyData, isSuccess: getCommentReplySuccess },
-  ] = useGetCommentReplyByCommentIdMutation();
-  const [commentReply, setCommentReply] = useState<CommentReply[]>([]);
-  const [isOpenCommentReply, setIsOpenCommentReply] = useState(false);
-  const [isUpdateCommentReply, setIsUpdateCommentReply] = useState(false);
+  const [updateCommentReply] = useUpdateCommentReplyMutation();
 
   useEffect(() => {
     if (updateText !== data.comment) {
-      updateComment({
+      updateCommentReply({
         ...data,
         comment: updateText,
       });
@@ -76,47 +73,7 @@ function Comment(props: CommentProps) {
         : EditorState.createEmpty()
     );
     setUpdateText(data.comment || "");
-    handleGetCommentReply();
   }, [data]);
-
-  useEffect(() => {
-    if (getCommentReplySuccess) {
-      setCommentReply((prevCommentReply) => [
-        ...prevCommentReply,
-        ...(commentReplyData?.data as CommentReply[]),
-      ]);
-    }
-  }, [commentReplyData]);
-
-  useEffect(() => {
-    if (replyText !== "") {
-      setIsOpenReply(false);
-      setIsCreateReplyComment(true);
-      createReplyComment({
-        commentReply: {
-          comment: replyText,
-          userId: userId,
-          userName: userName,
-          avatarUrl: "",
-        },
-        commentId: data.id as string,
-      });
-    }
-  }, [replyText]);
-
-  useEffect(() => {
-    if (isCreateReplyComment || isUpdateCommentReply) {
-      setCommentReply([]);
-      setPageIndex(0);
-      handleGetCommentReply();
-      setIsCreateReplyComment(false);
-      setIsUpdateCommentReply(false);
-    }
-  }, [isUpdateCommentReply, isCreateReplyComment]);
-
-  useEffect(() => {
-    handleGetCommentReply();
-  }, [pageIndex]);
 
   const handleOpenInputEditor = (action: Action) => {
     if (action === Action.UPDATE) {
@@ -126,24 +83,8 @@ function Comment(props: CommentProps) {
     }
   };
 
-  const handleGetCommentReply = () => {
-    setTimeout(() => {
-      getCommentReplyByCommentId({
-        keyword: [data.id as string],
-        pageIndex: pageIndex,
-        pageSize: 5,
-        isDecrease: false,
-        sortBy: "created",
-      });
-    }, 500);
-  };
-
-  const handleOpenCommentReply = () => {
-    setIsOpenCommentReply(!isOpenCommentReply);
-  };
-
   return (
-    <div className="flex flex-col mb-4">
+    <div className="flex flex-col mb-2">
       <div className="flex">
         <Image
           src="/banner.jpg"
@@ -156,7 +97,7 @@ function Comment(props: CommentProps) {
         {isEdit ? (
           <InputEditor
             setIsOpenInputEditor={setIsEdit}
-            parentId={data.lectureId as string}
+            parentId={data.id as string}
             text={updateText}
             setTextInput={setUpdateText}
           />
@@ -198,49 +139,6 @@ function Comment(props: CommentProps) {
           </p>
         )}
       </div>
-      {!isOpenReply && commentReply.length > 0 && (
-        <Fragment>
-          <div
-            className="ml-[64px] text-sm font-bold hover:cursor-pointer flex gap-1"
-            onClick={() => handleOpenCommentReply()}
-          >
-            {isOpenCommentReply
-              ? "Ẩn"
-              : `${commentReplyData?.totalRecords} phản hồi`}
-            <HiChevronUp
-              className={`${
-                isOpenCommentReply ? "rotate-180 transform" : ""
-              } h-5 w-5 text-orange-500`}
-            />
-          </div>
-          {isOpenCommentReply && (
-            <Fragment>
-              <div className="ml-16 border-orange-500 border-l-[1px] pl-2">
-                {commentReply?.map((item, index) => (
-                  <CommentRep
-                    data={item}
-                    setIsEditComment={setIsUpdateCommentReply}
-                    commentId={data.id as string}
-                    setIsCreateCommentReply={setIsCreateReplyComment}
-                    setTextCommentReply={setReplyText}
-                    key={item.id}
-                  />
-                ))}
-                {commentReply.length <
-                  (commentReplyData?.totalRecords as number) && (
-                  <div
-                    className="ml-4 text-medium text-orange-400 hover:cursor-pointer"
-                    onClick={() => setPageIndex(pageIndex + 1)}
-                  >
-                    {" "}
-                    Xem Thêm
-                  </div>
-                )}
-              </div>
-            </Fragment>
-          )}
-        </Fragment>
-      )}
 
       {isOpenReply && (
         <div className="flex gap-2 items-center my-10">
@@ -254,9 +152,8 @@ function Comment(props: CommentProps) {
 
           <InputEditor
             setIsOpenInputEditor={setIsOpenReply}
-            parentId={data.id as string}
-            setTextInput={setReplyText}
-            setIsCreateComment={setIsCreateReplyComment}
+            setTextInput={setTextCommentReply}
+            setIsCreateComment={setIsCreateCommentReply}
           />
         </div>
       )}
@@ -264,4 +161,4 @@ function Comment(props: CommentProps) {
   );
 }
 
-export default Comment;
+export default CommentRep;

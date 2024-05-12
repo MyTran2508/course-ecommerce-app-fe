@@ -35,10 +35,11 @@ import { describe } from "node:test";
 
 interface AnswerProps {
   exQuiz: ExQuiz;
+  setQuizIsCompleted?: (isCompleted: boolean) => void;
 }
 
 const Answer = (props: AnswerProps) => {
-  const { exQuiz } = props;
+  const { exQuiz, setQuizIsCompleted } = props;
   const dispatch = useAppDispatch();
   const quizState = useAppSelector(
     (state) => state.persistedReducer.quizReducer.quiz
@@ -228,16 +229,25 @@ const Answer = (props: AnswerProps) => {
   }, [userAnswer]);
 
   useEffect(() => {
+    console.log("123123");
     if (userQuizData?.statusCode === StatusCode.REQUEST_SUCCESS) {
-      setListUserQuizHistory(userQuizData.data as UserQuiz[]);
+      console.log("123123");
+      const listUserQuizHistory = userQuizData.data as UserQuiz[];
+      listUserQuizHistory.forEach((userQuiz) => {
+        if (userQuiz.isCompleted && setQuizIsCompleted) {
+          setQuizIsCompleted(true);
+          return;
+        }
+      });
+      setListUserQuizHistory(listUserQuizHistory);
     }
   }, [userQuizData]);
 
   return (
-    <div className="mx-20">
+    <div className="mx-20 xs:mx-[20px]">
       {!isStartQuiz && !isShowResult && (
         <Fragment>
-          <div className="flex items-center justify-end gap-3">
+          <div className="flex items-center justify-end gap-3 xs:flex-col">
             <p>
               {" "}
               <strong>Sô điểm cần đạt:</strong> {exQuiz.requiredScore}
@@ -317,6 +327,7 @@ const Answer = (props: AnswerProps) => {
           <CompleteQuiz
             userQuiz={userAnswersData?.data as UserQuiz}
             close={setIsShowResult}
+            key={(userAnswersData?.data as UserQuiz).id as string}
           />
         </Fragment>
       ) : (

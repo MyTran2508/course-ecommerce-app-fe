@@ -6,9 +6,11 @@ export enum Constant {
   SECTION = "Chương",
   LECTURE = "Bài học",
   QUESTION = "Câu hỏi",
+  USER_PERSONAL_PATH = "/user/personal",
+  USER_SECURITY_PATH = "/user/security",
 }
 
-export const DEFAULT_PAGE_SIZE = 100;
+export const DEFAULT_PAGE_SIZE = 1000;
 export const DEFAULT_PAGE_INDEX = 0;
 
 export enum Action {
@@ -91,6 +93,9 @@ export enum ToastMessage {
   REVIEW_SUCCESS = "Đánh giá thành công",
   UPDATE_REVIEW_SUCCESS = "Cập nhật đánh giá thành công",
   PLEASE_WAIT = "Vui lòng chờ trong giây lát",
+
+  //comment
+  EMPTY_COMMENT = "Vui lòng nhập nội dung bình luận",
 }
 
 export enum Role {

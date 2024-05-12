@@ -83,7 +83,7 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
         if (courseProgressOptional.isPresent()) {
             CourseProgress courseProgress = courseProgressOptional.get();
 
-            if (exQuizId != null) {
+            if (!exQuizId.isEmpty()) {
                 List<UserQuiz> userQuizzs = userQuizRepository.findByUserIdAndExQuizIdOrderByAttemptNumberAsc(userId, exQuizId);
 
                 boolean isCompleted = false;

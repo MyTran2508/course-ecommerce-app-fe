@@ -239,7 +239,7 @@ function FileLecture(props: FileLectureProps) {
                               {description ? "Đổi Mô tả" : "Thêm Mô tả"}
                             </h1>
                             <InputEditor
-                              lectureId={data.id as string}
+                              parentId={data.id as string}
                               setIsOpenInputEditor={setIsOpenInputEditor}
                               setTextInput={setDescription}
                               text={description}

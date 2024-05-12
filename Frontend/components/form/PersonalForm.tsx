@@ -34,6 +34,7 @@ import showToast from "@/utils/showToast";
 import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
+import { AvatarResponse } from "@/types/response.type";
 
 const formSchema = formPersonalSchema;
 
@@ -90,7 +91,7 @@ function PersonalForm(props: PersonalProps) {
   useEffect(() => {
     setDefaultValueFrom(handleSetDefaultValueFrom(userInfor));
     handleImageError(false);
-    setCurrentAvatar(avatarData.rawAvatar as string);
+    setCurrentAvatar((avatarData as AvatarResponse)?.rawAvatar as string);
   }, [userInfor, avatarData]);
 
   const handleClickEdit = () => {
@@ -170,7 +171,7 @@ function PersonalForm(props: PersonalProps) {
     <div>
       <Form {...form}>
         <form className="mt-5 mx-2">
-          <div className="flex flex-col  sticky top-[120px] bg-white">
+          <div className="flex flex-col  sticky top-[120px]">
             {!allowInput ? (
               <Fragment>
                 <div className="flex justify-end">
@@ -187,7 +188,7 @@ function PersonalForm(props: PersonalProps) {
               <Fragment>
                 <div className="flex gap-2 justify-end">
                   <Button
-                    className="text-orange-400 border border-orange-400  bg-white rounded-3xl hover:bg-white w-max"
+                    className="text-orange-400 border border-orange-400 rounded-3xl hover:bg-white w-max"
                     type="button"
                     onClick={form.handleSubmit(onSubmit)}
                   >

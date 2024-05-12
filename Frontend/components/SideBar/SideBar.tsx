@@ -1,5 +1,7 @@
 "use client";
+import { Constant } from "@/utils/resources";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { Fragment, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { BsFillFilePersonFill } from "react-icons/bs";
@@ -7,11 +9,12 @@ import { GrShieldSecurity } from "react-icons/gr";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
 function SideBar() {
-  const [activeLink, setActiveLink] = useState<number>(0);
+  const path = usePathname();
+  const [activeLink, setActiveLink] = useState<string>(path);
   const [isOpenMenu, setOpenMenu] = useState<boolean>(true);
 
-  const handleLinkClick = (index: number) => {
-    setActiveLink(index);
+  const handleLinkClick = (path: string) => {
+    setActiveLink(path);
     handleOpenMenu();
   };
 
@@ -25,8 +28,8 @@ function SideBar() {
     <Fragment>
       {isOpenMenu ? (
         <Fragment>
-          <div className="mx-20 xs:mx-0 xs:absolute xs:z-20 h-full bg-white ">
-            <div className="flex h-full">
+          <div className="mx-20 xs:mx-0 xs:absolute xs:z-20 h-full  ">
+            <div className="flex h-full xs:fixed xs:bg-white">
               <div className="p-4">
                 <div className="sticky top-[96px]  ">
                   <div className="flex-between items-center mb-4">
@@ -40,9 +43,13 @@ function SideBar() {
                     <Link
                       href="/user/personal"
                       className={`p-2 hover:bg-gray-300 flex gap-2 mb-2 hover:rounded-md py-3 ${
-                        activeLink === 0 ? "bg-gray-300 rounded-md" : ""
+                        activeLink === Constant.USER_PERSONAL_PATH
+                          ? "bg-gray-300 rounded-md"
+                          : ""
                       }`}
-                      onClick={() => handleLinkClick(0)}
+                      onClick={() =>
+                        handleLinkClick(Constant.USER_PERSONAL_PATH)
+                      }
                     >
                       <div className="flex items-center gap-2">
                         <BsFillFilePersonFill />
@@ -53,9 +60,13 @@ function SideBar() {
                     <Link
                       href="/user/security"
                       className={`p-2 hover:bg-gray-300 flex gap-2 mb-2 hover:rounded-md py-3 ${
-                        activeLink === 1 ? "bg-gray-300 rounded-md" : ""
+                        activeLink === Constant.USER_SECURITY_PATH
+                          ? "bg-gray-300 rounded-md"
+                          : ""
                       }`}
-                      onClick={() => handleLinkClick(1)}
+                      onClick={() =>
+                        handleLinkClick(Constant.USER_SECURITY_PATH)
+                      }
                     >
                       <div className="flex items-center gap-2">
                         <GrShieldSecurity />

@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import InputEditor from "../Input/InputEditor";
 import { useGetForumLectureByIdMutation } from "@/redux/services/forumApi";
 import { ForumLecture } from "@/types/forumLecture";
+import { useUpdateApprovedMutation } from "@/redux/services/courseApi";
+import { v4 as uuidv4 } from "uuid";
 
 interface DiscussionSheetProps {
   lectureId: string;
@@ -35,19 +37,26 @@ function DiscussionSheet(props: DiscussionSheetProps) {
   const [pageIndex, setPageIndex] = useState(0);
   const [isLoadMore, setIsLoadMore] = useState(false);
   const [isOpenInputEditor, setIsOpenInputEditor] = useState(false);
+  const [isUpdateComment, setIsUpdateComment] = useState(false);
+  const [isCreateComment, setIsCreateComment] = useState(false);
 
   useEffect(() => {
+    setForumLecture([]);
+    setPageIndex(0);
     getForumLectureById({
       keyword: [lectureId],
       pageIndex: pageIndex,
       pageSize: 10,
-      isDecrease: false,
+      isDecrease: true,
       sortBy: "created",
     });
   }, [lectureId, pageIndex, getForumLectureById]);
 
   useEffect(() => {
-    if (forumLectureData) {
+    if (
+      forumLectureData &&
+      forumLectureData.totalRecords > forumLecture.length
+    ) {
       setForumLecture((prevForumLecture) => [
         ...prevForumLecture,
         ...(forumLectureData.data as ForumLecture[]),
@@ -55,6 +64,24 @@ function DiscussionSheet(props: DiscussionSheetProps) {
       setIsLoadMore(false);
     }
   }, [forumLectureData]);
+
+  useEffect(() => {
+    if (isCreateComment || isUpdateComment) {
+      setTimeout(() => {
+        setForumLecture([]);
+        setPageIndex(0);
+        getForumLectureById({
+          keyword: [lectureId],
+          pageIndex: 0,
+          pageSize: 10,
+          isDecrease: true,
+          sortBy: "created",
+        });
+        isUpdateComment && setIsUpdateComment(false);
+        isCreateComment && setIsCreateComment(false);
+      }, 1000);
+    }
+  }, [isCreateComment, isUpdateComment]);
 
   const handleOpenComment = () => {
     setIsOpenInputEditor(true);
@@ -71,7 +98,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
     <Sheet>
       <SheetTrigger
         asChild
-        className="fixed bottom-0 right-1/4 mr-5 mb-5 rounded-3xl gap-1 text-orange-500 xs:hidden "
+        className="fixed bottom-0 right-1/4 mr-5 mb-5 rounded-3xl gap-1 text-orange-500 xs:hidden z-20"
       >
         <Button variant="outline">
           <AiFillWechat />
@@ -91,7 +118,9 @@ function DiscussionSheet(props: DiscussionSheetProps) {
         }}
       >
         <SheetHeader className="flex-start flex-col ml-2">
-          <SheetTitle>54 Bình Luận</SheetTitle>
+          <SheetTitle>
+            {forumLectureData?.totalRecords as number} Bình Luận
+          </SheetTitle>
           <SheetDescription className="font-sans">
             (Hãy bình luận nếu có thắc mắc)
           </SheetDescription>
@@ -103,7 +132,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
             alt="avatar"
             width={50}
             height={50}
-            className="rounded-full w-[50px] h-[50px]"
+            className="rounded-full min-w-[50px] h-[50px]"
           />
           {!isOpenInputEditor ? (
             <p
@@ -115,13 +144,18 @@ function DiscussionSheet(props: DiscussionSheetProps) {
           ) : (
             <InputEditor
               setIsOpenInputEditor={setIsOpenInputEditor}
-              lectureId={lectureId}
+              parentId={lectureId}
+              setIsCreateComment={setIsCreateComment}
             />
           )}
         </div>
         <div className="mt-10">
           {forumLecture?.map((item, index) => (
-            <Comment key={index} data={item} />
+            <Comment
+              key={item.id}
+              data={item}
+              setIsEditComment={setIsUpdateComment}
+            />
           ))}
           {isLoadMore && <h1 className="item-center">Loading...</h1>}
           {/* <InfiniteScroll
