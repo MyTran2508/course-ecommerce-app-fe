@@ -1,15 +1,9 @@
 package com.programming.courseservice.repository;
 
-import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.repository.BaseRepository;
-import com.programming.courseservice.domain.dto.CourseDto;
 import com.programming.courseservice.domain.persistent.entity.Course;
-import com.programming.courseservice.domain.persistent.entity.Language;
-import com.programming.courseservice.domain.persistent.entity.Level;
-import com.programming.courseservice.domain.persistent.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -48,6 +42,9 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND c.topic.id IN :topicIds
                 AND ((:isFree = false AND c.price > 0) OR (:isFree = true AND c.price = 0) OR (:isFree IS NULL))
                 AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                AND (:keywordTypeSearchCourse != 0 OR c.name LIKE %:keyword% OR :keyword IS NULL)
+                AND (:keywordTypeSearchCourse != 1 OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                AND (:keywordTypeSearchCourse != 2 OR c.creator LIKE %:keyword% OR :keyword IS NULL)
                 AND (c.averageRating >= :minRatingValue OR :minRatingValue IS NULL)
                 AND c.isApproved = true
                 ORDER BY ((c.totalRatings * 0.6) + (c.averageRating * 0.4)) DESC
@@ -58,6 +55,7 @@ public interface CourseRepository extends BaseRepository<Course> {
                               @Param("isFree") Boolean isFree,
                               @Param("minRatingValue") Float minRatingValue,
                               @Param("keyword") String keyword,
+                              @Param("keywordTypeSearchCourse") Integer keywordTypeSearchCourse,
                               Pageable pageable);
 
     @Query("""
@@ -67,18 +65,22 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND c.language.id IN :languageIds
                 AND c.topic.id IN :topicIds
                 AND ((:isFree = false AND c.price > 0) OR (:isFree = true AND c.price = 0) OR (:isFree IS NULL))
-                AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
-                AND (c.averageRating >= :minRatingValue OR :ratingValue IS NULL)
+                AND (:keywordTypeSearchCourse != 0 OR c.name LIKE %:keyword% OR :keyword IS NULL)
+                AND (:keywordTypeSearchCourse != 1 OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
+                AND (:keywordTypeSearchCourse != 2 OR c.creator LIKE %:keyword% OR :keyword IS NULL)
+                AND (c.averageRating >= :minRatingValue OR :minRatingValue IS NULL)
+                AND c.isApproved = true
                 GROUP BY c.id
                 ORDER BY COUNT(c.id) DESC
             """)
     Page<Course> filterCoursePopular(@Param("levelIds") List<String> levelIds,
-                              @Param("languageIds") List<String> languageIds,
-                              @Param("topicIds") List<String> topicIds,
-                              @Param("isFree") Boolean isFree,
-                              @Param("keyword") String keyword,
-                              @Param("minRatingValue") Float minRatingValue,
-                              Pageable pageable);
+                                      @Param("languageIds") List<String> languageIds,
+                                      @Param("topicIds") List<String> topicIds,
+                                      @Param("isFree") Boolean isFree,
+                                      @Param("minRatingValue") Float minRatingValue,
+                                      @Param("keyword") String keyword,
+                                      @Param("keywordTypeSearchCourse") Integer keywordTypeSearchCourse,
+                                      Pageable pageable);
     @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id and cg.course.isApproved = true")
     Page<Course> getCourseAccessByUserId(@Param("userId") String userId, Pageable pageable);
 

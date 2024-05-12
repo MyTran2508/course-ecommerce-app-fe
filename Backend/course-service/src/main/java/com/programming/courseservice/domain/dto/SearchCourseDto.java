@@ -34,6 +34,8 @@ public class SearchCourseDto implements Serializable {
 
     private String keyword;
 
+    private Integer keywordTypeSearchCourse;
+
     private int pageIndex;
 
     private int pageSize;

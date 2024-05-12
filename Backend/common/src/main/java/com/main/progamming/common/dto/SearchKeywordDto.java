@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class SearchKeywordDto {
+
     private List<String> keyword;
 
     private String sortBy = "";

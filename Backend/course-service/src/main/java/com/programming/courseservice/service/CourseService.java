@@ -131,14 +131,15 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         VideoDuration videoDuration = searchCourseDto.getVideoDuration();
         RatingsLevel ratingsLevel = searchCourseDto.getRatingsLevel();
         Float minRatingValue = EnumUtils.getMinRating(ratingsLevel);
-
+        Integer keywordTypeSearchCourse = searchCourseDto.getKeywordTypeSearchCourse();
         String keyword = searchCourseDto.getKeyword();
 
         Page<Course> courses = null;
         if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
-            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, keyword, minRatingValue, pageable);
+            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, minRatingValue, keyword, keywordTypeSearchCourse, pageable);
         } else {
-            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, minRatingValue, keyword, pageable);
+            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, minRatingValue, keyword,
+                    keywordTypeSearchCourse, pageable);
         }
 
         if (videoDuration != null) {
