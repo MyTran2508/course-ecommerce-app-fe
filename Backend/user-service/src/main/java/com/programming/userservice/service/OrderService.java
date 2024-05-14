@@ -6,6 +6,7 @@ import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.model.BaseMapperImpl;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.userservice.domain.dto.*;

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -34,6 +35,17 @@ public interface UserRepository extends BaseRepository<User> {
             """)
     Page<User> searchUser(@Param("keyword") String keyword, Pageable pageable);
 
+    @Query("""
+                SELECT u FROM User u
+                WHERE (:typeSearch != 0 OR u.username LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 1 OR u.email LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 2 OR CONCAT(u.firstName, ' ', u.lastName) LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 3 OR u.telephone LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 4 OR u.username LIKE %:keyword% OR u.email LIKE %:keyword%
+                OR CONCAT(u.firstName, ' ', u.lastName) LIKE %:keyword% OR :keyword IS NULL)
+           """)
+    List<User> getSearchUsers(@Param("typeSearch") Integer typeSearch, @Param("keyword") String keyword);
+
 
     /*
 
@@ -45,4 +57,5 @@ public interface UserRepository extends BaseRepository<User> {
     @Query(value = "SELECT COUNT(*) FROM user WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
             "and (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL)", nativeQuery = true)
     Integer countByYearAnhMonth(@Param("targetYear") Integer targetYear, @Param("targetMonth") Integer targetMonth);
+
 }

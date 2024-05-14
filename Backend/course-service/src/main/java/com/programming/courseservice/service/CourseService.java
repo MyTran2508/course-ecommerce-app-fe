@@ -131,15 +131,35 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         VideoDuration videoDuration = searchCourseDto.getVideoDuration();
         RatingsLevel ratingsLevel = searchCourseDto.getRatingsLevel();
         Float minRatingValue = EnumUtils.getMinRating(ratingsLevel);
-        Integer keywordTypeSearchCourse = searchCourseDto.getKeywordTypeSearchCourse();
-        String keyword = searchCourseDto.getKeyword();
+
+        SearchCourseKeywordDto searchCourseKeywordNameDto = searchCourseDto.getSearchCourseKeywordDtoList().stream()
+                .filter(item -> item.getKeywordTypeSearchCourse() == 0)
+                .findFirst().orElse(null);
+        String keywordName = searchCourseKeywordNameDto == null ? null : searchCourseKeywordNameDto.getKeyword();
+
+        List<String> keywordAuthors = searchCourseDto.getSearchCourseKeywordDtoList().stream()
+                .filter(item -> item.getKeywordTypeSearchCourse() == 1)
+                .map(SearchCourseKeywordDto::getKeyword)
+                .collect(Collectors.toList());
+        Boolean isEmptyKeywordAuthors = keywordAuthors.isEmpty();
+
+        SearchCourseKeywordDto searchCourseKeywordSubTitleDto = searchCourseDto.getSearchCourseKeywordDtoList().stream()
+                .filter(item -> item.getKeywordTypeSearchCourse() == 2)
+                .findFirst().orElse(null);
+        String keywordSubTitle = searchCourseKeywordSubTitleDto == null ? null : searchCourseKeywordSubTitleDto.getKeyword();
+
+        System.out.println("keywordName: " + keywordName);
+        System.out.println("keywordAuthors: " + keywordAuthors);
+        System.out.println("keywordSubTitle: " + keywordSubTitle);
+        System.out.println("isEmptyKeywordAuthors: " + isEmptyKeywordAuthors);
 
         Page<Course> courses = null;
         if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
-            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, minRatingValue, keyword, keywordTypeSearchCourse, pageable);
+            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, minRatingValue, keywordName, isEmptyKeywordAuthors, keywordAuthors, keywordSubTitle, pageable);
         } else {
-            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, minRatingValue, keyword,
-                    keywordTypeSearchCourse, pageable);
+            System.out.println("normal search");
+            courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, minRatingValue, keywordName,
+                    isEmptyKeywordAuthors, keywordAuthors, keywordSubTitle, pageable);
         }
 
         if (videoDuration != null) {
@@ -373,5 +393,16 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toDataResponseSuccess(salesByTopicSamePeriodResponses.stream()
                 .sorted(Comparator.comparingInt(SalesByTopicSamePeriodResponse::convertTopicIdAsInteger))
                 .collect(Collectors.toList()));
+    }
+
+    public ListResponse<CourseDto> getCourseSearch(Integer typeSearch, String keyword) {
+
+        List<CourseDto> courseDtoList =
+                courseRepository.getCourseSearch(typeSearch, keyword)
+                        .stream()
+                        .map(course -> courseMapper.entityToDto(course))
+                        .toList();
+
+        return ResponseMapper.toListResponseSuccess(courseDtoList);
     }
 }

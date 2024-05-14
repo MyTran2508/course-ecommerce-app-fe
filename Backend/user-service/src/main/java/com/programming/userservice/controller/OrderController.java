@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -96,4 +97,13 @@ public class OrderController extends BaseApiImpl<Order, OrderDto> {
     public DataResponse<List<StatictisSamePeriodDto>> getSalesSamePeriod(@Param("targetYear") int targetYear) {
         return orderService.getSalesInSamePeriod(targetYear);
     }
+
+//    @GetMapping("/get-search-orders")
+//    @ShowOpenAPI
+//    public ListResponse<OrderDto> getSearchOrders(
+//            @RequestParam("type-search") Integer typeSearch,
+//            @RequestParam("keyword") String keyword
+//    ) {
+//        return orderService.getSearchOrders(typeSearch, keyword);
+//    }
 }

@@ -267,4 +267,13 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     public DataResponse<Map<String, Integer>> getStatisticsByYearAndMonth(@Valid @RequestBody StatisticsRequest statisticsRequest) {
         return userService.getStatisticsByYearAndMonth(statisticsRequest);
     }
+
+    @ShowOpenAPI
+    @GetMapping("/get-search-users")
+    public ListResponse<UserDto> getSearchUsers(
+            @RequestParam("type-search") Integer typeSearch,
+            @RequestParam("keyword") String keyword
+    ) {
+        return userService.getSearchUsers(typeSearch, keyword);
+    }
 }

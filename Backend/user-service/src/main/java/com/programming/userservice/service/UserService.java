@@ -9,6 +9,7 @@ import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.main.progamming.common.util.CommonConstrant;
@@ -299,5 +300,17 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         statisticsMap.put("totalApprovedCourse", Double.valueOf(response.getData()));
 
         return ResponseMapper.toDataResponseSuccess(statisticsMap);
+    }
+
+    public ListResponse<UserDto> getSearchUsers(Integer typeSearch, String keyword) {
+
+        List<User> users = userRepository.getSearchUsers(typeSearch, keyword);
+
+        List<UserDto> userDtoList = users.stream()
+                .map(userMapper::entityToDto)
+                .limit(5)
+                .toList();
+
+        return ResponseMapper.toListResponseSuccess(userDtoList);
     }
 }
