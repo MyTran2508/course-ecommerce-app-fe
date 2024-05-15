@@ -71,6 +71,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
         String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
 
+
         return userRepository.searchUser(name, pageable)
                 .map(user -> userMapper.entityToDto(user));
     }
@@ -307,7 +308,15 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         List<User> users = userRepository.getSearchUsers(typeSearch, keyword);
 
         List<UserDto> userDtoList = users.stream()
-                .map(userMapper::entityToDto)
+                .map(user -> {
+                    byte[] avatar = user.getAvatar();
+                    UserDto userDto = userMapper.entityToDto(user);
+                    String imageBase64 = Base64.getEncoder().encodeToString(avatar);
+                    userDto.setPhotos(imageBase64);
+                    userDto.setRoles(null);
+                    userDto.setAddresses(null);
+                    return userDto;
+                })
                 .limit(5)
                 .toList();
 

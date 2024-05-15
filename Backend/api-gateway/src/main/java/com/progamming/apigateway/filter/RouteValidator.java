@@ -19,7 +19,9 @@ public class RouteValidator {
             "/api/courses/course/popular",
             "/api/courses/content/get-by-course-id",
             "/api/courses/course/get-all",
-            "/api/courses/course-review/search-by-keyword"
+            "/api/courses/course-review/search-by-keyword",
+            "/api/users/user/get-search-users",
+            "/api/courses/course/get-course-search"
     );
 
     public Predicate<ServerHttpRequest> isSecured =

@@ -9,6 +9,8 @@ public class SearchKeywordDto {
 
     private List<String> keyword;
 
+    private List<SearchKeywordDto> searchKeywordDtoList;
+
     private String sortBy = "";
 
     private Boolean isDecrease = true;
