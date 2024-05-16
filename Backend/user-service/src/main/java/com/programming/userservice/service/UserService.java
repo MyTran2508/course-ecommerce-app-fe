@@ -1,5 +1,6 @@
 package com.programming.userservice.service;
 
+import com.main.progamming.common.dto.SearchConditionDto;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataAlreadyExistException;
 import com.main.progamming.common.error.exception.DataNotFoundException;
@@ -36,6 +37,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static javax.swing.UIManager.put;
 
 @Service
 @RequiredArgsConstructor
@@ -69,10 +73,46 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
 
+        List<String> usernameList = searchKeywordDto.getKeyword() == null ? new ArrayList<>() :
+                searchKeywordDto.getKeyword().stream()
+                        .map(keyword -> keyword.trim())
+                        .collect(Collectors.toList());
 
-        return userRepository.searchUser(name, pageable)
+        Boolean isEmptyUsernameList = usernameList.isEmpty();
+        Map<Integer, String> keywordSearch = new HashMap<>() {{
+                    put(0, null);
+                    put(1, null);
+                    put(2, null);
+                    put(3, null);
+                    put(4, null);
+        }};
+
+        Boolean isNullAllSearchKeywordDto = true;
+        if (searchKeywordDto.getSearchKeywordDtoList() != null) {
+            for (SearchConditionDto searchConditionDto: searchKeywordDto.getSearchKeywordDtoList()) {
+                if (searchConditionDto.getKeywordType() == 0) {
+                    isNullAllSearchKeywordDto = false;
+                    keywordSearch.put(0, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 1) {
+                    isNullAllSearchKeywordDto = false;
+                    keywordSearch.put(1, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 2) {
+                    isNullAllSearchKeywordDto = false;
+                    keywordSearch.put(2, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 3) {
+                    isNullAllSearchKeywordDto = false;
+                    keywordSearch.put(3, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 4) {
+                    isNullAllSearchKeywordDto = false;
+                    keywordSearch.put(4, searchConditionDto.getKeyword());
+                }
+            }
+        }
+
+        return userRepository.searchUserByCondition(isEmptyUsernameList, isNullAllSearchKeywordDto, usernameList,
+                        keywordSearch.get(0), keywordSearch.get(1),
+                        keywordSearch.get(2), keywordSearch.get(3), pageable)
                 .map(user -> userMapper.entityToDto(user));
     }
 
@@ -311,8 +351,10 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
                 .map(user -> {
                     byte[] avatar = user.getAvatar();
                     UserDto userDto = userMapper.entityToDto(user);
-                    String imageBase64 = Base64.getEncoder().encodeToString(avatar);
-                    userDto.setPhotos(imageBase64);
+                    if (avatar != null) {
+                        String imageBase64 = Base64.getEncoder().encodeToString(avatar);
+                        userDto.setPhotos(imageBase64);
+                    }
                     userDto.setRoles(null);
                     userDto.setAddresses(null);
                     return userDto;

@@ -1,4 +1,4 @@
-package com.programming.userservice.domain.dto;
+package com.main.progamming.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,10 +12,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchConditionDto implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class SearchConditionDto{
 
     private String keyword;
 

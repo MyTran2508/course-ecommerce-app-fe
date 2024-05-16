@@ -9,7 +9,7 @@ public class SearchKeywordDto {
 
     private List<String> keyword;
 
-    private List<SearchKeywordDto> searchKeywordDtoList;
+    private List<SearchConditionDto> searchKeywordDtoList;
 
     private String sortBy = "";
 
