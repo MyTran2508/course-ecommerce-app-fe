@@ -33,13 +33,13 @@ public interface OrdersRepository extends BaseRepository<Order> {
                 AND (
                     (:totalPrice IS NULL OR o.totalPrice = :totalPrice)
                     AND (
-                        (:minTotalPrice IS NULL OR :maxTotalPrice IS NULL) OR 
-                        (o.totalPrice >= :minTotalPrice AND o.totalPrice <= :maxTotalPrice)
+                        (:minTotalPrice IS NULL OR o.totalPrice >= :minTotalPrice)
+                        AND (:maxTotalPrice IS NULL OR o.totalPrice <= :maxTotalPrice)
                     )
                 )
                 AND (
-                    (:startDate IS NULL OR :endDate IS NULL) OR
-                    (o.created >= :startDate AND o.created <= :endDate)
+                    (:startDate IS NULL OR o.created >= :startDate)
+                    AND (:endDate IS NULL OR o.created <= :endDate)
                 )
             """)
     Page<Order> searchOrderByCondition(@Param("isEmptyUsernameList") Boolean isEmptyUsernameList,
