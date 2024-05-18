@@ -118,6 +118,7 @@ public interface CourseRepository extends BaseRepository<Course> {
                 SELECT * FROM course
                 WHERE (:typeSearch != 0 OR name LIKE %:keyword% OR :keyword IS NULL)
                 AND (:typeSearch != 2 OR sub_title LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 3 OR sub_title LIKE %:keyword% OR name LIKE %:keyword% OR :keyword IS NULL)
                 AND is_approved = true
             """, nativeQuery = true)
     List<Course> getCourseSearch(@Param("typeSearch") Integer typeSearch, @Param("keyword") String keyword);

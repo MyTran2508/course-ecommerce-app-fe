@@ -1,6 +1,7 @@
 package com.programming.userservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
+import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
@@ -8,6 +9,7 @@ import com.main.progamming.common.service.BaseService;
 import com.main.progamming.common.util.SystemUtil;
 import com.programming.userservice.domain.dto.MonthlyStatisticDto;
 import com.programming.userservice.domain.dto.OrderDto;
+import com.programming.userservice.domain.dto.SearchOrderDto;
 import com.programming.userservice.domain.dto.StatictisSamePeriodDto;
 import com.programming.userservice.domain.persistent.entity.Order;
 import com.programming.userservice.domain.persistent.entity.User;
@@ -20,10 +22,7 @@ import com.programming.userservice.service.UserLogService;
 import com.programming.userservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -98,7 +97,15 @@ public class OrderController extends BaseApiImpl<Order, OrderDto> {
         return orderService.getSalesInSamePeriod(targetYear);
     }
 
-//    @GetMapping("/get-search-orders")
+    @PostMapping("/filter-order")
+    @ShowOpenAPI
+    public ListResponse<OrderDto> filterOrder(
+            @RequestBody SearchOrderDto searchOrderDto
+    ) {
+        return orderService.searchOrderByCondition(searchOrderDto);
+    }
+
+    //    @GetMapping("/get-search-orders")
 //    @ShowOpenAPI
 //    public ListResponse<OrderDto> getSearchOrders(
 //            @RequestParam("type-search") Integer typeSearch,

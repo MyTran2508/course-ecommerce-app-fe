@@ -26,7 +26,9 @@ public class OrderDto implements Serializable {
 
     private ShippingMethod shippingMethod;
 
-    List<OrderItemDto> orderItems;
+    private List<OrderItemDto> orderItems;
 
     private UserDto user;
+
+    private Long created;
 }

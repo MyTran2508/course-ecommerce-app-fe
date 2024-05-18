@@ -276,4 +276,10 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     ) {
         return userService.getSearchUsers(typeSearch, keyword);
     }
+
+    @ShowOpenAPI
+    @PostMapping("/set-user-is-author/{username}")
+    public DataResponse<String> setUserIsAuthor(@PathVariable("username") String username) {
+        return userService.setUserIsAuthor(username);
+    }
 }

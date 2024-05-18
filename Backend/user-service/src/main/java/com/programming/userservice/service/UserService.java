@@ -364,4 +364,15 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
         return ResponseMapper.toListResponseSuccess(userDtoList);
     }
+
+    public DataResponse<String> setUserIsAuthor(String username) {
+        User user = userRepository.findByUserName(username);
+        if (user == null) {
+            throw new DataNotFoundException("User doesn't exists");
+        }
+        user.setIsAuthor(true);
+
+        userRepository.save(user);
+        return ResponseMapper.toDataResponseSuccess("Set user is author successfully");
+    }
 }

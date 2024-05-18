@@ -53,6 +53,9 @@ public class User extends BaseModel {
     @ExcludeFromComparisonField
     private byte[] avatar;
 
+    @Column(name = "is_author")
+    private Boolean isAuthor;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles",
