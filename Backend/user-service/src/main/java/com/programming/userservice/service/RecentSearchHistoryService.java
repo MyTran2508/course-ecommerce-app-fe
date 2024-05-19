@@ -1,5 +1,6 @@
 package com.programming.userservice.service;
 
+import com.main.progamming.common.dto.SearchConditionDto;
 import com.main.progamming.common.error.exception.DataNotFoundException;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
@@ -12,6 +13,7 @@ import com.programming.userservice.repository.RecentSearchHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -33,7 +35,35 @@ public class RecentSearchHistoryService {
         }
 
         List<RecentSearchHistoryDto> recentSearchHistoryDtoList = entities.stream()
-                .map(recentSearchHistoryMapper::entityToDto)
+                .map(entity -> {
+                    List<SearchConditionDto> searchChooseList = new ArrayList<>();
+                    List<SearchConditionDto> searchKeywordDtoList = new ArrayList<>();
+
+                    String[] searchChooseArray =
+                            entity.getSearchChoose() == null ? new String[0] : entity.getSearchChoose().split("//n");
+
+                    String[] searchKeywordArray =
+                            entity.getSearchKeyword() == null ? new String[0] : entity.getSearchKeyword().split("//n");
+
+                    for (String itemSearchChoose: searchChooseArray) {
+                        SearchConditionDto searchConditionDto = new SearchConditionDto();
+                        searchConditionDto.setKeywordType(Integer.valueOf(itemSearchChoose.split("//b")[0]));
+                        searchConditionDto.setKeyword(itemSearchChoose.split("//b")[1]);
+                        searchChooseList.add(searchConditionDto);
+                    }
+                    for (String itemSearchKeyword: searchKeywordArray) {
+                        System.out.println(itemSearchKeyword);
+                        SearchConditionDto searchConditionDto = new SearchConditionDto();
+                        searchConditionDto.setKeywordType(Integer.valueOf(itemSearchKeyword.split("//b")[0]));
+                        searchConditionDto.setKeyword(itemSearchKeyword.split("//b")[1]);
+                        searchKeywordDtoList.add(searchConditionDto);
+                    }
+
+                    RecentSearchHistoryDto responseDto = recentSearchHistoryMapper.entityToDto(entity);
+                    responseDto.setSearchChooseList(searchChooseList);
+                    responseDto.setSearchKeywordDtoList(searchKeywordDtoList);
+                    return responseDto;
+                })
                 .sorted(Comparator.comparing(RecentSearchHistoryDto::getCreated).reversed())
                 .limit(5)
                 .toList();
@@ -45,48 +75,46 @@ public class RecentSearchHistoryService {
 
         RecentSearchHistory entity = recentSearchHistoryMapper.dtoToEntity(recentSearchHistoryDto);
 
+        StringBuilder searchChoose = new StringBuilder("");
+        StringBuilder searchKeyword = new StringBuilder("");
+
+        for (SearchConditionDto searchConditionDto : recentSearchHistoryDto.getSearchChooseList()) {
+
+            searchChoose.append(searchConditionDto.getKeywordType()).append("//b")
+                    .append(searchConditionDto.getKeyword().trim()).append("//n");
+        }
+
+        for (SearchConditionDto searchConditionDto : recentSearchHistoryDto.getSearchKeywordDtoList()) {
+
+            searchKeyword.append(searchConditionDto.getKeywordType()).append("//b")
+                    .append(searchConditionDto.getKeyword()).append("//n");
+        }
+
         RecentSearchHistory alreadyExistEntiy =
-                recentSearchHistoryRepository.findByUsernameAndModuleSearchAndKeywordAndKeywordType(
+                recentSearchHistoryRepository.findByUsernameAndModuleSearchAndSearchChooseAndSearchKeyword(
                         entity.getUsername(),
                         entity.getModuleSearch(),
-                        entity.getKeyword(),
-                        entity.getKeywordType()
+                        searchChoose.toString(),
+                        searchKeyword.toString()
                 );
+
+        entity.setSearchChoose(searchChoose.isEmpty() ? null : searchChoose.toString());
+        entity.setSearchKeyword(searchKeyword.isEmpty() ? null : searchKeyword.toString());
 
         if (alreadyExistEntiy == null) {
             RecentSearchHistory savedEntity = recentSearchHistoryRepository.save(entity);
 
-            RecentSearchHistoryDto savedDto = recentSearchHistoryMapper.entityToDto(savedEntity);
-
-            return ResponseMapper.toDataResponseSuccess(savedDto);
+            recentSearchHistoryDto.setId(savedEntity.getId());
+            return ResponseMapper.toDataResponseSuccess(recentSearchHistoryDto);
         } else {
             alreadyExistEntiy.setCountHistory(alreadyExistEntiy.getCountHistory() + 1);
 
             RecentSearchHistory updatedEntity = recentSearchHistoryRepository.save(alreadyExistEntiy);
 
-            RecentSearchHistoryDto savedDto = recentSearchHistoryMapper.entityToDto(updatedEntity);
+            recentSearchHistoryDto.setId(updatedEntity.getId());
 
-            return ResponseMapper.toDataResponseSuccess(savedDto);
+            return ResponseMapper.toDataResponseSuccess(recentSearchHistoryDto);
         }
-    }
-
-    public DataResponse<RecentSearchHistoryDto> update(String id, RecentSearchHistoryDto recentSearchHistoryDto) {
-
-        RecentSearchHistory recentSearchHistory = recentSearchHistoryRepository.findById(id).get();
-
-        if (recentSearchHistory == null) {
-            throw new DataNotFoundException("Data not found");
-        }
-
-        recentSearchHistoryMapper.dtoToEntity(recentSearchHistoryDto, recentSearchHistory);
-
-        recentSearchHistory.setId(id);
-
-        RecentSearchHistory updatedEntity = recentSearchHistoryRepository.save(recentSearchHistory);
-
-        RecentSearchHistoryDto responseDto = recentSearchHistoryMapper.entityToDto(updatedEntity);
-
-        return ResponseMapper.toDataResponseSuccess(responseDto);
     }
 
     public DataResponse<String> deleteByUsernameAndModuleSearch(String username, ModuleSearch moduleSearch) {

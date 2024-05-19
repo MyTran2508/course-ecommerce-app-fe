@@ -24,15 +24,16 @@ public class RecentSearchHistory {
 
     private String username;
 
-    @Column(name ="keyword_type")
-    private Integer keywordType;
+    @Column(name ="search_choose")
+    private String searchChoose;
 
-    @Column(name = "keyword")
-    private String keyword;
+    @Column(name = "search_keyword")
+    private String searchKeyword;
 
     @Column(name = "module_search")
     private ModuleSearch moduleSearch;
 
+    @Column(name = "count_history")
     private Integer countHistory;
 
     private Long created;

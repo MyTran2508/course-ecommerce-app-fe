@@ -178,9 +178,9 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
                 isEmptyKeywordUserList,
                 keywordUserList,
                 likeUsername,
-                searchOrderDto.getMinTotalPrice(),
-                searchOrderDto.getMaxTotalPrice(),
-                searchOrderDto.getTotalPrice(),
+                searchOrderDto.getMinPrice(),
+                searchOrderDto.getMaxPrice(),
+                searchOrderDto.getPrice(),
                 searchOrderDto.getStartDate(),
                 searchOrderDto.getEndDate(),
                 pageable

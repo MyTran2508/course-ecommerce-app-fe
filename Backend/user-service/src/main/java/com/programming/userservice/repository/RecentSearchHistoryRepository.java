@@ -13,7 +13,7 @@ public interface RecentSearchHistoryRepository extends JpaRepository<RecentSearc
     List<RecentSearchHistory> findByUsernameAndModuleSearch(String username, ModuleSearch moduleSearch);
 
 
-    RecentSearchHistory findByUsernameAndModuleSearchAndKeywordAndKeywordType(
-            String username, ModuleSearch moduleSearch, String keyword, Integer keywordType
+    RecentSearchHistory findByUsernameAndModuleSearchAndSearchChooseAndSearchKeyword(
+            String username, ModuleSearch moduleSearch, String searchChoose, String searchKeyword
     );
 }

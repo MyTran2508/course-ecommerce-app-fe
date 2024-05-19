@@ -106,6 +106,13 @@ public interface CourseRepository extends BaseRepository<Course> {
                         (:likeSubTitle IS NULL OR c.subTitle LIKE %:likeSubTitle%)
                     ))
                 )
+                AND (
+                    (:price IS NULL OR c.price = :price)
+                    AND (
+                        (:minPrice IS NULL OR c.price >= :minPrice)
+                        AND (:maxPrice IS NULL OR c.price <= :maxPrice)
+                    )
+                )
                 AND (c.isApproved = :isApproved or :isApproved IS NULL)
                 AND (c.isAwaitingApproval = :isAwaitingApproval OR :isAwaitingApproval IS NULL)
                 AND (c.isCompletedContent = :isCompletedContent OR :isCompletedContent IS NULL)
@@ -115,6 +122,9 @@ public interface CourseRepository extends BaseRepository<Course> {
             @Param("nameList") List<String> nameList,
             @Param("authorNameList") List<String> authorNameList,
             @Param("subTitleList") List<String> subTitleList,
+            @Param("price") Double price,
+            @Param("minPrice") Double minPrice,
+            @Param("maxPrice") Double maxPrice,
             @Param("isNullAllSearchKeywordDto") boolean isNullAllSearchKeywordDto,
             @Param("likeName") String likeName,
             @Param("likeAuthorName") String likeAuthorName,

@@ -19,7 +19,7 @@ public class RecentSearchHistoryDto implements Serializable {
 
     private String username;
 
-    private List<SearchConditionDto> keyword;
+    private List<SearchConditionDto> searchChooseList;
 
     private List<SearchConditionDto> searchKeywordDtoList;
 

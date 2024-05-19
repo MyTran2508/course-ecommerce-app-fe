@@ -31,14 +31,6 @@ public class RecentSearchHistoryController {
         return recentSearchHistoryService.create(recentSearchHistoryDto);
     }
 
-//    @PutMapping("/update/{id}")
-//    public DataResponse<RecentSearchHistoryDto> update(
-//            @PathVariable("id") final String id,
-//            @RequestBody RecentSearchHistoryDto recentSearchHistoryDto
-//    ) {
-//        return recentSearchHistoryService.update(id, recentSearchHistoryDto);
-//    }
-
     @DeleteMapping("/delete/{username}/{moduleSearch}")
     public DataResponse<String> delete(
             @PathVariable("username") final String username,

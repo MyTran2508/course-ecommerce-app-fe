@@ -18,11 +18,11 @@ public class SearchOrderDto implements Serializable {
 
     private List<SearchConditionDto> searchKeywordDtoList;
 
-    private Double minTotalPrice;
+    private Double minPrice;
 
-    private Double maxTotalPrice;
+    private Double maxPrice;
 
-    private Double totalPrice;
+    private Double price;
 
     private Long startDate;
 
