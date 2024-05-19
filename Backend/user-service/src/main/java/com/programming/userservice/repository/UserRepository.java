@@ -31,18 +31,22 @@ public interface UserRepository extends BaseRepository<User> {
 
     @Query("""
                 SELECT u FROM User u
-                WHERE ((:isEmptyUsernameList = true OR u.username IN :usernameList)
-                OR (
-                    (:isNullAllSearchKeywordDto = false AND
-                    ((u.username LIKE %:keywordUsername% OR :keywordUsername IS NULL)
-                    AND (u.email LIKE %:keywordEmail% OR :keywordEmail IS NULL)
-                    AND (CONCAT(u.firstName, ' ', u.lastName) LIKE %:keywordFullName% OR :keywordFullName IS NULL)
-                    AND (u.telephone LIKE %:keywordTelephone% OR :keywordTelephone IS NULL)))
-                ))
+                WHERE (
+                    (:isEmptyUsernameList = true AND :isNullAllSearchKeywordDto = true)
+                OR
+                    (u.username IN :usernameList
+                    OR (
+                        (:isNullAllSearchKeywordDto = false
+                        AND (u.username LIKE %:keywordUsername% OR :keywordUsername IS NULL)
+                        AND (u.email LIKE %:keywordEmail% OR :keywordEmail IS NULL)
+                        AND (CONCAT(u.firstName, ' ', u.lastName) LIKE %:keywordFullName% OR :keywordFullName IS NULL)
+                        AND (u.telephone LIKE %:keywordTelephone% OR :keywordTelephone IS NULL))
+                    ))
+                )
                 AND u.removed = false
             """)
     Page<User> searchUserByCondition(
-            @Param("isEmptyUsernameList") Boolean isEmptyUsernameList,
+            @Param("isEmptyUsernameList") boolean isEmptyUsernameList,
             @Param("isNullAllSearchKeywordDto") Boolean isNullAllSearchKeywordDto,
             @Param("usernameList") List<String> usernameList,
             @Param("keywordUsername") String keywordUsername,

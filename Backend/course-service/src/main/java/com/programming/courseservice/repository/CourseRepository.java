@@ -94,14 +94,36 @@ public interface CourseRepository extends BaseRepository<Course> {
 
     @Query("""
                 SELECT c FROM Course c
-                WHERE (c.name LIKE %:name% OR c.subTitle LIKE %:name% OR :name IS NULL)
-                AND (c.creator = :creator OR :creator IS NULL)
+                WHERE (
+                    (:isEmptySearchChooseList = true AND :isNullAllSearchKeywordDto = true) OR
+                    ((
+                        (c.authorName IN :authorNameList OR c.subTitle IN :subTitleList OR c.name IN :nameList)
+                    )
+                    OR (
+                        (:isNullAllSearchKeywordDto = false) AND
+                        (:likeName IS NULL OR c.name LIKE %:likeName%) AND
+                        (:likeAuthorName IS NULL OR c.authorName LIKE %:likeAuthorName%) AND
+                        (:likeSubTitle IS NULL OR c.subTitle LIKE %:likeSubTitle%)
+                    ))
+                )
                 AND (c.isApproved = :isApproved or :isApproved IS NULL)
                 AND (c.isAwaitingApproval = :isAwaitingApproval OR :isAwaitingApproval IS NULL)
                 AND (c.isCompletedContent = :isCompletedContent OR :isCompletedContent IS NULL)
             """)
-    Page<Course> searchCourseOfAdmin(String name, String creator, Boolean isApproved,
-                                     Boolean isAwaitingApproval, Boolean isCompletedContent, Pageable pageable);
+    Page<Course> searchCourseOfAdmin(
+            @Param("isEmptySearchChooseList") boolean isEmptySearchChooseList,
+            @Param("nameList") List<String> nameList,
+            @Param("authorNameList") List<String> authorNameList,
+            @Param("subTitleList") List<String> subTitleList,
+            @Param("isNullAllSearchKeywordDto") boolean isNullAllSearchKeywordDto,
+            @Param("likeName") String likeName,
+            @Param("likeAuthorName") String likeAuthorName,
+            @Param("likeSubTitle") String likeSubTitle,
+            @Param("isApproved") Boolean isApproved,
+            @Param("isAwaitingApproval") Boolean isAwaitingApproval,
+            @Param("isCompletedContent") Boolean isCompletedContent,
+            Pageable pageable
+    );
 
     @Query(value = "SELECT COUNT(*) FROM course WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
             "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL) " +

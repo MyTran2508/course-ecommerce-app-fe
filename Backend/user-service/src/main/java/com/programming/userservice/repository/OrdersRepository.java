@@ -26,10 +26,11 @@ public interface OrdersRepository extends BaseRepository<Order> {
 
     @Query("""
                 SELECT o FROM Order o
-                WHERE ((:isEmptyUsernameList = true OR o.user.username IN :keywordUsers)
-                OR (
-                    (o.user.username LIKE %:likeUsername% OR :likeUsername IS NULL)
-                ))
+                WHERE (
+                    (:isEmptyKeywordUserList = true AND :likeUsername IS NULL) OR
+                    o.user.username IN :keywordUsers OR
+                    o.user.username LIKE %:likeUsername%
+                )
                 AND (
                     (:totalPrice IS NULL OR o.totalPrice = :totalPrice)
                     AND (
@@ -42,7 +43,8 @@ public interface OrdersRepository extends BaseRepository<Order> {
                     AND (:endDate IS NULL OR o.created <= :endDate)
                 )
             """)
-    Page<Order> searchOrderByCondition(@Param("isEmptyUsernameList") Boolean isEmptyUsernameList,
+    Page<Order> searchOrderByCondition(
+                                        @Param("isEmptyKeywordUserList") boolean isEmptyKeywordUserList,
                                         @Param("keywordUsers") List<String> keywordUsers,
                                         @Param("likeUsername") String likeUsername,
                                         @Param("minTotalPrice") Double minTotalPrice,
@@ -50,5 +52,6 @@ public interface OrdersRepository extends BaseRepository<Order> {
                                         @Param("totalPrice") Double totalPrice,
                                         @Param("startDate") Long startDate,
                                         @Param("endDate") Long endDate,
-                                        Pageable pageable);
+                                        Pageable pageable
+    );
 }

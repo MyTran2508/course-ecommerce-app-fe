@@ -1,5 +1,6 @@
 package com.programming.courseservice.service;
 
+import com.main.progamming.common.dto.SearchConditionDto;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
@@ -66,13 +67,71 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     @Override
     protected Page<CourseDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
-        String creator =  searchKeywordDto.getKeyword().get(1) == null ? null : searchKeywordDto.getKeyword().get(1).trim();
-        Boolean isApproved = searchKeywordDto.getKeyword().get(2) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(2).trim());
-        Boolean isAwaitingApproval = searchKeywordDto.getKeyword().get(3) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(3).trim());
-        Boolean isCompletedContent = searchKeywordDto.getKeyword().get(4) == null ? null : Boolean.valueOf(searchKeywordDto.getKeyword().get(4).trim());
 
-        return courseRepository.searchCourseOfAdmin(name, creator, isApproved, isAwaitingApproval, isCompletedContent, pageable)
+        List<String> nameList = new ArrayList<>();
+        List<String> authorNameList = new ArrayList<>();
+        List<String> subTitleList = new ArrayList<>();
+
+        Boolean isApproved = null;
+        Boolean isAwaitingApproval = null;
+        Boolean isCompletedContent = null;
+
+        if (searchKeywordDto.getSearchChooseList() != null) {
+            for (SearchConditionDto searchConditionDto: searchKeywordDto.getSearchChooseList()) {
+                if (searchConditionDto.getKeywordType() == 0) {
+                    nameList.add(searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 1) {
+                    authorNameList.add(searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 2) {
+                    subTitleList.add(searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 3) {
+                    isApproved = Boolean.parseBoolean(searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 4) {
+                    isAwaitingApproval = Boolean.parseBoolean(searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 5) {
+                    isCompletedContent = Boolean.parseBoolean(searchConditionDto.getKeyword());
+                }
+            }
+        }
+
+        boolean isEmptySearchChooseList = nameList.isEmpty() && authorNameList.isEmpty() && subTitleList.isEmpty();
+
+        Map<Integer, String> searchKeywordDtoMap = new HashMap<>() {{
+            put(0, null);
+            put(1, null);
+            put(2, null);
+        }};
+        Boolean isNullAllSearchKeywordDto = true;
+
+        if (searchKeywordDto.getSearchKeywordDtoList() != null) {
+            for (SearchConditionDto searchConditionDto: searchKeywordDto.getSearchKeywordDtoList()) {
+                if (searchConditionDto.getKeywordType() == 0) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(0, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 1) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(1, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 2) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(2, searchConditionDto.getKeyword());
+                }
+            }
+        }
+
+        return courseRepository.searchCourseOfAdmin(
+                    isEmptySearchChooseList,
+                    nameList,
+                    authorNameList,
+                    subTitleList,
+                    isNullAllSearchKeywordDto,
+                    searchKeywordDtoMap.get(0),
+                    searchKeywordDtoMap.get(1),
+                    searchKeywordDtoMap.get(2),
+                    isApproved,
+                    isAwaitingApproval,
+                    isCompletedContent,
+                    pageable
+                )
                 .map(course -> courseMapper.entityToDto(course));
     }
 

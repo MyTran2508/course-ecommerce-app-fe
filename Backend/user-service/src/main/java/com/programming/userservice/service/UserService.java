@@ -74,13 +74,14 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
 
-        List<String> usernameList = searchKeywordDto.getKeyword() == null ? new ArrayList<>() :
-                searchKeywordDto.getKeyword().stream()
-                        .map(keyword -> keyword.trim())
-                        .collect(Collectors.toList());
+        List<String> usernameList = searchKeywordDto.getSearchChooseList() == null ? new ArrayList<>() :
+                searchKeywordDto.getSearchChooseList().stream()
+                        .filter(keyword -> keyword.getKeywordType() == 0)
+                        .map(keyword -> keyword.getKeyword())
+                        .toList();
 
-        Boolean isEmptyUsernameList = usernameList.isEmpty();
-        Map<Integer, String> keywordSearch = new HashMap<>() {{
+        boolean isEmptyUsernameList = usernameList.isEmpty();
+        Map<Integer, String> searchKeywordDtoMap = new HashMap<>() {{
                     put(0, null);
                     put(1, null);
                     put(2, null);
@@ -93,26 +94,26 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
             for (SearchConditionDto searchConditionDto: searchKeywordDto.getSearchKeywordDtoList()) {
                 if (searchConditionDto.getKeywordType() == 0) {
                     isNullAllSearchKeywordDto = false;
-                    keywordSearch.put(0, searchConditionDto.getKeyword());
+                    searchKeywordDtoMap.put(0, searchConditionDto.getKeyword());
                 } else if (searchConditionDto.getKeywordType() == 1) {
                     isNullAllSearchKeywordDto = false;
-                    keywordSearch.put(1, searchConditionDto.getKeyword());
+                    searchKeywordDtoMap.put(1, searchConditionDto.getKeyword());
                 } else if (searchConditionDto.getKeywordType() == 2) {
                     isNullAllSearchKeywordDto = false;
-                    keywordSearch.put(2, searchConditionDto.getKeyword());
+                    searchKeywordDtoMap.put(2, searchConditionDto.getKeyword());
                 } else if (searchConditionDto.getKeywordType() == 3) {
                     isNullAllSearchKeywordDto = false;
-                    keywordSearch.put(3, searchConditionDto.getKeyword());
+                    searchKeywordDtoMap.put(3, searchConditionDto.getKeyword());
                 } else if (searchConditionDto.getKeywordType() == 4) {
                     isNullAllSearchKeywordDto = false;
-                    keywordSearch.put(4, searchConditionDto.getKeyword());
+                    searchKeywordDtoMap.put(4, searchConditionDto.getKeyword());
                 }
             }
         }
 
         return userRepository.searchUserByCondition(isEmptyUsernameList, isNullAllSearchKeywordDto, usernameList,
-                        keywordSearch.get(0), keywordSearch.get(1),
-                        keywordSearch.get(2), keywordSearch.get(3), pageable)
+                        searchKeywordDtoMap.get(0), searchKeywordDtoMap.get(1),
+                        searchKeywordDtoMap.get(2), searchKeywordDtoMap.get(3), pageable)
                 .map(user -> userMapper.entityToDto(user));
     }
 

@@ -6,6 +6,8 @@ public enum ModuleSearch {
 
     COURSE,
 
+    COURSE_HOME,
+
     ORDER,
 
     USER_LOG

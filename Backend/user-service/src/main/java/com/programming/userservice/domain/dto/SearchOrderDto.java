@@ -14,7 +14,7 @@ public class SearchOrderDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private List<String> keyword;
+    private List<SearchConditionDto> searchChooseList;
 
     private List<SearchConditionDto> searchKeywordDtoList;
 

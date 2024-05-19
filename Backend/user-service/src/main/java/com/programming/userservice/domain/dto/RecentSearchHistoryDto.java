@@ -1,11 +1,13 @@
 package com.programming.userservice.domain.dto;
 
+import com.main.progamming.common.dto.SearchConditionDto;
 import com.programming.userservice.domain.persistent.enumrate.ModuleSearch;
 import jakarta.persistence.Column;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class RecentSearchHistoryDto implements Serializable {
@@ -17,9 +19,9 @@ public class RecentSearchHistoryDto implements Serializable {
 
     private String username;
 
-    private Integer keywordType;
+    private List<SearchConditionDto> keyword;
 
-    private String keyword;
+    private List<SearchConditionDto> searchKeywordDtoList;
 
     private ModuleSearch moduleSearch;
 

@@ -160,11 +160,12 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
         }
 
         List<String> keywordUserList = searchOrderDto == null ? new ArrayList<>()
-                : searchOrderDto.getKeyword()
-                        .stream()
-                        .map(keyword -> keyword.trim())
+                : searchOrderDto.getSearchChooseList()
+                        .stream().filter(searchConditionDto -> searchConditionDto.getKeywordType() == 0)
+                        .map(SearchConditionDto::getKeyword)
                         .toList();
-        Boolean isEmptyUsernameList = keywordUserList.isEmpty();
+
+        boolean isEmptyKeywordUserList = keywordUserList.isEmpty();
 
         String likeUsername = searchOrderDto.getSearchKeywordDtoList().stream()
                 .filter(searchConditionDto -> searchConditionDto.getKeywordType() == 0)
@@ -174,7 +175,7 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
         Pageable pageable = PageRequest.of(searchOrderDto.getPageIndex(), searchOrderDto.getPageSize(), sortOrder);
 
         Page<Order> orderPage = orderRepository.searchOrderByCondition(
-                isEmptyUsernameList,
+                isEmptyKeywordUserList,
                 keywordUserList,
                 likeUsername,
                 searchOrderDto.getMinTotalPrice(),
