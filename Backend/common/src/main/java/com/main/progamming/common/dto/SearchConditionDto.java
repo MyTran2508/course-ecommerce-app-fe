@@ -12,7 +12,9 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchConditionDto{
+public class SearchConditionDto {
+
+    private Integer ordinalNumber;
 
     private String keyword;
 

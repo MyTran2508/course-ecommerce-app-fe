@@ -47,15 +47,16 @@ public class RecentSearchHistoryService {
 
                     for (String itemSearchChoose: searchChooseArray) {
                         SearchConditionDto searchConditionDto = new SearchConditionDto();
-                        searchConditionDto.setKeywordType(Integer.valueOf(itemSearchChoose.split("//b")[0]));
-                        searchConditionDto.setKeyword(itemSearchChoose.split("//b")[1]);
+                        searchConditionDto.setOrdinalNumber(Integer.valueOf(itemSearchChoose.split("//b")[0]));
+                        searchConditionDto.setKeywordType(Integer.valueOf(itemSearchChoose.split("//b")[1]));
+                        searchConditionDto.setKeyword(itemSearchChoose.split("//b")[2]);
                         searchChooseList.add(searchConditionDto);
                     }
                     for (String itemSearchKeyword: searchKeywordArray) {
-                        System.out.println(itemSearchKeyword);
                         SearchConditionDto searchConditionDto = new SearchConditionDto();
-                        searchConditionDto.setKeywordType(Integer.valueOf(itemSearchKeyword.split("//b")[0]));
-                        searchConditionDto.setKeyword(itemSearchKeyword.split("//b")[1]);
+                        searchConditionDto.setOrdinalNumber(Integer.valueOf(itemSearchKeyword.split("//b")[0]));
+                        searchConditionDto.setKeywordType(Integer.valueOf(itemSearchKeyword.split("//b")[1]));
+                        searchConditionDto.setKeyword(itemSearchKeyword.split("//b")[2]);
                         searchKeywordDtoList.add(searchConditionDto);
                     }
 
@@ -80,13 +81,15 @@ public class RecentSearchHistoryService {
 
         for (SearchConditionDto searchConditionDto : recentSearchHistoryDto.getSearchChooseList()) {
 
-            searchChoose.append(searchConditionDto.getKeywordType()).append("//b")
+            searchChoose.append(searchConditionDto.getOrdinalNumber()).append("//b")
+                    .append(searchConditionDto.getKeywordType()).append("//b")
                     .append(searchConditionDto.getKeyword().trim()).append("//n");
         }
 
         for (SearchConditionDto searchConditionDto : recentSearchHistoryDto.getSearchKeywordDtoList()) {
 
-            searchKeyword.append(searchConditionDto.getKeywordType()).append("//b")
+            searchKeyword.append(searchConditionDto.getOrdinalNumber()).append("//b")
+                    .append(searchConditionDto.getKeywordType()).append("//b")
                     .append(searchConditionDto.getKeyword()).append("//n");
         }
 
@@ -102,12 +105,14 @@ public class RecentSearchHistoryService {
         entity.setSearchKeyword(searchKeyword.isEmpty() ? null : searchKeyword.toString());
 
         if (alreadyExistEntiy == null) {
+            entity.setCountHistory(0);
             RecentSearchHistory savedEntity = recentSearchHistoryRepository.save(entity);
 
             recentSearchHistoryDto.setId(savedEntity.getId());
             return ResponseMapper.toDataResponseSuccess(recentSearchHistoryDto);
         } else {
-            alreadyExistEntiy.setCountHistory(alreadyExistEntiy.getCountHistory() + 1);
+            alreadyExistEntiy.setCountHistory(alreadyExistEntiy.getCountHistory() == null ? 0 :
+                    alreadyExistEntiy.getCountHistory() + 1);
 
             RecentSearchHistory updatedEntity = recentSearchHistoryRepository.save(alreadyExistEntiy);
 
