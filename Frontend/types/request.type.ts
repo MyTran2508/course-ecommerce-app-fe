@@ -1,4 +1,4 @@
-import { VideoDuration } from "./../utils/data";
+import { KeywordTypeSearchType, VideoDuration } from "./../utils/data";
 import { use } from "react";
 import { Question } from "./section.type";
 
@@ -27,7 +27,10 @@ export interface SearchCourseRequest {
   isFree?: boolean | null;
   ratingsLevel?: string | null;
   videoDuration?: string | null;
-  keyword?: string | null;
+  searchCourseKeywordDtoList?: {
+    keyword?: string;
+    keywordTypeSearchCourse?: string;
+  } | null;
   pageIndex?: number;
   pageSize?: number;
 }
@@ -35,9 +38,17 @@ export interface SearchCourseRequest {
 export interface SearchRequest {
   sortBy?: string;
   isDecrease?: boolean;
-  keyword: any;
+  keyword?: string[];
+  searchChooseList?: SearchConditionDto[];
   pageIndex: number;
   pageSize: number;
+  searchKeywordDtoList?: SearchConditionDto[];
+}
+
+export interface SearchConditionDto {
+  ordinalNumber?: number;
+  keyword?: string;
+  keywordType?: number;
 }
 
 export interface UserAnswerRequest {
@@ -50,4 +61,12 @@ export interface UserQuizRequest {
   startTime?: number;
   limitTime?: number;
   exQuizId?: string;
+}
+export interface KeywordTypeSearchRequest {
+  ordinalNumber?: number;
+  keyword?: string;
+  keywordTypeSearch?: KeywordTypeSearchType;
+  comparisonOperators?: KeywordTypeSearchType;
+  isSuggestion?: boolean;
+  value?: number;
 }

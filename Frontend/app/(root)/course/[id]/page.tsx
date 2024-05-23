@@ -360,10 +360,10 @@ function CoursePage() {
         <div className="xl:w-1/3 flex mr-2">
           <Card
             className="p-4 max-w-md mx-auto shadow-md sticky top-[65px] z-10 max-h-[550px]"
-            style={{
-              background:
-                "linear-gradient(349deg, rgba(244,250,243,1) 31%, rgba(151, 196, 203,0.5188200280112045) 73%)",
-            }}
+            // style={{
+            //   background:
+            //     "linear-gradient(349deg, rgba(244,250,243,1) 31%, rgba(151, 196, 203,0.5188200280112045) 73%)",
+            // }}
           >
             <CardTitle className="text-xl font-semibold mb-2 ml-2">
               {course?.name}

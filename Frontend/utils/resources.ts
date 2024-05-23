@@ -8,10 +8,16 @@ export enum Constant {
   QUESTION = "Câu hỏi",
   USER_PERSONAL_PATH = "/user/personal",
   USER_SECURITY_PATH = "/user/security",
+  ADMIN_USER_PATH = "/admin/user",
+  ADMIN_COURSE_PATH = "/admin/courses",
+  ADMIN_DASHBOARD_PATH = "/admin/overview",
+  ADMIN_ROLE_PATH = "/admin/role",
+  ADMIN_BILL_PATH = "/admin/bill",
 }
 
 export const DEFAULT_PAGE_SIZE = 1000;
 export const DEFAULT_PAGE_INDEX = 0;
+export const DEFAULT_HISTORY_SEARCH = "History Search";
 
 export enum Action {
   SENT_OTP = "SENT_OTP",
@@ -24,6 +30,13 @@ export enum Action {
   PREVIOUS = "PREVIOUS",
   LIKE = "LIKE",
   DISLIKE = "DISLIKE",
+  SEARCH_COURSE_CLIENT = "SEARCH_COURSE_CLIENT",
+  SEARCH_COURSE_ADMIN = "SEARCH_COURSE_ADMIN",
+  SEARCH_BILL = "SEARCH_BILL",
+  SEARCH_BY_HISTORY = "SEARCH_BY_HISTORY",
+  SEARCH_USER = "SEARCH_USER",
+  SORT_BY_CREATED = "created",
+  SORT_BY_UPDATED = "updated",
 }
 
 export enum StatusCode {
@@ -96,6 +109,15 @@ export enum ToastMessage {
 
   //comment
   EMPTY_COMMENT = "Vui lòng nhập nội dung bình luận",
+
+  //Role
+  CREATE_ROLE_SUCCESS = "Thêm Quyền Thành Công",
+  CREATE_ROLE_FAIL = "Thêm Quyền Thất Bại",
+  UPDATE_ROLE_SUCCESS = "Cập Nhật Quyền Thành Công",
+  UPDATE_ROLE_FAIL = "Cập Nhật Quyền Thất Bại",
+  PLEASE_SELECT_PERMISSION = "Vui lòng nhập đầy đủ thông tin và chọn quyền",
+  CAN_NOT_CREATE_ROLE = "Không thể tạo quyền vui lòng làm mới",
+  CAN_NOT_UPDATE_ROLE = "Không thể cập nhật quyền vui lòng chọn quyền cần cập nhật",
 }
 
 export enum Role {
@@ -149,4 +171,44 @@ export enum FilterSortBy {
 export enum QuizType {
   SINGLE_CHOICE = "SINGLE_CHOICE",
   MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
+}
+
+export enum ModuleName {
+  USER = "Người Dùng",
+  ROLE = "Phân Quyền",
+  COURSE = "Khóa Học",
+  COURSE_REVIEWS = "Đánh giá khóa học",
+  Content = "Nội Dung Khóa Học",
+}
+
+export enum Permission {
+  CAN_VIEW = "canView",
+  CAN_CREATE = "canCreate",
+  CAN_UPDATE = "canUpdate",
+  CAN_REMOVE = "canRemove",
+  CAN_STATISTICS = "canStatistics",
+}
+
+export enum Fields {
+  ID = "id",
+  USERNAME = "Username",
+  EMAIL = "Email",
+  TELEPHONE = "Telephone",
+  Author = "Author",
+  FullName = "Full Name",
+  NAME = "Name",
+  Subtitle = "Subtitle",
+  Price = "Price",
+}
+
+export enum ModuleSearch {
+  USER = "USER",
+
+  COURSE = "COURSE",
+
+  COURSE_HOME = "COURSE_HOME",
+
+  ORDER = "ORDER",
+
+  USER_LOG = "USER_LOG",
 }

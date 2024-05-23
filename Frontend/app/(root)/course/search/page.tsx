@@ -19,8 +19,12 @@ import {
 } from "@/components/ui/select";
 import { FilterSortBy } from "@/utils/resources";
 import Loading from "../../user/personal/loading";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 
 function SearchPage() {
+  const searchKeyword = useAppSelector(
+    (state) => state.courseReducer.searchCourseKeywordDtoList
+  );
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
   const topicId = searchParams.get("topicId");
@@ -28,7 +32,7 @@ function SearchPage() {
   const [isOpenFilter, setOpenFilter] = useState(true);
   const [sortBy, setSortBy] = useState(FilterSortBy.NEWEST.toString());
   const [searchRequest, setSearchRequest] = useState<SearchCourseRequest>({
-    keyword: keyword,
+    searchCourseKeywordDtoList: searchKeyword as any,
     pageIndex: 0,
     pageSize: 5,
     filterSortBy: sortBy,
@@ -76,7 +80,6 @@ function SearchPage() {
 
   useEffect(() => {
     if (query !== keyword && query !== null) {
-      console.log("keyword", query);
       setKeyword(query as string);
       setSearchRequest((prevSearchRequest) => ({
         ...prevSearchRequest,
@@ -84,6 +87,13 @@ function SearchPage() {
       }));
     }
   }, [query]);
+
+  useEffect(() => {
+    setSearchRequest((prevSearchRequest) => ({
+      ...prevSearchRequest,
+      searchCourseKeywordDtoList: searchKeyword as any,
+    }));
+  }, [searchKeyword]);
 
   useEffect(() => {
     if (sortBy !== FilterSortBy.NONE && sortBy !== searchRequest.filterSortBy) {

@@ -10,6 +10,7 @@ import quizReducer, { QuizState } from "./features/quizSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { AuthMiddleware, rtkQueryErrorLogger } from "@/config/middleware";
 import { userApi } from "./services/userApi";
+import { roleApi } from "./services/roleApi";
 import { courseApi } from "./services/courseApi";
 import { contentApi } from "./services/contentApi";
 import { sectionApi } from "./services/sectionApi";
@@ -49,6 +50,7 @@ export const store = configureStore({
     contentReducer,
     sectionReducer,
     [authApi.reducerPath]: authApi.reducer,
+    [roleApi.reducerPath]: roleApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [courseApi.reducerPath]: courseApi.reducer,
     [contentApi.reducerPath]: contentApi.reducer,
@@ -63,6 +65,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({}).concat([
       authApi.middleware,
+      roleApi.middleware,
       userApi.middleware,
       courseApi.middleware,
       contentApi.middleware,

@@ -87,7 +87,7 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="justify-center items-center xs:justify-normal xs:items-start w-full xs:overflow-x-scroll xs:gap-5 mb-5 grid grid-cols-4 xs:flex xs:custom-scrollbar pl-3 mt-2">
+            <div className="xs:justify-normal xs:items-start w-full xs:overflow-x-scroll xs:gap-5 mb-5 grid grid-cols-4 xs:flex xs:custom-scrollbar pl-3 mt-2">
               <Fragment>
                 {courseList.map((course) => (
                   <CourseCard course={course} key={course.id} />
@@ -113,11 +113,11 @@ export default function Home() {
         </div>
       </section> */}
       <div
-        className="text-white relative flex mt-[-100px] lg:h-screen"
-        style={{
-          background:
-            " radial-gradient(circle, rgba(160,242,131,1) 0%, rgba(193,235,185,1) 44%, rgba(81,241,234,0.3031337535014006) 95%)",
-        }}
+        className="text-white relative flex mt-[-100px] lg:h-screen bg-[#F4EEFF]"
+        // style={{
+        //   background:
+        //     " radial-gradient(circle, rgba(160,242,131,1) 0%, rgba(193,235,185,1) 44%, rgba(81,241,234,0.3031337535014006) 95%)",
+        // }}
       >
         <div className="max-w-[800px] w-full text-center flex flex-col justify-center z-10 ml-20 xs:ml-0 xs:min-h-[500px]">
           <div className="xs:mt-[110px]">
@@ -201,7 +201,7 @@ export default function Home() {
       <div className="mx-10 xs:mx-0">
         {renderCourse(courseNewest, "NEW COURSES")}
       </div>
-      <div className="w-full py-[10rem] xs:py-[20px]">
+      <div className="w-full py-[10rem] xs:py-[20px] px-10">
         <h2 className="text-3xl font-bold ml-6 text-[#00df9a] ">Topic</h2>
 
         <div className="grid grid-cols-4 xs:grid-cols-2 gap-4 mx-10">

@@ -38,6 +38,8 @@ import { userColumns } from "@/components/Table/Columns";
 import { SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
+import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
+import { Action } from "@/utils/resources";
 
 function UserAdmin() {
   const dispatch = useAppDispatch();
@@ -50,12 +52,14 @@ function UserAdmin() {
   const [getUserByKeyword] = useFilterUserMutation();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: [""],
+    keyword: [],
     sortBy: "",
+    searchKeywordDtoList: [],
     isDecrease: true,
     pageIndex: 0,
     pageSize: 10,
   });
+
   const isUpdateUser = useAppSelector(
     (state) => state.persistedReducer.userReducer.updateUser
   );
@@ -68,16 +72,6 @@ function UserAdmin() {
         setTotalPage(fulfilled.totalPages);
       });
   };
-  const handleSearch = () => {
-    setSearchQuery((prevSearchQuery) => ({
-      ...prevSearchQuery,
-      keyword: [searchKeyword],
-    }));
-  };
-
-  useEffect(() => {
-    getUserList(searchQuery);
-  }, []);
 
   useEffect(() => {
     getUserList(searchQuery);
@@ -112,20 +106,14 @@ function UserAdmin() {
 
   return (
     <div className="w-full px-10">
-      <div className="flex items-center py-4">
-        <div className="flex gap-2">
-          <Input
-            placeholder="Nhập username hoặc email..."
-            onChange={(event) => {
-              setSearchKeyword(event.target.value);
-            }}
-            className="max-w-sm "
+      <div className="flex items-center py-4 w-full">
+        <div className="flex gap-2 w-[600px]">
+          <SearchBarManufacturer
+            action={Action.SEARCH_USER}
+            setSearchQuery={setSearchQuery}
           />
-          <Button variant="outline" className="ml-auto" onClick={handleSearch}>
-            Search
-          </Button>
         </div>
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
@@ -150,7 +138,7 @@ function UserAdmin() {
                 );
               })}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
       <div className="rounded-md border">
         <Table>

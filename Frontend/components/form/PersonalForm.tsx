@@ -35,6 +35,8 @@ import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import { AvatarResponse } from "@/types/response.type";
+import { Roles } from "@/types/roles.type";
+import { useGetAllRoleQuery } from "@/redux/services/roleApi";
 
 const formSchema = formPersonalSchema;
 
@@ -54,6 +56,25 @@ const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
     addressLine: value.addresses[0]?.addressLine,
     role: (value.roles as RoleType[])[0].id,
   };
+};
+
+const role: Roles = {
+  id: "21bebc5e-2138-43bf-a635-b7df57b6385e",
+  name: "ROLE_MANAGER1",
+  description: "Role quản lý cấp 2",
+  roleDetails: [
+    {
+      canView: true,
+      canCreate: true,
+      canUpdate: false,
+      canRemove: false,
+      canStatistics: false,
+      module: {
+        id: 0,
+        moduleName: "USER",
+      },
+    },
+  ],
 };
 
 function PersonalForm(props: PersonalProps) {
@@ -77,6 +98,8 @@ function PersonalForm(props: PersonalProps) {
   const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
     userInfor.username
   );
+  const { data: getAllRoles, isSuccess: getAllRolesSuccess } =
+    useGetAllRoleQuery();
 
   const handleImageError = (type: boolean) => {
     setImageError(type);
@@ -154,7 +177,6 @@ function PersonalForm(props: PersonalProps) {
       roles: [
         {
           id: values.role,
-          name: values.role,
         },
       ],
       addresses: [
@@ -351,13 +373,24 @@ function PersonalForm(props: PersonalProps) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value={Role.ADMIN}>
+                          {getAllRolesSuccess &&
+                            (getAllRoles.data as Roles[])?.map(
+                              (role, index) => (
+                                <SelectItem
+                                  value={role.id as string}
+                                  key={index}
+                                >
+                                  {role.name}
+                                </SelectItem>
+                              )
+                            )}
+                          {/* <SelectItem value={role.id as string}>
                             {Role.ADMIN}
                           </SelectItem>
                           <SelectItem value={Role.MANAGER}>
                             {Role.MANAGER}
                           </SelectItem>
-                          <SelectItem value={Role.USER}>{Role.USER}</SelectItem>
+                          <SelectItem value={Role.USER}>{Role.USER}</SelectItem> */}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

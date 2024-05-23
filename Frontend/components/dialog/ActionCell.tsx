@@ -19,16 +19,20 @@ import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import { useRouter } from "next/navigation";
 import { setManageCourse } from "@/redux/features/courseSlice";
+import { Order, OrderItem } from "@/types/order.type";
+import OrderDialog from "./OrderDialog";
 
 interface ActionCellProps {
   user?: User;
   course?: Course;
+  bill?: OrderItem[];
 }
 
 const ActionsCell = (props: ActionCellProps) => {
   const router = useRouter();
-  const { user, course } = props;
+  const { user, course, bill } = props;
   const [isOpenUserDialog, setIsOpenUserDialog] = useState(false);
+  const [isOpenOrderDialog, setIsOpenOrderDialog] = useState(false);
   const [updateUserAdmin] = useUpdateUserAdminMutation();
   const dispatch = useAppDispatch();
 
@@ -36,7 +40,6 @@ const ActionsCell = (props: ActionCellProps) => {
     await updateUserAdmin(user)
       .unwrap()
       .then((fulfilled) => {
-        console.log("dzô updateadmin");
         dispatch(updateUser());
         showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_USER_SUCCESS);
       });
@@ -44,6 +47,9 @@ const ActionsCell = (props: ActionCellProps) => {
 
   const handleEditUser = () => {
     setIsOpenUserDialog(true);
+  };
+  const handleViewOrder = () => {
+    setIsOpenOrderDialog(true);
   };
 
   const handleViewCourse = () => {
@@ -93,12 +99,25 @@ const ActionsCell = (props: ActionCellProps) => {
               </DropdownMenuItem> */}
             </Fragment>
           ) : null}
+          {bill ? (
+            <Fragment>
+              <DropdownMenuItem onClick={() => handleViewOrder()}>
+                Xem Chi Tiết
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </Fragment>
+          ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
       <UserDialog
         isOpen={isOpenUserDialog}
         setIsOpen={setIsOpenUserDialog}
         user={user as User}
+      />
+      <OrderDialog
+        isOpen={isOpenOrderDialog}
+        setIsOpen={setIsOpenOrderDialog}
+        bill={bill as OrderItem[]}
       />
     </div>
   );

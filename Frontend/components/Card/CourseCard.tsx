@@ -98,12 +98,12 @@ function CourseCard(props: CourseProps) {
   return (
     <Fragment>
       <Card
-        className="w-full max-w-fit border-0 !bg-transparent hover:scale-105 duration-300 p-4 mb-8"
+        className="w-full max-w-fit border-0  hover:scale-105 duration-300 p-4 mb-8 bg-[#EEE3CB] mx-auto"
         key={course.id}
-        style={{
-          background:
-            "linear-gradient(349deg, rgba(250,217,118,0.5188200280112045) 19%, rgba(228,245,237,1) 70%)",
-        }}
+        // style={{
+        //   background:
+        //     "linear-gradient(349deg, rgba(250,217,118,0.5188200280112045) 19%, rgba(228,245,237,1) 70%)",
+        // }}
         data-aos="flip-down"
       >
         <CardHeader className="flex flex-col gap-2.5 !p-0 hover:cursor-pointer">

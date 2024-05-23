@@ -9,10 +9,12 @@ import {
 import Content from "./content.type";
 import { Course } from "./course.type";
 import { CourseProcess } from "./courseProcess.type";
-import { User } from "./user.type";
+import { RecentSearchHistoryDto, User } from "./user.type";
 import { Question, UserQuiz } from "./section.type";
 import { Review } from "./review.type";
 import { ForumLecture } from "./forumLecture";
+import { Roles } from "./roles.type";
+import { Order } from "./order.type";
 
 export interface DataResponse {
   timestamp: number;
@@ -35,7 +37,8 @@ export interface DataResponse {
     | Statistics
     | Question[]
     | UserQuiz
-    | Review;
+    | Review
+    | Roles;
 }
 
 export interface ListResponse {
@@ -44,7 +47,14 @@ export interface ListResponse {
   statusMessage: string;
   totalRecords: number;
   totalPages: number;
-  data: Course[] | User[] | Review[] | ForumLecture[];
+  data:
+    | Course[]
+    | User[]
+    | Review[]
+    | ForumLecture[]
+    | Roles[]
+    | RecentSearchHistoryDto[]
+    | Order[];
 }
 
 export interface PageResponse {

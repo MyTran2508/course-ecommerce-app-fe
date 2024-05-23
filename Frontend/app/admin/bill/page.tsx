@@ -20,69 +20,62 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DatePicker from "react-datepicker";
 import { useState, useEffect } from "react";
-import { courseColumns } from "@/components/Table/Columns";
-import {
-  useFilterCourseAdminMutation,
-  useGetAllCourseQuery,
-} from "@/redux/services/courseApi";
-import { Course } from "@/types/course.type";
-import { SearchConditionDto, SearchRequest } from "@/types/request.type";
+import { billColumns, userColumns } from "@/components/Table/Columns";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
-import { updateCourse } from "@/redux/features/courseSlice";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
 import { Action } from "@/utils/resources";
+import { Order, SearchOrderDto } from "@/types/order.type";
+import { useFilterOrderMutation } from "@/redux/services/orderApi";
+import "react-datepicker/dist/react-datepicker.css";
+import { convertToMilliseconds } from "@/utils/function";
 
-function CoursesAdmin() {
+function BillPage() {
   const dispatch = useAppDispatch();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [courseList, setCourseList] = useState<Course[]>([]);
+  const [billList, setBillList] = useState<Order[]>([]);
   const [totalPage, setTotalPage] = useState(0);
-  const [getCourseByKeyword] = useFilterCourseAdminMutation();
-  const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: [],
-    searchChooseList: [
-      {
-        keyword: "True",
-        keywordType: 5,
-      },
-    ],
-    searchKeywordDtoList: [],
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [searchQuery, setSearchQuery] = useState<SearchOrderDto>({
+    searchChooseList: [],
     sortBy: "created",
+    searchKeywordDtoList: [],
     isDecrease: true,
     pageIndex: 0,
     pageSize: 10,
   });
-  const isUpdateCourse = useAppSelector(
-    (state) => state.courseReducer.updateCourse
-  );
-
-  const getCourseList = async (query: SearchRequest) => {
-    await getCourseByKeyword(query)
-      .unwrap()
-      .then((fulfilled) => {
-        setCourseList(fulfilled.data as Course[]);
-        setTotalPage(fulfilled.totalPages);
-      });
-  };
+  const [getBill, { data: bills, isSuccess: getBillSuccess }] =
+    useFilterOrderMutation();
 
   useEffect(() => {
-    getCourseList(searchQuery);
+    getBill(searchQuery);
   }, [searchQuery]);
 
   useEffect(() => {
-    if (isUpdateCourse) {
-      getCourseList(searchQuery);
-      dispatch(updateCourse());
+    if (getBillSuccess) {
+      setBillList(bills?.data || []);
+      setTotalPage((bills?.totalPages as number) || 0);
     }
-  }, [isUpdateCourse]);
+  }, [bills, getBillSuccess]);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      setSearchQuery((prevSearchQuery) => ({
+        ...prevSearchQuery,
+        startDate: startDate.getTime(),
+        endDate: endDate.getTime(),
+      }));
+    }
+  }, [startDate, endDate]);
 
   const table = useReactTable({
-    data: courseList,
-    columns: courseColumns,
+    data: billList,
+    columns: billColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -96,16 +89,39 @@ function CoursesAdmin() {
       columnFilters,
       columnVisibility,
       rowSelection,
+      // pagination: paginate,
     },
   });
 
   return (
     <div className="w-full px-10">
-      <div className="flex items-center py-4">
+      <div className="flex-end gap-2 z-20 mt-2">
+        <div className="flex gap-2">
+          <p>Start Day: </p>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date as Date)}
+            className="border w-[100px] px-2 rounded-md"
+            placeholderText="Start Date"
+          />
+        </div>
+        <div className="flex gap-2">
+          <p>End Date: </p>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date as Date)}
+            className="border w-[100px] px-2 rounded-md"
+            placeholderText="End Date"
+          />
+        </div>
+      </div>
+      <div className="flex items-center py-4 w-full">
         <div className="flex gap-2 w-[600px]">
           <SearchBarManufacturer
-            action={Action.SEARCH_COURSE_ADMIN}
+            action={Action.SEARCH_BILL}
             setSearchQuery={setSearchQuery}
+            startDate={startDate ? startDate.getTime() : null}
+            endDate={endDate ? endDate.getTime() : null}
           />
         </div>
       </div>
@@ -149,7 +165,7 @@ function CoursesAdmin() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={courseColumns.length}
+                  colSpan={userColumns.length}
                   className="h-24 text-center"
                 >
                   No results.
@@ -166,7 +182,7 @@ function CoursesAdmin() {
         </div>
         <div className="space-x-2 flex gap-1">
           <div className="flex-center text-sm text-muted-foreground">
-            {searchQuery.pageIndex + 1} of {totalPage} page.
+            {(searchQuery.pageIndex as number) + 1} of {totalPage} page.
           </div>
           <Button
             variant="outline"
@@ -174,7 +190,7 @@ function CoursesAdmin() {
             onClick={() =>
               setSearchQuery((prevSearchQuery) => ({
                 ...prevSearchQuery,
-                pageIndex: searchQuery.pageIndex - 1,
+                pageIndex: (searchQuery.pageIndex as number) - 1,
               }))
             }
             disabled={searchQuery.pageIndex === 0 ? true : false}
@@ -187,10 +203,12 @@ function CoursesAdmin() {
             onClick={() =>
               setSearchQuery((prevSearchQuery) => ({
                 ...prevSearchQuery,
-                pageIndex: searchQuery.pageIndex + 1,
+                pageIndex: (searchQuery.pageIndex as number) + 1,
               }))
             }
-            disabled={searchQuery.pageIndex + 1 < totalPage ? false : true}
+            disabled={
+              (searchQuery.pageIndex as number) + 1 < totalPage ? false : true
+            }
           >
             Next
           </Button>
@@ -199,4 +217,4 @@ function CoursesAdmin() {
     </div>
   );
 }
-export default CoursesAdmin;
+export default BillPage;

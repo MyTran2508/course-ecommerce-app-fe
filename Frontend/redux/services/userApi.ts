@@ -10,7 +10,8 @@ import {
   DataResponse,
   ListResponse,
 } from "@/types/response.type";
-import { User } from "@/types/user.type";
+import { RecentSearchHistoryDto, User } from "@/types/user.type";
+import { get } from "lodash";
 
 export const userApi = createApi({
   reducerPath: "userApi",
@@ -126,6 +127,54 @@ export const userApi = createApi({
         };
       },
     }),
+    getUserSearch: builder.query<
+      DataResponse,
+      {
+        keyword: string;
+        "type-search": string;
+      }
+    >({
+      query: (data) => {
+        return {
+          url: `api/users/user/get-search-users`,
+          params: data,
+        };
+      },
+    }),
+    addRecentSearch: builder.mutation<DataResponse, RecentSearchHistoryDto>({
+      query: (data) => {
+        return {
+          url: `/api/users/recent-search-history/add`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: () => [{ type: "User" as const, id: "recent-search" }],
+    }),
+    getRecentSearch: builder.query<
+      ListResponse,
+      { username: string; moduleSearch: string }
+    >({
+      query: (data) => {
+        return {
+          url: `api/users/recent-search-history/get/${data.username}/${data.moduleSearch}`,
+          method: "GET",
+        };
+      },
+      providesTags: () => [{ type: "User" as const, id: "recent-search" }],
+    }),
+    deleteRecentSearch: builder.mutation<
+      DataResponse,
+      { username: string; moduleSearch: string }
+    >({
+      query: (data) => {
+        return {
+          url: `api/users/recent-search-history/delete/${data.username}/${data.moduleSearch}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: () => [{ type: "User" as const, id: "recent-search" }],
+    }),
   }),
 });
 
@@ -141,4 +190,9 @@ export const {
   useGetAllUserQuery,
   useFilterUserMutation,
   useGetStatisticsMutation,
+  useLazyGetUserSearchQuery,
+  useAddRecentSearchMutation,
+  useGetRecentSearchQuery,
+  useDeleteRecentSearchMutation,
+  useLazyGetRecentSearchQuery,
 } = userApi;

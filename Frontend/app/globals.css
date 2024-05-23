@@ -12,14 +12,7 @@
 
 body,
 header {
-  /* background: linear-gradient(to bottom, #ffffff, #e2e6f0); */
-  background: rgb(218, 247, 229);
-  background: linear-gradient(
-    349deg,
-    rgba(218, 247, 229, 1) 0%,
-    rgba(253, 254, 254, 1) 57%,
-    rgba(151, 196, 203, 1) 100%
-  );
+  /* background: #f8e8ee; */
 }
 
 .myTimePicker .react-time-picker__inputGroup__input {
@@ -141,7 +134,7 @@ code {
   }
 
   .custom-scrollbar::-webkit-scrollbar {
-    width: 10px;
+    width: 20px !important;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
