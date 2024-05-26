@@ -1,0 +1,9 @@
+#!/bin/bash
+
+projects=("project1" "project2" "project3" "project4")
+
+for project in "${projects[@]}"
+do
+   cd /path/to/$project
+   mvn package -Djib.skip=true -DskipTests
+done

@@ -33,6 +33,18 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-graphics</artifactId>
+        <version>17</version>
+        <classifier>win</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-base</artifactId>
+        <version>17</version>
+        <classifier>win</classifier>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
@@ -49,27 +61,27 @@
           </excludes>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>com.google.cloud.tools</groupId>
-        <artifactId>jib-maven-plugin</artifactId>
-        <version>3.2.1</version>
-        <configuration>
-          <from>
-            <image>eclipse-temurin:17.0.4.1_1-jre</image>
-          </from>
-          <to>
-            <!--            <image>microservices-tutorial/${project.artifactId}</image>-->
-          </to>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>dockerBuild</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>com.google.cloud.tools</groupId>-->
+<!--        <artifactId>jib-maven-plugin</artifactId>-->
+<!--        <version>3.2.1</version>-->
+<!--        <configuration>-->
+<!--          <from>-->
+<!--            <image>eclipse-temurin:17.0.4.1_1-jre</image>-->
+<!--          </from>-->
+<!--          <to>-->
+<!--            &lt;!&ndash;            <image>microservices-tutorial/${project.artifactId}</image>&ndash;&gt;-->
+<!--          </to>-->
+<!--        </configuration>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>package</phase>-->
+<!--            <goals>-->
+<!--              <goal>dockerBuild</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
     </plugins>
   </build>
 </project>
