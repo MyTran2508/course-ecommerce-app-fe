@@ -20,12 +20,19 @@ import com.programming.courseservice.domain.persistent.entity.UserQuiz;
 import com.programming.courseservice.repository.ExQuizRepository;
 import com.programming.courseservice.repository.UserQuizRepository;
 import com.programming.courseservice.utilities.constant.CourseConstrant;
+import com.programming.courseservice.utilities.schedule.ScheduleSubmitQuiz;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -40,6 +47,10 @@ public class UserQuizService extends BaseServiceImpl<UserQuiz, UserQuizDto> {
     private final UserQuizMapper userQuizMapper;
 
     private final ExQuizRepository exQuizRepository;
+
+    private final TaskScheduler taskScheduler;
+
+    private final UserAnswerService userAnswerService;
 
     @Override
     protected BaseRepository<UserQuiz> getBaseRepository() {
@@ -140,6 +151,12 @@ public class UserQuizService extends BaseServiceImpl<UserQuiz, UserQuizDto> {
         // save user answers
         userQuiz.setUserAnswers(userAnswers);
         userQuizRepository.save(userQuiz);
+
+        long endTime = savedUserQuiz.getStartTime() + savedUserQuiz.getLimitTime();
+        Instant endInstant = Instant.ofEpochMilli(endTime);
+
+        taskScheduler.schedule(new ScheduleSubmitQuiz(userAnswerService, userQuizRepository, savedUserQuiz.getId()),
+                Date.from(endInstant));
 
         return ResponseMapper.toDataResponseSuccess(userQuizMapper.entityToDto(userQuiz));
     }

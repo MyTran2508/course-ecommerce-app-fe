@@ -123,6 +123,7 @@ public class UserAnswerService {
         } else {
             userQuiz.setIsCompleted(false);
         }
+        System.out.println("Vao submit quiz");
 
         userQuizRepository.save(userQuiz);
     }

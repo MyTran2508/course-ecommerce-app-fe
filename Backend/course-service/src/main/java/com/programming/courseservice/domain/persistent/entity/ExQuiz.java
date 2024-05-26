@@ -34,7 +34,7 @@ public class ExQuiz extends BaseModel {
     @Column(name = "required_score")
     private Integer requiredScore;
 
-    @OneToMany(targetEntity = Question.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Question.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_question_ex_quiz_id"))
     @OrderBy("ordinalNumber ASC")
     private List<Question> questions;
