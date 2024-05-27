@@ -20,4 +20,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd course-ecommerce-app
+            cd course-ecommerce-app 
