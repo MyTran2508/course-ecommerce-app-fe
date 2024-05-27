@@ -21,3 +21,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd course-ecommerce-app 
+            git pull origin deploy
+            cd .build
+            docker-compose down
