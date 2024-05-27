@@ -15,7 +15,9 @@ public enum LectureType {
 
     EXERCISE_PRACTICAL("Bài tập thực hành"),
 
-    QUIZ_TEST("Bài tập trắc nghiệm");
+    QUIZ_TEST("Bài tập trắc nghiệm"),
+
+    ASSIGNMENT("Bài tập tự luận");
 
     private final String value;
 }
