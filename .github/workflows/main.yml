@@ -23,4 +23,7 @@ jobs:
             cd course-ecommerce-app 
             git pull origin deploy
             cd .build
+            ./build.sh
             docker compose down
+            docker rmi build-course-service build-user-service
+            docker compose up -d
