@@ -23,4 +23,4 @@ jobs:
             cd course-ecommerce-app 
             git pull origin deploy
             cd .build
-            docker-compose down
+            docker compose down
