@@ -10,13 +10,16 @@
 	<artifactId>course-service</artifactId>
 	<name>course-service</name>
 	<description>Spring Boot project as course service</description>
+	<build>
+		<finalName>course-service</finalName>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>com.programming</groupId>
 			<artifactId>common</artifactId>
 			<version>0.0.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}\..\common\target\common-0.0.1.jar</systemPath>
+			<systemPath>${project.basedir}\..\common\target\common.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -141,58 +144,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.cloud</groupId>-->
-<!--			<artifactId>spring-cloud-starter-bus-amqp</artifactId>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.querydsl</groupId>-->
-<!--			<artifactId>querydsl-apt</artifactId>-->
-<!--			<version>4.2.2</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>com.querydsl</groupId>-->
-<!--			<artifactId>querydsl-jpa</artifactId>-->
-<!--			<version>4.2.2</version>-->
-<!--		</dependency>-->
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.2.1</version>
-				<configuration>
-					<to>
-						<image>course-service</image>
-					</to>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-<!--	<build>-->
-<!--		<plugins>-->
-<!--			<plugin>-->
-<!--				<groupId>com.mysema.maven</groupId>-->
-<!--				<artifactId>apt-maven-plugin</artifactId>-->
-<!--				<version>1.1.3</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<goals>-->
-<!--							<goal>process</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<outputDirectory>target/generated-sources/java</outputDirectory>-->
-<!--							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
-<!--		</plugins>-->
-<!--	</build>-->
 </project>

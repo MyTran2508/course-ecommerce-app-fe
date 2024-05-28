@@ -10,13 +10,16 @@
 	<artifactId>user-service</artifactId>
 	<name>user-service</name>
 	<description>Spring Boot project as user service</description>
+	<build>
+		<finalName>user-service</finalName>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>com.programming</groupId>
 			<artifactId>common</artifactId>
 			<version>0.0.1</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}\..\common\target\common-0.0.1.jar</systemPath>
+			<systemPath>${project.basedir}\..\common\target\common.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

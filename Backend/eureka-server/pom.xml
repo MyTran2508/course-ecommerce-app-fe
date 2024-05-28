@@ -12,6 +12,9 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>eureka-server</name>
 	<description>Spring Boot Eureka Server</description>
+	<build>
+		<finalName>eureka-server</finalName>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

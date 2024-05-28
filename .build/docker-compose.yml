@@ -1,0 +1,69 @@
+version: '3'
+services:
+  discovery-server:
+    build: ../Backend/eureka-server
+    container_name: eureka-server
+    ports:
+      - 8761:8761
+
+  api-gateway:
+    build: ../Backend/api-gateway
+    container_name: api-gateway
+    ports:
+      - 8080:8080
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://user:123456@discovery-server:8761/eureka
+      - APP_EUREKA_SERVER=discovery-server
+    depends_on:
+      - discovery-server
+
+  course-service:
+    container_name: course-service
+    build: ../Backend/course-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/course-service?autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://user:123456@discovery-server:8761/eureka/
+    ports:
+      - 8081:8081
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - mysql-db
+
+  user-service:
+    container_name: user-service
+    build: ../Backend/user-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/user-service?autoReconnect=true&useSSL=false
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://user:123456@discovery-server:8761/eureka/
+    ports:
+      - 8082:8082
+    depends_on:
+      - discovery-server
+      - api-gateway
+      - mysql-db
+
+  nginx-service:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    depends_on:
+      - api-gateway
+
+  mysql-db:
+    image: mysql:8.0.26
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=816570
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
