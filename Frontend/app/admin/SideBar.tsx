@@ -2,31 +2,37 @@
 import { logout } from "@/redux/features/authSlice";
 import { removeUser } from "@/redux/features/userSlice";
 import { useAppDispatch } from "@/redux/hooks/reduxHooks";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { Constant, ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
-import { SiScikitlearn } from "react-icons/si";
+import { CiMoneyBill } from "react-icons/ci";
+import { SiOpenaccess, SiScikitlearn } from "react-icons/si";
 
 function SideBar() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const path = usePathname();
 
   return (
     <div className="sticky top-0 flex flex-col bg-clip-border rounded-xl bg-orange-50 text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ">
-      <div className="mb-2 p-4 bg-white border border-orange-500 rounded-md">
+      <div className="mb-2 p-4 border border-orange-500 rounded-md">
         <h5 className="flex-center gap-2 block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-gray-900">
           <SiScikitlearn className="text-3xl" />
           E-LEARNING ADMIN
         </h5>
       </div>
       <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-normal text-gray-700 ">
-        <Link href={"/admin/overview"}>
+        <Link href={Constant.ADMIN_DASHBOARD_PATH}>
           <div
             role="button"
             tabIndex={0}
-            className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            className={`${
+              path === Constant.ADMIN_DASHBOARD_PATH
+                ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            }`}
           >
             <div className="grid place-items-center mr-4">
               <svg
@@ -46,11 +52,15 @@ function SideBar() {
             Thống Kê
           </div>
         </Link>
-        <Link href={"/admin/courses"}>
+        <Link href={Constant.ADMIN_COURSE_PATH}>
           <div
             role="button"
             tabIndex={0}
-            className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            className={`${
+              path === Constant.ADMIN_COURSE_PATH
+                ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            }`}
           >
             <div className="grid place-items-center mr-4">
               <svg
@@ -70,11 +80,15 @@ function SideBar() {
             Quản lý khóa học
           </div>
         </Link>
-        <Link href={"/admin/user"}>
+        <Link href={Constant.ADMIN_USER_PATH}>
           <div
             role="button"
             tabIndex={0}
-            className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-200 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            className={`${
+              path === Constant.ADMIN_USER_PATH
+                ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            }`}
           >
             <div className="grid place-items-center mr-4">
               <svg
@@ -92,6 +106,38 @@ function SideBar() {
               </svg>
             </div>
             Quản lý tài khoản
+          </div>
+        </Link>
+        <Link href={Constant.ADMIN_ROLE_PATH}>
+          <div
+            role="button"
+            tabIndex={0}
+            className={`${
+              path === Constant.ADMIN_ROLE_PATH
+                ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            }`}
+          >
+            <div className="grid place-items-center mr-4">
+              <SiOpenaccess className="text-lg" />
+            </div>
+            Quản lý quyền
+          </div>
+        </Link>
+        <Link href={Constant.ADMIN_BILL_PATH}>
+          <div
+            role="button"
+            tabIndex={0}
+            className={`${
+              path === Constant.ADMIN_BILL_PATH
+                ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            }`}
+          >
+            <div className="grid place-items-center mr-4">
+              <CiMoneyBill className="text-lg" />
+            </div>
+            Quản lý đơn hàng
           </div>
         </Link>
         <Link href={"/"}>

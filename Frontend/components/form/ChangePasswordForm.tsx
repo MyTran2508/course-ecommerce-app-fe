@@ -88,7 +88,7 @@ function PasswordForm() {
     <div>
       <Form {...form}>
         <form className="mt-5 mx-4">
-          <div className="flex justify-between sticky top-[120px] bg-white">
+          <div className="flex justify-between sticky top-[120px]">
             <div className="w-full "> Đổi Mật Khẩu</div>
             {!allowInput ? (
               <Fragment>
@@ -138,7 +138,7 @@ function PasswordForm() {
                         <Input
                           ref={inputRef}
                           type="password"
-                          className={`w-[400px] border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
+                          className={`w-[400px] xs:w-[300px] border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
                             allowInput ? "border-b-blue-700 " : " "
                           }`}
                           disabled={!allowInput}
@@ -166,7 +166,7 @@ function PasswordForm() {
                             )}
                           </div>
                           <Input
-                            className={`w-[400px] border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
+                            className={`w-[400px] xs:w-[300px] border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
                               allowInput ? "border-b-blue-700 " : " "
                             }`}
                             type={openEye === false ? "password" : "text"}
@@ -189,7 +189,7 @@ function PasswordForm() {
                       </FormLabel>
                       <FormControl>
                         <Input
-                          className={`w-[400px] border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
+                          className={`w-[400px] xs:w-[300px] border-x-0 border-t-0 rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default ${
                             allowInput ? "border-b-blue-700 " : " "
                           }`}
                           type={openEye === false ? "password" : "text"}

@@ -1,12 +1,15 @@
 "use client";
+import { calculateProgress } from "@/app/learning/[name]/page";
 import { Lecture, Section } from "@/types/section.type";
 import {
   convertLongToTime,
   handleCountFieldsInSection,
 } from "@/utils/function";
+import { LectureType } from "@/utils/resources";
 import { Disclosure } from "@headlessui/react";
 import React, { useState } from "react";
 import { AiFillCheckCircle } from "react-icons/ai";
+import { CiCircleQuestion } from "react-icons/ci";
 import { HiChevronUp } from "react-icons/hi";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { MdLockOutline, MdOutlineOndemandVideo } from "react-icons/md";
@@ -15,17 +18,25 @@ interface CourseContentLearningProps {
   section: Section;
   setLecture: React.Dispatch<React.SetStateAction<Lecture | undefined>>;
   currentProgress: number;
-  lectureActive: number;
+  lectureActive: string;
+  dataGetOrdinalNumber?: Section[];
 }
 
 function CourseContentLearning(props: CourseContentLearningProps) {
-  const { section, setLecture, currentProgress, lectureActive } = props;
+  const {
+    section,
+    setLecture,
+    currentProgress,
+    lectureActive,
+    dataGetOrdinalNumber,
+  } = props;
   const { totalDurationCourse, totalLectureCount } = handleCountFieldsInSection(
     [section]
   );
 
   let totalLectionInSections =
-    section.lectures[section.lectures.length - 1]?.ordinalNumber ?? 0;
+    (section.lectures as Lecture[])[(section.lectures as Lecture[]).length - 1]
+      ?.ordinalNumber ?? 0;
   let countLectureSuccessInSection = 0;
 
   if (totalLectionInSections <= currentProgress) {
@@ -33,14 +44,17 @@ function CourseContentLearning(props: CourseContentLearningProps) {
     countLectureSuccessInSection = totalLectionInSections;
   } else {
     countLectureSuccessInSection =
-      section.lectures.length - (totalLectionInSections - currentProgress) > 0
-        ? section.lectures.length - (totalLectionInSections - currentProgress)
+      (section.lectures as Lecture[]).length -
+        (totalLectionInSections - currentProgress) >
+      0
+        ? (section.lectures as Lecture[]).length -
+          (totalLectionInSections - currentProgress)
         : 0;
     totalLectionInSections = currentProgress;
   }
 
-  const handleClick = (lecture: Lecture) => {
-    if ((lecture.ordinalNumber as number) <= currentProgress + 1) {
+  const handleClick = (lecture: Lecture, ordinalNumber: number) => {
+    if (ordinalNumber <= currentProgress + 1) {
       setLecture(lecture);
     }
   };
@@ -71,44 +85,49 @@ function CourseContentLearning(props: CourseContentLearningProps) {
               {open ? (
                 <>
                   <div>
-                    {section?.lectures
+                    {(section?.lectures as Lecture[])
                       .filter((lecture) => lecture.ordinalNumber !== -1)
                       .map((lecture, index) => {
                         let durationLecture: string = "";
-                        let isVideo: boolean = false;
                         let isSuccess: boolean = false;
+
                         if (lecture.videoDuration !== 0) {
                           durationLecture = convertLongToTime(
                             lecture.videoDuration as number
                           );
-                          isVideo = true;
                         }
-                        if (
-                          (lecture.ordinalNumber as number) <= currentProgress
-                        ) {
+
+                        const ordinalNumber = calculateProgress(
+                          lecture.id as string,
+                          dataGetOrdinalNumber as Section[]
+                        );
+
+                        if ((ordinalNumber as number) <= currentProgress) {
                           isSuccess = true;
                         }
+
                         return (
                           <div
                             key={lecture.id}
                             className={`flex-between gap-3 hover:cursor-pointer pl-5 h-full  ${
-                              isSuccess ||
-                              (lecture.ordinalNumber as number) ==
-                                currentProgress + 1
+                              isSuccess || ordinalNumber == currentProgress + 1
                                 ? ""
                                 : "text-gray-500 bg-gray-100"
                             } ${
-                              lectureActive == lecture.ordinalNumber
+                              lectureActive == lecture.id
                                 ? "bg-orange-300"
                                 : null
                             }`}
-                            onClick={() => handleClick(lecture)}
+                            onClick={() => handleClick(lecture, ordinalNumber)}
                           >
                             <div className="flex items-center justify-center">
-                              {isVideo ? (
+                              {lecture.lectureType === LectureType.VIDEO ? (
                                 <MdOutlineOndemandVideo />
-                              ) : (
+                              ) : lecture.lectureType ===
+                                LectureType.DOCUMENT ? (
                                 <IoDocumentTextSharp />
+                              ) : (
+                                <CiCircleQuestion />
                               )}
                             </div>
                             <div className="w-full">
@@ -124,7 +143,7 @@ function CourseContentLearning(props: CourseContentLearningProps) {
                                 )}
                                 {isSuccess ? (
                                   <AiFillCheckCircle className="text-xl text-green-700 mr-6 mb-1 pl-1" />
-                                ) : (lecture.ordinalNumber as number) ==
+                                ) : ordinalNumber ==
                                   currentProgress + 1 ? null : (
                                   <MdLockOutline className="text-xl text-gray-500 bg-gray-100 mr-6 mb-1 pl-1" />
                                 )}

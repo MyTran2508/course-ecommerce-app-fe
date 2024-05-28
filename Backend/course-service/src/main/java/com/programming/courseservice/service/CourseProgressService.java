@@ -83,12 +83,19 @@ public class CourseProgressService extends BaseServiceImpl<CourseProgress, Cours
         if (courseProgressOptional.isPresent()) {
             CourseProgress courseProgress = courseProgressOptional.get();
 
-            if (exQuizId != null) {
-                UserQuiz userQuiz = userQuizRepository.findByUserIdAndExQuizId(userId, exQuizId);
+            if (!exQuizId.isEmpty()) {
+                List<UserQuiz> userQuizzs = userQuizRepository.findByUserIdAndExQuizIdOrderByAttemptNumberAsc(userId, exQuizId);
 
-                if (userQuiz == null || userQuiz.getIsCompleted() == null ||
-                        !userQuiz.getIsCompleted() || userQuiz.getScore() == null || userQuiz.getScore() < 7) {
-                    throw new DataConflictException("User quiz is not completed or score is less than 7");
+                boolean isCompleted = false;
+                for (UserQuiz userQuiz : userQuizzs) {
+                    if (userQuiz.getIsCompleted()) {
+                        isCompleted = true;
+                        break;
+                    }
+                }
+
+                if (!isCompleted) {
+                    throw new DataConflictException("Quiz has not been completed yet");
                 }
             }
 

@@ -49,7 +49,10 @@ public class AuthConfig {
                                         "/api/courses/course/popular/**",
                                         "/api/courses/content/get-by-course-id",
                                         "/api/courses/course/get-all",
-                                        "/api/courses/course-review/search-by-keyword"
+                                        "/api/courses/course-review/search-by-keyword",
+                                        "/api/courses/course/get-course-search/**",
+                                        "/ws/courses/**",
+                                        "/ws/courses/info"
                                         )
 
                         .permitAll()

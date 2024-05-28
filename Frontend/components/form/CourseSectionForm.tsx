@@ -32,11 +32,12 @@ import { v4 as uuidv4 } from "uuid";
 import { IoAddOutline } from "react-icons/io5";
 import Loading from "@/app/(root)/user/personal/loading";
 import LectureTypeBox from "../Lecture/LectureTypeBox";
-import Quiz from "../Lecture/Quiz/Quiz";
+import AddQuiz from "../Lecture/Quiz/Instructor/AddQuiz";
 import Sorttable from "../Lecture/DragAndDrop/Sorttable";
 import SectionComponent from "../Section/Section";
 import CreateTitle from "../Lecture/CreateTitle";
 import Sortable from "../Lecture/DragAndDrop/Sorttable";
+import { useSectionHooks } from "@/redux/hooks/courseHooks/sectionHooks";
 
 interface CourseSectionProps {
   contentId: string;
@@ -48,10 +49,11 @@ function CourseSectionForm(props: CourseSectionProps) {
   const [sectionData, setSectionData] = useState<Section[]>(sections);
   const [isUpdateSection, setUpdateSection] = useState(false);
   const [isCreateNewSection, setCreateNewSection] = useState(false);
+  const { handleListUpdateSection } = useSectionHooks();
 
   useEffect(() => {
     if (isUpdateSection) {
-      // handleUpdateSection(sectionData[0]);
+      handleListUpdateSection(contentId, sectionData);
       setUpdateSection(false);
     }
   }, [isUpdateSection]);
@@ -60,30 +62,15 @@ function CourseSectionForm(props: CourseSectionProps) {
     setCreateNewSection(!isCreateNewSection);
   };
 
-  const handleToast = (dataResult: DataResponse) => {
-    if (dataResult?.statusCode === StatusCode.REQUEST_SUCCESS) {
-      showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_CONTENT_SUCCESS);
-    } else {
-      showToast(ToastStatus.ERROR, ToastMessage.UPDATE_CONTENT_FAIL);
-    }
-  };
-
-  // if (isLoading) {
-  //   return (
-  //     <div>
-  //       <Loading />
-  //       <div className="flex-center text-sm italic text-orange-400">
-  //         Đang lưu
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  useEffect(() => {
+    setSectionData(sections);
+  }, [sections]);
 
   return (
     <div>
       <div>
         <Sortable
-          data={sections}
+          data={sectionData}
           key={uuidv4()}
           type={Constant.SECTION}
           onDataChange={setSectionData}

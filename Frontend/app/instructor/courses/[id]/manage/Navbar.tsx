@@ -11,7 +11,6 @@ import RequestApprovalButton from "./RequestApprovalButton";
 import { handleCountFieldsInSection } from "@/utils/function";
 import { Course } from "@/types/course.type";
 import { Button } from "@/components/ui/button";
-import { updateSection } from "@/redux/features/sectionSlice";
 
 function CreateCourseNavBar() {
   const router = useRouter();

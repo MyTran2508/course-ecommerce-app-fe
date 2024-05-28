@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import { Providers } from "@/redux/provider";
 import ToastComponent from "@/components/ToastComponent";
 import SessionProvider from "../components/SessionProvider";
+import { Suspense } from "react";
+import Loading from "./(root)/user/personal/loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,10 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="">
-        {/* <SessionProvider> */}
-        <Providers>{children}</Providers>
+        <Providers>
+          <Suspense fallback={<Loading />}>{children}</Suspense>
+        </Providers>
         <ToastComponent />
-        {/* </SessionProvider> */}
       </body>
     </html>
   );

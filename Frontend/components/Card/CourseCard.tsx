@@ -3,8 +3,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
-
-import { BsPeopleFill } from "react-icons/bs";
 import { Course } from "@/types/course.type";
 import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
@@ -100,12 +98,12 @@ function CourseCard(props: CourseProps) {
   return (
     <Fragment>
       <Card
-        className="w-full max-w-fit border-0 !bg-transparent xs:max-w-[400px] m-8 hover:scale-105 duration-300 p-4 "
+        className="w-full max-w-fit border-0  hover:scale-105 duration-300 p-4 mb-8 bg-[#EEE3CB] mx-auto"
         key={course.id}
-        style={{
-          background:
-            "linear-gradient(349deg, rgba(250,217,118,0.5188200280112045) 19%, rgba(228,245,237,1) 70%)",
-        }}
+        // style={{
+        //   background:
+        //     "linear-gradient(349deg, rgba(250,217,118,0.5188200280112045) 19%, rgba(228,245,237,1) 70%)",
+        // }}
         data-aos="flip-down"
       >
         <CardHeader className="flex flex-col gap-2.5 !p-0 hover:cursor-pointer">
@@ -219,14 +217,16 @@ function CourseCard(props: CourseProps) {
             <div className="flex-end mr-2">
               <div className="text-xl font-normal xs:text-sm">
                 {course.price === 0 ? (
-                  <span className="text-red-500 italic">
+                  <span className="text-red-500 italic xs:min-w-[75px]">
                     <span className="xs:mr-2">F</span>
                     <span className="xs:mr-2">r</span>
                     <span className="xs:mr-2">e</span>
                     <span>e</span>
                   </span>
                 ) : (
-                  (course.price as number).toLocaleString() + " đ"
+                  <p className="flex xs:min-w-[75px]">
+                    {(course.price as number).toLocaleString() + " đ"}
+                  </p>
                 )}
               </div>
             </div>

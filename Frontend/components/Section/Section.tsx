@@ -9,12 +9,13 @@ import { Action, Constant } from "@/utils/resources";
 import { useLectureHooks } from "@/redux/hooks/courseHooks/lectureHooks";
 import ActionButtons from "../Lecture/ActionButtons";
 import CreateTitle from "../Lecture/CreateTitle";
+import { useSectionHooks } from "@/redux/hooks/courseHooks/sectionHooks";
 
 interface SectionProps {
   section: Section;
   index: number;
   attributes?: any;
-  listeners?: any
+  listeners?: any;
 }
 
 function SectionComponent(props: SectionProps) {
@@ -25,7 +26,9 @@ function SectionComponent(props: SectionProps) {
   const [isUpdateListLecture, setUpdateListLecture] = useState(false);
   const [isCreatedNewLecture, setNewCreatedLecture] = useState(false);
   const [isEdit, setEdit] = useState(false);
+  const [isDelete, setDelete] = useState(false);
   const { handleListUpdateLecture } = useLectureHooks();
+  const { handleUpdateSection } = useSectionHooks();
 
   const handleOpenOptionsAddLecture = (isOpen: boolean) => {
     setNewCreatedLecture(isOpen);
@@ -37,6 +40,15 @@ function SectionComponent(props: SectionProps) {
       setUpdateListLecture(false);
     }
   }, [isUpdateListLecture]);
+
+  useEffect(() => {
+    if (isDelete) {
+      const updatedSection = { ...section, lectures: [] };
+      updatedSection.ordinalNumber = -1;
+      handleUpdateSection(updatedSection);
+      setDelete(false);
+    }
+  }, [isDelete]);
 
   return (
     <div
@@ -56,7 +68,13 @@ function SectionComponent(props: SectionProps) {
             <strong className="w-max"> {"Chương " + index}: </strong>
             {section.name}
           </div>
-          <ActionButtons handleEdit={setEdit} key={section.id} attributes={attributes} listeners={listeners}/>
+          <ActionButtons
+            handleEdit={setEdit}
+            key={section.id}
+            attributes={attributes}
+            listeners={listeners}
+            handleDelete={setDelete}
+          />
         </div>
       )}
 

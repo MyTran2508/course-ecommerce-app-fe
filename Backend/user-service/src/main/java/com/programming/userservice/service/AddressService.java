@@ -1,7 +1,5 @@
 package com.programming.userservice.service;
 
-import com.main.progamming.common.error.exception.ResourceNotFoundException;
-import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.programming.userservice.domain.dto.DistrictDto;

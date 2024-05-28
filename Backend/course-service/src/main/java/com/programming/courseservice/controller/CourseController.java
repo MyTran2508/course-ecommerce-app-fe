@@ -10,8 +10,8 @@ import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.service.CourseService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +42,6 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     public DataResponse<String> add(CourseDto objectDTO) {
         return super.add(objectDTO);
     }
@@ -67,7 +66,6 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')")
     public DataResponse<CourseDto> update(CourseDto objectDTO, String id) {
         return super.update(objectDTO, id);
     }
@@ -136,5 +134,13 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @GetMapping("/sales-same-period-by-topics")
     public DataResponse<List<SalesByTopicSamePeriodResponse>> getSalesSamePeriodByTopics(@RequestParam("targetYear") Integer targetYear) {
         return courseService.getSalesSamePeriodByTopics(targetYear);
+    }
+
+    @GetMapping("/get-course-search")
+    public ListResponse<CourseDto> getCourseSearch(
+            @Param("type-search") Integer typeSearch,
+            @Param("keyword") String keyword
+    ) {
+        return courseService.getCourseSearch(typeSearch, keyword);
     }
 }

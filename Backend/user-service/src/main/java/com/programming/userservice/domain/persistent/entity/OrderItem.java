@@ -18,7 +18,9 @@ import lombok.ToString;
         name = "order_items"
 )
 public class OrderItem extends BaseModel {
+
     @Column(name = "course_id")
     private String courseId;
+
     private Double price;
 }

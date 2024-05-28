@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @Entity
@@ -29,7 +28,13 @@ public class ExQuiz extends BaseModel {
     @Column(name = "limit_time")
     private Long limitTime;
 
-    @OneToMany(targetEntity = Question.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name = "max_attempt_number")
+    private Integer maxAttemptNumber;
+
+    @Column(name = "required_score")
+    private Integer requiredScore;
+
+    @OneToMany(targetEntity = Question.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_question_ex_quiz_id"))
     @OrderBy("ordinalNumber ASC")
     private List<Question> questions;

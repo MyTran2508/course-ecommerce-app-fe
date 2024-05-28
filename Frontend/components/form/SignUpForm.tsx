@@ -62,6 +62,7 @@ function SignUpForm() {
   const inputsOTP = useRef<HTMLInputElement[]>(Array(length).fill(null));
   const [registerUser, registerUserResult] = useRegisterUserMutation();
   const [validationOTP, validationOTPResult] = useVerifyRegisterOTPMutation();
+  const [isHiddenPolicy, setHiddenPolicy] = useState(false);
 
   const handleRegister = async (
     newUser: Omit<User, "id" | "photos" | "roles">
@@ -186,34 +187,37 @@ function SignUpForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-1/2 h-4/5 xs:h-4/6 xs:w-4/5 min-h-[470px] bg-gray-100 rounded-3xl xl:flex"
+        className="w-full h-full xs:h-4/6 xs:w-4/5 min-h-[470px] bg-white xl:flex sign-up-form"
       >
-        <div className="h-1/2 p-5 my-1 w-full lg:w-1/2 2xs:text-[10px] xl:text-xs ">
-          <div className="font-mono mb-2 flex-center flex-col ">
-            <div className="text-xl mb-2 "> Đăng Ký</div>
-            <p>Tạo Tài Khoản Một Cách Dễ Dàng!!</p>
+        <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16">
+          <div className="font-mono mb-2 flex-center flex-col logo-login-form ">
+            <div>
+              <img
+                src="/mediafire-logo-transparent.png"
+                className="w-80 mb-12"
+              />
+            </div>
           </div>
           {isSendOTP === false ? (
             <>
               {changPage === false ? (
-                <div className="mb-2">
+                <div className="mb-2 w-4/5 flex flex-col justify-center items-center m-auto">
                   <FormField
                     key={"username"}
                     control={form.control}
                     name="username"
                     render={({ field }) => (
-                      <FormItem className="mb-1 ">
-                        <FormLabel className="text-black xl:text-xs ">
+                      <FormItem className="mb-3 w-full ">
+                        <FormLabel className="text-back font-medium">
                           Tên Tài Khoản
                         </FormLabel>
                         <FormControl>
                           <Input
                             className={
                               isUserExisted
-                                ? "text-red xl:text-xs h-7 border-red-600 border-spacing-10"
-                                : "text-black xl:text-xs h-7"
+                                ? "text-red border-spacing-10 h-11 text-lg border-black"
+                                : "text-black h-11 text-lg border-black"
                             }
-                            placeholder="username"
                             {...field}
                           ></Input>
                         </FormControl>
@@ -226,14 +230,13 @@ function SignUpForm() {
                     control={form.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem className="mb-1 ">
-                        <FormLabel className="text-black xl:text-xs ">
+                      <FormItem className="mb-3 w-full">
+                        <FormLabel className="text-back font-medium">
                           Email
                         </FormLabel>
                         <FormControl>
                           <Input
-                            className="text-black xl:text-xs h-7"
-                            placeholder="email"
+                            className="text-black xl:text-xs h-11 text-lg border-black"
                             {...field}
                           ></Input>
                         </FormControl>
@@ -246,13 +249,13 @@ function SignUpForm() {
                     control={form.control}
                     name="password"
                     render={({ field }) => (
-                      <FormItem className="mb-1 ">
-                        <FormLabel className="text-black xl:text-xs">
+                      <FormItem className="mb-3 w-full">
+                        <FormLabel className="text-back font-medium">
                           Mật Khẩu
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <div className="absolute text-xl right-1 cursor-pointer mt-1">
+                            <div className="absolute text-xl right-1 cursor-pointer mt-2">
                               {openEye === false ? (
                                 <AiOutlineEyeInvisible onClick={toggle} />
                               ) : (
@@ -260,9 +263,8 @@ function SignUpForm() {
                               )}
                             </div>
                             <Input
-                              className="text-black xl:text-xs h-7"
+                              className="h-11 text-lg border-black"
                               type={openEye === false ? "password" : "text"}
-                              placeholder="password"
                               {...field}
                             />
                           </div>
@@ -276,15 +278,14 @@ function SignUpForm() {
                     control={form.control}
                     name="re_password"
                     render={({ field }) => (
-                      <FormItem className="mb-2">
-                        <FormLabel className="text-black xl:text-xs h-7">
+                      <FormItem className="mb-3 w-full">
+                        <FormLabel className="text-back font-medium">
                           Nhập Lại Mật Khẩu
                         </FormLabel>
                         <FormControl>
                           <Input
-                            className="text-black xl:text-xs h-7"
+                            className="h-11 text-lg border-black"
                             type={openEye === false ? "password" : "text"}
-                            placeholder="password"
                             {...field}
                           />
                         </FormControl>
@@ -292,14 +293,30 @@ function SignUpForm() {
                       </FormItem>
                     )}
                   />
-                  <div className="text-[12px] mt-2 flex justify-end xs:text-[10px]">
+                  <div className="flex gap-3 m-2 items-center justify-center w-3/5">
+                    <hr className="border-gray-400 flex-1" />
+                    <p className="text-center w-auto">OR</p>
+                    <hr className="border-gray-400 flex-1" />
+                  </div>
+                  <div
+                    className="text-[16px] font-medium mt-5 text-main-colors flex justify-end xs:text-[10px]"
+                    onClick={() => setHiddenPolicy(true)}
+                  >
                     <CustomButton
-                      title="Next"
+                      title="Next to"
                       type="summit"
-                      containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
+                      containerStyles="xs:text-[16px] py-2 px-6 bg-white border-blue-800 hover:scale-110 duration-300 btn-next-to"
                       handleClick={() => handleNext(form.getValues())}
                     />
                   </div>
+                  {!isHiddenPolicy && (
+                    <div id="main-footer-signup">
+                      <p>Copyright &copy; 2024, All Rights Reserved</p>
+                      <div>
+                        <a>terms of use</a> | <a>Privacy Policy</a>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div>
@@ -440,8 +457,15 @@ function SignUpForm() {
             </div>
           )}
         </div>
-        <div className="w-1/2 lg:block hidden">
-          <div className="bg-signup bg-center bg-cover h-full rounded-r-3xl w-full"></div>
+        <div className="w-3/5 lg:block hidden">
+          <div className="bg-signup bg-center bg-cover h-full w-full showcase-content-signup">
+            <div className="showcase-content-signup-text">
+              Every new friend in a <br /> new adventure. <br />
+              <p className="showcase-content-signup-text-second">
+                let's get connected
+              </p>
+            </div>
+          </div>
         </div>
       </form>
     </Form>

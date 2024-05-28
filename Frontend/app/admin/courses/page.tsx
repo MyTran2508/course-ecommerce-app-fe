@@ -10,16 +10,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -35,15 +27,14 @@ import {
   useGetAllCourseQuery,
 } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
-import { SearchRequest } from "@/types/request.type";
+import { SearchConditionDto, SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateCourse } from "@/redux/features/courseSlice";
+import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
+import { Action } from "@/utils/resources";
 
 function CoursesAdmin() {
   const dispatch = useAppDispatch();
-  const searchStatusCourse = useAppSelector(
-    (state) => state.courseReducer.searchStatusCourse
-  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -51,10 +42,16 @@ function CoursesAdmin() {
   const [courseList, setCourseList] = useState<Course[]>([]);
   const [totalPage, setTotalPage] = useState(0);
   const [getCourseByKeyword] = useFilterCourseAdminMutation();
-  const [searchKeyword, setSearchKeyword] = useState("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: ["", null, null, null, true],
-    sortBy: "",
+    keyword: [],
+    searchChooseList: [
+      {
+        keyword: "True",
+        keywordType: 5,
+      },
+    ],
+    searchKeywordDtoList: [],
+    sortBy: "created",
     isDecrease: true,
     pageIndex: 0,
     pageSize: 10,
@@ -71,22 +68,6 @@ function CoursesAdmin() {
         setTotalPage(fulfilled.totalPages);
       });
   };
-  const handleSearch = () => {
-    setSearchQuery((prevSearchQuery) => ({
-      ...prevSearchQuery,
-      keyword: [
-        searchKeyword,
-        null,
-        searchStatusCourse.isApproved,
-        searchStatusCourse.isAwaitingApproval,
-        true,
-      ],
-    }));
-  };
-
-  useEffect(() => {
-    getCourseList(searchQuery);
-  }, []);
 
   useEffect(() => {
     getCourseList(searchQuery);
@@ -98,10 +79,6 @@ function CoursesAdmin() {
       dispatch(updateCourse());
     }
   }, [isUpdateCourse]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchStatusCourse]);
 
   const table = useReactTable({
     data: courseList,
@@ -125,44 +102,12 @@ function CoursesAdmin() {
   return (
     <div className="w-full px-10">
       <div className="flex items-center py-4">
-        <div className="flex gap-3">
-          <Input
-            placeholder="Nhập tên khóa học"
-            onChange={(event) => {
-              setSearchKeyword(event.target.value);
-            }}
-            className="max-w-sm "
+        <div className="flex gap-2 w-[600px]">
+          <SearchBarManufacturer
+            action={Action.SEARCH_COURSE_ADMIN}
+            setSearchQuery={setSearchQuery}
           />
-          <Button variant="outline" className="ml-auto" onClick={handleSearch}>
-            Search
-          </Button>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
       <div className="rounded-md border">
         <Table>

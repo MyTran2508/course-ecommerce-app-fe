@@ -16,8 +16,7 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { FiLogIn } from "react-icons/fi";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import CustomButton from "../CustomButton";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLoginUserMutation } from "@/redux/services/authApi";
 import { LoginRequest } from "@/types/request.type";
@@ -27,10 +26,13 @@ import { setCredential } from "@/redux/features/authSlice";
 import showToast from "@/utils/showToast";
 import { ToastMessage, ToastStatus } from "@/utils/resources";
 import { formLoginSchema } from "@/utils/formSchema";
+import "../../components/style/loginForm.scss";
 
 function LoginForm() {
   const formSchema = formLoginSchema;
   const route = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const [openEye, setOpenEye] = useState(false);
   const [loginUser, loginUserResults] = useLoginUserMutation();
   const dispatch = useAppDispatch();
@@ -56,8 +58,11 @@ function LoginForm() {
       };
       dispatch(setCredential(auth));
       showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
-
-      route.push("/");
+      if (redirect) {
+        route.push(redirect);
+      } else {
+        route.push("/");
+      }
     } else {
       // if (dataResult?.statusCode === 403) {
       //   showToast(ToastStatus.ERROR, ToastMessage.ACCESS_DENY);
@@ -85,25 +90,29 @@ function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-1/2 h-4/5 xs:h-3/5 xs:w-4/5 min-h-[400px] bg-gray-100 rounded-3xl xl:flex"
+        className="xs:h-3/5 xs:w-4/5 w-full h-full xl:flex login-form"
       >
-        <div className="h-1/2 p-5 my-1 w-full lg:w-1/2 2xs:text-[10px] xl:text-sm ">
-          <div className="font-mono mb-2 flex-center flex-col ">
-            <div className="text-3xl mb-2 "> Đăng Nhập</div>
-            <p>Nếu bạn đã có tài khoản</p>
-            <p> Vui lòng đăng nhập</p>
+        <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16 left-login-form">
+          <div className="font-mono mb-2 flex-center flex-col logo-login-form ">
+            <div>
+              <img
+                src="/mediafire-logo-transparent.png"
+                className="w-80 mb-12"
+              />
+            </div>
           </div>
-          <div className="mb-2 ">
+          <div className="mb-2 w-4/5 flex flex-col justify-center items-center m-auto">
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel className="text-black">Tên Tài Khoản</FormLabel>
+                <FormItem className="mb-3 w-full">
+                  <FormLabel className="text-back font-medium">
+                    Tên Tài Khoản
+                  </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="username"
-                      className="h-8"
+                      className="h-11 text-lg border-black"
                       {...field}
                     ></Input>
                   </FormControl>
@@ -115,11 +124,13 @@ function LoginForm() {
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-black">Mật Khẩu</FormLabel>
+                <FormItem className="w-full mt-2">
+                  <FormLabel className="text-back font-medium">
+                    Mật Khẩu
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <div className="absolute text-2xl right-1 cursor-pointer mt-1">
+                      <div className="absolute text-2xl right-1 cursor-pointer mt-2">
                         {openEye === false ? (
                           <AiOutlineEyeInvisible onClick={toggle} />
                         ) : (
@@ -128,8 +139,7 @@ function LoginForm() {
                       </div>
                       <Input
                         type={openEye === false ? "password" : "text"}
-                        placeholder="password"
-                        className="h-8"
+                        className="h-11 text-lg border-black"
                         {...field}
                       />
                     </div>
@@ -138,44 +148,59 @@ function LoginForm() {
                 </FormItem>
               )}
             />
+
+            <Button
+              type="submit"
+              className="w-full hover:scale-110 transition duration-700 gap-2 mt-6 btn-login-form"
+            >
+              <FiLogIn />
+              Đăng Nhập
+            </Button>
             <Link
               href={"forget-password"}
-              className="hover:cursor-pointer text-[10px] underline flex-end"
+              className="hover:cursor-pointer text-back font-medium text-sm mt-4"
             >
               Quên mật khẩu
             </Link>
-          </div>
-          <Button
-            type="submit"
-            className="w-full hover:scale-110 transition duration-700 gap-2 mt-1"
-          >
-            <FiLogIn />
-            Đăng Nhập
-          </Button>
-          <div className="grid grid-cols-3 gap-3 m-2 items-center">
-            <hr className="border-gray-400" />
-            <h3 className="text-center">OR</h3>
-            <hr className="border-gray-400" />
-          </div>
-          {/* <CustomButton
+            <div className="flex gap-3 m-2 items-center justify-center w-3/5">
+              <hr className="border-gray-400 flex-1" />
+              <p className="text-center w-auto">OR</p>
+              <hr className="border-gray-400 flex-1" />
+            </div>
+            {/* <CustomButton
             title="Login with Google"
             icon="FcGoogle"
             iconStyles="mr-2 xl:text-2xl "
             containerStyles=" xs:text-[10px] bg-white border py-1 w-full rounded-xl mt-2 flex justify-center items-center text-sm font-bold hover:scale-110 duration-300 "
           /> */}
-          <div className="text-[12px] mt-2 flex-between xs:text-[10px]">
-            <p>Bạn chưa có tài khoản?</p>
-            <Link href={"/signup"}>
-              <CustomButton
-                title="Đăng Ký"
-                type="button"
-                containerStyles="xs:text-[10px] py-1 px-4 bg-white border rounded-xl hover:scale-110 duration-300"
-              />
-            </Link>
+            <div className="text-[12px] mt-2 flex-between xs:text-[10px]">
+              <Link href={"/signup"}>
+                <button className="hover:scale-110 transition duration-700 secondary-btn btn-register">
+                  Đăng ký tài khoản mới
+                </button>
+              </Link>
+            </div>
+            {/* <div id="main-footer"> */}
+            {/* <footer id="main-footer">
+              <p>Copyright &copy; 2024, All Rights Reserved</p>
+              <div>
+                <a>terms of use</a> | <a>Privacy Policy</a>
+              </div>
+            </div>
+            </footer> */}
           </div>
         </div>
-        <div className="w-1/2 lg:block hidden">
-          <div className="bg-login bg-center bg-cover h-full rounded-r-3xl w-full"></div>
+        <div className="w-3/5 lg:block hidden right-login-form">
+          <div id="showcase">
+            <div className="showcase-content">
+              <h1 className="showcase-text">
+                {"Let's create the future"} <strong>together</strong>
+              </h1>
+              <a href="#" className="secondary-btn">
+                Start a free trial with us
+              </a>
+            </div>
+          </div>
         </div>
       </form>
     </Form>

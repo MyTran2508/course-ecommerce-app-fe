@@ -69,6 +69,19 @@ export const contentApi = createApi({
         { type: "Content" as const, id: "Content" },
       ],
     }),
+    updateListSection: builder.mutation<
+      DataResponse,
+      { id: string; data: Section[] }
+    >({
+      query: ({ id, data }) => {
+        return {
+          url: `/api/courses/section/update-list/${id}`,
+          method: "PUT",
+          body: data,
+        };
+      },
+      // invalidatesTags: () => [{type: "Content" as const, id: "Lecture"}]
+    }),
     updateSectionById: builder.mutation<DataResponse, Section>({
       query: (data: Section) => {
         return {
@@ -114,7 +127,9 @@ export const contentApi = createApi({
           body: data,
         };
       },
-      // invalidatesTags: (result, error, arg) => [{type: "Content" as const, id: arg.id}]
+      invalidatesTags: (result, error, arg) => [
+        { type: "Content" as const, id: arg.id },
+      ],
     }),
     addExQuiz: builder.mutation<DataResponse, { id: string; data: Lecture }>({
       query: ({ id, data }) => {
@@ -141,4 +156,5 @@ export const {
   useUpdateListLectureMutation,
   useUpdateLectureMutation,
   useAddExQuizMutation,
+  useUpdateListSectionMutation,
 } = contentApi;

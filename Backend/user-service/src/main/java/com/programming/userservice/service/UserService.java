@@ -1,5 +1,6 @@
 package com.programming.userservice.service;
 
+import com.main.progamming.common.dto.SearchConditionDto;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataAlreadyExistException;
 import com.main.progamming.common.error.exception.DataNotFoundException;
@@ -9,8 +10,10 @@ import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.main.progamming.common.util.CommonConstrant;
 import com.programming.userservice.domain.dto.*;
 import com.programming.userservice.domain.persistent.entity.Role;
 import com.programming.userservice.domain.persistent.enumrate.RoleUser;
@@ -21,6 +24,7 @@ import com.programming.userservice.repository.UserRepository;
 import com.programming.userservice.utilities.OtpUtil;
 import com.programming.userservice.utilities.communication.CourseAPI;
 import com.programming.userservice.utilities.constant.TypeMessage;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +37,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static javax.swing.UIManager.put;
 
 @Service
 @RequiredArgsConstructor
@@ -66,9 +73,47 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
 
     @Override
     protected Page<UserDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        String name = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
 
-        return userRepository.searchUser(name, pageable)
+        List<String> usernameList = searchKeywordDto.getSearchChooseList() == null ? new ArrayList<>() :
+                searchKeywordDto.getSearchChooseList().stream()
+                        .filter(keyword -> keyword.getKeywordType() == 0)
+                        .map(keyword -> keyword.getKeyword())
+                        .toList();
+
+        boolean isEmptyUsernameList = usernameList.isEmpty();
+        Map<Integer, String> searchKeywordDtoMap = new HashMap<>() {{
+                    put(0, null);
+                    put(1, null);
+                    put(2, null);
+                    put(3, null);
+                    put(4, null);
+        }};
+
+        Boolean isNullAllSearchKeywordDto = true;
+        if (searchKeywordDto.getSearchKeywordDtoList() != null) {
+            for (SearchConditionDto searchConditionDto: searchKeywordDto.getSearchKeywordDtoList()) {
+                if (searchConditionDto.getKeywordType() == 0) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(0, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 1) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(1, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 2) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(2, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 3) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(3, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 4) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(4, searchConditionDto.getKeyword());
+                }
+            }
+        }
+
+        return userRepository.searchUserByCondition(isEmptyUsernameList, isNullAllSearchKeywordDto, usernameList,
+                        searchKeywordDtoMap.get(0), searchKeywordDtoMap.get(1),
+                        searchKeywordDtoMap.get(2), searchKeywordDtoMap.get(3), pageable)
                 .map(user -> userMapper.entityToDto(user));
     }
 
@@ -80,6 +125,45 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
     public DataResponse<UserDto> getUserByUsername(String username) {
         UserDto userDto = userMapper.entityToDto(userRepository.findByUserName(username));
         return ResponseMapper.toDataResponseSuccess(userDto);
+    }
+
+//    @Override
+//    public DataResponse<String> create(UserDto userDto) {
+//
+//        User user = userMapper.dtoToEntity(userDto);
+//        List<Role> roles = user.getRoles();
+//
+//        user.setRoles(new ArrayList<>());
+//        roles.stream().forEach(role -> user.addRole(role));
+//
+//        User savedUser = userRepository.save(user);
+//
+//        return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS + " ID: " + savedUser.getId());
+//    }
+
+    @Override
+    @Transactional
+    public DataResponse<UserDto> update(String id, UserDto userDto) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("User doesn't exists"));
+
+        List<Role> roles = userMapper.dtoToEntity(userDto).getRoles();
+        userMapper.dtoToEntity(userDto, user);
+        user.setId(id);
+
+        user.removeRole();
+        userRepository.save(user);
+
+        user.setRoles(new ArrayList<>());
+        if (roles != null && roles.size() > 0) {
+            roles.stream()
+                    .forEach(role -> user.addRole(role));
+        }
+
+        User savedUser2 = userRepository.save(user);
+
+        return ResponseMapper.toDataResponseSuccess(userMapper.entityToDto(savedUser2));
     }
 
     public DataResponse<String> generateToken(String username) {
@@ -172,11 +256,6 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         return ResponseMapper.toDataResponseSuccess("Update password successfully");
     }
 
-    @Override
-    public DataResponse<UserDto> update(String id, UserDto dto) {
-        return super.update(id, dto);
-    }
-
     public ResponseEntity<AvatarDto> getAvatar(String username) {
         User user = userRepository.findByUserName(username);
         if(user == null) {
@@ -263,5 +342,38 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         statisticsMap.put("totalApprovedCourse", Double.valueOf(response.getData()));
 
         return ResponseMapper.toDataResponseSuccess(statisticsMap);
+    }
+
+    public ListResponse<UserDto> getSearchUsers(Integer typeSearch, String keyword) {
+
+        List<User> users = userRepository.getSearchUsers(typeSearch, keyword);
+
+        List<UserDto> userDtoList = users.stream()
+                .map(user -> {
+                    byte[] avatar = user.getAvatar();
+                    UserDto userDto = userMapper.entityToDto(user);
+                    if (avatar != null) {
+                        String imageBase64 = Base64.getEncoder().encodeToString(avatar);
+                        userDto.setPhotos(imageBase64);
+                    }
+                    userDto.setRoles(null);
+                    userDto.setAddresses(null);
+                    return userDto;
+                })
+                .limit(5)
+                .toList();
+
+        return ResponseMapper.toListResponseSuccess(userDtoList);
+    }
+
+    public DataResponse<String> setUserIsAuthor(String username) {
+        User user = userRepository.findByUserName(username);
+        if (user == null) {
+            throw new DataNotFoundException("User doesn't exists");
+        }
+        user.setIsAuthor(true);
+
+        userRepository.save(user);
+        return ResponseMapper.toDataResponseSuccess("Set user is author successfully");
     }
 }

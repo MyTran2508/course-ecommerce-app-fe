@@ -27,10 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -92,9 +89,11 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
 
     public ResponseEntity<ByteArrayResource> loadFile(String path) {
         byte[] data = storageS3Service.downloadFile(path);
-        ByteArrayResource resource = new ByteArrayResource(data);
+        byte[] dataBase64 = Base64.getEncoder().encode(data);
+        ByteArrayResource resource = new ByteArrayResource(dataBase64);
+        
         return ResponseEntity.ok()
-                .contentLength(data.length)
+                .contentLength(dataBase64.length)
                 .header("Content-type", "application/octet-stream")
                 .header("Content-disposition", "attachment; fileName=\"" + path + "\"")
                 .body(resource);

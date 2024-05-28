@@ -1,15 +1,9 @@
 package com.programming.courseservice.repository;
 
-import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.repository.BaseRepository;
-import com.programming.courseservice.domain.dto.CourseDto;
 import com.programming.courseservice.domain.persistent.entity.Course;
-import com.programming.courseservice.domain.persistent.entity.Language;
-import com.programming.courseservice.domain.persistent.entity.Level;
-import com.programming.courseservice.domain.persistent.entity.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -47,16 +41,22 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND c.language.id IN :languageIds
                 AND c.topic.id IN :topicIds
                 AND ((:isFree = false AND c.price > 0) OR (:isFree = true AND c.price = 0) OR (:isFree IS NULL))
-                AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
-                AND (c.averageRating >= :minRatingValue OR :ratingValue IS NULL)
+                AND (c.name LIKE %:keywordName% OR :keywordName IS NULL)
+                AND (:isEmptyKeywordAuthors = true OR c.authorName IN :keywordAuthors)
+                AND (c.subTitle LIKE %:keywordSubTitle% OR :keywordSubTitle IS NULL)
+                AND (c.averageRating >= :minRatingValue OR :minRatingValue IS NULL)
                 AND c.isApproved = true
+                ORDER BY ((c.totalRatings * 0.6) + (c.averageRating * 0.4)) DESC
             """)
     Page<Course> filterCourse(@Param("levelIds") List<String> levelIds,
                               @Param("languageIds") List<String> languageIds,
                               @Param("topicIds") List<String> topicIds,
                               @Param("isFree") Boolean isFree,
                               @Param("minRatingValue") Float minRatingValue,
-                              @Param("keyword") String keyword,
+                              @Param("keywordName") String keywordName,
+                              @Param("isEmptyKeywordAuthors") boolean isEmptyKeywordAuthors,
+                              @Param("keywordAuthors") List<String> keywordAuthors,
+                              @Param("keywordSubTitle") String keywordSubTitle,
                               Pageable pageable);
 
     @Query("""
@@ -66,18 +66,24 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND c.language.id IN :languageIds
                 AND c.topic.id IN :topicIds
                 AND ((:isFree = false AND c.price > 0) OR (:isFree = true AND c.price = 0) OR (:isFree IS NULL))
-                AND (c.name LIKE %:keyword% OR c.subTitle LIKE %:keyword% OR :keyword IS NULL)
-                AND (c.averageRating >= :minRatingValue OR :ratingValue IS NULL)
+                AND (c.name LIKE %:keywordName% OR :keywordName IS NULL)
+                AND (:isEmptyKeywordAuthors = true OR c.authorName IN :keywordAuthors)
+                AND (c.subTitle LIKE %:keywordSubTitle% OR :keywordSubTitle IS NULL)
+                AND (c.averageRating >= :minRatingValue OR :minRatingValue IS NULL)
+                AND c.isApproved = true
                 GROUP BY c.id
                 ORDER BY COUNT(c.id) DESC
             """)
     Page<Course> filterCoursePopular(@Param("levelIds") List<String> levelIds,
-                              @Param("languageIds") List<String> languageIds,
-                              @Param("topicIds") List<String> topicIds,
-                              @Param("isFree") Boolean isFree,
-                              @Param("keyword") String keyword,
-                              @Param("minRatingValue") Float minRatingValue,
-                              Pageable pageable);
+                                      @Param("languageIds") List<String> languageIds,
+                                      @Param("topicIds") List<String> topicIds,
+                                      @Param("isFree") Boolean isFree,
+                                      @Param("minRatingValue") Float minRatingValue,
+                                      @Param("keywordName") String keywordName,
+                                      @Param("isEmptyKeywordAuthors") Boolean isEmptyKeywordAuthors,
+                                      @Param("keywordAuthor") List<String> keywordAuthors,
+                                      @Param("keywordSubTitle") String keywordSubTitle,
+                                      Pageable pageable);
     @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id and cg.course.isApproved = true")
     Page<Course> getCourseAccessByUserId(@Param("userId") String userId, Pageable pageable);
 
@@ -88,14 +94,46 @@ public interface CourseRepository extends BaseRepository<Course> {
 
     @Query("""
                 SELECT c FROM Course c
-                WHERE (c.name LIKE %:name% OR c.subTitle LIKE %:name% OR :name IS NULL)
-                AND (c.creator = :creator OR :creator IS NULL)
+                WHERE (
+                    (:isEmptySearchChooseList = true AND :isNullAllSearchKeywordDto = true) OR
+                    ((
+                        (c.authorName IN :authorNameList OR c.subTitle IN :subTitleList OR c.name IN :nameList)
+                    )
+                    OR (
+                        (:isNullAllSearchKeywordDto = false) AND
+                        (:likeName IS NULL OR c.name LIKE %:likeName%) AND
+                        (:likeAuthorName IS NULL OR c.authorName LIKE %:likeAuthorName%) AND
+                        (:likeSubTitle IS NULL OR c.subTitle LIKE %:likeSubTitle%)
+                    ))
+                )
+                AND (
+                    (:price IS NULL OR c.price = :price)
+                    AND (
+                        (:minPrice IS NULL OR c.price >= :minPrice)
+                        AND (:maxPrice IS NULL OR c.price <= :maxPrice)
+                    )
+                )
                 AND (c.isApproved = :isApproved or :isApproved IS NULL)
                 AND (c.isAwaitingApproval = :isAwaitingApproval OR :isAwaitingApproval IS NULL)
                 AND (c.isCompletedContent = :isCompletedContent OR :isCompletedContent IS NULL)
             """)
-    Page<Course> searchCourseOfAdmin(String name, String creator, Boolean isApproved,
-                                     Boolean isAwaitingApproval, Boolean isCompletedContent, Pageable pageable);
+    Page<Course> searchCourseOfAdmin(
+            @Param("isEmptySearchChooseList") boolean isEmptySearchChooseList,
+            @Param("nameList") List<String> nameList,
+            @Param("authorNameList") List<String> authorNameList,
+            @Param("subTitleList") List<String> subTitleList,
+            @Param("price") Double price,
+            @Param("minPrice") Double minPrice,
+            @Param("maxPrice") Double maxPrice,
+            @Param("isNullAllSearchKeywordDto") boolean isNullAllSearchKeywordDto,
+            @Param("likeName") String likeName,
+            @Param("likeAuthorName") String likeAuthorName,
+            @Param("likeSubTitle") String likeSubTitle,
+            @Param("isApproved") Boolean isApproved,
+            @Param("isAwaitingApproval") Boolean isAwaitingApproval,
+            @Param("isCompletedContent") Boolean isCompletedContent,
+            Pageable pageable
+    );
 
     @Query(value = "SELECT COUNT(*) FROM course WHERE YEAR(FROM_UNIXTIME(created / 1000)) = :targetYear " +
             "AND (MONTH(FROM_UNIXTIME(created / 1000)) = :targetMonth OR :targetMonth IS NULL) " +
@@ -107,4 +145,13 @@ public interface CourseRepository extends BaseRepository<Course> {
             "WHERE YEAR(FROM_UNIXTIME(cp.created / 1000)) = :targetYear " +
             "GROUP BY c.topic_id", nativeQuery = true)
     List<Object[]> getMonthlySalesByTopics(@Param("targetYear") int targetYear);
+
+    @Query(value = """
+                SELECT * FROM course
+                WHERE (:typeSearch != 0 OR name LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 2 OR sub_title LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 3 OR sub_title LIKE %:keyword% OR name LIKE %:keyword% OR :keyword IS NULL)
+                AND is_approved = true
+            """, nativeQuery = true)
+    List<Course> getCourseSearch(@Param("typeSearch") Integer typeSearch, @Param("keyword") String keyword);
 }

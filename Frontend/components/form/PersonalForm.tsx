@@ -34,6 +34,9 @@ import showToast from "@/utils/showToast";
 import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
+import { AvatarResponse } from "@/types/response.type";
+import { Roles } from "@/types/roles.type";
+import { useGetAllRoleQuery } from "@/redux/services/roleApi";
 
 const formSchema = formPersonalSchema;
 
@@ -55,6 +58,25 @@ const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
   };
 };
 
+const role: Roles = {
+  id: "21bebc5e-2138-43bf-a635-b7df57b6385e",
+  name: "ROLE_MANAGER1",
+  description: "Role quản lý cấp 2",
+  roleDetails: [
+    {
+      canView: true,
+      canCreate: true,
+      canUpdate: false,
+      canRemove: false,
+      canStatistics: false,
+      module: {
+        id: 0,
+        moduleName: "USER",
+      },
+    },
+  ],
+};
+
 function PersonalForm(props: PersonalProps) {
   const { userInfor, isAdmin } = props;
   const dispatch = useAppDispatch();
@@ -65,7 +87,7 @@ function PersonalForm(props: PersonalProps) {
     handleSetDefaultValueFrom(userInfor)
   );
   const [file, setFile] = useState<File>();
-  const [currentAvatar, setCurrentAvatar] = useState();
+  const [currentAvatar, setCurrentAvatar] = useState<string>();
 
   const [updateAvatar] = useUploadImageMutation();
   const [updateInformation] = useUpdateUserMutation();
@@ -76,6 +98,8 @@ function PersonalForm(props: PersonalProps) {
   const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
     userInfor.username
   );
+  const { data: getAllRoles, isSuccess: getAllRolesSuccess } =
+    useGetAllRoleQuery();
 
   const handleImageError = (type: boolean) => {
     setImageError(type);
@@ -90,7 +114,7 @@ function PersonalForm(props: PersonalProps) {
   useEffect(() => {
     setDefaultValueFrom(handleSetDefaultValueFrom(userInfor));
     handleImageError(false);
-    setCurrentAvatar(avatarData);
+    setCurrentAvatar((avatarData as AvatarResponse)?.rawAvatar as string);
   }, [userInfor, avatarData]);
 
   const handleClickEdit = () => {
@@ -153,7 +177,6 @@ function PersonalForm(props: PersonalProps) {
       roles: [
         {
           id: values.role,
-          name: values.role,
         },
       ],
       addresses: [
@@ -170,7 +193,7 @@ function PersonalForm(props: PersonalProps) {
     <div>
       <Form {...form}>
         <form className="mt-5 mx-2">
-          <div className="flex flex-col  sticky top-[120px] bg-white">
+          <div className="flex flex-col  sticky top-[120px]">
             {!allowInput ? (
               <Fragment>
                 <div className="flex justify-end">
@@ -187,7 +210,7 @@ function PersonalForm(props: PersonalProps) {
               <Fragment>
                 <div className="flex gap-2 justify-end">
                   <Button
-                    className="text-orange-400 border border-orange-400  bg-white rounded-3xl hover:bg-white w-max"
+                    className="text-orange-400 border border-orange-400 rounded-3xl hover:bg-white w-max"
                     type="button"
                     onClick={form.handleSubmit(onSubmit)}
                   >
@@ -350,13 +373,24 @@ function PersonalForm(props: PersonalProps) {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value={Role.ADMIN}>
+                          {getAllRolesSuccess &&
+                            (getAllRoles.data as Roles[])?.map(
+                              (role, index) => (
+                                <SelectItem
+                                  value={role.id as string}
+                                  key={index}
+                                >
+                                  {role.name}
+                                </SelectItem>
+                              )
+                            )}
+                          {/* <SelectItem value={role.id as string}>
                             {Role.ADMIN}
                           </SelectItem>
                           <SelectItem value={Role.MANAGER}>
                             {Role.MANAGER}
                           </SelectItem>
-                          <SelectItem value={Role.USER}>{Role.USER}</SelectItem>
+                          <SelectItem value={Role.USER}>{Role.USER}</SelectItem> */}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

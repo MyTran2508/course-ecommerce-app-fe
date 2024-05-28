@@ -20,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class District {
+
     @Id
     @Column(length = 16)
     private String code;

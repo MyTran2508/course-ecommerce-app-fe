@@ -18,6 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ward {
+
     @Id
     @Column(length = 16)
     private String code;

@@ -18,6 +18,7 @@ const PDFViewer = (props: PDFViewerProps) => {
   const { fileBase64, setReadDocComplete, lectureUrl } = props;
   const [numPages, setNumPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  console.log(fileBase64, "fileBase64");
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);

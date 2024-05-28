@@ -1,11 +1,13 @@
 package com.programming.userservice.service;
 
+import com.main.progamming.common.dto.SearchConditionDto;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.model.BaseMapperImpl;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
+import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.userservice.domain.dto.*;
@@ -17,14 +19,13 @@ import com.programming.userservice.repository.UserRepository;
 import com.programming.userservice.utilities.communication.CourseAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -147,5 +148,46 @@ public class OrderService extends BaseServiceImpl<Order, OrderDto> {
 
     public Double getTotalRenevueByYearAndMonth(int targetYear, Integer targetMonth) {
         return orderRepository.getTotalRenevueByYearAndMonth(targetYear, targetMonth);
+    }
+
+    public ListResponse<OrderDto> searchOrderByCondition(SearchOrderDto searchOrderDto) {
+        Sort sortOrder = null;
+
+        if(searchOrderDto.getIsDecrease())
+            sortOrder = Sort.by(searchOrderDto.getSortBy()).descending();
+        else {
+            sortOrder = Sort.by(searchOrderDto.getSortBy()).ascending();
+        }
+
+        List<String> keywordUserList = searchOrderDto == null ? new ArrayList<>()
+                : searchOrderDto.getSearchChooseList()
+                        .stream().filter(searchConditionDto -> searchConditionDto.getKeywordType() == 0)
+                        .map(SearchConditionDto::getKeyword)
+                        .toList();
+
+        boolean isEmptyKeywordUserList = keywordUserList.isEmpty();
+
+        String likeUsername = searchOrderDto.getSearchKeywordDtoList().stream()
+                .filter(searchConditionDto -> searchConditionDto.getKeywordType() == 0)
+                .map(SearchConditionDto::getKeyword)
+                .findFirst().orElse(null);
+
+        Pageable pageable = PageRequest.of(searchOrderDto.getPageIndex(), searchOrderDto.getPageSize(), sortOrder);
+
+        Page<Order> orderPage = orderRepository.searchOrderByCondition(
+                isEmptyKeywordUserList,
+                keywordUserList,
+                likeUsername,
+                searchOrderDto.getMinPrice(),
+                searchOrderDto.getMaxPrice(),
+                searchOrderDto.getPrice(),
+                searchOrderDto.getStartDate(),
+                searchOrderDto.getEndDate(),
+                pageable
+        );
+
+        return ResponseMapper.toPagingResponseSuccess(
+                orderPage.map(order -> orderMapper.entityToDto(order))
+        );
     }
 }

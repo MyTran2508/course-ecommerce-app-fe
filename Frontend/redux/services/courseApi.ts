@@ -2,7 +2,12 @@ import { DataResponse, ListResponse } from "@/types/response.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithToken } from "../baseQuery";
 import { Course, CourseIssueReport } from "@/types/course.type";
-import { SearchCourseRequest, SearchRequest } from "@/types/request.type";
+import {
+  KeywordTypeSearchRequest,
+  SearchCourseRequest,
+  SearchRequest,
+} from "@/types/request.type";
+import { KeywordTypeSearchType } from "@/utils/data";
 
 export const courseApi = createApi({
   reducerPath: "courseApi",
@@ -212,6 +217,20 @@ export const courseApi = createApi({
         };
       },
     }),
+    getCourseSearch: builder.query<
+      ListResponse,
+      { typeSearch: string; keyword: string }
+    >({
+      query: ({ typeSearch, keyword }) => {
+        return {
+          url: `/api/courses/course/get-course-search`,
+          params: {
+            typeSearch,
+            keyword,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -237,4 +256,6 @@ export const {
   useGetTotalApprovedCourseMutation,
   useLazySalesSamePeriodByTopicsQuery,
   useLazySaleByTopicsQuery,
+  useLazyGetCourseSearchQuery,
+  useLazyGetCourseByIdQuery,
 } = courseApi;

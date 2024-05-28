@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag (
-        name = "Course Service - Category Controller",
-        description = "Category Controller Exposes Rest APIs for Course-Service"
-)
 @RestController
 @RequestMapping("/api/courses/categories")
 @RequiredArgsConstructor
@@ -35,14 +31,12 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<String> add(@Valid CategoryDto categoryDto) {
         return super.add(categoryDto);
     }
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> update(@Valid CategoryDto categoryDto, String id) {
         return super.update(categoryDto, id);
     }
@@ -66,7 +60,6 @@ public class CategoryController extends BaseApiImpl<Category, CategoryDto> {
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<CategoryDto> setRemoved(String id) {
         return super.setRemoved(id);
     }

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,10 +30,43 @@ public interface UserRepository extends BaseRepository<User> {
     void changePassword(String id, String newPassword);
 
     @Query("""
-                select u from User u where u.username LIKE %:keyword% or 
-                u.email LIKE %:keyword% OR :keyword IS NULL
+                SELECT u FROM User u
+                WHERE (
+                    (:isEmptyUsernameList = true AND :isNullAllSearchKeywordDto = true)
+                OR
+                    (u.username IN :usernameList
+                    OR (
+                        (:isNullAllSearchKeywordDto = false
+                        AND (u.username LIKE %:keywordUsername% OR :keywordUsername IS NULL)
+                        AND (u.email LIKE %:keywordEmail% OR :keywordEmail IS NULL)
+                        AND (CONCAT(u.firstName, ' ', u.lastName) LIKE %:keywordFullName% OR :keywordFullName IS NULL)
+                        AND (u.telephone LIKE %:keywordTelephone% OR :keywordTelephone IS NULL))
+                    ))
+                )
+                AND u.removed = false
             """)
-    Page<User> searchUser(@Param("keyword") String keyword, Pageable pageable);
+    Page<User> searchUserByCondition(
+            @Param("isEmptyUsernameList") boolean isEmptyUsernameList,
+            @Param("isNullAllSearchKeywordDto") Boolean isNullAllSearchKeywordDto,
+            @Param("usernameList") List<String> usernameList,
+            @Param("keywordUsername") String keywordUsername,
+            @Param("keywordEmail") String keywordEmail,
+            @Param("keywordFullName") String keywordFullName,
+            @Param("keywordTelephone") String keywordTelephone,
+            Pageable pageable
+    );
+
+    @Query("""
+                SELECT u FROM User u
+                WHERE (:typeSearch != 0 OR u.username LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 1 OR u.email LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 2 OR CONCAT(u.firstName, ' ', u.lastName) LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 3 OR u.telephone LIKE %:keyword% OR :keyword IS NULL)
+                AND (:typeSearch != 4 OR u.username LIKE %:keyword% OR u.email LIKE %:keyword% 
+                OR CONCAT(u.firstName, ' ', u.lastName) LIKE %:keyword% OR :keyword IS NULL)
+                AND u.removed = false
+           """)
+    List<User> getSearchUsers(@Param("typeSearch") Integer typeSearch, @Param("keyword") String keyword);
 
 
     /*

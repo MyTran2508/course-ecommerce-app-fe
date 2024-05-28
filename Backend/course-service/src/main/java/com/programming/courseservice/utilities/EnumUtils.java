@@ -6,6 +6,9 @@ import com.programming.courseservice.domain.persistent.enumrate.VideoDuration;
 public class EnumUtils {
 
     public static Float getMinRating(RatingsLevel rating) {
+        if (rating == null) {
+            return null;
+        }
         switch (rating) {
             case RATINGS_4_5_TO_UP:
                 return 4.5F;

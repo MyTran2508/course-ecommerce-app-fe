@@ -1,7 +1,7 @@
-import { DataResponse } from "@/types/response.type";
+import { DataResponse, ListResponse } from "@/types/response.type";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithToken } from "../baseQuery";
-import { Order } from "@/types/order.type";
+import { Order, SearchOrderDto } from "@/types/order.type";
 
 export const orderApi = createApi({
   reducerPath: "orderApi",
@@ -46,6 +46,15 @@ export const orderApi = createApi({
         };
       },
     }),
+    filterOrder: builder.mutation<ListResponse, SearchOrderDto>({
+      query: (data: any) => {
+        return {
+          url: `/api/users/order/filter-order`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -56,4 +65,5 @@ export const {
   useSalesSamePeriodQuery,
   useLazyMonthlySalesQuery,
   useLazySalesSamePeriodQuery,
+  useFilterOrderMutation,
 } = orderApi;

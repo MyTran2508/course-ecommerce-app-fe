@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "react-toastify";
@@ -9,16 +9,12 @@ import {
   ToastStatus,
 } from "@/utils/resources";
 import showToast from "@/utils/showToast";
-import {
-  useAddLectureMutation,
-  useAddSectionMutation,
-} from "@/redux/services/contentApi";
-import { Lecture, Question, Section } from "@/types/section.type";
+import { ExQuiz, Lecture, Question, Section } from "@/types/section.type";
 import { useSectionHooks } from "@/redux/hooks/courseHooks/sectionHooks";
 import { useLectureHooks } from "@/redux/hooks/courseHooks/lectureHooks";
 import { Action } from "@/utils/resources";
-import { access } from "fs";
-
+import TimePicker from "react-time-picker";
+import { convertLongToTime, convertToMilliseconds } from "@/utils/function";
 interface CreateTitleProps {
   handleIsOpen?: (isOpen: boolean) => void;
   type?: string;
@@ -30,13 +26,25 @@ interface CreateTitleProps {
 
 function CreateTitle(props: CreateTitleProps) {
   const { handleIsOpen, type, parentId, ordinalNumber, data, action } = props;
+  console.log(data, "data");
   const [name, setName] = useState<string>(data ? (data.name as string) : "");
-  const [limitTimeCompleteQuiz, setLimitTimeCompleteQuiz] = useState<number>(0);
+  const [limitTimeCompleteQuiz, setLimitTimeCompleteQuiz] = useState(
+    convertLongToTime(
+      (((data as Lecture)?.exQuiz as ExQuiz)?.limitTime as number) / 1000,
+      false,
+      false
+    ) || ""
+  );
+  const [maxAttemptNumber, setMaxAttemptNumber] = useState<number>(
+    (data as Lecture)?.exQuiz?.maxAttemptNumber || 0
+  );
+  const [requiredScore, setRequiredScore] = useState<number>(
+    (data as Lecture)?.exQuiz?.requiredScore || 0
+  );
   const { handleAddSection, handleUpdateSection } = useSectionHooks();
   const { handleAddLecture, handleUpdateLecture } = useLectureHooks();
 
   const handleSubmit = () => {
-    console.log(type, action);
     if (name.length > 0) {
       if (action === Action.CREATE) {
         if (type === Constant.SECTION) {
@@ -63,19 +71,26 @@ function CreateTitle(props: CreateTitleProps) {
           };
           handleAddLecture(parentId as string, newLecture);
         } else if (type === LectureType.QUIZ_TEST) {
+          if (!requiredScore || !limitTimeCompleteQuiz || !maxAttemptNumber)
+            return showToast(
+              ToastStatus.WARNING,
+              "Vui lòng điền đầy đủ thông tin"
+            );
           const newLecture: Lecture = {
             name: name,
             lectureType: type,
             ordinalNumber: ordinalNumber,
             videoDuration: 0,
+
             exQuiz: {
               category: "Java",
               difficulty: "0",
-              limitTime: limitTimeCompleteQuiz,
+              limitTime: convertToMilliseconds(limitTimeCompleteQuiz),
               questions: [],
+              maxAttemptNumber: maxAttemptNumber,
+              requiredScore: requiredScore,
             },
           };
-          console.log(newLecture);
           handleAddLecture(parentId as string, newLecture);
         }
       } else if (action === Action.UPDATE) {
@@ -94,6 +109,19 @@ function CreateTitle(props: CreateTitleProps) {
           //   name: name,
           // };
           (data as Lecture).name = name;
+          handleUpdateLecture(data as Lecture);
+        } else if (type === LectureType.QUIZ_TEST) {
+          if (!requiredScore || !limitTimeCompleteQuiz || !maxAttemptNumber)
+            return showToast(
+              ToastStatus.WARNING,
+              "Vui lòng điền đầy đủ thông tin"
+            );
+          (data as Lecture).name = name;
+          ((data as Lecture).exQuiz as ExQuiz).limitTime =
+            convertToMilliseconds(limitTimeCompleteQuiz);
+          ((data as Lecture).exQuiz as ExQuiz).maxAttemptNumber =
+            maxAttemptNumber;
+          ((data as Lecture).exQuiz as ExQuiz).requiredScore = requiredScore;
           handleUpdateLecture(data as Lecture);
         }
       }
@@ -119,15 +147,74 @@ function CreateTitle(props: CreateTitleProps) {
         />
       </div>
       {type === LectureType.QUIZ_TEST && (
-        <div className="flex items-center gap-1 mt-5 ">
-          <div className="font-bold">Thời gian (giây): </div>
-          <Input
-            onChange={(e) => setLimitTimeCompleteQuiz(Number(e.target.value))}
-            type="number"
-            placeholder="Nhập giới hạn thời gian(giây)"
-            className="w-[20%]"
-          />
-        </div>
+        <Fragment>
+          <div className="flex items-center gap-10 mt-5 flex-row md:flex-row">
+            <div className="font-bold w-1/2">
+              {" "}
+              Thời gian làm bài (giờ, phút):{" "}
+            </div>
+            <div className="bg-white rounded-md p-1 gap-1 md:w-1/2">
+              <TimePicker
+                className={"myTimePicker"}
+                onChange={(value) => {
+                  if (value === null || value === "") {
+                    showToast(
+                      ToastStatus.WARNING,
+                      "Vui lòng điền đầy đủ thông tin"
+                    );
+                  } else {
+                    setLimitTimeCompleteQuiz(value as any);
+                  }
+                }}
+                value={limitTimeCompleteQuiz}
+                format="HH:mm"
+                hourPlaceholder="hh"
+                minutePlaceholder="mm"
+                disableClock={true}
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-10 mt-5 flex-row">
+            <div className="font-bold w-1/2"> Số lần làm tối đa: </div>
+            <Input
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                if (value > 0) {
+                  setMaxAttemptNumber(value);
+                } else {
+                  showToast(
+                    ToastStatus.WARNING,
+                    ToastMessage.MAX_ATTEMPT_NUMBER
+                  );
+                }
+              }}
+              value={maxAttemptNumber}
+              type="number"
+              placeholder="Nhập số lần làm tối đa"
+              className="w-full md:w-1/2"
+            />
+          </div>
+          <div className="flex items-center gap-10 mt-5 flex-row">
+            <div className="font-bold w-1/2">
+              {" "}
+              Điểm số để vượt qua bài kiểm tra:{" "}
+            </div>
+            <Input
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                if (value >= 1 && value <= 10) {
+                  setRequiredScore(value);
+                } else {
+                  showToast(ToastStatus.WARNING, ToastMessage.REQUIRED_SCORE);
+                }
+              }}
+              type="number"
+              value={requiredScore}
+              placeholder="Nhập điểm số cần đạt được (thang 10)"
+              className="w-full md:w-1/2"
+            />
+          </div>
+        </Fragment>
       )}
       <div className="flex-end mt-2 gap-2 mr-[5%]">
         <Button

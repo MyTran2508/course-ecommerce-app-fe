@@ -32,7 +32,7 @@ public class SearchCourseDto implements Serializable {
 
     private FilterSortBy filterSortBy;
 
-    private String keyword;
+    private List<SearchCourseKeywordDto> searchCourseKeywordDtoList;
 
     private int pageIndex;
 

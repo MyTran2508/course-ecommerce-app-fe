@@ -19,8 +19,12 @@ import {
 } from "@/components/ui/select";
 import { FilterSortBy } from "@/utils/resources";
 import Loading from "../../user/personal/loading";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 
 function SearchPage() {
+  const searchKeyword = useAppSelector(
+    (state) => state.courseReducer.searchCourseKeywordDtoList
+  );
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
   const topicId = searchParams.get("topicId");
@@ -28,7 +32,7 @@ function SearchPage() {
   const [isOpenFilter, setOpenFilter] = useState(true);
   const [sortBy, setSortBy] = useState(FilterSortBy.NEWEST.toString());
   const [searchRequest, setSearchRequest] = useState<SearchCourseRequest>({
-    keyword: keyword,
+    searchCourseKeywordDtoList: searchKeyword as any,
     pageIndex: 0,
     pageSize: 5,
     filterSortBy: sortBy,
@@ -55,9 +59,6 @@ function SearchPage() {
       });
     setIsLoading(false);
   };
-  // useEffect(() => {
-  //   handleSearch();
-  // }, []);
 
   useEffect(() => {
     setIsLoading(true);
@@ -65,18 +66,20 @@ function SearchPage() {
   }, [searchRequest]);
 
   useEffect(() => {
-    setSearchRequest((prevSearchRequest) => ({
-      ...prevSearchRequest,
-      pageIndex: page - 1,
-    }));
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (page !== (searchRequest.pageIndex as number) + 1) {
+      setSearchRequest((prevSearchRequest) => ({
+        ...prevSearchRequest,
+        pageIndex: page - 1,
+      }));
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   }, [page]);
 
   useEffect(() => {
-    if (query !== keyword) {
+    if (query !== keyword && query !== null) {
       setKeyword(query as string);
       setSearchRequest((prevSearchRequest) => ({
         ...prevSearchRequest,
@@ -86,7 +89,15 @@ function SearchPage() {
   }, [query]);
 
   useEffect(() => {
-    if (sortBy !== FilterSortBy.NONE) {
+    setSearchRequest((prevSearchRequest) => ({
+      ...prevSearchRequest,
+      searchCourseKeywordDtoList: searchKeyword as any,
+    }));
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    if (sortBy !== FilterSortBy.NONE && sortBy !== searchRequest.filterSortBy) {
+      console.log("sortBy", sortBy);
       setSearchRequest((prevSearchRequest) => ({
         ...prevSearchRequest,
         filterSortBy: sortBy,
@@ -165,7 +176,7 @@ function SearchPage() {
               <div
                 className={`${
                   isOpenFilter ? "" : "hidden"
-                } sticky top-20 xs:top-14 xs:absolute h-full xs:w-full xs:z-30 xs:min-h-[750px]`}
+                } sticky top-20 xs:top-14 xs:absolute h-full xs:w-full xs:z-30 xs:min-h-[1200px] xs:bg-white`}
               >
                 <SideBarFilter
                   setSearchRequest={setSearchRequest}

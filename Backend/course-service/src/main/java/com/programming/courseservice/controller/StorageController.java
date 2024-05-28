@@ -18,7 +18,6 @@ public class StorageController {
     private StorageS3Service storageS3;
 
     @PostMapping("/upload")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> uploadFile(@RequestParam("file")MultipartFile file) {
         return new ResponseEntity<>(storageS3.uploadFile(CourseConstrant.S3Constrant.PATH_COURSE_LECTURE, file), HttpStatus.OK);
     }
@@ -35,7 +34,6 @@ public class StorageController {
     }
 
     @DeleteMapping("/delete/{fileName}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
         return new ResponseEntity<>(storageS3.deleteFile(CourseConstrant.S3Constrant.PATH_COURSE_LECTURE + fileName), HttpStatus.OK);
     }

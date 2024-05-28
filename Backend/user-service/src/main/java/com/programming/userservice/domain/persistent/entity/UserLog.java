@@ -17,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class UserLog {
+
     @Id
     private String id;
 

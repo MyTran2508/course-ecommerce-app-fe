@@ -48,7 +48,7 @@ function Navbar() {
   const cart = useAppSelector((state) => state.persistedReducer.cartReducer);
   const [userData, setUserData] = useState<User>();
   const [isLogout, setLogout] = useState(false);
-  const [currentAvatar, setCurrentAvatar] = useState();
+  const [currentAvatar, setCurrentAvatar] = useState<string>();
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
   const email = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.email
@@ -83,7 +83,7 @@ function Navbar() {
       > = {
         id: (userNameData?.data as User).id,
         username: (userNameData?.data as User).username,
-        photos: (userNameData?.data as User).photos,
+        photos: avatarData?.rawAvatar as string,
         email: (userNameData?.data as User).email,
         roles: (userNameData?.data as User).roles,
       };
@@ -92,7 +92,7 @@ function Navbar() {
       setUserData(userNameData?.data as User);
     }
     if (avatarSuccess) {
-      setCurrentAvatar(avatarData);
+      setCurrentAvatar(avatarData.rawAvatar as string);
     }
   }, [userNameData, avatarData]);
 
@@ -122,10 +122,12 @@ function Navbar() {
       ? email.substring(0, MAX_TITLE_LENGTH) + "..."
       : email;
   return (
-    <div className="border-b bg-white w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-30 shadow-md">
+    <div className="border-b bg-transparent w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-30 shadow-md">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16 xs:px-5">
         <Link href={"/"} className="text-2xl flex items-center">
-          <h1 className="uppercase font-medium">E-LEANING</h1>
+          <h1 className="text-2xl uppercase font-semibold tracking-wide text-gray-700">
+            E-LEANING
+          </h1>
           {/* <Category /> */}
         </Link>
 
@@ -199,7 +201,7 @@ function Navbar() {
                           <Image
                             src={
                               currentAvatar !== "Error"
-                                ? `data:image/png;base64,${currentAvatar}`
+                                ? `data:image/jpeg;base64,${currentAvatar}`
                                 : "/banner.jpg"
                             }
                             width={400}
@@ -284,14 +286,14 @@ function Navbar() {
 
               <CustomButton
                 title="Login"
-                containerStyles=" xs:hidden bg-white-500 border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                containerStyles=" xs:hidden bg-white-500 border-b-4 border-main-colors hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
                 handleClick={() => {
                   router.push("/login");
                 }}
               ></CustomButton>
               <CustomButton
                 title="SignUp"
-                containerStyles="xs:hidden bg-white-500  border-b-4 border-orange-500 hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                containerStyles="xs:hidden bg-white-500  border-b-4 border-main-colors hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
                 handleClick={() => {
                   router.push("/signup");
                 }}

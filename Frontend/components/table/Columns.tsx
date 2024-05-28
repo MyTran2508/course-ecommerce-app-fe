@@ -7,6 +7,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/types/course.type";
 import FilterColumn from "./FilterColumn";
+import { Order } from "@/types/order.type";
 
 export const userColumns: ColumnDef<User>[] = [
   // {
@@ -58,7 +59,7 @@ export const userColumns: ColumnDef<User>[] = [
     header: "Role",
     cell: ({ row }) => (
       <div className="capitalize">
-        {(row.original.roles as RoleType[])[0].id}
+        {(row.original.roles as RoleType[])[0].name}
       </div>
     ),
   },
@@ -142,5 +143,48 @@ export const courseColumns: ColumnDef<Course>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => <ActionsCell course={row.original} />,
+  },
+];
+
+export const billColumns: ColumnDef<Order>[] = [
+  {
+    accessorKey: "user",
+    header: "Username",
+    cell: ({ row }) => (
+      <div className="capitalize">{(row.original.user as User).username}</div>
+    ),
+  },
+  {
+    accessorKey: "totalPrice",
+    header: "Total Price",
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("totalPrice")}</div>
+    ),
+  },
+  {
+    accessorKey: "id",
+    header: "ID",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+  },
+  {
+    accessorKey: "created",
+    header: "Order Day",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("created")}</div>
+    ),
+  },
+
+  {
+    accessorKey: "shippingMethod",
+    header: "Payment Method",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("shippingMethod")}</div>
+    ),
+  },
+
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => <ActionsCell bill={row.original.orderItems} />,
   },
 ];

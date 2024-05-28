@@ -10,11 +10,8 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.awt.print.Book;
-import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -31,6 +28,7 @@ import java.util.Set;
 @DynamicUpdate
 @ToString(callSuper = true)
 public class User extends BaseModel {
+
     @Column(nullable = false)
     @ExcludeFromComparisonField
     private String password;
@@ -55,6 +53,9 @@ public class User extends BaseModel {
     @ExcludeFromComparisonField
     private byte[] avatar;
 
+    @Column(name = "is_author")
+    private Boolean isAuthor;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles",
@@ -68,4 +69,21 @@ public class User extends BaseModel {
     @OneToMany(targetEntity = Address.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_address_user"))
     private List<Address> addresses;
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+        if (role.getUsers() == null) {
+            role.setUsers(new ArrayList<>());
+        }
+        role.getUsers().add(this);
+    }
+
+    public void removeRole() {
+        for (Role role : this.roles) {
+            if (role.getUsers() != null) {
+                role.getUsers().remove(this);
+            }
+        }
+        roles.clear();
+    }
 }

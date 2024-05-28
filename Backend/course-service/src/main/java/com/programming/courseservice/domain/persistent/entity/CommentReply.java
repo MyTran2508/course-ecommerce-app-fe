@@ -1,9 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,4 +28,8 @@ public class CommentReply extends BaseModel {
 
     @Column(length = 2000)
     private String comment;
+
+    @ManyToOne(targetEntity = ForumLecture.class)
+    @JoinColumn(name = "forum_lecture_id", foreignKey = @ForeignKey(name = "fk_comment_reply_forum_lecture_id"))
+    private ForumLecture forumLecture;
 }

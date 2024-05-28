@@ -7,7 +7,7 @@ import { useGetAllCourseQuery } from "@/redux/services/courseApi";
 import { Cart } from "@/types/cart.type";
 import { Course } from "@/types/course.type";
 import { totalPrice } from "@/utils/function";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import Loading from "../user/personal/loading";
 import { updatePrice } from "@/redux/features/cartSlice";
@@ -16,9 +16,12 @@ import { ToastMessage, ToastStatus } from "@/utils/resources";
 
 const PageCart = () => {
   const route = useRouter();
+  const path = usePathname();
   const dispatch = useAppDispatch();
   const carts = useAppSelector((state) => state.persistedReducer.cartReducer);
-  const [cartList, setCartList] = useState<Cart[]>(carts);
+  const userId = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.id
+  );
   const { data, isLoading, isSuccess } = useGetAllCourseQuery(null);
 
   // const updatePrice = () => {
@@ -61,6 +64,10 @@ const PageCart = () => {
   };
 
   const handleChangeRouteCheckout = () => {
+    if (userId === "") {
+      route.push(`/login?redirect=${encodeURIComponent(path as string)}`);
+      return;
+    }
     if (totalPrice(carts) !== 0) {
       route.push("/payment/checkout");
     } else {

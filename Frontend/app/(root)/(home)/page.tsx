@@ -87,12 +87,10 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="justify-center items-center xs:justify-normal xs:items-start w-full xs:overflow-x-scroll xs:gap-5 mb-5 grid grid-cols-4">
+            <div className="xs:justify-normal xs:items-start w-full xs:overflow-x-scroll xs:gap-5 mb-5 grid grid-cols-4 xs:flex xs:custom-scrollbar pl-3 mt-2">
               <Fragment>
                 {courseList.map((course) => (
-                  <div key={course.id}>
-                    <CourseCard course={course} />
-                  </div>
+                  <CourseCard course={course} key={course.id} />
                 ))}
               </Fragment>
             </div>
@@ -115,16 +113,16 @@ export default function Home() {
         </div>
       </section> */}
       <div
-        className="text-white relative flex mt-[-100px] "
-        style={{
-          background:
-            " radial-gradient(circle, rgba(122,242,131,1) 0%, rgba(193,235,185,1) 44%, rgba(81,241,234,0.3031337535014006) 95%)",
-        }}
+        className="text-white relative flex mt-[-100px] lg:h-screen bg-[#F4EEFF]"
+        // style={{
+        //   background:
+        //     " radial-gradient(circle, rgba(160,242,131,1) 0%, rgba(193,235,185,1) 44%, rgba(81,241,234,0.3031337535014006) 95%)",
+        // }}
       >
-        <div className="max-w-[800px] w-full h-screen text-center flex flex-col justify-center z-10 ml-20">
-          <div>
+        <div className="max-w-[800px] w-full text-center flex flex-col justify-center z-10 ml-20 xs:ml-0 xs:min-h-[500px]">
+          <div className="xs:mt-[110px]">
             <p
-              className="text-[#00df9a] font-bold p-2 text-5xl [animation-fill-mode:both] [animation-delay:500ms] "
+              className="text-[#00df9a] font-bold p-2 text-5xl [animation-fill-mode:both] [animation-delay:500ms] xs:text-3xl"
               data-aos="fade-up"
             >
               EXPERT LEARNING
@@ -137,7 +135,7 @@ export default function Home() {
             </h1>
             <div className="flex justify-center items-center">
               <ReactTyped
-                className="md:text-5xl sm:text-4xl text-xl font-bold md:pl-4 pl-2"
+                className="md:text-5xl sm:text-4xl text-xl font-bold md:pl-4 pl-2 xs:min-h-[60px]"
                 strings={[
                   "We accompany you on your learning journey and personal development",
                   "Become an expert in your field with high-quality courses.",
@@ -148,7 +146,7 @@ export default function Home() {
               />
             </div>
             <p
-              className="md:text-2xl text-xl font-bold text-gray-500 [animation-fill-mode:both] [animation-delay:500ms]"
+              className="md:text-2xl text-xl font-bold text-gray-500 [animation-fill-mode:both] [animation-delay:500ms] xs:hidden"
               data-aos="fade-up"
             >
               Unleash unlimited knowledge with our online courses, invest in
@@ -160,14 +158,14 @@ export default function Home() {
           </div>
         </div>
         <Image
-          className="w-[600px] mx-auto my-4 absolute right-0 top-20"
+          className="w-[600px] mx-auto my-4 absolute right-0 top-20 xs:hidden"
           src={"/hero.png"}
           alt="/"
           width={700}
           height={300}
         />
       </div>
-      <div className="max-w-[1240px] mx-auto grid lg:grid-cols-2 ">
+      <div className="max-w-[1240px] mx-auto grid lg:grid-cols-2 xs:ml-[10px]">
         <Image
           className="w-[500px] mx-auto my-4"
           src={"/laptop-removebg.png"}
@@ -203,10 +201,10 @@ export default function Home() {
       <div className="mx-10 xs:mx-0">
         {renderCourse(courseNewest, "NEW COURSES")}
       </div>
-      <div className="w-full py-[10rem] px-4 ">
+      <div className="w-full py-[10rem] xs:py-[20px] px-10">
         <h2 className="text-3xl font-bold ml-6 text-[#00df9a] ">Topic</h2>
 
-        <div className="grid grid-cols-4 gap-4 mx-10">
+        <div className="grid grid-cols-4 xs:grid-cols-2 gap-4 mx-10">
           {Topic.map((topic, index) => (
             <div
               key={index}
@@ -217,7 +215,7 @@ export default function Home() {
               }}
               data-aos="zoom-in-up"
             >
-              <h2 className="text-2xl font-bold text-center py-8">
+              <h2 className="text-2xl font-bold text-center py-8 xs:min-h-[130px] xs:text-[17px]">
                 {topic.name}
               </h2>
 

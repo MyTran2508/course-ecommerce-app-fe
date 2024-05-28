@@ -33,10 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-@Tag(
-        name = "User Service - User Controller",
-        description = "User Controller Exposes Rest APIs for User-Service"
-)
 @RestController
 @CrossOrigin("*")
 @RequiredArgsConstructor
@@ -72,7 +68,6 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<String> add(@Valid UserDto objectDTO) {
         objectDTO.setPassword(passwordEncoder.encode(objectDTO.getPassword()));
 
@@ -99,17 +94,16 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
+//    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
 
-        RoleDto role = new RoleDto(RoleUser.USER.getValue());
-        objectDTO.setRoles(List.of(role));
+//        RoleDto role = new RoleDto(RoleUser.USER.getValue());
+//        objectDTO.setRoles(List.of(role));
 
         return super.update(objectDTO, id);
     }
 
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update-admin/{id}")
     public DataResponse<UserDto> updateAdminUser(@Valid @RequestBody UserDto userDto,
                                                     @PathVariable("id") String id) {
@@ -173,7 +167,6 @@ public class UserController extends BaseApiImpl<User, UserDto> {
 
     @Override
     @ShowOpenAPI
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public DataResponse<UserDto> setRemoved(String id) {
         DataResponse<UserDto> response = super.setRemoved(id);
 
@@ -264,7 +257,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
     @PostMapping("/photos/{username}")
     public DataResponse<String> uploadAvatar(@PathVariable("username") String username,
-                                            @RequestParam("image")MultipartFile file) {
+                                            @RequestParam("image") MultipartFile file) {
 
         return userService.uploadAvatar(username, file);
     }
@@ -273,5 +266,20 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PostMapping("/get-statistics")
     public DataResponse<Map<String, Integer>> getStatisticsByYearAndMonth(@Valid @RequestBody StatisticsRequest statisticsRequest) {
         return userService.getStatisticsByYearAndMonth(statisticsRequest);
+    }
+
+    @ShowOpenAPI
+    @GetMapping("/get-search-users")
+    public ListResponse<UserDto> getSearchUsers(
+            @RequestParam("type-search") Integer typeSearch,
+            @RequestParam("keyword") String keyword
+    ) {
+        return userService.getSearchUsers(typeSearch, keyword);
+    }
+
+    @ShowOpenAPI
+    @PostMapping("/set-user-is-author/{username}")
+    public DataResponse<String> setUserIsAuthor(@PathVariable("username") String username) {
+        return userService.setUserIsAuthor(username);
     }
 }

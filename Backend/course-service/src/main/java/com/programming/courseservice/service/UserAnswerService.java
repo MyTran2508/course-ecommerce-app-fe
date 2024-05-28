@@ -7,7 +7,9 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.programming.courseservice.domain.dto.UserAnswerDto;
+import com.programming.courseservice.domain.dto.UserQuizDto;
 import com.programming.courseservice.domain.mapper.UserAnswerMapper;
+import com.programming.courseservice.domain.mapper.UserQuizMapper;
 import com.programming.courseservice.domain.persistent.entity.ExQuiz;
 import com.programming.courseservice.domain.persistent.entity.UserAnswer;
 import com.programming.courseservice.domain.persistent.entity.UserQuiz;
@@ -35,11 +37,13 @@ public class UserAnswerService {
 
     private final ExQuizRepository exQuizRepository;
 
+    private final UserQuizMapper userQuizMapper;
+
     private final UserAnswerMapper userAnswerMapper;
 
     @SuppressWarnings("unchecked")
     @Transactional
-    public DataResponse<String> upsertUserAnswer(List<UserAnswerDto> userAnswerDtoList, String userQuizId, Boolean isSubmit) {
+    public DataResponse<UserQuizDto> upsertUserAnswer(List<UserAnswerDto> userAnswerDtoList, String userQuizId, Boolean isSubmit) {
         Optional<UserQuiz> userQuizOptional = userQuizRepository.findById(userQuizId);
         // Check if the userQuizId not exists
         if (userQuizOptional.isEmpty()) {
@@ -76,7 +80,7 @@ public class UserAnswerService {
                 // Evaluate the quiz
                 evaluateQuiz(userQuizId);
             }
-            return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPSERT_SUCCESS);
+            return ResponseMapper.toDataResponseSuccess(userQuizMapper.entityToDto(userQuiz));
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             throw new DataConflictException(CourseConstrant.ErrorConstrant.SAVE_USER_ANSWER_FAIL);
@@ -113,7 +117,14 @@ public class UserAnswerService {
         // save the score and set the quiz as completed
         userQuiz.setCorrectAnswerCount((short) correctAnswerCount);
         userQuiz.setScore(roundedScore);
-        userQuiz.setIsCompleted(true);
+
+        if (exQuiz.getRequiredScore() <= roundedScore) {
+            userQuiz.setIsCompleted(true);
+        } else {
+            userQuiz.setIsCompleted(false);
+        }
+        System.out.println("Vao submit quiz");
+
         userQuizRepository.save(userQuiz);
     }
 }
