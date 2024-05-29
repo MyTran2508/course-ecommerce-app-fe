@@ -23,6 +23,8 @@ public class CommentReplyDto implements Serializable {
 
     private String userName;
 
+    private String forumLectureId;
+
     private String avatarUrl;
 
     private String comment;
