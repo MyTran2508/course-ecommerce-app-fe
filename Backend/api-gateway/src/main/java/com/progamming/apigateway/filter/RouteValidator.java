@@ -21,7 +21,9 @@ public class RouteValidator {
             "/api/courses/course/get-all",
             "/api/courses/course-review/search-by-keyword",
             "/api/users/user/get-search-users",
-            "/api/courses/course/get-course-search"
+            "/api/courses/course/get-course-search",
+            "/ws/courses",
+            "/ws/courses/info"
     );
 
     public Predicate<ServerHttpRequest> isSecured =

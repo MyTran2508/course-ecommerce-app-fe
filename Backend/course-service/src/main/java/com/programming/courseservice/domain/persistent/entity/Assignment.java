@@ -17,6 +17,15 @@ import lombok.*;
 )
 public class Assignment extends BaseModel {
 
+    @Column(name = "question", length = 5000)
+    private String question;
+
+    @Column(name = "url_video_solution")
+    private String urlVideoSolution;
+
+    @Column(name = "url_file_solution")
+    private String urlFileSolution;
+
     @Column(name = "estimated_duration")
     private Long estimatedDuration;
 
@@ -28,10 +37,4 @@ public class Assignment extends BaseModel {
 
     @Column(name = "url_file_resource")
     private String urlFileResource;
-
-    @Column(name = "url_video_solution")
-    private String urlVideoSolution;
-
-    @Column(name = "url_file_solution")
-    private String urlFileSolution;
 }
