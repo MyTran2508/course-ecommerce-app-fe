@@ -33,10 +33,12 @@ public class ForumLectureChatController {
         DataResponse<String> response = forumLectureService.create(forumLectureDto);
         if (response.getStatusCode() == StatusCode.REQUEST_SUCCESS) {
             String forumLectureId = response.getData().split("ID: ")[1];
-            System.out.println(forumLectureId);
             ForumLecture forumLecture = forumLectureRepository.findById(forumLectureId).get();
+
+            ForumLectureDto responseDto = forumLectureMapper.entityToDto(forumLecture);
+            responseDto.setRawAvatar(forumLectureDto.getRawAvatar());
             simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId,
-                    ResponseMapper.toDataResponseSuccess(forumLectureMapper.entityToDto(forumLecture)));
+                    ResponseMapper.toDataResponseSuccess(responseDto));
         } else {
             simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId,
                     ResponseMapper.toDataResponseSuccess(null));
@@ -46,6 +48,7 @@ public class ForumLectureChatController {
     @MessageMapping("/forum-lecture/update/{lectureId}")
     public void update(@Payload ForumLectureDto forumLectureDto, @DestinationVariable String lectureId) {
         DataResponse<ForumLectureDto> response = forumLectureService.update(forumLectureDto.getId(), forumLectureDto);
+        response.getData().setRawAvatar(forumLectureDto.getRawAvatar());
         simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId, response);
     }
 }

@@ -26,7 +26,7 @@ public class ForumLectureDto implements Serializable {
 
     private String userName;
 
-    private String avatarUrl;
+    private String rawAvatar;
 
     private String comment;
 

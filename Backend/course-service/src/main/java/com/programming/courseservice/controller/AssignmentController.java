@@ -3,11 +3,9 @@ package com.programming.courseservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.service.BaseService;
-import com.main.progamming.common.util.ApiResources;
 import com.programming.courseservice.domain.dto.AssignmentDto;
 import com.programming.courseservice.domain.persistent.entity.Assignment;
 import com.programming.courseservice.service.AssignmentService;
-import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +31,8 @@ public class AssignmentController extends BaseApiImpl<Assignment, AssignmentDto>
         return super.getById(id);
     }
 
-    @PostMapping(ApiResources.ADD + "/{lectureId}")
-    public DataResponse<String> add(@PathVariable("lectureId") String lectureId, @RequestBody AssignmentDto assignmentDto) {
-
-        return assignmentService.create(lectureId, assignmentDto);
+    @Override
+    public DataResponse<String> add(AssignmentDto objectDTO) {
+        return super.add(objectDTO);
     }
 }

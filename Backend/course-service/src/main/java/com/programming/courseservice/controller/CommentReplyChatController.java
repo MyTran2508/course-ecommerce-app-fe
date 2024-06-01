@@ -42,6 +42,7 @@ public class CommentReplyChatController {
             CommentReply commentReply = commentReplyRepository.findById(commentReplyId).get();
             CommentReplyDto responseDto = commentReplyMapper.entityToDto(commentReply);
             responseDto.setForumLectureId(forumLectureId);
+            responseDto.setRawAvatar(commentReplyDto.getRawAvatar());
             simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId,
                     ResponseMapper.toDataResponseSuccess(responseDto));
         } else {
@@ -56,8 +57,9 @@ public class CommentReplyChatController {
             @DestinationVariable String lectureId,
             @DestinationVariable String forumLectureId
     ) {
-        DataResponse<CommentReplyDto> response = commentReplyService.update(commentReplyDto.getId(), commentReplyDto);
-        response.getData().setForumLectureId(forumLectureId);
-        simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId, response);
+        DataResponse<CommentReplyDto> responseDto = commentReplyService.update(commentReplyDto.getId(), commentReplyDto);
+        responseDto.getData().setForumLectureId(forumLectureId);
+        responseDto.getData().setRawAvatar(commentReplyDto.getRawAvatar());
+        simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId, responseDto);
     }
 }

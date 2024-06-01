@@ -27,8 +27,6 @@ public class AssignmentService extends BaseServiceImpl<Assignment, AssignmentDto
 
     private final AssignmentRepository assignmentRepository;
 
-    private final LectureRepository lectureRepository;
-
     private final AssignmentMapper assignmentMapper;
 
     @Override
@@ -49,28 +47,5 @@ public class AssignmentService extends BaseServiceImpl<Assignment, AssignmentDto
     @Override
     protected List<AssignmentDto> getListSearchResults(String keyword) {
         return null;
-    }
-
-    public DataResponse<String> create(String lectureId, AssignmentDto assignmentDto) {
-
-        // find lecture by id
-        Lecture lecture = lectureRepository.findById(lectureId).orElse(null);
-
-        if (lecture != null) {
-
-            // convert dto to entity
-            Assignment assignment = assignmentMapper.dtoToEntity(assignmentDto);
-            lecture.setAssignment(assignment);
-
-            // save lecture
-            lectureRepository.save(lecture);
-
-            // return success response
-            return ResponseMapper.toDataResponseSuccess(StatusMessage.REQUEST_SUCCESS);
-
-        } else {
-            // throw exception if lecture not found
-            throw new DataNotFoundException(StatusMessage.DATA_NOT_FOUND);
-        }
     }
 }

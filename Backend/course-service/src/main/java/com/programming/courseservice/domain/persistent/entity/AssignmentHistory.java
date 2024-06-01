@@ -1,9 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -17,7 +15,10 @@ import lombok.*;
 )
 public class AssignmentHistory extends BaseModel {
 
-    @Column(name = "text_answer", length = 5000)
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "text_answer", length = 3000)
     private String textAnswer;
 
     @Column(name = "url_video_answer", length = 400)
@@ -29,4 +30,8 @@ public class AssignmentHistory extends BaseModel {
     private Float score;
 
     private String evaluation;
+
+    @ManyToOne(targetEntity = Assignment.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
 }
