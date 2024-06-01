@@ -13,8 +13,6 @@ public class AssignmentDto implements Serializable {
 
     private String id;
 
-    private String question;
-
     private String urlVideoSolution;
 
     private String urlFileSolution;
@@ -23,7 +21,7 @@ public class AssignmentDto implements Serializable {
 
     private String urlVideoInstructions;
 
-    private String textInstructions;
+    private String questions;
 
     private String urlFileResource;
 }
