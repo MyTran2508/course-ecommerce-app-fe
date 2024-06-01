@@ -1,9 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -34,4 +32,8 @@ public class Assignment extends BaseModel {
 
     @Column(name = "url_file_resource")
     private String urlFileResource;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "assignment_history", foreignKey = @ForeignKey(name = "fk_assignment_assignment_history"))
+    private AssignmentHistory assignmentHistory;
 }
