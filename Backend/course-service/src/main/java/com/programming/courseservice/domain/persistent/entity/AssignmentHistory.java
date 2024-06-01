@@ -31,7 +31,7 @@ public class AssignmentHistory extends BaseModel {
 
     private String evaluation;
 
-    @ManyToOne(targetEntity = Assignment.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Assignment.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "assignment_id")
     private Assignment assignment;
 }

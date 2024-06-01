@@ -21,5 +21,7 @@ public class AssignmentHistoryDto implements Serializable {
 
     private Float score;
 
+    private String evaluation;
+
     private AssignmentDto assignment;
 }

@@ -6,12 +6,9 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-public class NotificationDto implements Serializable {
+public class NotificationDto {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    private Long userName;
+    private String username;
 
     private String content;
 

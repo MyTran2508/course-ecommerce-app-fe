@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class Notification extends BaseModel {
 
-    private Long username;
+    private String username;
 
     private String content;
 

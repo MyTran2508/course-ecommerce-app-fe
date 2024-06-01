@@ -1,19 +1,13 @@
 package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
-import com.main.progamming.common.error.exception.DataNotFoundException;
-import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
-import com.main.progamming.common.response.DataResponse;
-import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.programming.courseservice.domain.dto.AssignmentDto;
 import com.programming.courseservice.domain.mapper.AssignmentMapper;
 import com.programming.courseservice.domain.persistent.entity.Assignment;
-import com.programming.courseservice.domain.persistent.entity.Lecture;
 import com.programming.courseservice.repository.AssignmentRepository;
-import com.programming.courseservice.repository.LectureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
