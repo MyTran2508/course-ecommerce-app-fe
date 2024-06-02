@@ -51,4 +51,5 @@ export const {
   useUpdateRoleMutation,
   useGetRoleByIdQuery,
   useGetRolesByUserNameQuery,
+  useLazyGetRolesByUserNameQuery,
 } = roleApi;

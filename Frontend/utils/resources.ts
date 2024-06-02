@@ -13,6 +13,7 @@ export enum Constant {
   ADMIN_DASHBOARD_PATH = "/admin/overview",
   ADMIN_ROLE_PATH = "/admin/role",
   ADMIN_BILL_PATH = "/admin/bill",
+  MANAGER_COURSE_PATH = "/instructor/courses",
 }
 
 export const DEFAULT_PAGE_SIZE = 1000;

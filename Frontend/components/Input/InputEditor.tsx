@@ -56,7 +56,6 @@ function InputEditor(props: InputEditorProps) {
       } else {
         addForumLecture({
           comment: JSON.stringify(data),
-          avatarUrl: "",
           lectureId: parentId,
           userId: user.id,
           userName: user.username,

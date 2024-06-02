@@ -1,7 +1,8 @@
 "use client";
 import { logout } from "@/redux/features/authSlice";
 import { removeUser } from "@/redux/features/userSlice";
-import { useAppDispatch } from "@/redux/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
+import { Roles } from "@/types/roles.type";
 import { Constant, ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import Link from "next/link";
@@ -11,10 +12,13 @@ import { CiMoneyBill } from "react-icons/ci";
 import { SiOpenaccess, SiScikitlearn } from "react-icons/si";
 
 function SideBar() {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
   const path = usePathname();
+  const roleDetails = useAppSelector(
+    (state) =>
+      (state.persistedReducer.userReducer.user.roles as Roles[])[0].roleDetails
+  );
 
+  console.log(roleDetails);
   return (
     <div className="sticky top-0 flex flex-col bg-clip-border rounded-xl bg-orange-50 text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ">
       <div className="mb-2 p-4 border border-orange-500 rounded-md">

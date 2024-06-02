@@ -24,9 +24,18 @@ import { DataResponse } from "@/types/response.type";
 import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { setCredential } from "@/redux/features/authSlice";
 import showToast from "@/utils/showToast";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { Constant, Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import { formLoginSchema } from "@/utils/formSchema";
 import "../../components/style/loginForm.scss";
+import {
+  useLazyGetAvatarQuery,
+  useLazyGetByUserNameQuery,
+} from "@/redux/services/userApi";
+import { User } from "@/types/user.type";
+import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
+import { Roles, UserRoles } from "@/types/roles.type";
+import { useLazyGetRolesByUserNameQuery } from "@/redux/services/roleApi";
+import { set } from "lodash";
 
 function LoginForm() {
   const formSchema = formLoginSchema;
@@ -34,8 +43,34 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const [openEye, setOpenEye] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
   const [loginUser, loginUserResults] = useLoginUserMutation();
   const dispatch = useAppDispatch();
+  const [getRoles, { data: roles, isSuccess: getRolesSuccess }] =
+    useLazyGetRolesByUserNameQuery();
+
+  useEffect(() => {
+    if (!isLogin) return;
+    if (redirect) {
+      route.push(redirect);
+    } else {
+      if (getRolesSuccess && roles) {
+        const userRole: UserRoles = roles.data as UserRoles;
+
+        if ((userRole.roles as Roles[])[0].name == Role.ADMIN) {
+          console.log("admin");
+          route.push(Constant.ADMIN_DASHBOARD_PATH);
+          return;
+        }
+        if ((userRole.roles as Roles[])[0].name == Role.MANAGER) {
+          route.push(Constant.MANAGER_COURSE_PATH);
+          return;
+        }
+
+        route.push("/");
+      }
+    }
+  }, [roles, isLogin, getRolesSuccess]);
 
   const toggle = () => {
     setOpenEye(!openEye);
@@ -47,6 +82,7 @@ function LoginForm() {
       .then((fulfilled) => {
         handleSaveToken(fulfilled, data.username);
       });
+    await getRoles(data.username);
   };
 
   const handleSaveToken = (dataResult: DataResponse, user: string) => {
@@ -58,17 +94,8 @@ function LoginForm() {
       };
       dispatch(setCredential(auth));
       showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
-      if (redirect) {
-        route.push(redirect);
-      } else {
-        route.push("/");
-      }
+      setIsLogin(true);
     } else {
-      // if (dataResult?.statusCode === 403) {
-      //   showToast(ToastStatus.ERROR, ToastMessage.ACCESS_DENY);
-      // } else {
-      //   showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
-      // }
       showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
     }
   };
