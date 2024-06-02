@@ -96,11 +96,10 @@ public class CommentReplyService extends BaseServiceImpl<CommentReply, CommentRe
         CommentReply commentReply = commentReplyMapper.dtoToEntity(commentReplyDto);
         commentReply.setForumLecture(forumLecture);
 
-        // set forumLecture to commentReply and save
-        forumLecture.getCommentReplies().add(commentReply);
-        forumLectureRepository.save(forumLecture);
+        // save comment reply
+        CommentReply savedCommentReply = commentReplyRepository.save(commentReply);
 
         // return success response
-        return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS);
+        return ResponseMapper.toDataResponseSuccess("ID: " + savedCommentReply.getId());
     }
 }
