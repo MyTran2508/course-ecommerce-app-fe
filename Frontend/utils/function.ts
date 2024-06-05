@@ -1,6 +1,9 @@
 import { Cart } from "@/types/cart.type";
+import { RoleDetail } from "@/types/roles.type";
 import { Lecture, Section } from "@/types/section.type";
+import { get } from "lodash";
 import path from "path";
+import { ModuleName } from "./resources";
 
 export const totalPrice = (carts: Cart[]) => {
   const checkedItems = carts.filter((item) => item.checked);
@@ -152,4 +155,30 @@ export function formatTime(seconds: number) {
 export function convertMillisToDateTime(millis: number) {
   const date = new Date(millis);
   return date.toLocaleString();
+}
+
+export function isPermissionGranted(
+  roleDetail: RoleDetail[],
+  permission: string,
+  moduleName: string
+) {
+  if(moduleName === ModuleName.ADMIN_PAGE && roleDetail?.find(role => role.canView === true)) {
+    return true;
+  }
+  const findModule = roleDetail?.find(
+    (role) =>
+      role.module?.moduleName == getEnumKeyByEnumValue(ModuleName, moduleName)
+  );
+  if (findModule) {
+    return findModule[permission as keyof RoleDetail] as boolean;
+  }
+  return false;
+}
+
+export function getEnumKeyByEnumValue(
+  myEnum: any,
+  enumValue: string
+): string | undefined {
+  let keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
+  return keys.length > 0 ? keys[0] : undefined;
 }

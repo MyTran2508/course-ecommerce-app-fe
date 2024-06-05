@@ -14,8 +14,16 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { SortableItem } from "./SortableItem";
-import { Constant, LectureType } from "@/utils/resources";
+import {
+  Constant,
+  LectureType,
+  ModuleName,
+  PermissionName,
+} from "@/utils/resources";
 import { Lecture, Question, Section } from "@/types/section.type";
+import { isPermissionGranted } from "@/utils/function";
+import { RoleDetail } from "@/types/roles.type";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 
 interface SortableProps {
   data: Question[] | Section[] | Lecture[];
@@ -37,13 +45,10 @@ function Sortable(props: SortableProps) {
     //   coordinateGetter: sortableKeyboardCoordinates,
     // })
   );
-
-  // useEffect(() => {
-  //   setItems(data);
-  //   if (onDataChange) {
-  //     onDataChange(data);
-  //   }
-  // }, [data, onDataChange]);
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
 
   const renderItems = () => {
     return (items as Lecture[])
@@ -77,6 +82,20 @@ function Sortable(props: SortableProps) {
             .filter((item) => (item.ordinalNumber as number) > 0)
             .map((items) => items.id as string)}
           strategy={verticalListSortingStrategy}
+          disabled={
+            !(
+              isPermissionGranted(
+                roleDetail as RoleDetail[],
+                PermissionName.CAN_CREATE,
+                ModuleName.CONTENT
+              ) ||
+              isPermissionGranted(
+                roleDetail as RoleDetail[],
+                PermissionName.CAN_UPDATE,
+                ModuleName.CONTENT
+              )
+            )
+          }
         >
           {renderItems()}
         </SortableContext>

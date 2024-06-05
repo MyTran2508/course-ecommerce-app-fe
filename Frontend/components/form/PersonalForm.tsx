@@ -196,15 +196,17 @@ function PersonalForm(props: PersonalProps) {
           <div className="flex flex-col  sticky top-[120px]">
             {!allowInput ? (
               <Fragment>
-                <div className="flex justify-end">
-                  <Button
-                    className="rounded-3xl w-max"
-                    type="button"
-                    onClick={() => handleClickEdit()}
-                  >
-                    Chỉnh Sửa
-                  </Button>
-                </div>
+                {isAdmin !== null && isAdmin && (
+                  <div className="flex justify-end">
+                    <Button
+                      className="rounded-3xl w-max"
+                      type="button"
+                      onClick={() => handleClickEdit()}
+                    >
+                      Chỉnh Sửa
+                    </Button>
+                  </div>
+                )}
               </Fragment>
             ) : (
               <Fragment>

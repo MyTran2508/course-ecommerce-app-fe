@@ -14,6 +14,9 @@ export enum Constant {
   ADMIN_ROLE_PATH = "/admin/role",
   ADMIN_BILL_PATH = "/admin/bill",
   MANAGER_COURSE_PATH = "/instructor/courses",
+  MANAGER_BASICS_PATH = "/manage/basics",
+  MANAGER_CONTENT_PATH = "/manage/content",
+  MANAGER_CURRICULUM_PATH = "/manage/curriculum",
 }
 
 export const DEFAULT_PAGE_SIZE = 1000;
@@ -24,9 +27,9 @@ export enum Action {
   SENT_OTP = "SENT_OTP",
   REGISTER = "REGISTER",
   FORGOT_PASSWORD = "FORGOT_PASSWORD",
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
-  DELETE = "DELETE",
+  CREATE = "canCreate",
+  UPDATE = "canUpdate",
+  DELETE = "canRemove",
   NEXT = "NEXT",
   PREVIOUS = "PREVIOUS",
   LIKE = "LIKE",
@@ -119,6 +122,7 @@ export enum ToastMessage {
   PLEASE_SELECT_PERMISSION = "Vui lòng nhập đầy đủ thông tin và chọn quyền",
   CAN_NOT_CREATE_ROLE = "Không thể tạo quyền vui lòng làm mới",
   CAN_NOT_UPDATE_ROLE = "Không thể cập nhật quyền vui lòng chọn quyền cần cập nhật",
+  NO_PERMISSION = "Không có quyền truy cập",
 }
 
 export enum Role {
@@ -179,7 +183,9 @@ export enum ModuleName {
   ROLE = "Phân Quyền",
   COURSE = "Khóa Học",
   COURSE_REVIEWS = "Đánh giá khóa học",
-  Content = "Nội Dung Khóa Học",
+  CONTENT = "Nội Dung Khóa Học",
+  ADMIN_PAGE = "Trang Quản Trị",
+  OVERVIEW_PAGE = "Trang Tổng Quan",
 }
 
 export enum Permission {
@@ -200,6 +206,13 @@ export enum Fields {
   NAME = "Name",
   Subtitle = "Subtitle",
   Price = "Price",
+}
+export enum PermissionName {
+  CAN_VIEW = "canView",
+  CAN_CREATE = "canCreate",
+  CAN_UPDATE = "canUpdate",
+  CAN_REMOVE = "canRemove",
+  CAN_STATISTICS = "canStatistics",
 }
 
 export enum ModuleSearch {

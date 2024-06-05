@@ -1,6 +1,7 @@
 "use client";
 import Loading from "@/app/(root)/user/personal/loading";
 import CourseContentForm from "@/components/Form/CourseContentForm";
+import withAuth from "@/hoc/withAuth";
 import { setContentId } from "@/redux/features/contentSlice";
 import { setParamCourseId } from "@/redux/features/courseSlice";
 import { setSections } from "@/redux/features/sectionSlice";
@@ -8,6 +9,7 @@ import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content from "@/types/content.type";
 import { Section } from "@/types/section.type";
+import { ModuleName } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -37,4 +39,4 @@ function CourseContentPage() {
   );
 }
 
-export default CourseContentPage;
+export default withAuth(CourseContentPage, ModuleName.CONTENT);

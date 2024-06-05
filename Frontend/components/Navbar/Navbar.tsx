@@ -14,8 +14,6 @@ import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { FiShoppingCart } from "react-icons/fi";
 import {
-  useGetAvatarQuery,
-  useGetByUserNameQuery,
   useLazyGetAvatarQuery,
   useLazyGetByUserNameQuery,
 } from "@/redux/services/userApi";
@@ -23,7 +21,6 @@ import { RoleType, User } from "@/types/user.type";
 import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
 import "../style/category.scss";
-import Loading from "@/app/(root)/user/personal/loading";
 import { BiSearchAlt } from "react-icons/bi";
 import {
   Dialog,

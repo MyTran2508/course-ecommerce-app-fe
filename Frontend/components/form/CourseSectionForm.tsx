@@ -16,6 +16,8 @@ import {
   Constant,
   CourseLectureField,
   LectureType,
+  ModuleName,
+  PermissionName,
   StatusCode,
   ToastMessage,
   ToastStatus,
@@ -27,7 +29,10 @@ import { Label } from "../ui/label";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { Lecture, Section } from "@/types/section.type";
 import { useUploadSectionFilesMutation } from "@/redux/services/sectionApi";
-import { handleGetDurationFormVideo } from "@/utils/function";
+import {
+  handleGetDurationFormVideo,
+  isPermissionGranted,
+} from "@/utils/function";
 import { v4 as uuidv4 } from "uuid";
 import { IoAddOutline } from "react-icons/io5";
 import Loading from "@/app/(root)/user/personal/loading";
@@ -38,6 +43,7 @@ import SectionComponent from "../Section/Section";
 import CreateTitle from "../Lecture/CreateTitle";
 import Sortable from "../Lecture/DragAndDrop/Sorttable";
 import { useSectionHooks } from "@/redux/hooks/courseHooks/sectionHooks";
+import { RoleDetail } from "@/types/roles.type";
 
 interface CourseSectionProps {
   contentId: string;
@@ -50,6 +56,10 @@ function CourseSectionForm(props: CourseSectionProps) {
   const [isUpdateSection, setUpdateSection] = useState(false);
   const [isCreateNewSection, setCreateNewSection] = useState(false);
   const { handleListUpdateSection } = useSectionHooks();
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
 
   useEffect(() => {
     if (isUpdateSection) {
@@ -59,6 +69,23 @@ function CourseSectionForm(props: CourseSectionProps) {
   }, [isUpdateSection]);
 
   const handleAddNewSection = () => {
+    if (
+      !(
+        isPermissionGranted(
+          roleDetail as RoleDetail[],
+          PermissionName.CAN_CREATE,
+          ModuleName.CONTENT
+        ) ||
+        isPermissionGranted(
+          roleDetail as RoleDetail[],
+          PermissionName.CAN_UPDATE,
+          ModuleName.CONTENT
+        )
+      )
+    ) {
+      showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
+      return;
+    }
     setCreateNewSection(!isCreateNewSection);
   };
 

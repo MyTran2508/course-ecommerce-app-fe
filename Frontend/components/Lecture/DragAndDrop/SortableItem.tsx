@@ -1,11 +1,19 @@
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Constant, LectureType } from "@/utils/resources";
+import {
+  Constant,
+  LectureType,
+  ModuleName,
+  PermissionName,
+} from "@/utils/resources";
 import AddQuestion from "../Quiz/Instructor/AddQuestion";
 import SectionComponent from "../../Section/Section";
 import AddQuiz from "../Quiz/Instructor/AddQuiz";
 import FileLecture from "../File/FileLecture";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
+import { isPermissionGranted } from "@/utils/function";
+import { RoleDetail } from "@/types/roles.type";
 
 interface SortableItemProp {
   id: string;
@@ -18,6 +26,20 @@ export function SortableItem(props: SortableItemProp) {
   const { id, type, data, index } = props;
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: id });
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
+  const canCreate = isPermissionGranted(
+    roleDetail as RoleDetail[],
+    PermissionName.CAN_CREATE,
+    ModuleName.CONTENT
+  );
+  const canUpdate = isPermissionGranted(
+    roleDetail as RoleDetail[],
+    PermissionName.CAN_UPDATE,
+    ModuleName.CONTENT
+  );
 
   const style = {
     // transform: CSS.Transform.toString(transform),
@@ -34,6 +56,8 @@ export function SortableItem(props: SortableItemProp) {
             index={index}
             attributes={attributes}
             listeners={listeners}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
           />
         )}
         {type === LectureType.QUIZ_TEST && (
@@ -42,6 +66,8 @@ export function SortableItem(props: SortableItemProp) {
             lecture={data as object}
             attributes={attributes}
             listeners={listeners}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
           />
         )}
         {(type === LectureType.VIDEO || type === LectureType.DOCUMENT) && (
@@ -51,6 +77,8 @@ export function SortableItem(props: SortableItemProp) {
             attributes={attributes}
             listeners={listeners}
             type={type}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
           />
         )}
         {type === Constant.QUESTION && (
@@ -58,6 +86,8 @@ export function SortableItem(props: SortableItemProp) {
             question={data as object}
             attributes={attributes}
             listeners={listeners}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
           />
         )}
         {/* {type === LectureType.DOCUMENT && (

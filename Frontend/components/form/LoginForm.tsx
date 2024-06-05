@@ -27,15 +27,14 @@ import showToast from "@/utils/showToast";
 import { Constant, Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import { formLoginSchema } from "@/utils/formSchema";
 import "../../components/style/loginForm.scss";
+import { Roles, UserRoles } from "@/types/roles.type";
+import { useLazyGetRolesByUserNameQuery } from "@/redux/services/roleApi";
 import {
   useLazyGetAvatarQuery,
   useLazyGetByUserNameQuery,
 } from "@/redux/services/userApi";
 import { User } from "@/types/user.type";
-import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
-import { Roles, UserRoles } from "@/types/roles.type";
-import { useLazyGetRolesByUserNameQuery } from "@/redux/services/roleApi";
-import { set } from "lodash";
+import { loadUser, setUser } from "@/redux/features/userSlice";
 
 function LoginForm() {
   const formSchema = formLoginSchema;
@@ -48,6 +47,10 @@ function LoginForm() {
   const dispatch = useAppDispatch();
   const [getRoles, { data: roles, isSuccess: getRolesSuccess }] =
     useLazyGetRolesByUserNameQuery();
+  const [getByUserName, { data: userNameData, isSuccess: userNameSuccess }] =
+    useLazyGetByUserNameQuery();
+  const [getAvatar, { data: avatarData, isSuccess: avatarSuccess }] =
+    useLazyGetAvatarQuery();
 
   useEffect(() => {
     if (!isLogin) return;
@@ -58,7 +61,6 @@ function LoginForm() {
         const userRole: UserRoles = roles.data as UserRoles;
 
         if ((userRole.roles as Roles[])[0].name == Role.ADMIN) {
-          console.log("admin");
           route.push(Constant.ADMIN_DASHBOARD_PATH);
           return;
         }
@@ -72,6 +74,23 @@ function LoginForm() {
     }
   }, [roles, isLogin, getRolesSuccess]);
 
+  useEffect(() => {
+    if (userNameSuccess) {
+      const userState: Pick<
+        User,
+        "username" | "photos" | "email" | "id" | "roles"
+      > = {
+        id: (userNameData?.data as User).id,
+        username: (userNameData?.data as User).username,
+        photos: avatarData?.rawAvatar as string,
+        email: (userNameData?.data as User).email,
+        roles: (userNameData?.data as User).roles,
+      };
+      dispatch(setUser(userState));
+      dispatch(loadUser());
+    }
+  }, [userNameData]);
+
   const toggle = () => {
     setOpenEye(!openEye);
   };
@@ -83,6 +102,8 @@ function LoginForm() {
         handleSaveToken(fulfilled, data.username);
       });
     await getRoles(data.username);
+    await getByUserName(data.username);
+    await getAvatar(data.username);
   };
 
   const handleSaveToken = (dataResult: DataResponse, user: string) => {

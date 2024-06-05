@@ -39,15 +39,12 @@ import { SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateCourse } from "@/redux/features/courseSlice";
 import InstructorNavbar from "../Navbar";
+import { Action, ModuleName } from "@/utils/resources";
+import withAuth from "@/hoc/withAuth";
+import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
 
 function InstructorCourses() {
   const dispatch = useAppDispatch();
-  const username = useAppSelector(
-    (state) => state.persistedReducer.userReducer.user.username
-  );
-  const searchStatusCourse = useAppSelector(
-    (state) => state.courseReducer.searchStatusCourse
-  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -55,10 +52,16 @@ function InstructorCourses() {
   const [courseList, setCourseList] = useState<Course[]>([]);
   const [totalPage, setTotalPage] = useState(0);
   const [getCourseByKeyword] = useFilterCourseAdminMutation();
-  const [searchKeyword, setSearchKeyword] = useState("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: ["", username, null, null, true],
-    sortBy: "",
+    keyword: [],
+    searchChooseList: [
+      {
+        keyword: "True",
+        keywordType: 5,
+      },
+    ],
+    searchKeywordDtoList: [],
+    sortBy: "created",
     isDecrease: true,
     pageIndex: 0,
     pageSize: 10,
@@ -75,18 +78,6 @@ function InstructorCourses() {
         setTotalPage(fulfilled.totalPages);
       });
   };
-  const handleSearch = () => {
-    setSearchQuery((prevSearchQuery) => ({
-      ...prevSearchQuery,
-      keyword: [
-        searchKeyword,
-        username,
-        searchStatusCourse.isApproved,
-        searchStatusCourse.isAwaitingApproval,
-        null,
-      ],
-    }));
-  };
 
   useEffect(() => {
     getCourseList(searchQuery);
@@ -102,10 +93,6 @@ function InstructorCourses() {
       dispatch(updateCourse());
     }
   }, [isUpdateCourse]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchStatusCourse]);
 
   const table = useReactTable({
     data: courseList,
@@ -131,21 +118,11 @@ function InstructorCourses() {
       <InstructorNavbar />
       <div className="w-full px-10">
         <div className="flex items-center py-4">
-          <div className="flex gap-3">
-            <Input
-              placeholder="Nhập tên khóa học"
-              onChange={(event) => {
-                setSearchKeyword(event.target.value);
-              }}
-              className="max-w-sm "
+          <div className="flex gap-2 w-[600px]">
+            <SearchBarManufacturer
+              action={Action.SEARCH_COURSE_ADMIN}
+              setSearchQuery={setSearchQuery}
             />
-            <Button
-              variant="outline"
-              className="ml-auto"
-              onClick={handleSearch}
-            >
-              Search
-            </Button>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -265,4 +242,4 @@ function InstructorCourses() {
     </div>
   );
 }
-export default InstructorCourses;
+export default withAuth(InstructorCourses, ModuleName.COURSE);

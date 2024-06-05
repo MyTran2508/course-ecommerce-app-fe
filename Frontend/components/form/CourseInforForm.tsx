@@ -28,7 +28,15 @@ import {
 import { DataResponse } from "@/types/response.type";
 import { Course } from "@/types/course.type";
 import showToast from "@/utils/showToast";
-import { StatusCode, ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  ModuleName,
+  PermissionName,
+  StatusCode,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
+import { isPermissionGranted } from "@/utils/function";
+import { RoleDetail } from "@/types/roles.type";
 
 const formSchema = formCourseInformationSchema;
 
@@ -65,6 +73,11 @@ function CourseInforForm(props: CourseInfoProps) {
   const email = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.email
   );
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
+
   const [defaultValueForm, setDefaultValueFrom] = useState(
     handleSetDefaultValueFrom(course)
   );
@@ -204,6 +217,13 @@ function CourseInforForm(props: CourseInfoProps) {
                     <Input
                       className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                       {...field}
+                      disabled={
+                        !isPermissionGranted(
+                          roleDetail as RoleDetail[],
+                          PermissionName.CAN_CREATE,
+                          ModuleName.COURSE
+                        )
+                      }
                     ></Input>
                   </FormControl>
                   <FormDescription className="text-[10px]">
@@ -224,6 +244,20 @@ function CourseInforForm(props: CourseInfoProps) {
                     <Input
                       className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                       {...field}
+                      disabled={
+                        !(
+                          isPermissionGranted(
+                            roleDetail as RoleDetail[],
+                            PermissionName.CAN_CREATE,
+                            ModuleName.COURSE
+                          ) ||
+                          isPermissionGranted(
+                            roleDetail as RoleDetail[],
+                            PermissionName.CAN_UPDATE,
+                            ModuleName.COURSE
+                          )
+                        )
+                      }
                     ></Input>
                   </FormControl>
                   <FormDescription className="text-[10px]">
@@ -246,6 +280,20 @@ function CourseInforForm(props: CourseInfoProps) {
                       type="number"
                       className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                       {...field}
+                      disabled={
+                        !(
+                          isPermissionGranted(
+                            roleDetail as RoleDetail[],
+                            PermissionName.CAN_CREATE,
+                            ModuleName.COURSE
+                          ) ||
+                          isPermissionGranted(
+                            roleDetail as RoleDetail[],
+                            PermissionName.CAN_UPDATE,
+                            ModuleName.COURSE
+                          )
+                        )
+                      }
                     ></Input>
                   </FormControl>
                   <FormDescription className="text-[10px]">
@@ -343,6 +391,20 @@ function CourseInforForm(props: CourseInfoProps) {
                           onChange={(e) => {
                             setImageFile(e.target.files?.[0]);
                           }}
+                          disabled={
+                            !(
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_CREATE,
+                                ModuleName.COURSE
+                              ) ||
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_UPDATE,
+                                ModuleName.COURSE
+                              )
+                            )
+                          }
                         />
                       </div>
                     </div>
@@ -385,6 +447,20 @@ function CourseInforForm(props: CourseInfoProps) {
                           type="file"
                           accept=".mp4, .mkv, .wmv"
                           onChange={(e) => setVideoFile(e.target.files?.[0])}
+                          disabled={
+                            !(
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_CREATE,
+                                ModuleName.COURSE
+                              ) ||
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_UPDATE,
+                                ModuleName.COURSE
+                              )
+                            )
+                          }
                         />
                       </div>
                     </div>

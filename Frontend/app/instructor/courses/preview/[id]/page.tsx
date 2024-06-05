@@ -16,9 +16,10 @@ import {
   renderRequirement,
   renderTargetConsumers,
 } from "@/app/(root)/course/[id]/page";
-import { LectureType } from "@/utils/resources";
+import { LectureType, ModuleName } from "@/utils/resources";
 import Quiz from "@/components/Lecture/Quiz/Client/Quiz";
 import { useLazyGetExQuizByIdQuery } from "@/redux/services/quizApi";
+import withAuth from "@/hoc/withAuth";
 
 function PreviewPage() {
   const param = useParams();
@@ -35,8 +36,6 @@ function PreviewPage() {
 
   const { data: contentData, isSuccess: getContentSuccess } =
     useGetContentByCourseIdQuery(courseId);
-
-  const [getExQuizById, { data: exQuiz }] = useLazyGetExQuizByIdQuery();
 
   useEffect(() => {
     if (getContentSuccess) {
@@ -183,4 +182,4 @@ function PreviewPage() {
   );
 }
 
-export default PreviewPage;
+export default withAuth(PreviewPage, ModuleName.COURSE_REVIEWS);

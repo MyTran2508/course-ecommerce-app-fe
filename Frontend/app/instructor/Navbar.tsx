@@ -9,7 +9,13 @@ import { iconMap } from "@/utils/map";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { setCredential, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  ModuleName,
+  PermissionName,
+  Role,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import {
   useGetAvatarQuery,
@@ -17,6 +23,8 @@ import {
 } from "@/redux/services/userApi";
 import { User } from "@/types/user.type";
 import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
+import { RoleDetail, Roles } from "@/types/roles.type";
+import { isPermissionGranted } from "@/utils/function";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -40,6 +48,7 @@ function InstructorNavbar() {
   const { data: avatarData, isSuccess: avatarSuccess } = useGetAvatarQuery(
     user.username as string
   );
+  const [role, setRole] = useState<Roles | null>(null);
 
   const MAX_TITLE_LENGTH = 25;
   const truncatedEmail =
@@ -60,6 +69,7 @@ function InstructorNavbar() {
         roles: (userNameData.data as User).roles,
       };
       dispatch(setUser(userState));
+      setRole((userNameData.data as User).roles?.[0] || null);
       // dispatch(loadUser());
       setUserData(userNameData.data as User);
     }
@@ -85,9 +95,17 @@ function InstructorNavbar() {
         <div className="">
           {user?.username ? (
             <div className="flex-center gap-10">
-              <Link href={"/instructor/courses/create"} className="xs:hidden">
-                Tạo Khóa Học Mới
-              </Link>
+              {(isPermissionGranted(
+                role?.roleDetails as RoleDetail[],
+                PermissionName.CAN_CREATE,
+                ModuleName.COURSE
+              ) ||
+                role?.name == Role.ADMIN) && (
+                <Link href={"/instructor/courses/create"} className="xs:hidden">
+                  Tạo Khóa Học Mới
+                </Link>
+              )}
+
               <div>
                 <Menu>
                   <Menu.Button>
