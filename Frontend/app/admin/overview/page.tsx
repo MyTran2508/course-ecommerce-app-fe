@@ -17,6 +17,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useGetStatisticsMutation } from "@/redux/services/userApi";
 import { FaCalendar } from "react-icons/fa";
+import { ModuleName } from "@/utils/resources";
+import withAuth from "@/hoc/withAuth";
 
 ChartJS.register(CategoryScale);
 
@@ -361,4 +363,4 @@ function OverviewPage() {
   );
 }
 
-export default OverviewPage;
+export default withAuth(OverviewPage, ModuleName.OVERVIEW_PAGE);

@@ -17,19 +17,27 @@ import Comment from "../Comment";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useEffect, useState } from "react";
 import InputEditor from "../Input/InputEditor";
-import { useGetForumLectureByIdMutation } from "@/redux/services/forumApi";
+import {
+  useAddForumLectureMutation,
+  useGetForumLectureByIdMutation,
+} from "@/redux/services/forumApi";
 import { ForumLecture } from "@/types/forumLecture";
-import { useUpdateApprovedMutation } from "@/redux/services/courseApi";
-import { v4 as uuidv4 } from "uuid";
+import { over } from "stompjs";
+import SockJS from "sockjs-client";
+import { DataResponse } from "@/types/response.type";
 
 interface DiscussionSheetProps {
   lectureId: string;
 }
+var stompClient: any = null;
 
 function DiscussionSheet(props: DiscussionSheetProps) {
   const { lectureId } = props;
   const avatar = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.photos
+  );
+  const user = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user
   );
   const [getForumLectureById, { data: forumLectureData }] =
     useGetForumLectureByIdMutation();
@@ -37,8 +45,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
   const [pageIndex, setPageIndex] = useState(0);
   const [isLoadMore, setIsLoadMore] = useState(false);
   const [isOpenInputEditor, setIsOpenInputEditor] = useState(false);
-  const [isUpdateComment, setIsUpdateComment] = useState(false);
-  const [isCreateComment, setIsCreateComment] = useState(false);
+  const [newComment, setNewComment] = useState<string>("");
 
   useEffect(() => {
     setForumLecture([]);
@@ -50,6 +57,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
       isDecrease: true,
       sortBy: "created",
     });
+    connect();
   }, [lectureId, pageIndex, getForumLectureById]);
 
   useEffect(() => {
@@ -66,22 +74,10 @@ function DiscussionSheet(props: DiscussionSheetProps) {
   }, [forumLectureData]);
 
   useEffect(() => {
-    if (isCreateComment || isUpdateComment) {
-      setTimeout(() => {
-        setForumLecture([]);
-        setPageIndex(0);
-        getForumLectureById({
-          keyword: [lectureId],
-          pageIndex: 0,
-          pageSize: 10,
-          isDecrease: true,
-          sortBy: "created",
-        });
-        isUpdateComment && setIsUpdateComment(false);
-        isCreateComment && setIsCreateComment(false);
-      }, 1000);
+    if (newComment !== "") {
+      sendValue();
     }
-  }, [isCreateComment, isUpdateComment]);
+  }, [newComment]);
 
   const handleOpenComment = () => {
     setIsOpenInputEditor(true);
@@ -91,6 +87,58 @@ function DiscussionSheet(props: DiscussionSheetProps) {
     if ((forumLectureData?.totalRecords as number) > forumLecture?.length) {
       setIsLoadMore(true);
       setPageIndex((prevPageIndex) => prevPageIndex + 1);
+    }
+  };
+
+  const connect = async () => {
+    // let Sock = new SockJS(process.env.NEXT_PUBLIC_END_POINT + "/ws/courses");
+    let Sock = new SockJS("http://localhost:8081/ws/courses");
+    stompClient = await over(Sock);
+    stompClient.connect({}, onConnected, onError);
+  };
+
+  const onMessageReceived = (payload: any) => {
+    var payloadData = JSON.parse(payload.body);
+    const newComment = (payloadData as DataResponse).data as ForumLecture;
+    setForumLecture((prevForumLecture) => {
+      const isIdExist = prevForumLecture.find(
+        (comment) => comment.id === newComment.id
+      );
+      if (!isIdExist) {
+        return [newComment, ...prevForumLecture];
+      }
+      const updateComment = prevForumLecture.map((comment) =>
+        comment.id === newComment.id ? newComment : comment
+      );
+      return updateComment;
+    });
+  };
+
+  const onConnected = () => {
+    stompClient.subscribe(
+      `/rt/response/courses/forum-lecture/${lectureId}`,
+      onMessageReceived
+    );
+  };
+
+  const onError = (err: any) => {
+    console.log(err);
+  };
+
+  const sendValue = () => {
+    if (stompClient) {
+      const createComment: ForumLecture = {
+        comment: newComment,
+        lectureId: lectureId,
+        userId: user.id,
+        userName: user.username,
+        rawAvatar: avatar ? avatar : "",
+      };
+      stompClient.send(
+        `/rt/request/courses/forum-lecture/add/${lectureId}`,
+        {},
+        JSON.stringify(createComment)
+      );
     }
   };
 
@@ -145,7 +193,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
             <InputEditor
               setIsOpenInputEditor={setIsOpenInputEditor}
               parentId={lectureId}
-              setIsCreateComment={setIsCreateComment}
+              setTextInput={setNewComment}
             />
           )}
         </div>
@@ -154,7 +202,8 @@ function DiscussionSheet(props: DiscussionSheetProps) {
             <Comment
               key={item.id}
               data={item}
-              setIsEditComment={setIsUpdateComment}
+              stompClient={stompClient}
+              lectureId={lectureId}
             />
           ))}
           {isLoadMore && <h1 className="item-center">Loading...</h1>}

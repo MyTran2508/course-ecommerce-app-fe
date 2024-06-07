@@ -23,7 +23,9 @@ public class CommentReplyDto implements Serializable {
 
     private String userName;
 
-    private String avatarUrl;
+    private String forumLectureId;
+
+    private String rawAvatar;
 
     private String comment;
 

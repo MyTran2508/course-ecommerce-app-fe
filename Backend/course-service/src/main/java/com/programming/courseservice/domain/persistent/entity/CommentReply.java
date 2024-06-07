@@ -23,9 +23,6 @@ public class CommentReply extends BaseModel {
     @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
-
     @Column(length = 2000)
     private String comment;
 

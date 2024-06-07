@@ -14,6 +14,8 @@ import {
   DEFAULT_PAGE_INDEX,
   DEFAULT_PAGE_SIZE,
   QuizType,
+  PermissionName,
+  ModuleName,
 } from "@/utils/resources";
 import { setTypeQuizCreate } from "@/redux/features/quizSlice";
 import Sortable from "../../DragAndDrop/Sorttable";
@@ -28,15 +30,19 @@ import CreateTitle from "../../CreateTitle";
 import InputEditor from "@/components/Input/InputEditor";
 import { EditorState, convertFromRaw } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
+import { isPermissionGranted } from "@/utils/function";
+import { RoleDetail } from "@/types/roles.type";
 
 interface AddQuizProps {
   lecture: Lecture;
   index: number;
   attributes?: any;
   listeners?: any;
+  canCreate?: boolean;
+  canUpdate?: boolean;
 }
 function AddQuiz(props: AddQuizProps) {
-  const { index, lecture, attributes, listeners } = props;
+  const { index, lecture, attributes, listeners, canCreate, canUpdate } = props;
   const dispatch = useAppDispatch();
   const [isSelectTypeQuestion, setSelectTypeQuestion] = useState(false);
   const [isOpenInputEditor, setIsOpenInputEditor] = useState(false);
@@ -53,6 +59,10 @@ function AddQuiz(props: AddQuizProps) {
   const quizType = useAppSelector(
     (state) => state.persistedReducer.quizReducer.typeQuizCreate
   );
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
   const { handleUpdateListQuestion } = useExQuizHooks();
   const { handleUpdateLecture } = useLectureHooks();
 
@@ -119,12 +129,14 @@ function AddQuiz(props: AddQuizProps) {
                 <CiCircleQuestion className={"text-xl"} />
                 <label>{lecture.name}</label>
               </div>
-              <ActionButtons
-                attributes={attributes}
-                listeners={listeners}
-                handleDelete={setDelete}
-                handleEdit={setEdit}
-              />
+              {canUpdate && (
+                <ActionButtons
+                  attributes={attributes}
+                  listeners={listeners}
+                  handleDelete={setDelete}
+                  handleEdit={setEdit}
+                />
+              )}
             </div>
             {isSelectTypeQuestion ? (
               <div className="right-1/4 border-b-0 border absolute py-2 px-2 border-black flex gap-2 w-[180px] justify-center items-center">
@@ -184,6 +196,13 @@ function AddQuiz(props: AddQuizProps) {
                                 <Button
                                   className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
                                   onClick={() => handleSelectType()}
+                                  disabled={
+                                    !isPermissionGranted(
+                                      roleDetail as RoleDetail[],
+                                      PermissionName.CAN_CREATE,
+                                      ModuleName.CONTENT
+                                    )
+                                  }
                                 >
                                   Thêm Câu Hỏi
                                 </Button>
@@ -220,6 +239,7 @@ function AddQuiz(props: AddQuizProps) {
                               <Button
                                 className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
                                 onClick={() => handleCreateDescription()}
+                                disabled={!(canCreate || canUpdate)}
                               >
                                 {description ? "Đổi Mô tả" : "Thêm Mô tả"}
                               </Button>

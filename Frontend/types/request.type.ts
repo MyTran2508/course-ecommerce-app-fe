@@ -27,10 +27,12 @@ export interface SearchCourseRequest {
   isFree?: boolean | null;
   ratingsLevel?: string | null;
   videoDuration?: string | null;
-  searchCourseKeywordDtoList?: {
-    keyword?: string;
-    keywordTypeSearchCourse?: string;
-  } | null;
+  searchCourseKeywordDtoList?:
+    | {
+        keyword?: string;
+        keywordTypeSearchCourse?: string;
+      }[]
+    | null;
   pageIndex?: number;
   pageSize?: number;
 }

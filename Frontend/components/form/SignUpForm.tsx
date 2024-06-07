@@ -189,7 +189,7 @@ function SignUpForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="w-full h-full xs:h-4/6 xs:w-4/5 min-h-[470px] bg-white xl:flex sign-up-form"
       >
-        <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16">
+        <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16 xs:w-full xs:h-full">
           <div className="font-mono mb-2 flex-center flex-col logo-login-form ">
             <div>
               <img
@@ -201,7 +201,7 @@ function SignUpForm() {
           {isSendOTP === false ? (
             <>
               {changPage === false ? (
-                <div className="mb-2 w-4/5 flex flex-col justify-center items-center m-auto">
+                <div className="mb-2 w-4/5 flex flex-col justify-center items-center m-auto xs:w-full">
                   <FormField
                     key={"username"}
                     control={form.control}
@@ -432,7 +432,7 @@ function SignUpForm() {
                     ref={(el) => (inputsOTP.current[index] = el!)}
                     maxLength={1}
                     inputMode="numeric"
-                    className="border-none border-b-2 w-[40px] text-center"
+                    className="border-none border-b-2 w-[40px] text-center bg-slate-200"
                     value={otp[index]}
                     onChange={(e) => handleChangeInputOTP(index, e)}
                   />

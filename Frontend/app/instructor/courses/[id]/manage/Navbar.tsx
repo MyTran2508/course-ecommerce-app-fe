@@ -5,19 +5,29 @@ import { IoIosArrowBack } from "react-icons/io";
 import SaveButton from "./SaveButton";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { RoleType } from "@/types/user.type";
-import { Role } from "@/utils/resources";
+import { ModuleName, PermissionName, Role } from "@/utils/resources";
 import ApprovedButton from "./ApprovedButton";
 import RequestApprovalButton from "./RequestApprovalButton";
-import { handleCountFieldsInSection } from "@/utils/function";
+import {
+  handleCountFieldsInSection,
+  isPermissionGranted,
+} from "@/utils/function";
 import { Course } from "@/types/course.type";
 import { Button } from "@/components/ui/button";
+import withAuth from "@/hoc/withAuth";
+import { RoleDetail } from "@/types/roles.type";
 
 function CreateCourseNavBar() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  // const role = useAppSelector(
+  //   (state) => state.persistedReducer.userReducer.user.roles as RoleType[]
+  // )[0].id;
+
   const role = useAppSelector(
-    (state) => state.persistedReducer.userReducer.user.roles as RoleType[]
-  )[0].id;
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
+
   const sections = useAppSelector((state) => state.sectionReducer.section);
   const { totalLectureCount } = handleCountFieldsInSection(sections);
   const course = useAppSelector((state) => state.courseReducer.manageCourse);
@@ -29,7 +39,7 @@ function CreateCourseNavBar() {
   useEffect(() => {}, [sections]);
 
   const handleClickBack = () => {
-    if (role === Role.ADMIN) {
+    if (role?.name === Role.ADMIN) {
       router.push("/admin/courses");
     } else {
       router.push("/instructor/courses");
@@ -47,7 +57,7 @@ function CreateCourseNavBar() {
             <div>Quay Lại</div>
           </div>
           <div className="flex gap-10 xs:gap-1 xs:mr-1 mr-10 items-center">
-            {role === Role.ADMIN ? (
+            {role?.name === Role.ADMIN ? (
               <ApprovedButton course={courseData as Course} />
             ) : (
               <Fragment>
@@ -71,6 +81,15 @@ function CreateCourseNavBar() {
                   router.push(`/instructor/courses/preview/${courseId}`)
                 }
                 className="bg-blue-600 hover:bg-blue-200"
+                disabled={
+                  !(
+                    isPermissionGranted(
+                      roleDetail as RoleDetail[],
+                      PermissionName.CAN_VIEW,
+                      ModuleName.COURSE_REVIEWS
+                    ) || role?.name == Role.ADMIN
+                  )
+                }
               >
                 Xem thử
               </Button>
@@ -81,4 +100,4 @@ function CreateCourseNavBar() {
     </div>
   );
 }
-export default CreateCourseNavBar;
+export default withAuth(CreateCourseNavBar, ModuleName.CONTENT);

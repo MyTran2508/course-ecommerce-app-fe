@@ -13,14 +13,21 @@ import UserDialog from "./UserDialog";
 import { User } from "@/types/user.type";
 import { useUpdateUserAdminMutation } from "@/redux/services/userApi";
 import showToast from "@/utils/showToast";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  ModuleName,
+  PermissionName,
+  Role,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { Course } from "@/types/course.type";
-import { useAppDispatch } from "@/redux/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import { useRouter } from "next/navigation";
 import { setManageCourse } from "@/redux/features/courseSlice";
 import { Order, OrderItem } from "@/types/order.type";
 import OrderDialog from "./OrderDialog";
+import { isPermissionGranted } from "@/utils/function";
 
 interface ActionCellProps {
   user?: User;
@@ -35,6 +42,10 @@ const ActionsCell = (props: ActionCellProps) => {
   const [isOpenOrderDialog, setIsOpenOrderDialog] = useState(false);
   const [updateUserAdmin] = useUpdateUserAdminMutation();
   const dispatch = useAppDispatch();
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
 
   const handleUpdateUserAdmin = async (user: User) => {
     await updateUserAdmin(user)
@@ -79,18 +90,32 @@ const ActionsCell = (props: ActionCellProps) => {
                 Xem Chi Tiết
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => updateUserActivationStatus(user)}
-              >
-                {user.removed ? "Khôi Phục Tài Khoản" : "Xóa Tài Khoản"}
-              </DropdownMenuItem>
+              {(isPermissionGranted(
+                roleDetail || [],
+                PermissionName.CAN_REMOVE,
+                ModuleName.USER
+              ) ||
+                role?.name == Role.ADMIN) && (
+                <DropdownMenuItem
+                  onClick={() => updateUserActivationStatus(user)}
+                >
+                  {user.removed ? "Khôi Phục Tài Khoản" : "Xóa Tài Khoản"}
+                </DropdownMenuItem>
+              )}
             </Fragment>
           ) : null}
           {course ? (
             <Fragment>
-              <DropdownMenuItem onClick={() => handleViewCourse()}>
-                Xem Chi Tiết
-              </DropdownMenuItem>
+              {(isPermissionGranted(
+                roleDetail || [],
+                PermissionName.CAN_VIEW,
+                ModuleName.CONTENT
+              ) ||
+                role?.name == Role.ADMIN) && (
+                <DropdownMenuItem onClick={() => handleViewCourse()}>
+                  Xem Chi Tiết
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               {/* <DropdownMenuItem
                 onClick={() => updateUserActivationStatus(user)}

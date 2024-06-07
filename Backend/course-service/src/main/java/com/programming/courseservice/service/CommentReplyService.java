@@ -10,15 +10,18 @@ import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
 import com.main.progamming.common.util.ApiResources;
 import com.main.progamming.common.util.CommonConstrant;
+import com.programming.courseservice.domain.dto.AvatarDto;
 import com.programming.courseservice.domain.dto.CommentReplyDto;
 import com.programming.courseservice.domain.mapper.CommentReplyMapper;
 import com.programming.courseservice.domain.persistent.entity.CommentReply;
 import com.programming.courseservice.domain.persistent.entity.ForumLecture;
 import com.programming.courseservice.repository.CommentReplyRepository;
 import com.programming.courseservice.repository.ForumLectureRepository;
+import com.programming.courseservice.utilities.communication.UserApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +35,8 @@ public class CommentReplyService extends BaseServiceImpl<CommentReply, CommentRe
     private final ForumLectureRepository forumLectureRepository;
 
     private final CommentReplyMapper commentReplyMapper;
+
+    private final UserApi userApi;
 
     @Override
     protected BaseRepository<CommentReply> getBaseRepository() {
@@ -49,7 +54,28 @@ public class CommentReplyService extends BaseServiceImpl<CommentReply, CommentRe
         String forumLectureId = searchKeywordDto.getKeyword().get(0) == null ? null
                 : searchKeywordDto.getKeyword().get(0).trim();
 
-        return commentReplyRepository.findByForumLectureId(forumLectureId, pageable).map(commentReplyMapper::entityToDto);
+        Page<CommentReplyDto> commentReplyDtoPage = commentReplyRepository.findByForumLectureId(forumLectureId, pageable)
+                .map(commentReply -> {
+                    CommentReplyDto commentReplyDto = commentReplyMapper.entityToDto(commentReply);
+
+                    // get user avatar from user service
+                    ResponseEntity<AvatarDto> responseAvatar = userApi.getAvatar(commentReply.getUserName());
+                    AvatarDto avatarDto = responseAvatar.getBody();
+
+                    String rawResponse = avatarDto.toString();
+                    String rawAvatar = null;
+
+                    if (!rawResponse.contains("statusCode")) {
+                        rawAvatar = avatarDto.getRawAvatar();
+                    }
+
+                    // set user avatar
+                    commentReplyDto.setRawAvatar(rawAvatar);
+
+                    return commentReplyDto;
+                });
+
+        return commentReplyDtoPage;
     }
 
     @Override
@@ -70,11 +96,10 @@ public class CommentReplyService extends BaseServiceImpl<CommentReply, CommentRe
         CommentReply commentReply = commentReplyMapper.dtoToEntity(commentReplyDto);
         commentReply.setForumLecture(forumLecture);
 
-        // set forumLecture to commentReply and save
-        forumLecture.getCommentReplies().add(commentReply);
-        forumLectureRepository.save(forumLecture);
+        // save comment reply
+        CommentReply savedCommentReply = commentReplyRepository.save(commentReply);
 
         // return success response
-        return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS);
+        return ResponseMapper.toDataResponseSuccess("ID: " + savedCommentReply.getId());
     }
 }

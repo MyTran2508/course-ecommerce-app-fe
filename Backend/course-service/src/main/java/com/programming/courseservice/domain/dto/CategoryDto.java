@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class CategoryDto implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 1L;
 

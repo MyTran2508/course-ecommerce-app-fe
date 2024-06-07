@@ -1,4 +1,5 @@
 "use client";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Constant } from "@/utils/resources";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,6 +13,11 @@ function SideBar() {
   const path = usePathname();
   const [activeLink, setActiveLink] = useState<string>(path);
   const [isOpenMenu, setOpenMenu] = useState<boolean>(true);
+  const userName = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.username
+  );
+
+  if (userName === "") return null;
 
   const handleLinkClick = (path: string) => {
     setActiveLink(path);

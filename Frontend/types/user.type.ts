@@ -1,4 +1,5 @@
 import { SearchConditionDto } from "./request.type";
+import { Roles } from "./roles.type";
 
 export interface User {
   id: string;
@@ -9,7 +10,7 @@ export interface User {
   lastName: string;
   telephone: string;
   photos: string | null;
-  roles: RoleType[] | null;
+  roles: Roles[] | null;
   addresses: Address[];
   removed?: boolean;
 }

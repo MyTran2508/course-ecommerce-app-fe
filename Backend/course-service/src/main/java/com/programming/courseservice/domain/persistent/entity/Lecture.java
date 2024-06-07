@@ -5,6 +5,8 @@ import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(
         name = "lecture"
@@ -36,4 +38,7 @@ public class Lecture extends BaseModel {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_lecture_ex_quiz_id"))
     private ExQuiz exQuiz;
+
+    @OneToOne(mappedBy = "lecture", fetch = FetchType.EAGER)
+    private Assignment assignment;
 }

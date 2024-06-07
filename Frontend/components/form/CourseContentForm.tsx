@@ -19,6 +19,8 @@ import { AiTwotoneDelete } from "react-icons/ai";
 import { BiMessageSquareAdd } from "react-icons/bi";
 import {
   CourseDescriptionField,
+  ModuleName,
+  PermissionName,
   StatusCode,
   ToastMessage,
   ToastStatus,
@@ -32,6 +34,8 @@ import {
 } from "@/redux/services/contentApi";
 import showToast from "@/utils/showToast";
 import { DataResponse } from "@/types/response.type";
+import { isPermissionGranted } from "@/utils/function";
+import { RoleDetail } from "@/types/roles.type";
 
 interface ContentProps {
   content: Content | null;
@@ -135,6 +139,11 @@ function CourseContentForm(props: ContentProps) {
   const saveStatus = useAppSelector(
     (state) => state.courseReducer.saveCourseStatus
   );
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
+
   const dispatch = useAppDispatch();
   const [addContent] = useAddContentMutation();
   const [updateContent] = useUpdateContentMutation();
@@ -174,6 +183,23 @@ function CourseContentForm(props: ContentProps) {
   }, [content]);
 
   const handleAddField = (fieldType: string) => {
+    if (
+      !(
+        isPermissionGranted(
+          roleDetail as RoleDetail[],
+          PermissionName.CAN_CREATE,
+          ModuleName.COURSE
+        ) ||
+        isPermissionGranted(
+          roleDetail as RoleDetail[],
+          PermissionName.CAN_UPDATE,
+          ModuleName.COURSE
+        )
+      )
+    ) {
+      showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
+      return;
+    }
     let fieldName: string = "";
     if (_.isEqual(fieldType, CourseDescriptionField.REQUIREMENT)) {
       fieldName = `requirement${requirementFields.length + 1}`;
@@ -290,6 +316,20 @@ function CourseContentForm(props: ContentProps) {
                           className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                           {...field}
                           autoComplete="off"
+                          disabled={
+                            !(
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_CREATE,
+                                ModuleName.COURSE
+                              ) ||
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_UPDATE,
+                                ModuleName.COURSE
+                              )
+                            )
+                          }
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -351,6 +391,20 @@ function CourseContentForm(props: ContentProps) {
                           className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                           {...field}
                           autoComplete="off"
+                          disabled={
+                            !(
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_CREATE,
+                                ModuleName.COURSE
+                              ) ||
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_UPDATE,
+                                ModuleName.COURSE
+                              )
+                            )
+                          }
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />
@@ -410,6 +464,20 @@ function CourseContentForm(props: ContentProps) {
                           className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                           {...field}
                           autoComplete="off"
+                          disabled={
+                            !(
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_CREATE,
+                                ModuleName.COURSE
+                              ) ||
+                              isPermissionGranted(
+                                roleDetail as RoleDetail[],
+                                PermissionName.CAN_UPDATE,
+                                ModuleName.COURSE
+                              )
+                            )
+                          }
                         />
                       </FormControl>
                       <FormMessage className="text-[10px]" />

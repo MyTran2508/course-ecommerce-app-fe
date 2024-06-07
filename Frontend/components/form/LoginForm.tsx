@@ -24,9 +24,17 @@ import { DataResponse } from "@/types/response.type";
 import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { setCredential } from "@/redux/features/authSlice";
 import showToast from "@/utils/showToast";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { Constant, Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import { formLoginSchema } from "@/utils/formSchema";
 import "../../components/style/loginForm.scss";
+import { Roles, UserRoles } from "@/types/roles.type";
+import { useLazyGetRolesByUserNameQuery } from "@/redux/services/roleApi";
+import {
+  useLazyGetAvatarQuery,
+  useLazyGetByUserNameQuery,
+} from "@/redux/services/userApi";
+import { User } from "@/types/user.type";
+import { loadUser, setUser } from "@/redux/features/userSlice";
 
 function LoginForm() {
   const formSchema = formLoginSchema;
@@ -34,8 +42,54 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
   const [openEye, setOpenEye] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
   const [loginUser, loginUserResults] = useLoginUserMutation();
   const dispatch = useAppDispatch();
+  const [getRoles, { data: roles, isSuccess: getRolesSuccess }] =
+    useLazyGetRolesByUserNameQuery();
+  const [getByUserName, { data: userNameData, isSuccess: userNameSuccess }] =
+    useLazyGetByUserNameQuery();
+  const [getAvatar, { data: avatarData, isSuccess: avatarSuccess }] =
+    useLazyGetAvatarQuery();
+
+  useEffect(() => {
+    if (!isLogin) return;
+    if (redirect) {
+      route.push(redirect);
+    } else {
+      if (getRolesSuccess && roles) {
+        const userRole: UserRoles = roles.data as UserRoles;
+
+        if ((userRole.roles as Roles[])[0].name == Role.ADMIN) {
+          route.push(Constant.ADMIN_DASHBOARD_PATH);
+          return;
+        }
+        if ((userRole.roles as Roles[])[0].name == Role.MANAGER) {
+          route.push(Constant.MANAGER_COURSE_PATH);
+          return;
+        }
+
+        route.push("/");
+      }
+    }
+  }, [roles, isLogin, getRolesSuccess]);
+
+  useEffect(() => {
+    if (userNameSuccess) {
+      const userState: Pick<
+        User,
+        "username" | "photos" | "email" | "id" | "roles"
+      > = {
+        id: (userNameData?.data as User).id,
+        username: (userNameData?.data as User).username,
+        photos: avatarData?.rawAvatar as string,
+        email: (userNameData?.data as User).email,
+        roles: (userNameData?.data as User).roles,
+      };
+      dispatch(setUser(userState));
+      dispatch(loadUser());
+    }
+  }, [userNameData]);
 
   const toggle = () => {
     setOpenEye(!openEye);
@@ -47,6 +101,9 @@ function LoginForm() {
       .then((fulfilled) => {
         handleSaveToken(fulfilled, data.username);
       });
+    await getRoles(data.username);
+    await getByUserName(data.username);
+    await getAvatar(data.username);
   };
 
   const handleSaveToken = (dataResult: DataResponse, user: string) => {
@@ -58,17 +115,8 @@ function LoginForm() {
       };
       dispatch(setCredential(auth));
       showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
-      if (redirect) {
-        route.push(redirect);
-      } else {
-        route.push("/");
-      }
+      setIsLogin(true);
     } else {
-      // if (dataResult?.statusCode === 403) {
-      //   showToast(ToastStatus.ERROR, ToastMessage.ACCESS_DENY);
-      // } else {
-      //   showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
-      // }
       showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
     }
   };
@@ -90,7 +138,7 @@ function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="xs:h-3/5 xs:w-4/5 w-full h-full xl:flex login-form"
+        className="xs: xs:w-4/5 w-full h-full xl:flex login-form"
       >
         <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16 left-login-form">
           <div className="font-mono mb-2 flex-center flex-col logo-login-form ">

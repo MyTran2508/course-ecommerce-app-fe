@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import withAuth from "@/hoc/withAuth";
 import {
   setManageCourse,
   setParamCourseId,
@@ -10,7 +11,12 @@ import { useCreateCourseMutation } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
 import { DataResponse } from "@/types/response.type";
 import { extractId } from "@/utils/function";
-import { StatusCode, ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  ModuleName,
+  StatusCode,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -110,4 +116,4 @@ function CreateCoursePage() {
   );
 }
 
-export default CreateCoursePage;
+export default withAuth(CreateCoursePage, ModuleName.COURSE);

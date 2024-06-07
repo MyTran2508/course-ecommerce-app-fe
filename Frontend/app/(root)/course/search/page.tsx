@@ -22,7 +22,7 @@ import Loading from "../../user/personal/loading";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
 
 function SearchPage() {
-  const searchKeyword = useAppSelector(
+  let searchKeyword = useAppSelector(
     (state) => state.courseReducer.searchCourseKeywordDtoList
   );
   const searchParams = useSearchParams();
@@ -61,8 +61,10 @@ function SearchPage() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    handleSearch();
+    if (Object.keys(searchRequest).length === 10) {
+      setIsLoading(true);
+      handleSearch();
+    }
   }, [searchRequest]);
 
   useEffect(() => {
@@ -83,7 +85,12 @@ function SearchPage() {
       setKeyword(query as string);
       setSearchRequest((prevSearchRequest) => ({
         ...prevSearchRequest,
-        keyword: query,
+        searchCourseKeywordDtoList: [
+          {
+            keyword: query,
+            keywordTypeSearchCourse: 0 as any,
+          },
+        ],
       }));
     }
   }, [query]);

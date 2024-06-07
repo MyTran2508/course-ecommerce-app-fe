@@ -31,7 +31,8 @@ import { SearchConditionDto, SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateCourse } from "@/redux/features/courseSlice";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
-import { Action } from "@/utils/resources";
+import { Action, ModuleName } from "@/utils/resources";
+import withAuth from "@/hoc/withAuth";
 
 function CoursesAdmin() {
   const dispatch = useAppDispatch();
@@ -199,4 +200,4 @@ function CoursesAdmin() {
     </div>
   );
 }
-export default CoursesAdmin;
+export default withAuth(CoursesAdmin, ModuleName.COURSE);

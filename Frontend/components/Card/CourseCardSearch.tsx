@@ -35,7 +35,7 @@ function CourseCardSearch(props: CourseCardProps) {
                 : "/banner.jpg"
             }
             alt="course"
-            className="w-40 h-24 pb-2"
+            className="w-40 h-24 pb-2 xs:min-w-[160px]"
             width={40}
             height={24}
           />

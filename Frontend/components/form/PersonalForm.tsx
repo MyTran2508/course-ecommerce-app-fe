@@ -31,12 +31,13 @@ import {
   useUpdateUserAdminMutation,
 } from "@/redux/services/userApi";
 import showToast from "@/utils/showToast";
-import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
+import { Constant, Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import { AvatarResponse } from "@/types/response.type";
 import { Roles } from "@/types/roles.type";
 import { useGetAllRoleQuery } from "@/redux/services/roleApi";
+import { usePathname } from "next/navigation";
 
 const formSchema = formPersonalSchema;
 
@@ -80,6 +81,7 @@ const role: Roles = {
 function PersonalForm(props: PersonalProps) {
   const { userInfor, isAdmin } = props;
   const dispatch = useAppDispatch();
+  const pathName = usePathname();
   const [allowInput, setAllowInput] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [imageError, setImageError] = useState(false);
@@ -196,15 +198,18 @@ function PersonalForm(props: PersonalProps) {
           <div className="flex flex-col  sticky top-[120px]">
             {!allowInput ? (
               <Fragment>
-                <div className="flex justify-end">
-                  <Button
-                    className="rounded-3xl w-max"
-                    type="button"
-                    onClick={() => handleClickEdit()}
-                  >
-                    Chỉnh Sửa
-                  </Button>
-                </div>
+                {((isAdmin !== null && isAdmin) ||
+                  pathName === Constant.USER_PERSONAL_PATH) && (
+                  <div className="flex justify-end">
+                    <Button
+                      className="rounded-3xl w-max"
+                      type="button"
+                      onClick={() => handleClickEdit()}
+                    >
+                      Chỉnh Sửa
+                    </Button>
+                  </div>
+                )}
               </Fragment>
             ) : (
               <Fragment>

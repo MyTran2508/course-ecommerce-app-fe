@@ -1,43 +1,27 @@
 import Image from "next/image";
 import React, { Fragment, useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
-import { Input } from "./ui/input";
 import InputEditor from "./Input/InputEditor";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { EditorState, convertFromRaw } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 import { CommentReply, ForumLecture } from "@/types/forumLecture";
 import { Action, Constant } from "@/utils/resources";
-import {
-  useAddCommentReplyMutation,
-  useGetCommentReplyByCommentIdMutation,
-  useUpdateCommentReplyMutation,
-  useUpdateForumLectureMutation,
-} from "@/redux/services/forumApi";
-import { is } from "immutable";
 import { convertMillisToDateTime, formatTime } from "@/utils/function";
-import { HiChevronUp } from "react-icons/hi";
 
 interface CommentReplyProps {
   data: CommentReply;
-  setIsEditComment: (data: boolean) => void;
   commentId: string;
   setTextCommentReply?: (data: string) => void;
-  setIsCreateCommentReply?: (data: boolean) => void;
+  stompClient: any;
+  lectureId: string;
 }
 
 function CommentRep(props: CommentReplyProps) {
-  const {
-    data,
-    setIsEditComment,
-    setIsCreateCommentReply,
-    setTextCommentReply,
-  } = props;
+  const { data, stompClient, lectureId, commentId, setTextCommentReply } =
+    props;
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.id
-  );
-  const userName = useAppSelector(
-    (state) => state.persistedReducer.userReducer.user.username
   );
   const [text, setText] = useState<EditorState>(
     data
@@ -52,15 +36,20 @@ function CommentRep(props: CommentReplyProps) {
     (state) => state.persistedReducer.userReducer.user.photos
   );
   const [isOpenReply, setIsOpenReply] = useState(false);
-  const [updateCommentReply] = useUpdateCommentReplyMutation();
 
   useEffect(() => {
     if (updateText !== data.comment) {
-      updateCommentReply({
-        ...data,
-        comment: updateText,
-      });
-      setIsEditComment(true);
+      if (stompClient) {
+        const updateComment: CommentReply = {
+          ...data,
+          comment: updateText,
+        };
+        stompClient.send(
+          `/rt/request/courses/comment-reply/update/${lectureId}/${commentId}`,
+          {},
+          JSON.stringify(updateComment)
+        );
+      }
     }
   }, [isEdit]);
 
@@ -87,7 +76,11 @@ function CommentRep(props: CommentReplyProps) {
     <div className="flex flex-col mb-2">
       <div className="flex">
         <Image
-          src="/banner.jpg"
+          src={
+            data.rawAvatar
+              ? `data:image/png;base64,${data.rawAvatar}`
+              : "/banner.jpg"
+          }
           alt="avatar"
           width={70}
           height={65}
@@ -153,7 +146,6 @@ function CommentRep(props: CommentReplyProps) {
           <InputEditor
             setIsOpenInputEditor={setIsOpenReply}
             setTextInput={setTextCommentReply}
-            setIsCreateComment={setIsCreateCommentReply}
           />
         </div>
       )}

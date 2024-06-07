@@ -13,7 +13,7 @@ import { RecentSearchHistoryDto, User } from "./user.type";
 import { Question, UserQuiz } from "./section.type";
 import { Review } from "./review.type";
 import { ForumLecture } from "./forumLecture";
-import { Roles } from "./roles.type";
+import { Roles, UserRoles } from "./roles.type";
 import { Order } from "./order.type";
 
 export interface DataResponse {
@@ -38,7 +38,8 @@ export interface DataResponse {
     | Question[]
     | UserQuiz
     | Review
-    | Roles;
+    | Roles
+    | UserRoles;
 }
 
 export interface ListResponse {

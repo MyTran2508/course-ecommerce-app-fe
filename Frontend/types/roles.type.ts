@@ -1,3 +1,4 @@
+import { User } from "@/types/user.type";
 export interface RoleDetail {
   canView?: boolean;
   canCreate?: boolean;
@@ -14,4 +15,12 @@ export interface Roles {
   name?: string;
   description?: string;
   roleDetails?: RoleDetail[];
+}
+
+export interface UserRoles {
+  id?: string;
+  username?: string;
+  email?: string;
+  roles?: Roles[];
+  roleDetailDtos?: RoleDetail[];
 }

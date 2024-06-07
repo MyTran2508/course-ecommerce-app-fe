@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, use, useEffect, useState } from "react";
 import CustomButton from "./CustomButton";
 import { Input } from "./ui/input";
 import InputEditor from "./Input/InputEditor";
@@ -17,19 +17,26 @@ import { is } from "immutable";
 import { convertMillisToDateTime, formatTime } from "@/utils/function";
 import { HiChevronUp } from "react-icons/hi";
 import CommentRep from "./CommentReply";
+import { over } from "stompjs";
+import SockJS from "sockjs-client";
+import { DataResponse } from "@/types/response.type";
 
 interface CommentProps {
   data: ForumLecture;
-  setIsEditComment: (data: boolean) => void;
+  stompClient: any;
+  lectureId: string;
 }
-
+var stompClientForCommentReply: any = null;
 function Comment(props: CommentProps) {
-  const { data, setIsEditComment } = props;
+  const { data, stompClient: stompClientForForumLecture, lectureId } = props;
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.id
   );
   const userName = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.username
+  );
+  const avatar = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.photos
   );
   const [text, setText] = useState<EditorState>(
     data
@@ -40,32 +47,44 @@ function Comment(props: CommentProps) {
   );
   const [updateText, setUpdateText] = useState<string>(data.comment || "");
   const [isEdit, setIsEdit] = useState(false);
-  const avatar = useAppSelector(
-    (state) => state.persistedReducer.userReducer.user.photos
-  );
   const [isOpenReply, setIsOpenReply] = useState(false);
   const [replyText, setReplyText] = useState<string>("");
   const [pageIndex, setPageIndex] = useState(0);
-  const [isCreateReplyComment, setIsCreateReplyComment] = useState(false);
-  const [updateComment] = useUpdateForumLectureMutation();
-  const [createReplyComment] = useAddCommentReplyMutation();
   const [
     getCommentReplyByCommentId,
     { data: commentReplyData, isSuccess: getCommentReplySuccess },
   ] = useGetCommentReplyByCommentIdMutation();
+
   const [commentReply, setCommentReply] = useState<CommentReply[]>([]);
   const [isOpenCommentReply, setIsOpenCommentReply] = useState(false);
-  const [isUpdateCommentReply, setIsUpdateCommentReply] = useState(false);
 
   useEffect(() => {
     if (updateText !== data.comment) {
-      updateComment({
-        ...data,
-        comment: updateText,
-      });
-      setIsEditComment(true);
+      if (stompClientForForumLecture) {
+        const updateComment: ForumLecture = {
+          ...data,
+          comment: updateText,
+        };
+        stompClientForForumLecture.send(
+          `/rt/request/courses/forum-lecture/update/${lectureId}`,
+          {},
+          JSON.stringify(updateComment)
+        );
+      }
     }
   }, [isEdit]);
+
+  useEffect(() => {
+    if (isOpenCommentReply) {
+      connect();
+    }
+  }, [isOpenCommentReply]);
+
+  useEffect(() => {
+    if (!stompClientForCommentReply && isOpenReply) {
+      connect();
+    }
+  }, [isOpenReply]);
 
   useEffect(() => {
     setText(
@@ -91,28 +110,28 @@ function Comment(props: CommentProps) {
   useEffect(() => {
     if (replyText !== "") {
       setIsOpenReply(false);
-      setIsCreateReplyComment(true);
-      createReplyComment({
-        commentReply: {
-          comment: replyText,
-          userId: userId,
-          userName: userName,
-          avatarUrl: "",
-        },
-        commentId: data.id as string,
-      });
+      // createReplyComment({
+      //   commentReply: {
+      //     comment: replyText,
+      //     userId: userId,
+      //     userName: userName,
+      //     avatarUrl: "",
+      //   },
+      //   commentId: data.id as string,
+      // });
+      sendValue();
     }
   }, [replyText]);
 
-  useEffect(() => {
-    if (isCreateReplyComment || isUpdateCommentReply) {
-      setCommentReply([]);
-      setPageIndex(0);
-      handleGetCommentReply();
-      setIsCreateReplyComment(false);
-      setIsUpdateCommentReply(false);
-    }
-  }, [isUpdateCommentReply, isCreateReplyComment]);
+  // useEffect(() => {
+  //   if (isCreateReplyComment || isUpdateCommentReply) {
+  //     // setCommentReply([]);
+  //     setPageIndex(0);
+  //     // handleGetCommentReply();
+  //     setIsCreateReplyComment(false);
+  //     setIsUpdateCommentReply(false);
+  //   }
+  // }, [isUpdateCommentReply, isCreateReplyComment]);
 
   useEffect(() => {
     handleGetCommentReply();
@@ -142,11 +161,71 @@ function Comment(props: CommentProps) {
     setIsOpenCommentReply(!isOpenCommentReply);
   };
 
+  //socket
+  const connect = async () => {
+    // let Sock = new SockJS(process.env.NEXT_PUBLIC_END_POINT + "/ws/courses");
+    let Sock = new SockJS("http://localhost:8081/ws/courses");
+    stompClientForCommentReply = await over(Sock);
+    await stompClientForCommentReply.connect({}, onConnected, onError);
+  };
+
+  const onMessageReceived = (payload: any) => {
+    var payloadData = JSON.parse(payload.body);
+    const newComment = (payloadData as DataResponse).data as CommentReply;
+    setCommentReply((prevCommentReply) => {
+      const isIdExist = prevCommentReply.find(
+        (comment) => comment.id === newComment.id
+      );
+      if (!isIdExist) {
+        return [...prevCommentReply, newComment];
+      }
+      const updateComment = prevCommentReply.map((comment) =>
+        comment.id === newComment.id ? newComment : comment
+      );
+      return updateComment;
+    });
+  };
+
+  const onConnected = () => {
+    if (stompClientForCommentReply) {
+      stompClientForCommentReply.subscribe(
+        `/rt/response/courses/comment-reply/${lectureId}/${data.id}`,
+        onMessageReceived
+      );
+    }
+  };
+
+  const onError = (err: any) => {
+    console.log(err);
+  };
+
+  const sendValue = () => {
+    if (stompClientForCommentReply) {
+      const newCommentReply: CommentReply = {
+        comment: replyText,
+        userId: userId,
+        forumLectureId: lectureId,
+        userName: userName,
+        rawAvatar: avatar ? avatar : "",
+      };
+
+      stompClientForCommentReply.send(
+        `/rt/request/courses/comment-reply/add/${lectureId}/${data.id}`,
+        {},
+        JSON.stringify(newCommentReply)
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col mb-4">
       <div className="flex">
         <Image
-          src="/banner.jpg"
+          src={
+            data.rawAvatar
+              ? `data:image/png;base64,${data.rawAvatar}`
+              : "/banner.jpg"
+          }
           alt="avatar"
           width={70}
           height={65}
@@ -204,9 +283,7 @@ function Comment(props: CommentProps) {
             className="ml-[64px] text-sm font-bold hover:cursor-pointer flex gap-1"
             onClick={() => handleOpenCommentReply()}
           >
-            {isOpenCommentReply
-              ? "Ẩn"
-              : `${commentReplyData?.totalRecords} phản hồi`}
+            {isOpenCommentReply ? "Ẩn" : `Xem các phản hồi`}
             <HiChevronUp
               className={`${
                 isOpenCommentReply ? "rotate-180 transform" : ""
@@ -219,9 +296,9 @@ function Comment(props: CommentProps) {
                 {commentReply?.map((item, index) => (
                   <CommentRep
                     data={item}
-                    setIsEditComment={setIsUpdateCommentReply}
                     commentId={data.id as string}
-                    setIsCreateCommentReply={setIsCreateReplyComment}
+                    stompClient={stompClientForCommentReply}
+                    lectureId={lectureId}
                     setTextCommentReply={setReplyText}
                     key={item.id}
                   />
@@ -256,7 +333,6 @@ function Comment(props: CommentProps) {
             setIsOpenInputEditor={setIsOpenReply}
             parentId={data.id as string}
             setTextInput={setReplyText}
-            setIsCreateComment={setIsCreateReplyComment}
           />
         </div>
       )}

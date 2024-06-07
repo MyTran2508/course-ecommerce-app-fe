@@ -34,7 +34,7 @@ public class ForumLecture extends BaseModel {
     @Column(length = 2000)
     private String comment;
 
-    @OneToMany(mappedBy = "forumLecture", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "forumLecture", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @OrderBy("created ASC")
     private List<CommentReply> commentReplies;
 }

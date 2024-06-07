@@ -10,16 +10,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -39,7 +31,8 @@ import { SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
-import { Action } from "@/utils/resources";
+import { Action, ModuleName } from "@/utils/resources";
+import withAuth from "@/hoc/withAuth";
 
 function UserAdmin() {
   const dispatch = useAppDispatch();
@@ -50,7 +43,6 @@ function UserAdmin() {
   const [userList, setUserList] = useState<User[]>([]);
   const [totalPage, setTotalPage] = useState(0);
   const [getUserByKeyword] = useFilterUserMutation();
-  const [searchKeyword, setSearchKeyword] = useState("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
     keyword: [],
     sortBy: "",
@@ -230,4 +222,4 @@ function UserAdmin() {
     </div>
   );
 }
-export default UserAdmin;
+export default withAuth(UserAdmin, ModuleName.USER);

@@ -9,22 +9,36 @@ import { Lecture } from "@/types/section.type";
 import { MdOutlineOndemandVideo } from "react-icons/md";
 import ActionButtons from "../ActionButtons";
 import CreateTitle from "../CreateTitle";
-import { Action, LectureType } from "@/utils/resources";
+import {
+  Action,
+  LectureType,
+  ModuleName,
+  PermissionName,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { useLectureHooks } from "@/redux/hooks/courseHooks/lectureHooks";
 import { useSectionHooks } from "@/redux/hooks/courseHooks/sectionHooks";
 import InputEditor from "@/components/Input/InputEditor";
 import { stateToHTML } from "draft-js-export-html";
 import { EditorState, convertFromRaw } from "draft-js";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
+import { isPermissionGranted } from "@/utils/function";
+import { RoleDetail } from "@/types/roles.type";
+import showToast from "@/utils/showToast";
 interface FileLectureProps {
   data: Lecture;
   index: number;
   attributes?: any;
   listeners?: any;
   type: LectureType;
+  canCreate?: boolean;
+  canUpdate?: boolean;
 }
 
 function FileLecture(props: FileLectureProps) {
-  const { data, index, attributes, listeners, type } = props;
+  const { data, index, attributes, listeners, type, canCreate, canUpdate } =
+    props;
   const [isSelectContentType, setSelectContentType] = useState(false);
   const [isOpenInputEditor, setIsOpenInputEditor] = useState(false);
   const [description, setDescription] = useState<string>(
@@ -35,6 +49,10 @@ function FileLecture(props: FileLectureProps) {
   const { handleGetFileDocument } = useSectionHooks();
   const [document, setDocument] = useState<any>(null);
   const { handleUpdateLecture } = useLectureHooks();
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,13 +118,15 @@ function FileLecture(props: FileLectureProps) {
                 )}
                 <label>{data.name}</label>
               </div>
-              <ActionButtons
-                handleEdit={setEdit}
-                key={data.id}
-                attributes={attributes}
-                listeners={listeners}
-                handleDelete={setDelete}
-              />
+              {canUpdate && (
+                <ActionButtons
+                  handleEdit={setEdit}
+                  key={data.id}
+                  attributes={attributes}
+                  listeners={listeners}
+                  handleDelete={setDelete}
+                />
+              )}
             </div>
             {isSelectContentType ? (
               <Fragment>
@@ -191,6 +211,13 @@ function FileLecture(props: FileLectureProps) {
                                 <Button
                                   className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
                                   onClick={() => handleSelectType()}
+                                  disabled={
+                                    !isPermissionGranted(
+                                      roleDetail as RoleDetail[],
+                                      PermissionName.CAN_UPDATE,
+                                      ModuleName.COURSE
+                                    )
+                                  }
                                 >
                                   {type === LectureType.VIDEO
                                     ? "Đổi Video"
@@ -220,6 +247,7 @@ function FileLecture(props: FileLectureProps) {
                                     <Button
                                       className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
                                       onClick={() => handleSelectType()}
+                                      disabled={!canCreate}
                                     >
                                       {type === LectureType.VIDEO
                                         ? "Thêm Video"
@@ -254,6 +282,7 @@ function FileLecture(props: FileLectureProps) {
                               <Button
                                 className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
                                 onClick={() => handleCreateDescription()}
+                                disabled={!(canCreate || canUpdate)}
                               >
                                 {description ? "Đổi Mô tả" : "Thêm Mô tả"}
                               </Button>
