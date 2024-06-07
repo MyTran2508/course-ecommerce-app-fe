@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Course } from "@/types/course.type";
 import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
-import ReviewDialog from "../Dialog/ReviewDialog";
+import ReviewDialog from "../dialog/ReviewDialog";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import {
   useGetReviewByUserNameAndCourseIdQuery,
