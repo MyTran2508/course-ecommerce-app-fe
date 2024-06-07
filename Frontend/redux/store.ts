@@ -76,7 +76,7 @@ export const store = configureStore({
       reviewApi.middleware,
       userQuizApi.middleware,
       forumApi.middleware,
-      // rtkQueryErrorLogger,
+      rtkQueryErrorLogger,
       // AuthMiddleware,
     ]),
 });

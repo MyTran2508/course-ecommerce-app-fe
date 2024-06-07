@@ -1,5 +1,6 @@
 "use client";
 import PasswordForm from "@/components/Form/ChangePasswordForm";
+import isUserExisted from "@/hoc/isUserExisted";
 import React from "react";
 
 function PageSecurity() {
@@ -14,4 +15,4 @@ function PageSecurity() {
   );
 }
 
-export default PageSecurity;
+export default isUserExisted(PageSecurity);

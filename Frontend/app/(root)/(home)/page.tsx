@@ -201,7 +201,7 @@ export default function Home() {
       <div className="mx-10 xs:mx-0">
         {renderCourse(courseNewest, "NEW COURSES")}
       </div>
-      <div className="w-full py-[10rem] xs:py-[20px] px-10">
+      <div className="w-full py-[10rem] xs:py-[20px] xs:px-0 px-10">
         <h2 className="text-3xl font-bold ml-6 text-[#00df9a] ">Topic</h2>
 
         <div className="grid grid-cols-4 xs:grid-cols-2 gap-4 mx-10">

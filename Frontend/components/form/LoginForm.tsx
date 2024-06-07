@@ -138,7 +138,7 @@ function LoginForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="xs:h-3/5 xs:w-4/5 w-full h-full xl:flex login-form"
+        className="xs: xs:w-4/5 w-full h-full xl:flex login-form"
       >
         <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16 left-login-form">
           <div className="font-mono mb-2 flex-center flex-col logo-login-form ">

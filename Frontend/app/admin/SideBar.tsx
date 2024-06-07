@@ -52,9 +52,9 @@ function SideBar() {
     }
   }, [userNameData, avatarData]);
   if (
-    role &&
-    role.name !== Role.ADMIN &&
-    !role?.roleDetails?.some((role) => role.canView === true)
+    !role ||
+    (role.name !== Role.ADMIN &&
+      !role.roleDetails?.some((role) => role.canView === true))
   ) {
     return null;
   }
