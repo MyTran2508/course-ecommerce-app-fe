@@ -1,5 +1,6 @@
 package com.programming.courseservice.service;
 
+import com.main.progamming.common.dto.SearchConditionDto;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.DataConflictException;
 import com.main.progamming.common.error.exception.DataNotFoundException;
@@ -19,8 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,50 @@ public class AssignmentHistoryService extends BaseServiceImpl<AssignmentHistory,
 
     @Override
     protected Page<AssignmentHistoryDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
-        return null;
+
+        List<String> usernameList = new ArrayList<>();
+        List<String> lectureNameList = new ArrayList<>();
+
+        if (searchKeywordDto.getSearchChooseList() != null) {
+            for(SearchConditionDto searchConditionDto: searchKeywordDto.getSearchChooseList()) {
+                if (searchConditionDto.getKeywordType() == 0) {
+                    usernameList.add(searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 1) {
+                    lectureNameList.add(searchConditionDto.getKeyword());
+                }
+            }
+        }
+
+        boolean isEmptySearchChooseList = usernameList.isEmpty() && lectureNameList.isEmpty();
+        Map<Integer, String> searchKeywordDtoMap = new HashMap<>() {{
+            put(0, null);
+            put(1, null);
+        }};
+        Boolean isNullAllSearchKeywordDto = true;
+        if (searchKeywordDto.getSearchKeywordDtoList() != null) {
+            for (SearchConditionDto searchConditionDto: searchKeywordDto.getSearchKeywordDtoList()) {
+                if (searchConditionDto.getKeywordType() == 0) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(0, searchConditionDto.getKeyword());
+                } else if (searchConditionDto.getKeywordType() == 1) {
+                    isNullAllSearchKeywordDto = false;
+                    searchKeywordDtoMap.put(1, searchConditionDto.getKeyword());
+                }
+            }
+        }
+
+
+        return assignmentHistoryRepository.seaarchAssignmentHistory(
+                    isEmptySearchChooseList,
+                    usernameList,
+                    lectureNameList,
+                    isNullAllSearchKeywordDto,
+                    searchKeywordDtoMap.get(0),
+                    searchKeywordDtoMap.get(1),
+                    pageable
+                )
+                .map(assignmentHistoryMapper::entityToDto);
+
     }
 
     @Override
@@ -106,5 +149,15 @@ public class AssignmentHistoryService extends BaseServiceImpl<AssignmentHistory,
         return ResponseMapper.toListResponseSuccess(resultList.stream()
                 .map(assignmentHistoryMapper::entityToDto)
                 .toList());
+    }
+
+    public DataResponse<List<String>> getKeywordUsername(String creator) {
+
+
+        return ResponseMapper.toDataResponseSuccess(assignmentHistoryRepository.getKeywordUsername(creator));
+    }
+
+    public DataResponse<List<String>> getKeywordLectureName(String creator) {
+        return ResponseMapper.toDataResponseSuccess(assignmentHistoryRepository.getKeywordLectureName(creator));
     }
 }

@@ -24,6 +24,12 @@ public class CourseConstrant {
         public static final String COURSE_REVIEW_NOT_FOUND = "Course review not found";
 
         public static final String OVER_LIMIT_ATTEMPT_NUMBER = "Over limit attempt number";
+
+        public static final String ASSIGNMENT_HISTORY_NOT_FOUND = "Assignment history not found";
+
+        public static final String ASSIGNMENT_HISTORY_ALREADY_EXISTS = "Assignment history already exists";
+
+        public static final String ASSIGNMENT_HISTORY_NOT_YET_COMPLETED = "Assignment history not yet completed";
     }
 
     public static final class SuccessConstrant {

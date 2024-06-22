@@ -2,7 +2,11 @@ package com.programming.courseservice.repository;
 
 import com.main.progamming.common.repository.BaseRepository;
 import com.programming.courseservice.domain.persistent.entity.AssignmentHistory;
+import com.programming.courseservice.domain.persistent.entity.Course;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +43,48 @@ public interface AssignmentHistoryRepository extends BaseRepository<AssignmentHi
     """)
     Optional<AssignmentHistory> findByUsernameAndLectureIdAndOriginalNumber(
             String username, String lectureId, Integer originalNumber
+    );
+
+    @Query(
+            """
+                SELECT DISTINCT ah.username
+                FROM AssignmentHistory ah
+                WHERE ah.assignment.creator = :creator
+            """
+    )
+    List<String> getKeywordUsername(@Param("creator") String creator);
+
+    @Query(
+            """
+                SELECT DISTINCT ah.assignment.lecture.name
+                FROM AssignmentHistory ah
+                WHERE ah.assignment.creator = :creator
+            """
+    )
+    List<String> getKeywordLectureName(@Param("creator") String creator);
+
+    @Query(
+            """
+                SELECT ah FROM AssignmentHistory ah
+                WHERE (
+                    (:isEmptySearchChooseList = true AND :isNullAllSearchKeywordDto = true) OR
+                    ((
+                        (ah.username IN :usernameList OR ah.assignment.lecture.name IN :lectureNameList)
+                    ) OR (
+                        (:isNullAllSearchKeywordDto = false) AND
+                        (:likeUsername IS NULL OR ah.username LIKE %:likeUsername%) AND
+                        (:likeLectureName IS NULL OR ah.assignment.lecture.name LIKE %:likeLectureName%)
+                    ))
+                )
+            """
+    )
+    Page<AssignmentHistory> seaarchAssignmentHistory(
+            @Param("isEmptySearchChooseList") boolean isEmptySearchChooseList,
+            @Param("usernameList") List<String> usernameList,
+            @Param("lectureNameList") List<String> lectureNameList,
+            @Param("isNullAllSearchKeywordDto") boolean isNullAllSearchKeywordDto,
+            @Param("likeUsername") String likeUsername,
+            @Param("likeLectureName") String likeLectureName,
+            Pageable pageable
     );
 }

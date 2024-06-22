@@ -10,5 +10,7 @@ public enum ModuleSearch {
 
     ORDER,
 
+    ASSIGNMENT_HISTORY,
+
     USER_LOG
 }
