@@ -11,6 +11,8 @@ public class AssignmentHistoryDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private Integer originalNumber;
+
     private String username;
 
     private String textAnswer;

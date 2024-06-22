@@ -1,4 +1,4 @@
-package com.programming.userservice.domain.persistent.entity;
+package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.Column;

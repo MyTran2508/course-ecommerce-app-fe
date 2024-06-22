@@ -1,15 +1,16 @@
-package com.programming.userservice.controller;
+package com.programming.courseservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
-import com.programming.userservice.domain.dto.NotificationDto;
-import com.programming.userservice.domain.persistent.entity.Notification;
-import com.programming.userservice.service.NotificationService;
+import com.programming.courseservice.domain.dto.NotificationDto;
+import com.programming.courseservice.domain.persistent.entity.Notification;
+import com.programming.courseservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,13 +1,13 @@
-package com.programming.userservice.service;
+package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.service.BaseServiceImpl;
-import com.programming.userservice.domain.dto.NotificationDto;
-import com.programming.userservice.domain.mapper.NotificationMapper;
-import com.programming.userservice.domain.persistent.entity.Notification;
-import com.programming.userservice.repository.NotificationRepository;
+import com.programming.courseservice.domain.dto.NotificationDto;
+import com.programming.courseservice.domain.mapper.NotificationMapper;
+import com.programming.courseservice.domain.persistent.entity.Notification;
+import com.programming.courseservice.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

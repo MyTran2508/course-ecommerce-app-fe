@@ -5,13 +5,17 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum DifficultyType {
+public enum CodingLanguage {
 
-    EASY("Dễ"),
+    PYTHON("Python"),
 
-    MEDIUM("Vừa"),
+    JAVA("Java"),
 
-    HARD("Khó");
+    JAVASCRIPT("JavaScript"),
+
+    C("C"),
+
+    SQLite_3("SQLite 3");
 
     private final String value;
 }
