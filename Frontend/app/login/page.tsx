@@ -1,11 +1,11 @@
 "use client";
-import LoginForm from "@/components/Form/LoginForm";
+import LoginForm from "@/components/form/LoginForm";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useLoginUserMutation } from "@/redux/services/authApi";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { IoCloseOutline } from "react-icons/io5";
-import "../../components/style/LoginForm.scss";
+import "../../components/style/loginForm.scss";
 
 function PageLogin() {
   const route = useRouter();

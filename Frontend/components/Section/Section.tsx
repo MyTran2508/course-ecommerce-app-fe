@@ -5,21 +5,33 @@ import { BiMessageSquareAdd } from "react-icons/bi";
 import { IoAddOutline } from "react-icons/io5";
 import Sortable from "../Lecture/DragAndDrop/Sorttable";
 import { v4 as uuidv4 } from "uuid";
-import { Action, Constant } from "@/utils/resources";
+import {
+  Action,
+  Constant,
+  ModuleName,
+  PermissionName,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { useLectureHooks } from "@/redux/hooks/courseHooks/lectureHooks";
 import ActionButtons from "../Lecture/ActionButtons";
 import CreateTitle from "../Lecture/CreateTitle";
 import { useSectionHooks } from "@/redux/hooks/courseHooks/sectionHooks";
+import { isPermissionGranted } from "@/utils/function";
+import { RoleDetail } from "@/types/roles.type";
+import showToast from "@/utils/showToast";
 
 interface SectionProps {
   section: Section;
   index: number;
   attributes?: any;
   listeners?: any;
+  canCreate?: boolean;
+  canUpdate?: boolean;
 }
 
 function SectionComponent(props: SectionProps) {
-  const { section, index, attributes, listeners } = props;
+  const { section, index, attributes, listeners, canCreate, canUpdate } = props;
   const [lectures, setLectures] = useState<Lecture[]>(
     section.lectures as Lecture[]
   );
@@ -31,6 +43,10 @@ function SectionComponent(props: SectionProps) {
   const { handleUpdateSection } = useSectionHooks();
 
   const handleOpenOptionsAddLecture = (isOpen: boolean) => {
+    if (!canCreate) {
+      showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
+      return;
+    }
     setNewCreatedLecture(isOpen);
   };
 
@@ -68,13 +84,15 @@ function SectionComponent(props: SectionProps) {
             <strong className="w-max"> {"Chương " + index}: </strong>
             {section.name}
           </div>
-          <ActionButtons
-            handleEdit={setEdit}
-            key={section.id}
-            attributes={attributes}
-            listeners={listeners}
-            handleDelete={setDelete}
-          />
+          {canUpdate && (
+            <ActionButtons
+              handleEdit={setEdit}
+              key={section.id}
+              attributes={attributes}
+              listeners={listeners}
+              handleDelete={setDelete}
+            />
+          )}
         </div>
       )}
 

@@ -77,7 +77,7 @@ export const store = configureStore({
       userQuizApi.middleware,
       forumApi.middleware,
       rtkQueryErrorLogger,
-      AuthMiddleware,
+      // AuthMiddleware,
     ]),
 });
 setupListeners(store.dispatch);

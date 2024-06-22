@@ -1,17 +1,18 @@
 "use client";
 import Loading from "@/app/(root)/user/personal/loading";
-import CourseSectionForm from "@/components/Form/CourseSectionForm";
+import CourseSectionForm from "@/components/form/CourseSectionForm";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content from "@/types/content.type";
 import { Section } from "@/types/section.type";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import _ from "lodash";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import { ModuleName, ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { setSections } from "@/redux/features/sectionSlice";
 import TimePicker from "react-time-picker";
+import withAuth from "@/hoc/withAuth";
 
 function CurriculumPage() {
   const router = useRouter();
@@ -63,4 +64,4 @@ function CurriculumPage() {
   );
 }
 
-export default CurriculumPage;
+export default withAuth(CurriculumPage, ModuleName.CONTENT);

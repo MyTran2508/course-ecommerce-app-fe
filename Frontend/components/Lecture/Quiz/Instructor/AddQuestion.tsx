@@ -9,9 +9,11 @@ interface AddQuestionProps {
   question: Question;
   attributes?: any;
   listeners?: any;
+  canCreate?: boolean;
+  canUpdate?: boolean;
 }
 function AddQuestion(props: AddQuestionProps) {
-  const { question, attributes, listeners } = props;
+  const { question, attributes, listeners, canCreate, canUpdate } = props;
   const [isEdit, setEdit] = useState(false);
   const [isDelete, setDelete] = useState(false);
   const { handleUpdateQuestion } = useExQuizHooks();
@@ -39,12 +41,14 @@ function AddQuestion(props: AddQuestionProps) {
             </h1>
             <p>{question.title}</p>
           </div>
-          <ActionButtons
-            attributes={attributes}
-            listeners={listeners}
-            handleEdit={setEdit}
-            handleDelete={setDelete}
-          />
+          {canUpdate && (
+            <ActionButtons
+              attributes={attributes}
+              listeners={listeners}
+              handleEdit={setEdit}
+              handleDelete={setDelete}
+            />
+          )}
         </div>
       )}
     </Fragment>

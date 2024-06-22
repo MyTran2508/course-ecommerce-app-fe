@@ -43,10 +43,10 @@ public class CommentReplyChatController {
             CommentReplyDto responseDto = commentReplyMapper.entityToDto(commentReply);
             responseDto.setForumLectureId(forumLectureId);
             responseDto.setRawAvatar(commentReplyDto.getRawAvatar());
-            simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId,
+            simpMessagingTemplate.convertAndSend("/rt/response/courses/comment-reply/" + lectureId +"/"+ forumLectureId,
                     ResponseMapper.toDataResponseSuccess(responseDto));
         } else {
-            simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId,
+            simpMessagingTemplate.convertAndSend("/rt/response/courses/comment-reply/" + lectureId +"/"+ forumLectureId,
                     ResponseMapper.toDataResponseSuccess(null));
         }
     }
@@ -60,6 +60,6 @@ public class CommentReplyChatController {
         DataResponse<CommentReplyDto> responseDto = commentReplyService.update(commentReplyDto.getId(), commentReplyDto);
         responseDto.getData().setForumLectureId(forumLectureId);
         responseDto.getData().setRawAvatar(commentReplyDto.getRawAvatar());
-        simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId, responseDto);
+        simpMessagingTemplate.convertAndSend("/rt/response/courses/comment-reply/" + lectureId +"/"+ forumLectureId, responseDto);
     }
 }

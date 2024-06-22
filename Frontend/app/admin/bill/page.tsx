@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table";
 import DatePicker from "react-datepicker";
 import { useState, useEffect } from "react";
-import { billColumns, userColumns } from "@/components/Table/Columns";
+import { billColumns, userColumns } from "@/components/table/Columns";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
 import { Action } from "@/utils/resources";

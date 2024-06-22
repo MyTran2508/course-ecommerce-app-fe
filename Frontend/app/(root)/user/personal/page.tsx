@@ -1,5 +1,5 @@
 "use client";
-import PersonalForm from "@/components/Form/PersonalForm";
+import PersonalForm from "@/components/form/PersonalForm";
 import { AuthState } from "@/redux/features/authSlice";
 // import { useGetByUserNameQuery } from "@/redux/services/authApi";
 import { User } from "@/types/user.type";
@@ -8,6 +8,7 @@ import Loading from "./loading";
 import { useGetByUserNameQuery } from "@/redux/services/userApi";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { AiOutlineMenu } from "react-icons/ai";
+import isUserExisted from "@/hoc/isUserExisted";
 
 function PagePersonal() {
   const user = useAppSelector((state) => state.persistedReducer.authReducer);
@@ -31,4 +32,4 @@ function PagePersonal() {
   );
 }
 
-export default PagePersonal;
+export default isUserExisted(PagePersonal);

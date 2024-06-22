@@ -11,11 +11,11 @@ public enum ModuleName {
 
     ROLE("Phân Quyền"),
 
-    Course("Khóa Học"),
+    COURSE("Khóa Học"),
 
     COURSE_REVIEWS("Đánh giá khóa học"),
 
-    Content("Nội Dung Khóa Học");
+    CONTENT("Nội Dung Khóa Học");
 
     private final String value;
 }

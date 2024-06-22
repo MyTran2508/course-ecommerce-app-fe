@@ -6,10 +6,11 @@ interface RoleDetailsProps {
   roleDetails: RoleDetail[];
   setRoleDetails: (roleDetails: any) => void;
   action: Action;
+  isCreate: boolean;
 }
 
 function RoleDetails(props: RoleDetailsProps) {
-  const { roleDetails, setRoleDetails, action } = props;
+  const { roleDetails, setRoleDetails, action, isCreate } = props;
   //   const [roleDetails, setRoleDetails] = useState<RoleDetail[]>(roleDetails);
 
   useEffect(() => {
@@ -83,6 +84,7 @@ function RoleDetails(props: RoleDetailsProps) {
                                 index,
                                 Permission.CAN_VIEW
                               )}
+                              disabled={!isCreate}
                             />
                             <label
                               htmlFor={Permission.CAN_VIEW + value}
@@ -102,6 +104,7 @@ function RoleDetails(props: RoleDetailsProps) {
                                   (roleDetail) => roleDetail.module?.id == index
                                 )?.canCreate || false
                               }
+                              disabled={!isCreate}
                               onChange={handleCheckboxChange(
                                 index,
                                 Permission.CAN_CREATE
@@ -125,6 +128,7 @@ function RoleDetails(props: RoleDetailsProps) {
                                   (roleDetail) => roleDetail.module?.id == index
                                 )?.canRemove || false
                               }
+                              disabled={!isCreate}
                               onChange={handleCheckboxChange(
                                 index,
                                 Permission.CAN_REMOVE
@@ -148,6 +152,7 @@ function RoleDetails(props: RoleDetailsProps) {
                                   (roleDetail) => roleDetail.module?.id == index
                                 )?.canUpdate || false
                               }
+                              disabled={!isCreate}
                               onChange={handleCheckboxChange(
                                 index,
                                 Permission.CAN_UPDATE
@@ -171,6 +176,7 @@ function RoleDetails(props: RoleDetailsProps) {
                                   (roleDetail) => roleDetail.module?.id == index
                                 )?.canStatistics || false
                               }
+                              disabled={!isCreate}
                               onChange={handleCheckboxChange(
                                 index,
                                 Permission.CAN_STATISTICS

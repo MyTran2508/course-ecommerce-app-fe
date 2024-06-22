@@ -3,7 +3,7 @@ export interface ForumLecture {
   lectureId?: string;
   userId?: string;
   userName?: string;
-  avatarUrl?: string;
+  rawAvatar?: string;
   comment?: string;
   commentReplies?: CommentReply[];
   created?: number;
@@ -13,7 +13,8 @@ export interface CommentReply {
   id?: string;
   userId?: string;
   userName?: string;
-  avatarUrl?: string;
+  rawAvatar?: string;
+  forumLectureId?: string;
   comment?: string;
   created?: number;
   updated?: number;

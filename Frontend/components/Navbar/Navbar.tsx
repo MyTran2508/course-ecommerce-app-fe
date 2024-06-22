@@ -14,8 +14,6 @@ import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { FiShoppingCart } from "react-icons/fi";
 import {
-  useGetAvatarQuery,
-  useGetByUserNameQuery,
   useLazyGetAvatarQuery,
   useLazyGetByUserNameQuery,
 } from "@/redux/services/userApi";
@@ -23,7 +21,6 @@ import { RoleType, User } from "@/types/user.type";
 import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { AiOutlineRight } from "react-icons/ai";
 import "../style/category.scss";
-import Loading from "@/app/(root)/user/personal/loading";
 import { BiSearchAlt } from "react-icons/bi";
 import {
   Dialog,
@@ -36,6 +33,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
+import { setKeywordSearchCourse } from "@/redux/features/courseSlice";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -109,8 +107,14 @@ function Navbar() {
     router.push("/cart");
   };
   const handleSearch = () => {
-    router.push(`/course/search?q=${searchQuery}`);
+    // router.push(`/course/search?q=${searchQuery}`);
+    const keywordSearchCourse = {
+      keyword: searchQuery,
+      keywordTypeSearchCourse: 0,
+    };
+    dispatch(setKeywordSearchCourse([keywordSearchCourse]));
     handleOpenSearchDialog();
+    router.push(`/course/search?q="`);
   };
   const handleOpenSearchDialog = () => {
     setOpenDialog(!isOpenDialog);
@@ -142,6 +146,56 @@ function Navbar() {
           >
             <BiSearchAlt />
           </div>
+          {user.username === "" && (
+            <div>
+              <Menu>
+                <Menu.Button
+                  className=" animate-background-shine bg-[linear-gradient(110deg,#FF8C00,45%,#ffff99,55%,#FF8C00)] bg-[length:250%_100%] bg-clip-text text-transparent rounded-xl border py-1 px-2 xs:text-[10px]"
+                  data-aos="fade-up"
+                >
+                  Account Test
+                </Menu.Button>
+                <Menu.Items className="absolute right-40 mt-2 xs:right-0 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
+                  <div className="px-1 py-1">
+                    <Transition
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <div className="flex flex-col space-y-2">
+                        <h2 className="font-bold italic"> User Account</h2>
+                        <div className="flex gap-2">
+                          <strong> Username: </strong>
+                          userDemo
+                        </div>
+                        <div className="flex gap-2">
+                          <strong> Password: </strong>
+                          userDemo
+                        </div>
+                        <hr></hr>
+                        <h2 className="font-bold italic"> Paypal Sandbox</h2>
+                        <div>
+                          <div className="flex gap-2">
+                            <strong> Username: </strong>
+                            <p className="xs:text-[14px]">
+                              sb-xgzqg28259118@personal.example.com
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <strong> Password: </strong>
+                            u.=5Om_p
+                          </div>
+                        </div>
+                      </div>
+                    </Transition>
+                  </div>
+                </Menu.Items>
+              </Menu>
+            </div>
+          )}
           {user?.username !== "" ? (
             <div className="flex-center gap-10">
               {roles && (roles as RoleType[])[0]?.id !== Role.USER ? (

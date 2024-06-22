@@ -1,15 +1,23 @@
 "use client";
 import RoleDetails from "@/components/Role/RoleDetails";
+import withAuth from "@/hoc/withAuth";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import {
   useAddRoleMutation,
   useGetAllRoleQuery,
   useUpdateRoleMutation,
 } from "@/redux/services/roleApi";
-import { DataResponse } from "@/types/response.type";
 import { RoleDetail, Roles } from "@/types/roles.type";
-import { Action, ToastMessage, ToastStatus } from "@/utils/resources";
+import { isPermissionGranted } from "@/utils/function";
+import {
+  Action,
+  ModuleName,
+  PermissionName,
+  Role,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import showToast from "@/utils/showToast";
-import { set } from "lodash";
 import React, { useEffect, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
@@ -24,6 +32,10 @@ function RolePage() {
   const { data: roles, isSuccess: getAllRolesSuccess } = useGetAllRoleQuery();
   const [addRoles] = useAddRoleMutation();
   const [updateRoles] = useUpdateRoleMutation();
+  const role = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.roles?.[0]
+  );
+  const roleDetail = role?.roleDetails;
 
   useEffect(() => {
     console.log(roles?.data as Roles[]);
@@ -37,6 +49,19 @@ function RolePage() {
   };
 
   const handleAction = (action: Action) => {
+    if (
+      !(
+        isPermissionGranted(
+          roleDetail as RoleDetail[],
+          action,
+          ModuleName.ROLE
+        ) || role?.name == Role.ADMIN
+      )
+    ) {
+      showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
+      return;
+    }
+
     if (roleName === "" && roleDescription === "" && roleDetails.length === 0) {
       showToast(ToastStatus.WARNING, ToastMessage.PLEASE_SELECT_PERMISSION);
       return;
@@ -130,6 +155,13 @@ function RolePage() {
           roleDetails={roleDetails}
           setRoleDetails={setRoleDetails}
           action={Action.CREATE}
+          isCreate={
+            isPermissionGranted(
+              roleDetail as RoleDetail[],
+              Action.CREATE,
+              ModuleName.ROLE
+            ) || role?.name == Role.ADMIN
+          }
         />
         <div className="grid grid-cols-2 w-full gap-5">
           <div
@@ -219,4 +251,4 @@ function RolePage() {
   );
 }
 
-export default RolePage;
+export default withAuth(RolePage, ModuleName.ROLE);

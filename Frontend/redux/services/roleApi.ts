@@ -41,6 +41,7 @@ export const roleApi = createApi({
       query: (userName: string) => ({
         url: `/api/users/role/get-user-roles/${userName}`,
       }),
+      providesTags: ["Role"],
     }),
   }),
 });
@@ -51,4 +52,5 @@ export const {
   useUpdateRoleMutation,
   useGetRoleByIdQuery,
   useGetRolesByUserNameQuery,
+  useLazyGetRolesByUserNameQuery
 } = roleApi;

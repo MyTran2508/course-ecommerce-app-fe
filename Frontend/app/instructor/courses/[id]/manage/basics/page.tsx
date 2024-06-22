@@ -1,6 +1,7 @@
 "use client";
 import Loading from "@/app/(root)/user/personal/loading";
-import CourseInforForm from "@/components/Form/CourseInforForm";
+import CourseInforForm from "@/components/form/CourseInforForm";
+import withAuth from "@/hoc/withAuth";
 import {
   setManageCourse,
   setParamCourseId,
@@ -8,6 +9,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useGetCourseByIdQuery } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
+import { ModuleName } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -31,4 +33,4 @@ function BasicsPage() {
   );
 }
 
-export default BasicsPage;
+export default withAuth(BasicsPage, ModuleName.CONTENT);
