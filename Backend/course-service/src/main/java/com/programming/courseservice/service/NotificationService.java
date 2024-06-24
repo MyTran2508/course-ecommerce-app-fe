@@ -38,6 +38,16 @@ public class NotificationService extends BaseServiceImpl<Notification, Notificat
     }
 
     @Override
+    public DataResponse<String> create(NotificationDto dto) {
+        return super.create(dto);
+    }
+
+    @Override
+    public DataResponse<NotificationDto> update(String id, NotificationDto dto) {
+        return super.update(id, dto);
+    }
+
+    @Override
     protected Page<NotificationDto> getPageResults(SearchKeywordDto searchKeywordDto, Pageable pageable) {
 
         String username = searchKeywordDto.getKeyword().get(0) == null ? null : searchKeywordDto.getKeyword().get(0).trim();
@@ -52,7 +62,7 @@ public class NotificationService extends BaseServiceImpl<Notification, Notificat
         return null;
     }
 
-    public DataResponse<String> addList(List<NotificationDto> notificationDtoList) {
+    public DataResponse<List<NotificationDto>> addList(List<NotificationDto> notificationDtoList) {
 
         List<Notification> notificationList = new ArrayList<>();
 
@@ -61,8 +71,10 @@ public class NotificationService extends BaseServiceImpl<Notification, Notificat
             notificationList.add(notification);
         }
 
-        notificationRepository.saveAll(notificationList);
+        List<Notification> savedNotification = notificationRepository.saveAll(notificationList);
 
-        return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.INSERT_SUCCES);
+        List<NotificationDto> resultList = savedNotification.stream().map(notificationMapper::entityToDto).toList();
+
+        return ResponseMapper.toDataResponseSuccess(resultList);
     }
 }

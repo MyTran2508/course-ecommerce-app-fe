@@ -34,7 +34,7 @@ public class NotificationController extends BaseApiImpl<Notification, Notificati
     }
 
     @PostMapping("/add-list")
-    public DataResponse<String> addList(@RequestBody List<NotificationDto> notificationDtoList) {
+    public DataResponse<List<NotificationDto>> addList(@RequestBody List<NotificationDto> notificationDtoList) {
         return notificationService.addList(notificationDtoList);
     }
 

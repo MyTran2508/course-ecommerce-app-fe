@@ -11,6 +11,8 @@ public class NotificationDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    private String id;
+
     private String sender;
 
     private String recipient;
