@@ -31,6 +31,8 @@ public class AssignmentDto implements Serializable {
 
     private String urlFileSolution;
 
+    private String textSolution;
+
     @JsonBackReference
     private LectureDto lecture;
 }

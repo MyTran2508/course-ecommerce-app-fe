@@ -37,6 +37,9 @@ public class Assignment extends BaseModel {
     @Column(name = "url_file_solution")
     private String urlFileSolution;
 
+    @Column(name = "text_solution", length = 3000)
+    private String textSolution;
+
     @OneToOne(targetEntity = Lecture.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", foreignKey = @ForeignKey(name = "fk_assignment_lecture_id"))
     private Lecture lecture;

@@ -9,8 +9,12 @@ import com.programming.courseservice.domain.dto.NotificationDto;
 import com.programming.courseservice.domain.persistent.entity.Notification;
 import com.programming.courseservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,8 +30,12 @@ public class NotificationController extends BaseApiImpl<Notification, Notificati
 
     @Override
     public DataResponse<String> add(NotificationDto objectDTO) {
-        System.out.println("Vao day");
         return super.add(objectDTO);
+    }
+
+    @PostMapping("/add-list")
+    public DataResponse<String> addList(@RequestBody List<NotificationDto> notificationDtoList) {
+        return notificationService.addList(notificationDtoList);
     }
 
     @Override

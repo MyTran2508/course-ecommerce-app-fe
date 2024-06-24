@@ -50,18 +50,26 @@ public interface AssignmentHistoryRepository extends BaseRepository<AssignmentHi
                 SELECT DISTINCT ah.username
                 FROM AssignmentHistory ah
                 WHERE ah.assignment.creator = :creator
+                AND ah.username LIKE %:username%
             """
     )
-    List<String> getKeywordUsername(@Param("creator") String creator);
+    List<String> getKeywordUsername(
+            @Param("creator") String creator,
+            @Param("username") String username
+    );
 
     @Query(
             """
                 SELECT DISTINCT ah.assignment.lecture.name
                 FROM AssignmentHistory ah
                 WHERE ah.assignment.creator = :creator
+                AND ah.assignment.lecture.name LIKE %:lectureName%
             """
     )
-    List<String> getKeywordLectureName(@Param("creator") String creator);
+    List<String> getKeywordLectureName(
+            @Param("creator") String creator,
+            @Param("lectureName") String lectureName
+    );
 
     @Query(
             """

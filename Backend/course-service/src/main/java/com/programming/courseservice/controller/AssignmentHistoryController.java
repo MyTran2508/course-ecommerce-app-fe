@@ -64,15 +64,17 @@ public class AssignmentHistoryController extends BaseApiImpl<AssignmentHistory, 
 
     @GetMapping("/get-keyword-username")
     public DataResponse<List<String>> getKeywordUsername(
-            @RequestParam("creator") String creator
+            @RequestParam("creator") String creator,
+            @RequestParam("username") String username
     ) {
-        return assignmentHistoryService.getKeywordUsername(creator);
+        return assignmentHistoryService.getKeywordUsername(creator, username);
     }
 
     @GetMapping("/get-keyword-lecture-name")
     public DataResponse<List<String>> getKeywordLectureName(
-            @RequestParam("creator") String creator
+            @RequestParam("creator") String creator,
+            @RequestParam("lectureName") String lectureName
     ) {
-        return assignmentHistoryService.getKeywordLectureName(creator);
+        return assignmentHistoryService.getKeywordLectureName(creator, lectureName);
     }
 }

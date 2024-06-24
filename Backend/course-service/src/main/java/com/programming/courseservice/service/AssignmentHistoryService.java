@@ -151,13 +151,13 @@ public class AssignmentHistoryService extends BaseServiceImpl<AssignmentHistory,
                 .toList());
     }
 
-    public DataResponse<List<String>> getKeywordUsername(String creator) {
+    public DataResponse<List<String>> getKeywordUsername(String creator, String username) {
 
 
-        return ResponseMapper.toDataResponseSuccess(assignmentHistoryRepository.getKeywordUsername(creator));
+        return ResponseMapper.toDataResponseSuccess(assignmentHistoryRepository.getKeywordUsername(creator, username));
     }
 
-    public DataResponse<List<String>> getKeywordLectureName(String creator) {
-        return ResponseMapper.toDataResponseSuccess(assignmentHistoryRepository.getKeywordLectureName(creator));
+    public DataResponse<List<String>> getKeywordLectureName(String creator, String lectureName) {
+        return ResponseMapper.toDataResponseSuccess(assignmentHistoryRepository.getKeywordLectureName(creator, lectureName));
     }
 }
