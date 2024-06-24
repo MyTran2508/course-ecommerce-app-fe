@@ -9,7 +9,6 @@ import com.programming.courseservice.domain.dto.QuestionDto;
 import com.programming.courseservice.domain.persistent.entity.Question;
 import com.programming.courseservice.service.QuestionService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

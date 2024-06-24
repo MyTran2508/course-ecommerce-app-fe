@@ -152,8 +152,6 @@ public class AssignmentHistoryService extends BaseServiceImpl<AssignmentHistory,
     }
 
     public DataResponse<List<String>> getKeywordUsername(String creator, String username) {
-
-
         return ResponseMapper.toDataResponseSuccess(assignmentHistoryRepository.getKeywordUsername(creator, username));
     }
 

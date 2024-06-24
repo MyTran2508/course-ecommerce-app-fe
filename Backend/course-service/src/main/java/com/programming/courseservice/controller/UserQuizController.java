@@ -8,7 +8,6 @@ import com.programming.courseservice.domain.dto.UserQuizDto;
 import com.programming.courseservice.domain.persistent.entity.UserQuiz;
 import com.programming.courseservice.service.UserQuizService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

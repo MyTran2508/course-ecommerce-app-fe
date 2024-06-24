@@ -4,13 +4,8 @@ import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import static java.util.Collections.emptySet;
 
 @AllArgsConstructor
 @NoArgsConstructor

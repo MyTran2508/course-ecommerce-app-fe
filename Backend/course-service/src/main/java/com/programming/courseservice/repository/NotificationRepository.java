@@ -12,9 +12,9 @@ public interface NotificationRepository extends BaseRepository<Notification> {
 
     @Query("""
                 SELECT n
-                    FROM Notification n
-                    WHERE n.username = :username
-                    ORDER BY n.created DESC
+                FROM Notification n
+                WHERE n.recipient = :username
+                ORDER BY n.created DESC
             """)
     Page<Notification> getByUsername(String username, Pageable pageable);
 }
