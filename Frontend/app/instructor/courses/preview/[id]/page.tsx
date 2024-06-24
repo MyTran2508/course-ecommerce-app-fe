@@ -20,6 +20,7 @@ import { LectureType, ModuleName } from "@/utils/resources";
 import Quiz from "@/components/Lecture/Quiz/Client/Quiz";
 import { useLazyGetExQuizByIdQuery } from "@/redux/services/quizApi";
 import withAuth from "@/hoc/withAuth";
+import AssignmentPractice from "@/components/Assignment/AssignmentPractice";
 
 function PreviewPage() {
   const param = useParams();
@@ -136,12 +137,17 @@ function PreviewPage() {
                   //   />
                   // </div>
                   <Fragment>
-                    {lecture.lectureType === LectureType.DOCUMENT ? (
+                    {lecture.lectureType === LectureType.DOCUMENT && (
                       <PDFViewer
                         fileBase64={fileBase64 as string}
                         setReadDocComplete={setReadDocComplete}
                         lectureUrl={lecture?.url as string}
                       />
+                    )}
+                    {lecture.lectureType === LectureType.ASSIGNMENT ? (
+                      <div className="h-[600px] custom-scrollbar overflow-y-auto">
+                        <AssignmentPractice lecture={lecture} />
+                      </div>
                     ) : (
                       <Fragment>
                         <div className="text-xl font-bold my-2 ml-10">

@@ -32,6 +32,7 @@ import {
   renderTargetConsumers,
 } from "@/app/(root)/course/[id]/page";
 import { current } from "@reduxjs/toolkit";
+import AssignmentPractice from "@/components/Assignment/AssignmentPractice";
 
 function PageLearning() {
   const param = useParams();
@@ -279,13 +280,19 @@ function PageLearning() {
                         />
                       ) : (
                         <Fragment>
-                          <div className="text-xl font-bold my-2 ml-10 xs:ml-[20px]">
-                            {"Bài Kiểm Tra: " + lecture?.name}
-                          </div>
-                          <Quiz
-                            exQuiz={lecture.exQuiz as ExQuiz}
-                            setQuizIsCompleted={setQuizIsComplete}
-                          />
+                          {lecture.lectureType === LectureType.ASSIGNMENT ? (
+                            <AssignmentPractice lecture={lecture} />
+                          ) : (
+                            <Fragment>
+                              <div className="text-xl font-bold my-2 ml-10 xs:ml-[20px]">
+                                {"Bài Kiểm Tra: " + lecture?.name}
+                              </div>
+                              <Quiz
+                                exQuiz={lecture.exQuiz as ExQuiz}
+                                setQuizIsCompleted={setQuizIsComplete}
+                              />
+                            </Fragment>
+                          )}
                         </Fragment>
                       )}
                     </Fragment>
@@ -344,7 +351,7 @@ export const calculateProgress = (
   const targetLectureNumber = lectureId;
 
   if (targetLectureNumber === undefined) return 0;
-  sections.some((section) => {
+  sections?.some((section) => {
     return (section.lectures as Lecture[])
       .filter((lecture) => lecture.ordinalNumber !== -1)
       .some((lecture, index) => {
