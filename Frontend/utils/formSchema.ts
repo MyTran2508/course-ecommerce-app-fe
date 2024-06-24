@@ -1,5 +1,7 @@
 import * as z from "zod";
 import { newLineRegex, phoneNumberRegExp, urlRegex } from "./regex";
+import { title } from "process";
+import { url } from "inspector";
 
 export const formSignUpSchema = z.object({
   username: z.string().min(6, "Username must contain at least 6 character(s)"),
@@ -44,39 +46,48 @@ export const formLoginSchema = z.object({
     .min(8, "Password must have than 8 character(s)"),
 });
 
-export const formPersonalSchema = z.object({
-  username: z.string(),
-  email: formSignUpSchema.shape.email,
-  firstName: formSignUpSchema.shape.firstName,
-  lastName: formSignUpSchema.shape.lastName,
-  addressLine: formSignUpSchema.shape.addressLine,
-  telephone: formSignUpSchema.shape.telephone,
-  photos: z.string(),
-  role: z.string()
-}).strict()
+export const formPersonalSchema = z
+  .object({
+    username: z.string(),
+    email: formSignUpSchema.shape.email,
+    firstName: formSignUpSchema.shape.firstName,
+    lastName: formSignUpSchema.shape.lastName,
+    addressLine: formSignUpSchema.shape.addressLine,
+    telephone: formSignUpSchema.shape.telephone,
+    photos: z.string(),
+    role: z.string(),
+  })
+  .strict();
 
-export const formResetPasswordSchema = z.object({
-  old_password: formSignUpSchema.shape.password,
-  new_password: formSignUpSchema.shape.password,
-  re_password: formSignUpSchema.shape.re_password
-}).strict().refine((data) => data.new_password === data.re_password, {
-  path: ["re_password"],
-  message: "Passwords do not match",
-})
+export const formResetPasswordSchema = z
+  .object({
+    old_password: formSignUpSchema.shape.password,
+    new_password: formSignUpSchema.shape.password,
+    re_password: formSignUpSchema.shape.re_password,
+  })
+  .strict()
+  .refine((data) => data.new_password === data.re_password, {
+    path: ["re_password"],
+    message: "Passwords do not match",
+  });
 
-export const formForgotPasswordSchema = z.object({
-  email: formSignUpSchema.shape.email,
-  new_password: formSignUpSchema.shape.password,
-  re_password: formSignUpSchema.shape.re_password
-}).strict().refine((data) => data.new_password === data.re_password, {
-  path: ["re_password"],
-  message: "Passwords do not match",
-})
+export const formForgotPasswordSchema = z
+  .object({
+    email: formSignUpSchema.shape.email,
+    new_password: formSignUpSchema.shape.password,
+    re_password: formSignUpSchema.shape.re_password,
+  })
+  .strict()
+  .refine((data) => data.new_password === data.re_password, {
+    path: ["re_password"],
+    message: "Passwords do not match",
+  });
 
-export const formValidateEmailSchema = z.object({
-  email: formSignUpSchema.shape.email,
-}).strict()
-
+export const formValidateEmailSchema = z
+  .object({
+    email: formSignUpSchema.shape.email,
+  })
+  .strict();
 
 export const formCourseInformationSchema = z.object({
   name: z.string().min(1).max(255),
@@ -90,13 +101,28 @@ export const formCourseInformationSchema = z.object({
 });
 
 export const formCourseContentSchema = z.object({
-  requirement: z.string().min(1).refine((value) => !newLineRegex.test(value), {
-    message: "Vui Lòng Không Điền /n",
-  }),
-  detail:z.string().min(1).refine((value) => !newLineRegex.test(value), {
-    message: "Vui Lòng Không Điền /n",
-  }),
-  targetConsumer: z.string().min(1).refine((value) => !newLineRegex.test(value), {
-    message: "Vui Lòng Không Điền /n",
-  }),
-})
+  requirement: z
+    .string()
+    .min(1)
+    .refine((value) => !newLineRegex.test(value), {
+      message: "Vui Lòng Không Điền /n",
+    }),
+  detail: z
+    .string()
+    .min(1)
+    .refine((value) => !newLineRegex.test(value), {
+      message: "Vui Lòng Không Điền /n",
+    }),
+  targetConsumer: z
+    .string()
+    .min(1)
+    .refine((value) => !newLineRegex.test(value), {
+      message: "Vui Lòng Không Điền /n",
+    }),
+});
+
+export const formAssignmentBasicInfoSchema = z.object({
+  title: z.string().min(1).max(255),
+  description: z.string().min(1).max(255),
+  estimatedDuration: z.coerce.number().positive(),
+});

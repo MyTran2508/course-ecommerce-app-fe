@@ -3,7 +3,7 @@ import SideBar from "../../../SideBar";
 import Navbar from "./Navbar";
 import Footer from "@/components/Footer/Footer";
 
-function layout({ children }: { children: React.ReactNode }) {
+function LayoutManage({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col">
       <Navbar />
@@ -16,4 +16,4 @@ function layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default layout;
+export default LayoutManage;

@@ -74,3 +74,8 @@ export const KeywordTypeSearchBill: KeywordTypeSearchType[] = [
   { id: "0", name: "Username", icon: "MdDriveFileRenameOutline" },
   { id: "1", name: "Price", icon: "FaMoneyBillWave" },
 ];
+
+export const KeywordTypeSearchAssignmentHistory: KeywordTypeSearchType[] = [
+  { id: "0", name: "Username", icon: "MdDriveFileRenameOutline" },
+  { id: "1", name: "LectureName", icon: "MdOutlineEmail" },
+];
