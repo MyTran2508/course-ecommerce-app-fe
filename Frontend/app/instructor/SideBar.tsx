@@ -1,6 +1,7 @@
 "use client";
 import withAuth from "@/hoc/withAuth";
-import { useAppSelector } from "@/redux/hooks/reduxHooks";
+import { setParamCourseId } from "@/redux/features/courseSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Constant, ModuleName } from "@/utils/resources";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,7 +12,10 @@ import { MdOutlineDescription } from "react-icons/md";
 function SideBar() {
   const id = useAppSelector((state) => state.courseReducer.courseId);
   const path = usePathname();
+  const dispatch = useAppDispatch();
   const [activeLink, setActiveLink] = useState<string>(path);
+  const courseId = path.split("/")[3];
+  dispatch(setParamCourseId(courseId));
 
   const handleLinkClick = (path: string) => {
     setActiveLink(path);
