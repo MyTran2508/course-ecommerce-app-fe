@@ -9,6 +9,7 @@ export enum Constant {
   USER_PERSONAL_PATH = "/user/personal",
   USER_SECURITY_PATH = "/user/security",
   ADMIN_USER_PATH = "/admin/user",
+  ADMIN_USER_HISTORY_PATH = "/admin/user-history",
   ADMIN_COURSE_PATH = "/admin/courses",
   ADMIN_DASHBOARD_PATH = "/admin/overview",
   ADMIN_ROLE_PATH = "/admin/role",
@@ -17,6 +18,10 @@ export enum Constant {
   MANAGER_BASICS_PATH = "/manage/basics",
   MANAGER_CONTENT_PATH = "/manage/content",
   MANAGER_CURRICULUM_PATH = "/manage/curriculum",
+  MANAGER_PRACTICE_BASIC_PATH = "/manage/practice/basic-info",
+  MANAGER_PRACTICE_INSTRUCTION_PATH = "/manage/practice/instructions",
+  MANAGER_PRACTICE_SOLUTION_PATH = "/manage/practice/solutions",
+  MANAGER_PRACTICE_QUESTIONS_PATH = "/manage/practice/questions",
 }
 
 export const DEFAULT_PAGE_SIZE = 1000;
@@ -36,6 +41,7 @@ export enum Action {
   DISLIKE = "DISLIKE",
   SEARCH_COURSE_CLIENT = "SEARCH_COURSE_CLIENT",
   SEARCH_COURSE_ADMIN = "SEARCH_COURSE_ADMIN",
+  SEARCH_ASSIGNMENT_HISTORY = "SEARCH_ASSIGNMENT_HISTORY",
   SEARCH_BILL = "SEARCH_BILL",
   SEARCH_BY_HISTORY = "SEARCH_BY_HISTORY",
   SEARCH_USER = "SEARCH_USER",
@@ -56,6 +62,7 @@ export enum ToastStatus {
   SUCCESS = "success",
   WARNING = "warning",
   ERROR = "error",
+  INFO = "info",
 }
 
 export enum ToastMessage {
@@ -148,6 +155,7 @@ export enum LectureType {
   EXERCISE_CODING = "EXERCISE_CODING",
   EXERCISE_PRACTICAL = "EXERCISE_PRACTICAL",
   QUIZ_TEST = "QUIZ_TEST",
+  ASSIGNMENT = "ASSIGNMENT",
 }
 
 export enum CourseLectureField {
@@ -206,6 +214,11 @@ export enum Fields {
   NAME = "Name",
   Subtitle = "Subtitle",
   Price = "Price",
+  LectureName = "LectureName",
+  ASSIGNMENT_VIDEO_INSTRUCTIONS = "Assignment Video Instructions",
+  ASSIGNMENT_RESOURCE_INSTRUCTIONS = "Assignment Resource Instructions",
+  ASSIGNMENT_VIDEO_SOLUTION = "Assignment Video Solution",
+  ASSIGNMENT_FILE_SOLUTION = "Assignment File Solution",
 }
 export enum PermissionName {
   CAN_VIEW = "canView",
@@ -225,4 +238,6 @@ export enum ModuleSearch {
   ORDER = "ORDER",
 
   USER_LOG = "USER_LOG",
+
+  ASSIGNMENT_HISTORY = "ASSIGNMENT_HISTORY",
 }

@@ -1,5 +1,7 @@
 import { QuizType } from "@/utils/resources";
 import Content from "./content.type";
+import { assign } from "lodash";
+import { Assignment } from "./assignment.type";
 
 export interface Section {
   id?: string;
@@ -21,6 +23,7 @@ export interface Lecture {
   exQuiz?: ExQuiz;
   isSuccess?: boolean;
   description?: string;
+  assignment?: Assignment;
 }
 export interface ExQuiz {
   id?: string;

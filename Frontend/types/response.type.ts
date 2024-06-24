@@ -10,7 +10,7 @@ import Content from "./content.type";
 import { Course } from "./course.type";
 import { CourseProcess } from "./courseProcess.type";
 import { RecentSearchHistoryDto, User } from "./user.type";
-import { Question, UserQuiz } from "./section.type";
+import { Lecture, Question, UserQuiz } from "./section.type";
 import { Review } from "./review.type";
 import { ForumLecture } from "./forumLecture";
 import { Roles, UserRoles } from "./roles.type";
@@ -39,7 +39,8 @@ export interface DataResponse {
     | UserQuiz
     | Review
     | Roles
-    | UserRoles;
+    | UserRoles
+    | Lecture;
 }
 
 export interface ListResponse {
