@@ -4,10 +4,17 @@ import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
+import com.main.progamming.common.util.SystemUtil;
 import com.programming.userservice.domain.dto.RoleDto;
 import com.programming.userservice.domain.dto.UserRolesDto;
 import com.programming.userservice.domain.persistent.entity.Role;
+import com.programming.userservice.domain.persistent.entity.User;
+import com.programming.userservice.domain.persistent.entity.UserLog;
+import com.programming.userservice.domain.persistent.enumrate.ActionName;
+import com.programming.userservice.domain.persistent.enumrate.ActionObject;
+import com.programming.userservice.repository.RoleRepository;
 import com.programming.userservice.service.RoleService;
+import com.programming.userservice.service.UserLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +28,10 @@ public class RoleController extends BaseApiImpl<Role, RoleDto> {
 
     private final RoleService roleService;
 
+    private final RoleRepository roleRepository;
+
+    private final UserLogService userLogService;
+
     @Override
     protected BaseService<Role, RoleDto> getBaseService() {
         return this.roleService;
@@ -28,7 +39,27 @@ public class RoleController extends BaseApiImpl<Role, RoleDto> {
 
     @Override
     public DataResponse<String> add(RoleDto roleDto) {
-        return super.add(roleDto);
+
+        DataResponse<String> response = super.add(roleDto);
+
+        String stResult = response.getData();
+
+        String roleId = stResult.split(": ")[1].trim();
+
+        Role role = roleRepository.findById(roleId).orElse(null);
+
+        // Add log
+        UserLog userLog = UserLog.builder()
+                .userName(SystemUtil.getCurrentUsername())
+                .ip(SystemUtil.getUserIP())
+                .actionKey(roleId)
+                .actionObject(ActionObject.ROLE)
+                .actionName(ActionName.CREATE)
+                .description(userLogService.writePersistLog(Role.class, role, true, 0))
+                .build();
+        userLogService.addLog(userLog);
+
+        return response;
     }
 
     @Override

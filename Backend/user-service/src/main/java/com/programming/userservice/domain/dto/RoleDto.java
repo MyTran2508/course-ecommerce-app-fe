@@ -1,6 +1,7 @@
 package com.programming.userservice.domain.dto;
 
 import com.programming.userservice.domain.persistent.entity.RoleDetail;
+import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,8 @@ public class RoleDto implements Serializable {
     private String name;
 
     private String description;
+
+    private RoleUser roleUser;
 
     private List<RoleDetailDto> roleDetails;
 

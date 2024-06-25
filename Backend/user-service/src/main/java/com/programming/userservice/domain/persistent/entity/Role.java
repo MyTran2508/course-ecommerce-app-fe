@@ -32,6 +32,7 @@ public class Role extends BaseModel {
     private String description;
 
     @Column(name = "role_user")
+    @Enumerated(EnumType.STRING)
     private RoleUser roleUser;
 
     @ManyToMany()

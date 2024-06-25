@@ -3,12 +3,14 @@ package com.programming.userservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.NotPermissionException;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
 import com.main.progamming.common.util.SystemUtil;
 import com.programming.userservice.domain.dto.*;
+import com.programming.userservice.domain.mapper.UserMapper;
 import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.domain.persistent.entity.UserLog;
 import com.programming.userservice.domain.persistent.enumrate.ActionName;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -42,6 +45,8 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     private final UserService userService;
 
     private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -96,19 +101,46 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
 //    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
+        User user = optionalUser.get();
 
-//        RoleDto role = new RoleDto(RoleUser.USER.getValue());
-//        objectDTO.setRoles(List.of(role));
+        DataResponse<UserDto> response = super.update(objectDTO, id);
 
-        return super.update(objectDTO, id);
+        // Add log
+        UserLog userLog = UserLog.builder()
+                .userName(SystemUtil.getCurrentUsername())
+                .ip(SystemUtil.getUserIP())
+                .actionKey(id)
+                .actionObject(ActionObject.USER)
+                .actionName(ActionName.UPDATE)
+                .description(userLogService.writeUpdateLog(User.class, user, userMapper.dtoToEntity(response.getData()), true, 0))
+                .build();
+
+        userLogService.addLog(userLog);
+        
+        return response;
     }
 
     @ShowOpenAPI
     @PutMapping("/update-admin/{id}")
     public DataResponse<UserDto> updateAdminUser(@Valid @RequestBody UserDto userDto,
                                                     @PathVariable("id") String id) {
+        Optional<User> optionalUser = userRepository.findById(id);
 
-        return userService.updateAdminUser(userDto, id);
+        if (optionalUser.isEmpty()) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
+
+        User user = optionalUser.get();
+
+        DataResponse<UserDto> response = userService.updateAdminUser(userDto, id);
+
+        userLogService.writeUpdateLog(User.class, user, userMapper.dtoToEntity(response.getData()), true, 0);
+
+        return response;
     }
 
     @PostMapping("/login")

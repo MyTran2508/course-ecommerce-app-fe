@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ActionObject {
     USER("Tài khoản"),
 
+    ROLE("Quyền"),
+
     ORDER("Hóa đơn"),
 
     COURSE("Khóa học"),

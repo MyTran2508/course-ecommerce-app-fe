@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/users/notification")
+@RequestMapping("/api/courses/notification")
 public class NotificationController extends BaseApiImpl<Notification, NotificationDto> {
 
     private final NotificationService notificationService;
