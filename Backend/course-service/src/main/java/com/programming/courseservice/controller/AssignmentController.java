@@ -54,7 +54,7 @@ public class AssignmentController extends BaseApiImpl<Assignment, AssignmentDto>
         UserLog userLog = UserLog.builder()
                 .userName(SystemUtil.getCurrentUsername())
                 .ip(SystemUtil.getUserIP())
-                .actionKey(id)
+                .actionKey("LectureID: " + id)
                 .actionObject(ActionObject.ASSIGNMENT)
                 .actionName(ActionName.UPDATE)
                 .description(userLogService.writeUpdateLog(Assignment.class, assignment, assignmentMapper.dtoToEntity(response.getData()), true, 0))
@@ -76,14 +76,14 @@ public class AssignmentController extends BaseApiImpl<Assignment, AssignmentDto>
         DataResponse<String> response =  super.add(objectDTO);
 
         String stResult = response.getData();
-        String userId = stResult.split(": ")[1].trim();
-        Assignment entity = assignmentRepository.findById(userId).orElse(null);
+        String id = stResult.split(": ")[1].trim();
+        Assignment entity = assignmentRepository.findById(id).orElse(null);
 
         // Add log
         UserLog userLog = UserLog.builder()
                 .userName(SystemUtil.getCurrentUsername())
                 .ip(SystemUtil.getUserIP())
-                .actionKey(userId)
+                .actionKey("LectureID: " + id)
                 .actionObject(ActionObject.ASSIGNMENT)
                 .actionName(ActionName.CREATE)
                 .description(userLogService.writePersistLog(Assignment.class, entity, true, 0))
