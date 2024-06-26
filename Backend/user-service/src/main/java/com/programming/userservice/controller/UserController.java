@@ -120,7 +120,7 @@ public class UserController extends BaseApiImpl<User, UserDto> {
                 .build();
 
         userLogService.addLog(userLog);
-        
+
         return response;
     }
 

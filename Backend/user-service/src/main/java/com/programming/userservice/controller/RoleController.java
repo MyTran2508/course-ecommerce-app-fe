@@ -39,13 +39,9 @@ public class RoleController extends BaseApiImpl<Role, RoleDto> {
 
     @Override
     public DataResponse<String> add(RoleDto roleDto) {
-
         DataResponse<String> response = super.add(roleDto);
-
         String stResult = response.getData();
-
         String roleId = stResult.split(": ")[1].trim();
-
         Role role = roleRepository.findById(roleId).orElse(null);
 
         // Add log
