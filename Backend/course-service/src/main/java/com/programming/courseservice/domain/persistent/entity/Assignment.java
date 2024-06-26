@@ -1,6 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,5 +41,6 @@ public class Assignment extends BaseModel {
 
     @OneToOne(targetEntity = Lecture.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", foreignKey = @ForeignKey(name = "fk_assignment_lecture_id"))
+    @ExcludeFromComparisonField
     private Lecture lecture;
 }

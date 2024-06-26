@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ActionObject {
+
     USER("Tài khoản"),
 
     ROLE("Quyền"),
@@ -16,7 +17,9 @@ public enum ActionObject {
 
     COURSE_REVIEWS("Đánh giá khóa học"),
 
-    COURSE_PROGRESS("Tiến độ khóa học");
+    COURSE_PROGRESS("Tiến độ khóa học"),
+
+    ASSIGNMENT("Bài tập Tự Luận");
 
     private final String value;
 }

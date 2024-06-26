@@ -1,12 +1,14 @@
 package com.programming.userservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
 import com.main.progamming.common.util.SystemUtil;
 import com.programming.userservice.domain.dto.RoleDto;
 import com.programming.userservice.domain.dto.UserRolesDto;
+import com.programming.userservice.domain.mapper.RoleMapper;
 import com.programming.userservice.domain.persistent.entity.Role;
 import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.domain.persistent.entity.UserLog;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users/role")
@@ -31,6 +35,8 @@ public class RoleController extends BaseApiImpl<Role, RoleDto> {
     private final RoleRepository roleRepository;
 
     private final UserLogService userLogService;
+
+    private final RoleMapper roleMapper;
 
     @Override
     protected BaseService<Role, RoleDto> getBaseService() {
@@ -64,7 +70,27 @@ public class RoleController extends BaseApiImpl<Role, RoleDto> {
 
     @Override
     public DataResponse<RoleDto> update(RoleDto roleDto, String id) {
-        return super.update(roleDto, id);
+        Optional<Role> optionalRole = roleRepository.findById(id);
+        if (optionalRole.isEmpty()) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
+        Role role = optionalRole.get();
+
+        DataResponse<RoleDto> response = super.update(roleDto, id);
+
+        // Add log
+        UserLog userLog = UserLog.builder()
+                .userName(SystemUtil.getCurrentUsername())
+                .ip(SystemUtil.getUserIP())
+                .actionKey(id)
+                .actionObject(ActionObject.ROLE)
+                .actionName(ActionName.UPDATE)
+                .description(userLogService.writeUpdateLog(Role.class, role, roleMapper.dtoToEntity(response.getData()), true, 0))
+                .build();
+
+        userLogService.addLog(userLog);
+
+        return response;
     }
 
     @Override
