@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ActionName {
+
     GET("Lấy dữ liệu"),
 
     CREATE("Tạo dữ liệu"),

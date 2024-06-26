@@ -9,8 +9,6 @@ import com.main.progamming.common.response.ResponseMapper;
 import com.programming.userservice.domain.persistent.entity.UserLog;
 import com.programming.userservice.repository.UserLogRepository;
 import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
-import com.programming.userservice.utilities.log.ComparisonResults;
-import jakarta.persistence.Id;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -71,7 +69,7 @@ public class UserLogService {
                 if(!field.isAnnotationPresent(ExcludeFromComparisonField.class)) {
                     if(List.class.isAssignableFrom(field.getType())) {
                         merginCount += 2;
-                        if(newFieldValue != null && oldFieldValue != null) {
+                        if(newFieldValue != null) {
                             int index = 0;
                             for(Object nObject: (List<?>) newFieldValue) {
                                 Object oObject = ((List<?>) oldFieldValue).get(index);
