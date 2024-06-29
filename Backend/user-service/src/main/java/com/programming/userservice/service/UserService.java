@@ -376,4 +376,22 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
         userRepository.save(user);
         return ResponseMapper.toDataResponseSuccess("Set user is author successfully");
     }
+
+    public DataResponse<List<String>> getUsernameOfAllAdmin() {
+        List<User> users = userRepository.findAll();
+        List<String> result = new ArrayList<>();
+
+        for (User user: users) {
+            boolean isAdmin = false;
+            List<Role> roles = user.getRoles();
+            if (!roles.isEmpty()) {
+                isAdmin = roles.stream().anyMatch(role -> role.getRoleUser().equals(RoleUser.MANAGER));
+            }
+            if (isAdmin) {
+                result.add(user.getUsername());
+            }
+        }
+
+        return ResponseMapper.toDataResponseSuccess(result);
+    }
 }

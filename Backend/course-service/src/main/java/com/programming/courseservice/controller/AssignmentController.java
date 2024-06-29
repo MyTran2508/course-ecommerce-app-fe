@@ -14,7 +14,7 @@ import com.programming.courseservice.domain.persistent.enumrate.ActionObject;
 import com.programming.courseservice.repository.AssignmentRepository;
 import com.programming.courseservice.service.AssignmentService;
 import com.programming.courseservice.service.UserLogService;
-import com.programming.courseservice.utilities.communication.UserLogApi;
+import com.programming.courseservice.utilities.communication.UserApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +33,7 @@ public class AssignmentController extends BaseApiImpl<Assignment, AssignmentDto>
 
     private final AssignmentMapper assignmentMapper;
 
-    private final UserLogApi userLogApi;
+    private final UserApi userApi;
 
     @Override
     protected BaseService<Assignment, AssignmentDto> getBaseService() {
@@ -60,7 +60,7 @@ public class AssignmentController extends BaseApiImpl<Assignment, AssignmentDto>
                 .description(userLogService.writeUpdateLog(Assignment.class, assignment, assignmentMapper.dtoToEntity(response.getData()), true, 0))
                 .build();
 
-        userLogApi.addUserLog(userLog);
+        userApi.addUserLog(userLog);
 
         return response;
     }
@@ -89,7 +89,7 @@ public class AssignmentController extends BaseApiImpl<Assignment, AssignmentDto>
                 .description(userLogService.writePersistLog(Assignment.class, entity, true, 0))
                 .build();
 
-        userLogApi.addUserLog(userLog);
+        userApi.addUserLog(userLog);
 
         return response;
     }

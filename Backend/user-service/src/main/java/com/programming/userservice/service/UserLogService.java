@@ -9,6 +9,7 @@ import com.main.progamming.common.response.ResponseMapper;
 import com.programming.userservice.domain.persistent.entity.UserLog;
 import com.programming.userservice.repository.UserLogRepository;
 import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
+import com.programming.userservice.utilities.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,35 +59,47 @@ public class UserLogService {
         // init log
         StringBuilder result = new StringBuilder();
         if(isPrimary) {
-            result.append("Mô tả chi tiết: \\n");
-            result.append("- ");
+            result.append(UserConstant.PREFIX_USER_LOG);
         }
         try {
             for (Field field: clazz.getDeclaredFields()) {
                 field.setAccessible(true);
-                Object newFieldValue = field.get(newObject);
                 Object oldFieldValue = field.get(oldObject);
+                Object newFieldValue = field.get(newObject);
                 if(!field.isAnnotationPresent(ExcludeFromComparisonField.class)) {
                     if(List.class.isAssignableFrom(field.getType())) {
                         merginCount += 2;
+                        System.out.println(newFieldValue.toString());
+                        System.out.println(field.getName());
                         if(newFieldValue != null) {
                             int index = 0;
                             for(Object nObject: (List<?>) newFieldValue) {
+                                System.out.println("New");
+                                System.out.println(nObject.toString());
                                 Object oObject = ((List<?>) oldFieldValue).get(index);
-                                result.append(field.getName().trim()).append(": <\\n");
-                                result.append("\\ml-").append(merginCount)
+                                System.out.println("Old");
+                                System.out.println(oldObject.toString());
+                                StringBuilder logList = new StringBuilder();
+                                logList.append(field.getName().trim()).append(": <\\n");
+                                logList.append("\\ml-").append(merginCount)
                                         .append(writeUpdateLog(nObject.getClass(), oObject, nObject, false, merginCount));
-                                result.append("\\eml").append("\\n>; ");
+                                logList.append("\\eml").append("\\n>; ");
+                                System.out.println("logList: " + logList.toString());
+                                if (!Objects.equals(logList.toString(), field.getName().trim() + ": <\\n\\ml-2\\eml\\n>; ")) {
+                                    result.append(logList);
+                                }
                                 index++;
                             }
                         }
                         merginCount -= 2;
                     }
-                } else {
-                    if (!Objects.equals(newFieldValue, oldFieldValue)) {
-                        result.append(field.getName().trim()).append(": từ <")
-                                .append(newFieldValue == null ? "N/A" : newFieldValue).append("> thành <")
-                                .append(oldFieldValue == null ? "N/A" : oldFieldValue).append(">; ");
+                    else {
+                        if (!Objects.equals(newFieldValue, oldFieldValue)) {
+
+                            result.append(field.getName().trim()).append(": từ <")
+                                    .append(oldFieldValue == null ? "N/A" : oldFieldValue).append("> thành <")
+                                    .append(newFieldValue == null ? "N/A" : newFieldValue).append(">; ");
+                        }
                     }
                 }
             }
@@ -101,8 +114,7 @@ public class UserLogService {
         // init log
         StringBuilder result = new StringBuilder();
         if(isPrimary) {
-            result.append("Mô tả chi tiết: \\n");
-            result.append("- ");
+            result.append(UserConstant.PREFIX_USER_LOG);
         }
 
         try {

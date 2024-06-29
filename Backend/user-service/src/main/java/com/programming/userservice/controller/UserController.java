@@ -19,8 +19,10 @@ import com.programming.userservice.repository.UserRepository;
 import com.programming.userservice.service.UserLogService;
 import com.programming.userservice.service.UserService;
 import com.programming.userservice.utilities.annotation.ShowOpenAPI;
+import com.programming.userservice.utilities.constant.UserConstant;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -103,21 +106,24 @@ public class UserController extends BaseApiImpl<User, UserDto> {
             throw new ResourceNotFoundException(id + " does not exists in DB");
         }
         User user = optionalUser.get();
+        User oldUserClone = new User();
+        BeanUtils.copyProperties(user, oldUserClone);
 
         DataResponse<UserDto> response = super.update(objectDTO, id);
 
         // Add log
-        UserLog userLog = UserLog.builder()
-                .userName(SystemUtil.getCurrentUsername())
-                .ip(SystemUtil.getUserIP())
-                .actionKey(id)
-                .actionObject(ActionObject.USER)
-                .actionName(ActionName.UPDATE)
-                .description(userLogService.writeUpdateLog(User.class, user, userMapper.dtoToEntity(response.getData()), true, 0))
-                .build();
-
-        userLogService.addLog(userLog);
-
+        String description = userLogService.writeUpdateLog(User.class, oldUserClone, userMapper.dtoToEntity(response.getData()), true, 0);
+        if (!Objects.equals(description, UserConstant.PREFIX_USER_LOG)) {
+            UserLog userLog = UserLog.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionKey(id)
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.UPDATE)
+                    .description(description)
+                    .build();
+            userLogService.addLog(userLog);
+        }
         return response;
     }
 
@@ -132,10 +138,24 @@ public class UserController extends BaseApiImpl<User, UserDto> {
         }
 
         User user = optionalUser.get();
+        User oldUserClone = new User();
+        BeanUtils.copyProperties(user, oldUserClone);
 
         DataResponse<UserDto> response = userService.updateAdminUser(userDto, id);
 
-        userLogService.writeUpdateLog(User.class, user, userMapper.dtoToEntity(response.getData()), true, 0);
+        // Add log
+        String description = userLogService.writeUpdateLog(User.class, oldUserClone, userMapper.dtoToEntity(response.getData()), true, 0);
+        if (!Objects.equals(description, UserConstant.PREFIX_USER_LOG)) {
+            UserLog userLog = UserLog.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionKey(id)
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.UPDATE)
+                    .description(description)
+                    .build();
+            userLogService.addLog(userLog);
+        }
 
         return response;
     }
@@ -310,5 +330,10 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PostMapping("/set-user-is-author/{username}")
     public DataResponse<String> setUserIsAuthor(@PathVariable("username") String username) {
         return userService.setUserIsAuthor(username);
+    }
+
+    @GetMapping("/get-username-of-all-admin")
+    public DataResponse<List<String>> getUsernameOfAllAdmin() {
+        return userService.getUsernameOfAllAdmin();
     }
 }
