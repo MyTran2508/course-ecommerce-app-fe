@@ -28,6 +28,7 @@ export enum ShippingMethod {
 }
 
 export interface SearchOrderDto {
+  keyword?: string[];
   searchChooseList?: SearchConditionDto[];
   searchKeywordDtoList?: SearchConditionDto[];
   minPrice?: number | null;

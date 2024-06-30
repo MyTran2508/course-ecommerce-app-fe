@@ -15,6 +15,7 @@ import { Review } from "./review.type";
 import { ForumLecture } from "./forumLecture";
 import { Roles, UserRoles } from "./roles.type";
 import { Order } from "./order.type";
+import { NotificationDTO } from "./notification.type";
 
 export interface DataResponse {
   timestamp: number;
@@ -56,7 +57,8 @@ export interface ListResponse {
     | ForumLecture[]
     | Roles[]
     | RecentSearchHistoryDto[]
-    | Order[];
+    | Order[]
+    | NotificationDTO[];
 }
 
 export interface PageResponse {

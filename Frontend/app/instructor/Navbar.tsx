@@ -102,9 +102,16 @@ function InstructorNavbar() {
               ) ||
                 role?.name == Role.ADMIN) && (
                 <Link href={"/instructor/courses/create"} className="xs:hidden">
-                  Tạo Khóa Học Mới
+                  Create New Course
                 </Link>
               )}
+
+              <Link
+                href={"/instructor/assignment-history"}
+                className="xs:hidden"
+              >
+                Feedback Assignment
+              </Link>
 
               <div>
                 <Menu>

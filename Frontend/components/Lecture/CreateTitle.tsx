@@ -61,7 +61,8 @@ function CreateTitle(props: CreateTitleProps) {
           handleAddSection(newSection);
         } else if (
           type === LectureType.VIDEO ||
-          type === LectureType.DOCUMENT
+          type === LectureType.DOCUMENT ||
+          type === LectureType.ASSIGNMENT
         ) {
           const newLecture: Lecture = {
             name: name,

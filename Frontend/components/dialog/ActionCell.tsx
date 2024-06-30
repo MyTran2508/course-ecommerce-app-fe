@@ -28,16 +28,18 @@ import { setManageCourse } from "@/redux/features/courseSlice";
 import { Order, OrderItem } from "@/types/order.type";
 import OrderDialog from "./OrderDialog";
 import { isPermissionGranted } from "@/utils/function";
+import { AssignmentHistory } from "@/types/assignment.type";
 
 interface ActionCellProps {
   user?: User;
   course?: Course;
   bill?: OrderItem[];
+  assignmentHistory?: AssignmentHistory;
 }
 
 const ActionsCell = (props: ActionCellProps) => {
   const router = useRouter();
-  const { user, course, bill } = props;
+  const { user, course, bill, assignmentHistory } = props;
   const [isOpenUserDialog, setIsOpenUserDialog] = useState(false);
   const [isOpenOrderDialog, setIsOpenOrderDialog] = useState(false);
   const [updateUserAdmin] = useUpdateUserAdminMutation();
@@ -66,6 +68,10 @@ const ActionsCell = (props: ActionCellProps) => {
   const handleViewCourse = () => {
     dispatch(setManageCourse(course as Course));
     router.push(`/instructor/courses/${course?.id}/manage/content`);
+  };
+
+  const handleViewAssignment = () => {
+    router.push(`/instructor/assignment-history/${assignmentHistory?.id}`);
   };
 
   const updateUserActivationStatus = (item: User) => {
@@ -127,6 +133,14 @@ const ActionsCell = (props: ActionCellProps) => {
           {bill ? (
             <Fragment>
               <DropdownMenuItem onClick={() => handleViewOrder()}>
+                Xem Chi Tiết
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </Fragment>
+          ) : null}
+          {assignmentHistory ? (
+            <Fragment>
+              <DropdownMenuItem onClick={() => handleViewAssignment()}>
                 Xem Chi Tiết
               </DropdownMenuItem>
               <DropdownMenuSeparator />

@@ -34,6 +34,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
 import { setKeywordSearchCourse } from "@/redux/features/courseSlice";
+import NotificationPopUp from "../Notification/Notification";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -215,6 +216,7 @@ function Navbar() {
                   <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
                 </div>
               )}
+              <NotificationPopUp />
 
               <div
                 className="flex relative hover:cursor-pointer"

@@ -14,6 +14,7 @@ import FileLecture from "../File/FileLecture";
 import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { isPermissionGranted } from "@/utils/function";
 import { RoleDetail } from "@/types/roles.type";
+import Assignment from "@/components/Assignment/Assignment";
 
 interface SortableItemProp {
   id: string;
@@ -84,6 +85,16 @@ export function SortableItem(props: SortableItemProp) {
         {type === Constant.QUESTION && (
           <AddQuestion
             question={data as object}
+            attributes={attributes}
+            listeners={listeners}
+            canCreate={canCreate}
+            canUpdate={canUpdate}
+          />
+        )}
+        {type === LectureType.ASSIGNMENT && (
+          <Assignment
+            index={index}
+            lecture={data as object}
             attributes={attributes}
             listeners={listeners}
             canCreate={canCreate}
