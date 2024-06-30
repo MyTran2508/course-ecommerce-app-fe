@@ -1043,7 +1043,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
         )}
         <div className="flex gap-1 min-w-[600px]">
           <div className="flex gap-1 border rounded-sm p-1 overflow-x-auto custom-scrollbar bg-white w-full">
-            <div className="flex">
+            <div className="flex items-center justify-center">
               {listKeywordTypeSearchRequest.map((item, index) => (
                 <div key={index} className="flex gap-1 mx-2">
                   <div

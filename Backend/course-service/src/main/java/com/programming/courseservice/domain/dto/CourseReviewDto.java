@@ -36,4 +36,6 @@ public class CourseReviewDto implements Serializable {
     private Boolean isUserLiking;
 
     private Boolean isUserDisliking;
+
+    private Long created;
 }

@@ -341,15 +341,15 @@ function Navbar() {
               </div>
 
               <CustomButton
-                title="Login"
-                containerStyles=" xs:hidden bg-white-500 border-b-4 border-main-colors hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                title="Log in"
+                containerStyles="xs:hidden text-[13px] bg-white-500 hover:bg-gray-300 text-black font-bold py-2 px-4 duration-1000 border border-gray-700"
                 handleClick={() => {
                   router.push("/login");
                 }}
               ></CustomButton>
               <CustomButton
-                title="SignUp"
-                containerStyles="xs:hidden bg-white-500  border-b-4 border-main-colors hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                title="Sign up"
+                containerStyles="xs:hidden text-[13px] bg-white-500 text-white font-bold py-2 px-4 duration-1000 bg-[#2d2f31] hover:bg-[#3e4143]"
                 handleClick={() => {
                   router.push("/signup");
                 }}

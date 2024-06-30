@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Cart } from "@/types/cart.type";
 import { addToCart } from "@/redux/features/cartSlice";
 import showToast from "@/utils/showToast";
+import { PiSealWarning } from "react-icons/pi";
+import { AiOutlineGlobal } from "react-icons/ai";
 import {
   NotificationMessage,
   ToastMessage,
@@ -201,13 +203,14 @@ function CoursePage() {
     <div className="xl:flex m-2 mt-10 gap-2 font-roboto">
       <Fragment>
         <div className="xl:w-2/3 ml-8 xs:m-6">
-          <div className="text-3xl font-bold mb-6"> {course?.name}</div>
-
+          <div className="text-3xl font-bold mb-6 font-mono"> {course?.name}</div>
+          <div className="text-xl mb-2 font-sans">{course?.subTitle}</div>
+          
           {course.averageRating ? (
             <Fragment>
-              <div className="flex gap-1 items-center mb-5">
+              <div className="flex gap-1 items-center mb-2">
                 <div
-                  className="mr-1 font-bold  text-3xl"
+                  className="mr-1 font-bold text-xl"
                   style={{
                     color: "#ffaa00",
                   }}
@@ -222,7 +225,7 @@ function CoursePage() {
                       <FaStar
                         key={index}
                         fill={"#ffaa00"}
-                        className="text-2xl"
+                        className="text-xl"
                       />
                     );
                   } else if (index === star && halfStar > 0) {
@@ -230,7 +233,7 @@ function CoursePage() {
                       <FaStarHalfAlt
                         key={index}
                         fill={"#ffaa00"}
-                        className="text-2xl"
+                        className="text-xl"
                       />
                     );
                   } else {
@@ -238,7 +241,7 @@ function CoursePage() {
                       <FaRegStar
                         key={index}
                         fill={"#ffaa00"}
-                        className="text-2xl"
+                        className="text-xl"
                       />
                     );
                   }
@@ -271,12 +274,22 @@ function CoursePage() {
               </div>
             </Fragment>
           )}
-
-          <div className="font-light mb-2">{course?.subTitle}</div>
+          <p className="text-sm">Created by <span className="text-[#5022c3] underline">{course.authorName}</span></p>
+          <div className="flex items-center gap-4 mt-2">
+            <div className="flex items-center gap-2">
+              <PiSealWarning />
+              <span className="text-sm">Last updated 6/2024</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <AiOutlineGlobal />
+              <span className="text-sm">{course.language.name}</span>
+            </div>
+          </div>
+          <hr className="my-2" />
           {renderTargetConsumers(description as Description)}
           <div className="">
             {/* sticky top-[80px] z-1 */}
-            <div className="text-2xl font-bold md-6 ">Nội Dung Khóa Học</div>
+            <div className="text-2xl font-bold md-6 font-mono">Nội Dung Khóa Học</div>
             <div className="flex-between my-2 xs:text-[10px]">
               <div className="flex-start xl:gap-2 xs:gap-0.5">
                 <div>{sections?.length} chương</div>
@@ -299,14 +312,14 @@ function CoursePage() {
           {renderRequirement(description as Description)}
           {renderDetails(description as Description)}
           <div className="border rounded-md p-5">
-            <h1 className="text-2xl font-bold">REVIEWS</h1>
+            <h1 className="text-2xl font-bold font-mono mb-3">Reviews</h1>
             {course.averageRating ? (
               <Fragment>
                 <div className="flex gap-2 items-center mb-5">
-                  <div className="mr-1 font-bold text-yellow-400 text-3xl">
+                  <div className="mr-1 font-bold text-yellow-400 text-xl">
                     {course.averageRating}
                   </div>
-                  <div className="flex gap-1 text-2xl">
+                  <div className="flex gap-1 text-xl">
                     {[...Array(5)].map((_, index) => {
                       const star = Math.floor(course.averageRating as number);
                       const halfStar = (course.averageRating as number) - star;
@@ -328,10 +341,10 @@ function CoursePage() {
                 ).map(([star, count]) => (
                   <li key={star} className="flex items-center space-x-2 mb-1">
                     <div className="flex items-center space-x-1">
-                      <span>{star}</span>
+                      <span className="font-mono mr-1">{star}</span>
                       <FaStar fill={"#00000"} />
                     </div>
-                    <div className="bg-slate-400 w-[90%] h-3 rounded-lg">
+                    <div className="bg-slate-200 w-[40%] h-3 rounded-lg my-1">
                       <div
                         className="h-full bg-yellow-400 rounded-lg"
                         style={{ width: `${count}%` }}
@@ -446,14 +459,14 @@ export const renderTargetConsumers = (description: Description) => {
 
     return (
       <Fragment>
-        <div className="text-2xl font-bold md-6 mt-10 mb-5">
+        <div className="text-2xl font-bold md-6 mt-10 mb-5 font-mono">
           Bạn sẽ học được những gì?
         </div>
         <div className="grid grid-cols-2 gap-2 mb-10">
           {targetConsumersList.map((targetConsumer, index) => {
             if (targetConsumer !== "") {
               return (
-                <div key={index} className="flex gap-2">
+                <div key={index} className="flex gap-2 items-center">
                   <IoCheckmarkDone className="text-orange-500 flex-shrink-0" />
                   {targetConsumer}
                 </div>
@@ -477,12 +490,12 @@ export const renderRequirement = (description: Description) => {
     }
     return (
       <Fragment>
-        <div className="text-2xl font-bold md-6 mt-10 mb-5">Yêu Cầu</div>
+        <div className="text-2xl font-bold md-6 mt-10 mb-5 font-mono">Yêu Cầu</div>
 
         {requirementsList.map((requirement, index) => {
           if (requirement !== "") {
             return (
-              <div key={index} className="flex gap-2 mb-5">
+              <div key={index} className="flex gap-2 mb-5 items-center">
                 <IoCheckmarkDone className="text-orange-500 flex-shrink-0" />
                 {requirement}
               </div>
@@ -505,15 +518,15 @@ export const renderDetails = (description: Description) => {
     }
     return (
       <Fragment>
-        <div className="text-2xl font-bold md-6 mt-10 mb-5">
+        <div className="text-2xl font-bold md-6 mt-10 mb-5 font-mono">
           Khóa học giành cho ai?
         </div>
 
         {detailsList.map((detail, index) => {
           if (detail !== "") {
             return (
-              <div key={index} className="flex gap-2 mb-5">
-                <IoCheckmarkDone className="text-orange-500  flex-shrink-0" />
+              <div key={index} className="flex gap-2 mb-5 items-center">
+                <IoCheckmarkDone className="text-orange-500 flex-shrink-0" />
                 {detail}
               </div>
             );
