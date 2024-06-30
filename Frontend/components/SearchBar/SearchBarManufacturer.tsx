@@ -488,14 +488,17 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
       {action !== Action.SEARCH_COURSE_CLIENT && (
         <div className="relative inline-block">
           <button
-            className="border border-gray-300 rounded-md p-[8px] w-max flex gap-2 items-center"
+            className="
+              border border-gray-300 p-[8px] w-max flex gap-1 items-center p-4
+              hover:border-gray-600 hover:bg-gray-200 duration-200 ease-linear text-gray-500
+            "
             onClick={() => handleOpenHistory()}
           >
             {DEFAULT_HISTORY_SEARCH}
-            <FaAngleDown />
+            <FaAngleDown className="text-gray-600 text-sm"/>
           </button>
           {isOpenHistorySearch && (
-            <div className="absolute mt-2 bg-gray-200 w-max rounded-sm z-10">
+            <div className="absolute mt-[2px] bg-[#fff] w-[450px] z-10 rounded-sm shadow-md z-50 border border-gray-300">
               {getRecentSearchSuccess &&
               recentSearch.statusCode === StatusCode.REQUEST_SUCCESS ? (
                 <Fragment>
@@ -582,7 +585,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
 
                       let resultText = listKeywordTypeSearchRequest
                         .map((item) => {
-                          let text = item.keywordTypeSearch?.name + ":= ";
+                          let text = item.keywordTypeSearch?.name + ": = ";
                           if (item.isSuggestion) {
                             text += "@" + item.keyword;
                           } else {
@@ -602,7 +605,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                       return (
                         <div
                           key={item.id}
-                          className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 "
+                          className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 lowercase text-sm"
                           title={resultText}
                           onClick={() => {
                             setListKeywordTypeSearchRequest(
@@ -618,7 +621,8 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                     }
                   )}
                   <div
-                    className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 border-t-[1px] border-black"
+                    className="cursor-pointer py-2 px-4 mt-1 text-sm text-[#737278] hover:bg-gray-200 flex text-center gap-2 
+                    border-t-[1px] border-gray-300"
                     onClick={() =>
                       deleteRecentSearch({
                         username: username,
@@ -640,12 +644,13 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                       })
                     }
                   >
-                    Clear History
+                    Clear recent searches
                   </div>
                 </Fragment>
               ) : (
-                <div className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 border-t-[1px] italic text-sm">
-                  Not Found
+                <div className="cursor-pointer py-2 px-4 flex text-center items-center justify-center 
+                gap-2 border-t-[1px] text-sm rounded-sm text-sm text-[#737278]">
+                  You don't have any recent searches
                 </div>
               )}
             </div>
@@ -1143,36 +1148,36 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
             className="border border-gray-300 rounded-md p-[8px] w-max flex gap-2 items-center"
             onClick={() => handleOpenSort()}
           >
-            Sort
+            Sắp xếp theo
             <FaAngleDown />
           </button>
           {isOpenSort && (
-            <div className="absolute mt-2 bg-gray-200 w-max rounded-sm z-10">
+            <div className="absolute mt-[2px] bg-white border border-gray-300 shadow-md w-max rounded-sm z-10 overflow-hidden">
+              <div
+                className="cursor-pointer py-2 px-4 hover:bg-gray-200  flex text-center gap-2 text-xs"
+                onClick={() => setSort(Action.SORT_BY_CREATED)}
+              >
+                {sort === Action.SORT_BY_CREATED ? (
+                  <TiTickOutline className="text-md text-green-700 mt-[2px]" />
+                ) : (
+                  <TiTickOutline className="text-md text-gray-400 mt-[2px]" />
+                )}
+                Ngày Tạo
+              </div>
               <div
                 className={`${
                   sort === Action.SORT_BY_CREATED
-                    ? "cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2"
-                    : "cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 "
+                    ? "cursor-pointer py-2 px-4 hover:bg-gray-200 flex text-center gap-2 text-xs"
+                    : "cursor-pointer py-2 px-4 hover:bg-gray-200 flex text-center gap-2 text-xs"
                 }`}
                 onClick={() => setSort(Action.SORT_BY_UPDATED)}
               >
                 {sort === Action.SORT_BY_UPDATED ? (
-                  <TiTickOutline className="text-lg text-green-700 mt-[2px]" />
+                  <TiTickOutline className="text-md text-green-700 mt-[2px]" />
                 ) : (
-                  <div className="w-[18px]"></div>
+                  <TiTickOutline className="text-md text-gray-400 mt-[2px]" />
                 )}
-                updated
-              </div>
-              <div
-                className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 "
-                onClick={() => setSort(Action.SORT_BY_CREATED)}
-              >
-                {sort === Action.SORT_BY_CREATED ? (
-                  <TiTickOutline className="text-lg text-green-700 mt-[2px]" />
-                ) : (
-                  <div className="w-[18px]"></div>
-                )}
-                created
+                Ngày Cập Nhật
               </div>
             </div>
           )}

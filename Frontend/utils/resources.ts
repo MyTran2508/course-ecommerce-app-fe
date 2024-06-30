@@ -26,7 +26,7 @@ export enum Constant {
 
 export const DEFAULT_PAGE_SIZE = 1000;
 export const DEFAULT_PAGE_INDEX = 0;
-export const DEFAULT_HISTORY_SEARCH = "History Search";
+export const DEFAULT_HISTORY_SEARCH = "Recent searches ";
 
 export enum Action {
   SENT_OTP = "SENT_OTP",
