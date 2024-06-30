@@ -28,5 +28,5 @@ public class Notification extends BaseModel {
     private String link;
 
     @Column(name = "is_viewed")
-    private String isViewed;
+    private Boolean isViewed;
 }

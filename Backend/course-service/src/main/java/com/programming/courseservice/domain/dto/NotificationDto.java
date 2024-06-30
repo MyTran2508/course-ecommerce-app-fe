@@ -21,5 +21,5 @@ public class NotificationDto implements Serializable {
 
     private String link;
 
-    private String isViewed;
+    private Boolean isViewed;
 }

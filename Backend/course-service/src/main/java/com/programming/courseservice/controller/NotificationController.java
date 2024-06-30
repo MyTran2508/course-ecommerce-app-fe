@@ -9,10 +9,7 @@ import com.programming.courseservice.domain.dto.NotificationDto;
 import com.programming.courseservice.domain.persistent.entity.Notification;
 import com.programming.courseservice.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,5 +43,12 @@ public class NotificationController extends BaseApiImpl<Notification, Notificati
     @Override
     public ListResponse<NotificationDto> searchByKeyword(SearchKeywordDto searchKeywordDto) {
         return super.searchByKeyword(searchKeywordDto);
+    }
+
+    @PostMapping("/set-is-viewed/{id}")
+    public DataResponse<String> setIsViewed(
+            @PathVariable("id") String id
+    ) {
+        return notificationService.setIsViewed(id);
     }
 }

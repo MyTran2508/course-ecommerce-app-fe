@@ -1,6 +1,7 @@
 package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.DataNotFoundException;
 import com.main.progamming.common.model.BaseMapper;
 import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
@@ -76,5 +77,19 @@ public class NotificationService extends BaseServiceImpl<Notification, Notificat
         List<NotificationDto> resultList = savedNotification.stream().map(notificationMapper::entityToDto).toList();
 
         return ResponseMapper.toDataResponseSuccess(resultList);
+    }
+
+    public DataResponse<String> setIsViewed(String id) {
+        Notification notification = notificationRepository.findById(id).orElse(null);
+
+        if (notification == null) {
+            throw new DataNotFoundException(CourseConstrant.ErrorConstrant.ID_NOT_FOUND);
+        }
+
+        notification.setIsViewed(true);
+
+        notificationRepository.save(notification);
+
+        return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPDATE_SUCCESS);
     }
 }
