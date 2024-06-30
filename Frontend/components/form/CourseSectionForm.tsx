@@ -22,24 +22,10 @@ import {
   ToastMessage,
   ToastStatus,
 } from "@/utils/resources";
-import { useUpdateSectionByIdMutation } from "@/redux/services/contentApi";
 import showToast from "@/utils/showToast";
-import { DataResponse } from "@/types/response.type";
-import { Label } from "../ui/label";
-import { AiTwotoneDelete } from "react-icons/ai";
 import { Lecture, Section } from "@/types/section.type";
-import { useUploadSectionFilesMutation } from "@/redux/services/sectionApi";
-import {
-  handleGetDurationFormVideo,
-  isPermissionGranted,
-} from "@/utils/function";
+import { isPermissionGranted } from "@/utils/function";
 import { v4 as uuidv4 } from "uuid";
-import { IoAddOutline } from "react-icons/io5";
-import Loading from "@/app/(root)/user/personal/loading";
-import LectureTypeBox from "../Lecture/LectureTypeBox";
-import AddQuiz from "../Lecture/Quiz/Instructor/AddQuiz";
-import Sorttable from "../Lecture/DragAndDrop/Sorttable";
-import SectionComponent from "../Section/Section";
 import CreateTitle from "../Lecture/CreateTitle";
 import Sortable from "../Lecture/DragAndDrop/Sorttable";
 import { useSectionHooks } from "@/redux/hooks/courseHooks/sectionHooks";

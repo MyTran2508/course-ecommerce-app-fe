@@ -1,6 +1,10 @@
 import { setKeywordSearchCourse } from "@/redux/features/courseSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import {
+  useLazyGetKeywordLectureNameQuery,
+  useLazyGetKeywordUserNameQuery,
+} from "@/redux/services/assignmentHistoryApi";
+import {
   useGetAllCourseQuery,
   useLazyGetAllCourseQuery,
   useLazyGetCourseSearchQuery,
@@ -21,6 +25,7 @@ import {
 import { RecentSearchHistoryDto, User } from "@/types/user.type";
 import {
   ComparisonOperators,
+  KeywordTypeSearchAssignmentHistory,
   KeywordTypeSearchBill,
   KeywordTypeSearchCourse,
   KeywordTypeSearchType,
@@ -60,6 +65,14 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
     useLazyGetCourseSearchQuery();
   const [getUserSearch, { data: users, isSuccess: getUserSuccess }] =
     useLazyGetUserSearchQuery();
+  const [
+    getKeywordLectureName,
+    { data: lectureNameList, isSuccess: getLectureNameListSuccess },
+  ] = useLazyGetKeywordLectureNameQuery();
+  const [
+    getKeywordUserName,
+    { data: userNameList, isSuccess: getUserNameListSuccess },
+  ] = useLazyGetKeywordUserNameQuery();
   const [
     getRecentSearch,
     { data: recentSearch, isSuccess: getRecentSearchSuccess },
@@ -109,6 +122,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
       keywordType: 5,
     },
   ]);
+  //search assignment history
 
   useEffect(() => {
     const updatedSearchCourseAdmin = [...searchCourseAdmin];
@@ -227,13 +241,29 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
   useEffect(() => {
     if (manufacturer.length > 0) {
       if (
-        keywordTypeSearchRequest?.name === Fields.USERNAME ||
+        (keywordTypeSearchRequest?.name === Fields.USERNAME &&
+          action !== Action.SEARCH_ASSIGNMENT_HISTORY) ||
         keywordTypeSearchRequest?.name === Fields.FullName ||
         keywordTypeSearchRequest?.name === Fields.Author
       ) {
         getUserSearch({
           "type-search": keywordTypeSearchRequest?.id as string,
           keyword: manufacturer,
+        });
+      }
+      if (keywordTypeSearchRequest?.name === Fields.LectureName) {
+        getKeywordLectureName({
+          creator: "manager",
+          lectureName: manufacturer as string,
+        });
+      }
+      if (
+        keywordTypeSearchRequest?.name === Fields.USERNAME &&
+        action === Action.SEARCH_ASSIGNMENT_HISTORY
+      ) {
+        getKeywordUserName({
+          creator: "manager",
+          username: manufacturer as string,
         });
       }
     }
@@ -369,7 +399,11 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
       }
     }
 
-    if (action === Action.SEARCH_USER && setSearchQuery) {
+    if (
+      (action === Action.SEARCH_USER ||
+        action === Action.SEARCH_ASSIGNMENT_HISTORY) &&
+      setSearchQuery
+    ) {
       setSearchQuery({
         keyword: [],
         searchChooseList: keywordSuggestion,
@@ -414,6 +448,9 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
           if (action === Action.SEARCH_COURSE_ADMIN) {
             return ModuleSearch.COURSE;
           }
+          if (action === Action.SEARCH_ASSIGNMENT_HISTORY) {
+            return ModuleSearch.ASSIGNMENT_HISTORY;
+          }
         })(),
         username: username,
       };
@@ -434,6 +471,9 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
         }
         if (action === Action.SEARCH_COURSE_ADMIN) {
           return ModuleSearch.COURSE;
+        }
+        if (action === Action.SEARCH_ASSIGNMENT_HISTORY) {
+          return ModuleSearch.ASSIGNMENT_HISTORY;
         }
         return "";
       })(),
@@ -482,6 +522,13 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                                     (item) => item.id == i.keywordType
                                   );
                                 }
+                                if (
+                                  action === Action.SEARCH_ASSIGNMENT_HISTORY
+                                ) {
+                                  return KeywordTypeSearchAssignmentHistory.find(
+                                    (item) => item.id == i.keywordType
+                                  );
+                                }
                               })(),
                               comparisonOperators: ComparisonOperators[0],
                               isSuggestion: true,
@@ -510,6 +557,11 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                               }
                               if (action === Action.SEARCH_COURSE_ADMIN) {
                                 return KeywordTypeSearchCourse.find(
+                                  (item) => item.id == i.keywordType
+                                );
+                              }
+                              if (action === Action.SEARCH_ASSIGNMENT_HISTORY) {
+                                return KeywordTypeSearchAssignmentHistory.find(
                                   (item) => item.id == i.keywordType
                                 );
                               }
@@ -580,6 +632,9 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                           if (action === Action.SEARCH_COURSE_ADMIN) {
                             return ModuleSearch.COURSE;
                           }
+                          if (action === Action.SEARCH_ASSIGNMENT_HISTORY) {
+                            return ModuleSearch.ASSIGNMENT_HISTORY;
+                          }
                           return "";
                         })(),
                       })
@@ -609,6 +664,28 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                         !unSuggestedSearchFields.some((i) => i === item.name) ||
                         item.name === Fields.USERNAME
                     ).map((item) => (
+                      <div
+                        key={item.name}
+                        className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 "
+                        onClick={() => {
+                          // setIsSelectKeywordTypeSearchCourse(false);
+                          setKeywordTypeSearchRequest(item);
+                          setProcessCreateSearch(processCreateSearch + 2);
+                        }}
+                      >
+                        {item.icon &&
+                          React.createElement(iconMap[item.icon], {
+                            className: "mr-2 text-lg",
+                          })}
+
+                        {item.name}
+                      </div>
+                    ))}
+                  </Fragment>
+                )}
+                {action === Action.SEARCH_ASSIGNMENT_HISTORY && (
+                  <Fragment>
+                    {KeywordTypeSearchAssignmentHistory.map((item) => (
                       <div
                         key={item.name}
                         className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 "
@@ -744,7 +821,9 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                   <Fragment>
                     {!unSuggestedSearchFields.some(
                       (i) =>
-                        (i === Fields.USERNAME || i === Fields.NAME) &&
+                        (i === Fields.USERNAME ||
+                          i === Fields.NAME ||
+                          i === Fields.LectureName) &&
                         i === keywordTypeSearchRequest?.name
                     ) && (
                       <div
@@ -763,7 +842,8 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                         {manufacturer}
                       </div>
                     )}
-                    {(keywordTypeSearchRequest?.name === Fields.USERNAME ||
+                    {((keywordTypeSearchRequest?.name === Fields.USERNAME &&
+                      action !== Action.SEARCH_ASSIGNMENT_HISTORY) ||
                       keywordTypeSearchRequest?.name === Fields.FullName ||
                       keywordTypeSearchRequest?.name === Fields.Author) && (
                       <Fragment>
@@ -801,6 +881,58 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                               </div>
                             </div>
                           ))}
+                      </Fragment>
+                    )}
+
+                    {keywordTypeSearchRequest?.name === Fields.USERNAME &&
+                      action === Action.SEARCH_ASSIGNMENT_HISTORY && (
+                        <Fragment>
+                          {getUserNameListSuccess &&
+                            (userNameList?.data as string[])?.map(
+                              (username: string) => (
+                                <div
+                                  key={username}
+                                  className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2"
+                                  onClick={() => {
+                                    setKeyword(username);
+                                    setProcessCreateSearch(
+                                      processCreateSearch + 1
+                                    );
+                                  }}
+                                >
+                                  <div className="flex gap-3 items-center">
+                                    <h1 className="font-bold  text-sm flex">
+                                      {username}
+                                    </h1>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                        </Fragment>
+                      )}
+                    {keywordTypeSearchRequest?.name === Fields.LectureName && (
+                      <Fragment>
+                        {getLectureNameListSuccess &&
+                          (lectureNameList?.data as string[])?.map(
+                            (lectureName: string) => (
+                              <div
+                                key={lectureName}
+                                className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2"
+                                onClick={() => {
+                                  setKeyword(lectureName as string);
+                                  setProcessCreateSearch(
+                                    processCreateSearch + 1
+                                  );
+                                }}
+                              >
+                                <div className="flex gap-3 items-center">
+                                  <h1 className="font-bold  text-sm flex">
+                                    {lectureName}
+                                  </h1>
+                                </div>
+                              </div>
+                            )
+                          )}
                       </Fragment>
                     )}
 
@@ -972,7 +1104,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                 className={
                   "w-full h-8 placeholder:font-normal text-sm focus:outline-none min-w-[150px]"
                 }
-                placeholder="Tìm Kiếm Khóa Học"
+                placeholder="Search..."
                 type={
                   keywordTypeSearchRequest?.name === Fields.Price
                     ? "number"

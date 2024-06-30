@@ -237,7 +237,7 @@ export enum ModuleSearch {
 
   ORDER = "ORDER",
 
-  USER_LOG = "USER_LOG",
-
   ASSIGNMENT_HISTORY = "ASSIGNMENT_HISTORY",
+
+  USER_LOG = "USER_LOG",
 }

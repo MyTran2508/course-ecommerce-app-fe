@@ -20,62 +20,60 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import DatePicker from "react-datepicker";
 import { useState, useEffect } from "react";
-import { billColumns, userColumns } from "@/components/Table/Columns";
+import { User } from "@/types/user.type";
+import {
+  useFilterUserMutation,
+  useGetAllUserQuery,
+} from "@/redux/services/userApi";
+import {
+  assignmentHistoryColumns,
+  userColumns,
+} from "@/components/Table/Columns";
+import { SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
+import { updateUser } from "@/redux/features/userSlice";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
-import { Action } from "@/utils/resources";
-import { Order, SearchOrderDto } from "@/types/order.type";
-import { useFilterOrderMutation } from "@/redux/services/orderApi";
-import "react-datepicker/dist/react-datepicker.css";
-import { convertToMilliseconds } from "@/utils/function";
+import { Action, ModuleName } from "@/utils/resources";
+import withAuth from "@/hoc/withAuth";
+import { useFilterAssignmentManagerMutation } from "@/redux/services/assignmentHistoryApi";
+import { AssignmentHistory } from "@/types/assignment.type";
 
-function BillPage() {
-  const dispatch = useAppDispatch();
+function AssignmentHistoryPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const [billList, setBillList] = useState<Order[]>([]);
+  const [assignmentHistoryList, setAssignmentHistoryList] = useState<
+    AssignmentHistory[]
+  >([]);
   const [totalPage, setTotalPage] = useState(0);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [searchQuery, setSearchQuery] = useState<SearchOrderDto>({
-    searchChooseList: [],
-    sortBy: "created",
+  const [getAssignmentHistory] = useFilterAssignmentManagerMutation();
+  const [searchQuery, setSearchQuery] = useState<SearchRequest>({
+    keyword: [],
+    sortBy: "",
     searchKeywordDtoList: [],
     isDecrease: true,
     pageIndex: 0,
     pageSize: 10,
   });
-  const [getBill, { data: bills, isSuccess: getBillSuccess }] =
-    useFilterOrderMutation();
+
+  const fetchAssignmentHistory = async (query: SearchRequest) => {
+    await getAssignmentHistory(query)
+      .unwrap()
+      .then((fulfilled) => {
+        setAssignmentHistoryList(fulfilled.data as User[]);
+        setTotalPage(fulfilled.totalPages);
+      });
+  };
 
   useEffect(() => {
-    getBill(searchQuery);
+    fetchAssignmentHistory(searchQuery);
   }, [searchQuery]);
 
-  useEffect(() => {
-    if (getBillSuccess) {
-      setBillList(bills?.data || []);
-      setTotalPage((bills?.totalPages as number) || 0);
-    }
-  }, [bills, getBillSuccess]);
-
-  useEffect(() => {
-    if (startDate && endDate) {
-      setSearchQuery((prevSearchQuery) => ({
-        ...prevSearchQuery,
-        startDate: startDate.getTime(),
-        endDate: endDate.getTime(),
-      }));
-    }
-  }, [startDate, endDate]);
-
   const table = useReactTable({
-    data: billList,
-    columns: billColumns,
+    data: assignmentHistoryList,
+    columns: assignmentHistoryColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -94,38 +92,16 @@ function BillPage() {
   });
 
   return (
-    <div className="w-full px-10">
-      <div className="flex-end gap-2 z-20 mt-2">
-        <div className="flex gap-2">
-          <p>Start Day: </p>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date as Date)}
-            className="border w-[100px] px-2 rounded-md"
-            placeholderText="Start Date"
-          />
-        </div>
-        <div className="flex gap-2">
-          <p>End Date: </p>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date as Date)}
-            className="border w-[100px] px-2 rounded-md"
-            placeholderText="End Date"
-          />
-        </div>
-      </div>
+    <div className="px-10">
       <div className="flex items-center py-4 w-full">
         <div className="flex gap-2 w-[600px]">
           <SearchBarManufacturer
-            action={Action.SEARCH_BILL}
+            action={Action.SEARCH_ASSIGNMENT_HISTORY}
             setSearchQuery={setSearchQuery}
-            startDate={startDate ? startDate.getTime() : null}
-            endDate={endDate ? endDate.getTime() : null}
           />
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border flex-between flex-col ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -182,7 +158,7 @@ function BillPage() {
         </div>
         <div className="space-x-2 flex gap-1">
           <div className="flex-center text-sm text-muted-foreground">
-            {(searchQuery.pageIndex as number) + 1} of {totalPage} page.
+            {searchQuery.pageIndex + 1} of {totalPage} page.
           </div>
           <Button
             variant="outline"
@@ -190,7 +166,7 @@ function BillPage() {
             onClick={() =>
               setSearchQuery((prevSearchQuery) => ({
                 ...prevSearchQuery,
-                pageIndex: (searchQuery.pageIndex as number) - 1,
+                pageIndex: searchQuery.pageIndex - 1,
               }))
             }
             disabled={searchQuery.pageIndex === 0 ? true : false}
@@ -203,12 +179,10 @@ function BillPage() {
             onClick={() =>
               setSearchQuery((prevSearchQuery) => ({
                 ...prevSearchQuery,
-                pageIndex: (searchQuery.pageIndex as number) + 1,
+                pageIndex: searchQuery.pageIndex + 1,
               }))
             }
-            disabled={
-              (searchQuery.pageIndex as number) + 1 < totalPage ? false : true
-            }
+            disabled={searchQuery.pageIndex + 1 < totalPage ? false : true}
           >
             Next
           </Button>
@@ -217,4 +191,4 @@ function BillPage() {
     </div>
   );
 }
-export default BillPage;
+export default withAuth(AssignmentHistoryPage, ModuleName.USER);

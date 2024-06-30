@@ -76,7 +76,7 @@ function QuestionPage() {
   return (
     <div>
       <div className="mb-10 mt-3">
-        <label className="text-black font-bold">Assignment Instructions</label>
+        <label className="text-black font-bold">Add Questions</label>
         {(isOpenInputEditor || !lecture?.assignment?.questions) && (
           <InputEditor
             text={questions}

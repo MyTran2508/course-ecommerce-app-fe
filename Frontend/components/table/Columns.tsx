@@ -1,13 +1,15 @@
 import { RoleType, User } from "@/types/user.type";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa";
-import ActionsCell from "@/components/dialog/ActionCell";
+import ActionsCell from "@/components/Dialog/ActionCell";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/types/course.type";
 import FilterColumn from "./FilterColumn";
 import { Order } from "@/types/order.type";
+import { AssignmentHistory } from "@/types/assignment.type";
+import { convertMillisToDateTime, formatTime } from "@/utils/function";
 
 export const userColumns: ColumnDef<User>[] = [
   // {
@@ -186,5 +188,56 @@ export const billColumns: ColumnDef<Order>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => <ActionsCell bill={row.original.orderItems} />,
+  },
+];
+
+export const assignmentHistoryColumns: ColumnDef<AssignmentHistory>[] = [
+  {
+    accessorKey: "username",
+    header: "Username",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("username")}</div>
+    ),
+  },
+  {
+    accessorKey: "score",
+    header: "Score",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("score") || <i>None</i>}</div>
+    ),
+  },
+  {
+    accessorKey: "evaluation",
+    header: "Evaluation",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("evaluation") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "originalNumber",
+    header: "Original Number",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {(row.getValue("originalNumber") as number) + 1}
+      </div>
+    ),
+  },
+
+  {
+    accessorKey: "created",
+    header: "Time Start",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {convertMillisToDateTime(row.getValue("created") as number)}
+      </div>
+    ),
+  },
+
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => <ActionsCell assignmentHistory={row.original} />,
   },
 ];

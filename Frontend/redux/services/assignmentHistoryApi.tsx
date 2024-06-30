@@ -14,6 +14,19 @@ export const assignmentHistoryApi = createApi({
   baseQuery: baseQueryWithToken,
   tagTypes: ["AssignmentHistory"],
   endpoints: (builder) => ({
+    getAssignmentHistoryById: builder.query<DataResponse, string>({
+      query: (id: string) => {
+        return {
+          url: `/api/courses/assignment-history/get-by-id`,
+          params: {
+            id,
+          },
+        };
+      },
+      providesTags: (result, error, id) => [
+        { type: "AssignmentHistory" as const, id: id },
+      ],
+    }),
     getAssignmentHistoryByUserNameAndLectureId: builder.query<
       DataResponse,
       { username: string; lectureId: string }
@@ -52,7 +65,7 @@ export const assignmentHistoryApi = createApi({
         };
       },
       invalidatesTags: (result, error, data) => [
-        { type: "AssignmentHistory" as const },
+        { type: "AssignmentHistory" as const, id: data.id },
       ],
     }),
     getKeywordLectureName: builder.query<
@@ -108,4 +121,5 @@ export const {
   useFilterAssignmentManagerMutation,
   useLazyGetKeywordLectureNameQuery,
   useLazyGetKeywordUserNameQuery,
+  useLazyGetAssignmentHistoryByIdQuery,
 } = assignmentHistoryApi;

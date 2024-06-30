@@ -45,19 +45,6 @@ input[type="radio"]:checked:after {
   border: 2px solid white;
 } */
 
-/* dark  scrollbar */
-::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-::-webkit-scrollbar-track {
-  background: #282828;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #4d4d4d;
-}
-
 /* CODE EDITOR*/
 .cm-scroller,
 .cm-gutters {
@@ -134,7 +121,7 @@ code {
   }
 
   .custom-scrollbar::-webkit-scrollbar {
-    width: 20px !important;
+    width: 8px !important;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
