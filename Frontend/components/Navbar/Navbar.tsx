@@ -127,7 +127,7 @@ function Navbar() {
       ? email.substring(0, MAX_TITLE_LENGTH) + "..."
       : email;
   return (
-    <div className="border-b bg-transparent w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-30 shadow-md">
+    <div className="border-b bg-transparent w-full h-20 border-b-1 bg-white text-black relative top-0 z-30 shadow-md">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16 xs:px-5">
         <Link href={"/"} className="text-2xl flex items-center">
           <h1 className="text-2xl uppercase font-semibold tracking-wide text-gray-700">

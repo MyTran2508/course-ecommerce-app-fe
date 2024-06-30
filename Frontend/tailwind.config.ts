@@ -451,6 +451,8 @@ module.exports = {
         banner: "url('/banner.jpg')",
         login: "url('/login.jpg')",
         signup: "url('/signup.jpg')",
+        'bg-hero1': "url('/hero1.jpg')",
+        'bg-hero2': "url('/hero2.jpg')",
       },
       colors: {
         "dark-layer-1": "rgb(40,40,40)",

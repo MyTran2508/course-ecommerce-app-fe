@@ -98,7 +98,7 @@ function CourseCard(props: CourseProps) {
   return (
     <Fragment>
       <Card
-        className="w-full max-w-fit border-0  hover:scale-105 duration-300 p-4 mb-8 bg-[#EEE3CB] mx-auto"
+        className="w-full max-w-fit hover:scale-105 duration-300 mb-8 mx-auto"
         key={course.id}
         // style={{
         //   background:
@@ -106,7 +106,7 @@ function CourseCard(props: CourseProps) {
         // }}
         data-aos="flip-down"
       >
-        <CardHeader className="flex flex-col gap-2.5 !p-0 hover:cursor-pointer">
+        <CardHeader className="flex flex-col gap-2 !p-0 hover:cursor-pointer">
           <div className="h-fit w-full relative">
             <div className="group">
               <Image
@@ -115,12 +115,12 @@ function CourseCard(props: CourseProps) {
                     ? `data:image/png;base64,${imageBase64}`
                     : "/banner.jpg"
                 }
-                className="w-60 h-32 rounded-md"
+                className="w-60 h-32"
                 width={240}
                 height={128}
                 alt={course.name}
               />
-              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-md" />
+              <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50" />
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                   <div className="bg-white rounded-2xl py-2 px-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
@@ -145,7 +145,7 @@ function CourseCard(props: CourseProps) {
             </div>
           </div>
 
-          <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left xs:text-[14px]">
+          <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left xs:text-[12px] font-serif">
             {truncatedTitle}
           </CardTitle>
 
@@ -180,9 +180,12 @@ function CourseCard(props: CourseProps) {
             )}
           </div>
         </CardHeader>
+        <div>
+          <p className="text-[13px] text-gray-700">{course.authorName}</p>
+        </div>
         {isMyCourse || isInstructorCourse ? null : (
-          <CardContent className=" mt-4 p-0 flex-between">
-            <div className="flex items-center justify-center text-center">
+          <CardContent className="p-0 mt-1">
+            <div className="flex items-center justify-start text-center">
               {!isMyCourse && (
                 <Fragment>
                   {course.averageRating ? (
@@ -213,8 +216,9 @@ function CourseCard(props: CourseProps) {
                   )}
                 </Fragment>
               )}
+              <p className="ml-1 text-gray-500">(50)</p>
             </div>
-            <div className="flex-end mr-2">
+            <div className="mr-2">
               <div className="text-xl font-normal xs:text-sm">
                 {course.price === 0 ? (
                   <span className="text-red-500 italic xs:min-w-[75px]">
@@ -224,8 +228,8 @@ function CourseCard(props: CourseProps) {
                     <span>e</span>
                   </span>
                 ) : (
-                  <p className="flex xs:min-w-[75px]">
-                    {(course.price as number).toLocaleString() + " đ"}
+                  <p className="flex xs:min-w-[75px] text-lg font-bold">
+                    <span className="underline">đ</span>{(course.price as number).toLocaleString()}
                   </p>
                 )}
               </div>
