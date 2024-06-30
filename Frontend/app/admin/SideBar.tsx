@@ -17,6 +17,7 @@ import { User } from "@/types/user.type";
 import { loadUser, setUser } from "@/redux/features/userSlice";
 import { CiLogout } from "react-icons/ci";
 import { MdDarkMode } from "react-icons/md";
+import NotificationPopUp from "@/components/Notification/Notification";
 
 function SideBar() {
   const path = usePathname();
@@ -63,7 +64,7 @@ function SideBar() {
 
   return (
     <div className="sticky top-0 h-screen flex flex-col bg-clip-border bg-[#263238] text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[15rem]">
-      <div className="my-4 p-2">
+      <div className="my-4 p-2 flex gap-2">
         <h5 className="flex-center gap-2 block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-white">
           <SiScikitlearn className="text-3xl" />
           E-LEARNING
@@ -276,16 +277,16 @@ function SideBar() {
             Trang Chủ
           </div>
         </Link>
-        
+
         <div className="flex-1 flex flex-col mb-8">
-        <Link href={"/"} className="mt-auto">
+          <Link href={"/"} className="mt-auto">
             <div
               role="button"
               tabIndex={0}
               className="flex items-center w-full p-4 text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-t-2 border-[#455A64]"
             >
               <div className="grid place-items-center mr-4">
-                <MdDarkMode className="text-lg"/>
+                <MdDarkMode className="text-lg" />
               </div>
               Chế Độ Tối
             </div>
@@ -297,7 +298,7 @@ function SideBar() {
               className="flex items-center w-full p-4 text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
             >
               <div className="grid place-items-center mr-4">
-                <CiLogout className="text-lg"/>
+                <CiLogout className="text-lg" />
               </div>
               Đăng Xuất
             </div>

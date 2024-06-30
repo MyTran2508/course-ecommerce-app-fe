@@ -4,5 +4,5 @@ export interface NotificationDTO {
   recipient?: string;
   content?: string;
   link?: string;
-  isViewed?: string;
+  isViewed?: boolean;
 }

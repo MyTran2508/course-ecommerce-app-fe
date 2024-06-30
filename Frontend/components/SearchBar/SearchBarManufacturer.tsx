@@ -56,6 +56,7 @@ interface SearchBarManufacturerProps {
 
 function SearchBarManufacturer(props: SearchBarManufacturerProps) {
   const { action, setSearchQuery, startDate, endDate } = props;
+  const searchBarRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const username = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.username
@@ -222,6 +223,25 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
       setIsSearchByHistory(false);
     }
   }, [isSearchByHistory]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target)
+      ) {
+        setIsCreateSearch(false); // Đặt trạng thái nếu click bên ngoài
+      }
+    };
+
+    // Thêm event listener vào document
+    document.addEventListener("click", handleClickOutside);
+
+    // Dọn dẹp khi component bị unmount
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const handleRefresh = () => {
     setKeyword("");
@@ -484,7 +504,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
   };
 
   return (
-    <div className="flex gap-2 w-full">
+    <div className="flex gap-2 w-full" ref={searchBarRef}>
       {action !== Action.SEARCH_COURSE_CLIENT && (
         <div className="relative inline-block">
           <button
@@ -495,7 +515,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
             onClick={() => handleOpenHistory()}
           >
             {DEFAULT_HISTORY_SEARCH}
-            <FaAngleDown className="text-gray-600 text-sm"/>
+            <FaAngleDown className="text-gray-600 text-sm" />
           </button>
           {isOpenHistorySearch && (
             <div className="absolute mt-[2px] bg-[#fff] w-[450px] z-10 rounded-sm shadow-md z-50 border border-gray-300">
@@ -648,9 +668,11 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                   </div>
                 </Fragment>
               ) : (
-                <div className="cursor-pointer py-2 px-4 flex text-center items-center justify-center 
-                gap-2 border-t-[1px] text-sm rounded-sm text-sm text-[#737278]">
-                  You don't have any recent searches
+                <div
+                  className="cursor-pointer py-2 px-4 flex text-center items-center justify-center 
+                gap-2 border-t-[1px] text-sm rounded-sm text-sm text-[#737278]"
+                >
+                  You don`&apos;`t have any recent searches
                 </div>
               )}
             </div>
@@ -819,7 +841,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
               </div>
             </Fragment>
           )}
-          {processCreateSearch === 2 && isCreateSearch && (
+          {processCreateSearch === 2 && (
             <Fragment>
               <div className="absolute mt-[45px] bg-gray-100 w-full rounded-sm z-10">
                 {manufacturer.length > 0 && (

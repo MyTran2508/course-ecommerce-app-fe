@@ -385,7 +385,7 @@ public class UserService extends BaseServiceImpl<User, UserDto> {
             boolean isAdmin = false;
             List<Role> roles = user.getRoles();
             if (!roles.isEmpty()) {
-                isAdmin = roles.stream().anyMatch(role -> role.getRoleUser().equals(RoleUser.MANAGER));
+                isAdmin = roles.stream().anyMatch(role -> role.getRoleUser().equals(RoleUser.ADMIN));
             }
             if (isAdmin) {
                 result.add(user.getUsername());
