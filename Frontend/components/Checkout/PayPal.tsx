@@ -5,7 +5,11 @@ import {
   ReactPayPalScriptOptions,
 } from "@paypal/react-paypal-js";
 import showToast from "@/utils/showToast";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  NotificationMessage,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useRouter } from "next/navigation";
 import { setCart, updatePrice } from "@/redux/features/cartSlice";
@@ -15,6 +19,11 @@ import { isFulfilled } from "@reduxjs/toolkit";
 import { convertVNDtoUSD, totalPrice } from "@/utils/function";
 import { useLazyGetAllCourseQuery } from "@/redux/services/courseApi";
 import { Course } from "@/types/course.type";
+import { useGetAllUsernameAdminQuery } from "@/redux/services/userApi";
+import NotificationPopUp, {
+  sendNotification,
+} from "../Notification/Notification";
+import { useGetRolesByUserNameQuery } from "@/redux/services/roleApi";
 
 interface CheckoutProps {
   price: number;
@@ -35,7 +44,8 @@ const Checkout = (props: CheckoutProps) => {
   const dispatch = useAppDispatch();
   const totalPriceVND = totalPrice(carts);
   const totalPriceUSD = convertVNDtoUSD(totalPriceVND);
-  const [cartList, setCardList] = useState(carts);
+  const { data: allUsernameAdmin, isSuccess: getAllUsernameAdminSuccess } =
+    useGetAllUsernameAdminQuery(null);
 
   const [getCourse, { data, isLoading, isSuccess }] =
     useLazyGetAllCourseQuery();
@@ -95,6 +105,11 @@ const Checkout = (props: CheckoutProps) => {
         showToast(ToastStatus.SUCCESS, ToastMessage.PAYMENT_SUCCESS);
         router.push("/");
       });
+    sendNotification(
+      user.username,
+      allUsernameAdmin?.data as string[],
+      NotificationMessage.BUY_COURSE
+    );
   };
 
   useEffect(() => {
@@ -137,6 +152,7 @@ const Checkout = (props: CheckoutProps) => {
   return (
     <PayPalScriptProvider options={paypalOptions}>
       <div>
+        <NotificationPopUp hidden={true} />
         <PayPalButtons
           style={{ layout: "vertical" }}
           createOrder={createOrder}

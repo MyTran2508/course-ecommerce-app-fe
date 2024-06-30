@@ -12,7 +12,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Cart } from "@/types/cart.type";
 import { addToCart } from "@/redux/features/cartSlice";
 import showToast from "@/utils/showToast";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  NotificationMessage,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { useParams, usePathname } from "next/navigation";
 import {
   useGetCourseByIdQuery,
@@ -37,6 +41,8 @@ import { useReviewHooks } from "@/redux/hooks/courseHooks/reviewHooks";
 import { Review } from "@/types/review.type";
 import ReviewComponent from "@/components/Review/ReviewComponent";
 import Paginate from "@/components/Paginate/Paginate";
+import { sendNotification } from "@/components/Notification/Notification";
+import { useGetAllUsernameAdminQuery } from "@/redux/services/userApi";
 
 const initCourse: Course = {
   id: "0",
@@ -56,8 +62,8 @@ function CoursePage() {
   const param = useParams();
   const router = useRouter();
   const path = usePathname();
-  const userId = useAppSelector(
-    (state) => state.persistedReducer.userReducer.user.id
+  const username = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.username
   );
   const [isOpenAllContent, setOpenAllContent] = useState<boolean>(false);
   const [course, setCourse] = useState(initCourse);
@@ -74,6 +80,8 @@ function CoursePage() {
   const { data: contentData, isSuccess } = useGetContentByCourseIdQuery(
     param.id as string
   );
+  const { data: allUsernameAdmin, isSuccess: getAllUsernameAdminSuccess } =
+    useGetAllUsernameAdminQuery(null);
   const { totalDurationCourse, totalLectureCount } =
     handleCountFieldsInSection(sections);
   const user = useAppSelector(
@@ -180,6 +188,11 @@ function CoursePage() {
         },
       };
       handleAddOrder(newOrder);
+      sendNotification(
+        username,
+        allUsernameAdmin?.data as string[],
+        NotificationMessage.BUY_COURSE
+      );
     } else {
       router.push(`/login?redirect=${encodeURIComponent(path)}`);
     }

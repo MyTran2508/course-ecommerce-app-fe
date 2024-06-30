@@ -25,6 +25,7 @@ import { User } from "@/types/user.type";
 import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { RoleDetail, Roles } from "@/types/roles.type";
 import { isPermissionGranted } from "@/utils/function";
+import NotificationPopUp from "@/components/Notification/Notification";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -112,6 +113,8 @@ function InstructorNavbar() {
               >
                 Feedback Assignment
               </Link>
+
+              <NotificationPopUp />
 
               <div>
                 <Menu>

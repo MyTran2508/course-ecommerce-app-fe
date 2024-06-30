@@ -9,21 +9,36 @@ import { NotificationDTO } from "@/types/notification.type";
 import Image from "next/image";
 import {
   useGetNotificationsMutation,
+  useUpdateIsViewedMutation,
   useUpdateNotificationMutation,
 } from "@/redux/services/notificationApi";
 import { StatusCode } from "@/utils/resources";
 import { ListResponse } from "@/types/response.type";
+import { useLazyGetAllUsernameAdminQuery } from "@/redux/services/userApi";
+import { forEach } from "lodash";
+import { useRouter } from "next/navigation";
 var stompClient: any = null;
 
-function NotificationPopUp() {
+interface NotificationPopUpProps {
+  hidden?: boolean;
+  isAdmin?: boolean;
+}
+
+function NotificationPopUp(props: NotificationPopUpProps) {
+  const { hidden, isAdmin } = props;
   const username = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.username
   );
+  const route = useRouter();
   const [
     getNotifications,
     { data: notificationData, isSuccess: getNotificationSuccess },
   ] = useGetNotificationsMutation();
-  const [updateNotification] = useUpdateNotificationMutation();
+  const [updateIsViewed] = useUpdateIsViewedMutation();
+  const [
+    getAllUsernameAdmin,
+    { data: allUsernameAdmin, isSuccess: getAllUsernameAdminSuccess },
+  ] = useLazyGetAllUsernameAdminQuery();
   const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
 
   useEffect(() => {
@@ -35,6 +50,8 @@ function NotificationPopUp() {
       sortBy: "created",
       isDecrease: false,
     });
+
+    getAllUsernameAdmin(null);
   }, []);
 
   useEffect(() => {
@@ -57,10 +74,14 @@ function NotificationPopUp() {
     var payloadData = JSON.parse(payload.body);
     const newNotification = (payloadData as ListResponse)
       .data as NotificationDTO;
-    setNotifications((prevNotifications) => [
-      newNotification,
-      ...prevNotifications,
-    ]);
+    // console.log(newNotification);
+    setNotifications((prevNotifications) => {
+      const isExist = prevNotifications?.some(
+        (notice) => notice?.id === newNotification?.id
+      );
+      if (isExist) return prevNotifications;
+      return [newNotification, ...prevNotifications];
+    });
   };
 
   const onConnected = () => {
@@ -75,16 +96,29 @@ function NotificationPopUp() {
   };
 
   return (
-    <div>
-      <button onClick={() => sendNotification("manager", "oktesst/nOkcondee")}>
+    <div className={`${hidden ? "hidden" : ""}`}>
+      {/* <button
+        onClick={() =>
+          sendNotification(username, ["manager"], "oktesst/nOkcondee")
+        }
+      >
         send
       </button>
+      <button
+        onClick={() =>
+          sendNotification(
+            username,
+            allUsernameAdmin?.data as string[],
+            "oktesst/nOkcondee"
+          )
+        }
+      >
+        send
+      </button> */}
       <Menu>
         <Menu.Button>
           <div className="relative hover:cursor-pointer">
-            {notifications?.some(
-              (notice) => !notice?.isViewed?.includes(username)
-            ) && (
+            {notifications?.some((notice) => !notice?.isViewed) && (
               <div className="absolute top-0 bg-red-500 rounded-full w-2 h-2">
                 &nbsp;
               </div>
@@ -93,7 +127,11 @@ function NotificationPopUp() {
             <FaRegBell className="text-2xl" />
           </div>
         </Menu.Button>
-        <Menu.Items className="absolute mt-1 right-40 w-[400px] origin-top-right divide-x divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2">
+        <Menu.Items
+          className={`absolute mt-1 ${
+            isAdmin ? "right-5" : "right-56"
+          }  w-[400px] origin-top-right divide-x divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2`}
+        >
           <div className="px-1 py-1 h-[400px] custom-scrollbar overflow-y-auto">
             <Transition
               enter="transition ease-out duration-100"
@@ -111,15 +149,12 @@ function NotificationPopUp() {
                       <div
                         key={notification.id}
                         className={`${
-                          !notification?.isViewed?.includes(username)
+                          !notification?.isViewed
                             ? "bg-orange-200 "
                             : "hover:bg-slate-300"
                         } hover:cursor-pointer rounded-lg flex py-2 px-2 items-center gap-4 mb-2`}
                         onClick={async () => {
-                          await updateNotification({
-                            ...notification,
-                            isViewed: username,
-                          });
+                          await updateIsViewed(notification?.id as string);
                           await getNotifications({
                             keyword: [username],
                             pageIndex: 0,
@@ -127,6 +162,9 @@ function NotificationPopUp() {
                             sortBy: "created",
                             isDecrease: false,
                           });
+                          if (notification.link) {
+                            route.push(notification.link);
+                          }
                         }}
                       >
                         <Image
@@ -160,22 +198,44 @@ function NotificationPopUp() {
 }
 
 export const sendNotification = (
-  chanel: string,
+  sender: string,
+  chanel: string[],
   message: string,
   link?: string
 ) => {
+  console.log(chanel);
   if (stompClient) {
-    const newMessage: NotificationDTO = {
-      sender: "System",
-      recipient: chanel,
-      content: message,
-      link: link,
-    };
-    stompClient.send(
-      `/rt/request/courses/notification/add`,
-      {},
-      JSON.stringify(newMessage)
-    );
+    if (chanel?.length > 1 && chanel) {
+      const listNotification: NotificationDTO[] = [];
+      forEach(chanel, (username) => {
+        const newMessage: NotificationDTO = {
+          sender: sender,
+          recipient: username,
+          content: message,
+          link: link,
+          isViewed: false,
+        };
+        listNotification.push(newMessage);
+      });
+      stompClient.send(
+        `/rt/request/courses/notification/add-list`,
+        {},
+        JSON.stringify(listNotification)
+      );
+    } else {
+      const newMessage: NotificationDTO = {
+        sender: sender,
+        recipient: chanel[0],
+        content: message,
+        link: link,
+        isViewed: false,
+      };
+      stompClient.send(
+        `/rt/request/courses/notification/add`,
+        {},
+        JSON.stringify(newMessage)
+      );
+    }
   }
 };
 

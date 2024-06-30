@@ -16,6 +16,7 @@ import { Course } from "@/types/course.type";
 import { Button } from "@/components/ui/button";
 import withAuth from "@/hoc/withAuth";
 import { RoleDetail } from "@/types/roles.type";
+import NotificationPopUp from "@/components/Notification/Notification";
 
 function CreateCourseNavBar() {
   const router = useRouter();

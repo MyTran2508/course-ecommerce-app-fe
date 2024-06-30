@@ -1,23 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { setManageCourse } from "@/redux/features/courseSlice";
-import { useAppDispatch } from "@/redux/hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useUpdateAwaitingApprovalMutation } from "@/redux/services/courseApi";
 import { Course, CourseIssueReport } from "@/types/course.type";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  NotificationMessage,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import React, { Fragment, useState } from "react";
 import { FaRegBell } from "react-icons/fa";
 import { Menu, Transition } from "@headlessui/react";
 import { MdFiberNew } from "react-icons/md";
+import { usePathname } from "next/navigation";
+import NotificationPopUp, {
+  sendNotification,
+} from "@/components/Notification/Notification";
+import { useGetAllUsernameAdminQuery } from "@/redux/services/userApi";
 interface RequestApprovalProps {
   course: Course;
 }
 
 function RequestApprovalButton(props: RequestApprovalProps) {
   const { course } = props;
+  const path = usePathname();
   const dispatch = useAppDispatch();
+  const username = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.username
+  );
   const [isOpen, setOpen] = useState(false);
   const [updateAwaitingApproval] = useUpdateAwaitingApprovalMutation();
+  const { data: allUsernameAdmin, isSuccess: getAllUsernameAdminSuccess } =
+    useGetAllUsernameAdminQuery(null);
 
   const handleClickOpen = () => {
     setOpen(!isOpen);
@@ -35,6 +50,13 @@ function RequestApprovalButton(props: RequestApprovalProps) {
           setManageCourse({ ...(course as Course), isAwaitingApproval: true })
         );
       });
+
+    sendNotification(
+      username,
+      allUsernameAdmin?.data as string[],
+      NotificationMessage.REQUEST_APPROVAL,
+      path
+    );
   };
   const renderIssue = () => {
     const issueList = [
@@ -75,11 +97,14 @@ function RequestApprovalButton(props: RequestApprovalProps) {
         </div>
       );
     });
+    if (issueList.length === 0)
+      return <div className="text-center">Không có lỗi nào</div>;
     return renderedIssues;
   };
 
   return (
     <div>
+      <NotificationPopUp hidden={true} />
       {course && !course.isAwaitingApproval ? (
         <Fragment>
           <div className="flex gap-6 flex-center">

@@ -30,8 +30,19 @@ export const notificationApi = createApi({
         };
       },
     }),
+    updateIsViewed: builder.mutation<DataResponse, string>({
+      query: (id: string) => {
+        return {
+          url: `api/courses/notification/set-is-viewed/${id}`,
+          method: "POST",
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetNotificationsMutation, useUpdateNotificationMutation } =
-  notificationApi;
+export const {
+  useGetNotificationsMutation,
+  useUpdateNotificationMutation,
+  useUpdateIsViewedMutation,
+} = notificationApi;

@@ -1,3 +1,4 @@
+import { NotificationDTO } from "./../types/notification.type";
 // import { SECTION } from './resources';
 // import { Content } from '@/types/content.type';
 // import { User } from './../types/user.type';
@@ -240,4 +241,19 @@ export enum ModuleSearch {
   ASSIGNMENT_HISTORY = "ASSIGNMENT_HISTORY",
 
   USER_LOG = "USER_LOG",
+}
+
+export enum NotificationLink {
+  TO_MANAGER_COURSE_CONTENT = "",
+}
+
+export enum NotificationMessage {
+  CREATE_COURSE = "Khóa Học Mới Đã Được Tạo",
+  REQUEST_APPROVAL = "Yêu Cầu Phê Duyệt Khóa Học",
+  APPROVAL_COURSE = "Khóa Học Đã Được Phê Duyệt",
+  REJECT_COURSE = "Khóa Học Đã Bị Từ Chối",
+  BUY_COURSE = "Khóa Học Đã Được Mua",
+  DELETE_USER = "Người Dùng Đã Bị Xóa",
+  RESTORE_USER = "Người Dùng Đã Được Khôi Phục",
+  UPDATE_USER = "Thông tin người dùng đã được cập nhật",
 }

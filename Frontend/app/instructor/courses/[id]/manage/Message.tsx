@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import {
   IssueType,
+  NotificationMessage,
   SecurityLevel,
   ToastMessage,
   ToastStatus,
@@ -30,8 +31,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import showToast from "@/utils/showToast";
 import { setManageCourse } from "@/redux/features/courseSlice";
 import { Course } from "@/types/course.type";
+import { sendNotification } from "@/components/Notification/Notification";
+import { usePathname } from "next/navigation";
 
 export function Message() {
+  const path = usePathname();
   const course = useAppSelector((state) => state.courseReducer.manageCourse);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState("");
@@ -63,6 +67,12 @@ export function Message() {
           setManageCourse({ ...(course as Course), isAwaitingApproval: false })
         );
       });
+    sendNotification(
+      "SYSTEM",
+      [course?.authorName as string],
+      NotificationMessage.REJECT_COURSE,
+      path
+    );
   };
   return (
     <div>
