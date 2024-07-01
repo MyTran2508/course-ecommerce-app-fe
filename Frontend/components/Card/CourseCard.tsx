@@ -98,7 +98,7 @@ function CourseCard(props: CourseProps) {
   return (
     <Fragment>
       <Card
-        className="w-full max-w-fit hover:scale-105 duration-300 mb-8 mx-auto"
+        className="w-full max-w-fit hover:scale-105 duration-300 mb-8 mx-auto p-4 max-w-[240px]"
         key={course.id}
         // style={{
         //   background:
@@ -229,7 +229,8 @@ function CourseCard(props: CourseProps) {
                   </span>
                 ) : (
                   <p className="flex xs:min-w-[75px] text-lg font-bold">
-                    <span className="underline">đ</span>{(course.price as number).toLocaleString()}
+                    <span className="underline">đ</span>
+                    {(course.price as number).toLocaleString()}
                   </p>
                 )}
               </div>

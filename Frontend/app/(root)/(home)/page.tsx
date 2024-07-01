@@ -68,17 +68,11 @@ export default function Home() {
     router.push("/course/search?topicId=" + topic.id);
   };
 
-  const renderCourse = (courseList: Course[], title: string) => {
+  const renderCourse = (courseList: Course[]) => {
     return (
       <Fragment>
         {courseList ? (
           <Fragment>
-            <div className="flex-between">
-              <h2 className="text-3xl font-bold ml-6 text-[#00df9a] ">
-                {title}
-              </h2>
-            </div>
-
             <div className="xs:justify-normal xs:items-start w-full xs:overflow-x-scroll xs:gap-5 mb-5 grid grid-cols-4 xs:flex xs:custom-scrollbar pl-3 mt-2">
               <Fragment>
                 {courseList.map((course) => (
@@ -113,7 +107,7 @@ export default function Home() {
       >
         <div className="bg-[#f7f9fa] h-full w-full xs:py-[20px] xs:px-0 px-10">
           <div className="hide-scrollbar flex w-full items-start justify-start gap-8 overflow-x-auto h-full px-12">
-            <CampSite 
+            <CampSite
               backgroundImage="bg-bg-hero1"
               title="Expert Learning"
               subTitle="Invest in your future today, and embark on a journey of lifelong learning, opening doors to 
@@ -127,10 +121,15 @@ export default function Home() {
       </div>
       <div className="mx-10 xs:mx-0 mt-10 border-2 border-gray-300">
         <div className="mx-12 my-4">
-          <h1 className="text-2xl text-black font-bold font-mono my-2">Many popular course options</h1>
-          <p>Choose from over 220,000 online video courses with new additions published every month</p>
+          <h1 className="text-2xl text-black font-bold font-mono my-2">
+            Many popular course options
+          </h1>
+          <p>
+            Choose from over 220,000 online video courses with new additions
+            published every month
+          </p>
         </div>
-        
+
         {renderCourse(coursePopular)}
       </div>
       <div className="max-w-[1240px] mx-auto grid lg:grid-cols-2 xs:ml-[10px]">
@@ -157,21 +156,30 @@ export default function Home() {
             lifelong learning, opening doors to new opportunities and a brighter
             future
           </p>
-          <button className='text-white bg-black p-2 font-bold w-[200px] mt-4'>Get Started</button>
+          <button className="text-white bg-black p-2 font-bold w-[200px] mt-4">
+            Get Started
+          </button>
         </div>
       </div>
 
       <div className="mx-10 xs:mx-0 mt-10 border-2 border-gray-300">
         <div className="mx-12 my-4">
-          <h1 className="text-2xl text-black font-bold font-mono my-2">Many new course options</h1>
-          <p>Choose from over 220,000 online video courses with new additions published every month</p>
+          <h1 className="text-2xl text-black font-bold font-mono my-2">
+            Many new course options
+          </h1>
+          <p>
+            Choose from over 220,000 online video courses with new additions
+            published every month
+          </p>
         </div>
-        
+
         {renderCourse(courseNewest)}
       </div>
 
       <div className="w-full py-[2rem] xs:py-[20px] xs:px-0 px-10 mx-6 my-4">
-        <h1 className="text-2xl text-black font-bold font-mono my-2">Top categories</h1>
+        <h1 className="text-2xl text-black font-bold font-mono my-2">
+          Top categories
+        </h1>
         <div className="grid grid-cols-4 xs:grid-cols-2 gap-4">
           {Topic.map((topic, index) => (
             <div
@@ -179,14 +187,19 @@ export default function Home() {
               className="shadow-xl flex flex-col my-4 hover:scale-105 duration-300 w-[300px] group" // Thêm class group vào đây
               data-aos="zoom-in-up"
             >
-              <div className="w-full bg-transparent cursor-pointer" onClick={() => handleSearch(topic)}>
+              <div
+                className="w-full bg-transparent cursor-pointer"
+                onClick={() => handleSearch(topic)}
+              >
                 <img
                   src={topic.img}
                   alt=""
                   className="transform transition duration-300 ease-in-out group-hover:scale-110" // Áp dụng hiệu ứng zoom khi hover
                 />
               </div>
-              <span className="mt-3 text-black font-bold text-lg font-mono">{topic.name}</span>
+              <span className="mt-3 text-black font-bold text-lg font-mono flex justify-center mb-3">
+                {topic.name}
+              </span>
             </div>
           ))}
         </div>

@@ -22,6 +22,7 @@ import { userQuizApi } from "./services/userQuizApi";
 import { notificationApi } from "./services/notificationApi";
 import { assignmentHistoryApi } from "./services/assignmentHistoryApi";
 import { courseProcessApi } from "./services/courseProcessApi";
+import { userLogApi } from "./services/userLogApi";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { Cart } from "@/types/cart.type";
@@ -65,6 +66,7 @@ export const store = configureStore({
     [courseProcessApi.reducerPath]: courseProcessApi.reducer,
     [assignmentHistoryApi.reducerPath]: assignmentHistoryApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
+    [userLogApi.reducerPath]: userLogApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({}).concat([
@@ -82,6 +84,7 @@ export const store = configureStore({
       forumApi.middleware,
       assignmentHistoryApi.middleware,
       notificationApi.middleware,
+      userLogApi.middleware,
       rtkQueryErrorLogger,
       // AuthMiddleware,
     ]),
