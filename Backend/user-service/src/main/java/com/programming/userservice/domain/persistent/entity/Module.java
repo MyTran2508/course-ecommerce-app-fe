@@ -1,9 +1,13 @@
 package com.programming.userservice.domain.persistent.entity;
 
 import com.programming.userservice.domain.persistent.enumrate.ModuleName;
+import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 @Entity
 @NoArgsConstructor
@@ -18,7 +22,11 @@ import lombok.experimental.SuperBuilder;
 )
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
-public class Module {
+public class Module implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
 
     @Id
     private Integer id;

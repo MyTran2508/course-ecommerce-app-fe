@@ -22,7 +22,7 @@ import com.programming.userservice.utilities.annotation.ShowOpenAPI;
 import com.programming.userservice.utilities.constant.UserConstant;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -101,17 +101,18 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
 //    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
+        User savedUser = userRepository.findById(id).orElse(null);
+        if (savedUser == null) {
             throw new ResourceNotFoundException(id + " does not exists in DB");
         }
-        User user = optionalUser.get();
-        User oldUserClone = new User();
-        BeanUtils.copyProperties(user, oldUserClone);
 
+        User oldUserClone = SerializationUtils.clone(savedUser);
+        System.out.println("prefix user: " + oldUserClone);
         DataResponse<UserDto> response = super.update(objectDTO, id);
 
         // Add log
+        System.out.println("oldUserClone: " + oldUserClone);
+        System.out.println("response.getData(): " + userMapper.dtoToEntity(response.getData()));
         String description = userLogService.writeUpdateLog(User.class, oldUserClone, userMapper.dtoToEntity(response.getData()), true, 0);
         if (!Objects.equals(description, UserConstant.PREFIX_USER_LOG)) {
             UserLog userLog = UserLog.builder()
@@ -131,15 +132,13 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PutMapping("/update-admin/{id}")
     public DataResponse<UserDto> updateAdminUser(@Valid @RequestBody UserDto userDto,
                                                     @PathVariable("id") String id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        if (optionalUser.isEmpty()) {
+        User savedUser = userRepository.findById(id).orElse(null);
+        if (savedUser == null) {
             throw new ResourceNotFoundException(id + " does not exists in DB");
         }
 
-        User user = optionalUser.get();
-        User oldUserClone = new User();
-        BeanUtils.copyProperties(user, oldUserClone);
+        User oldUserClone = SerializationUtils.clone(savedUser);
+        System.out.println("prefix user: " + oldUserClone);
 
         DataResponse<UserDto> response = userService.updateAdminUser(userDto, id);
 

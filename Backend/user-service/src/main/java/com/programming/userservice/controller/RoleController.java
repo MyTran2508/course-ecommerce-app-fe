@@ -18,6 +18,7 @@ import com.programming.userservice.repository.RoleRepository;
 import com.programming.userservice.service.RoleService;
 import com.programming.userservice.service.UserLogService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,11 +67,13 @@ public class RoleController extends BaseApiImpl<Role, RoleDto> {
 
     @Override
     public DataResponse<RoleDto> update(RoleDto roleDto, String id) {
-        Optional<Role> optionalRole = roleRepository.findById(id);
-        if (optionalRole.isEmpty()) {
+        Role savedRole = roleRepository.findById(id).orElse(null);
+        if (savedRole == null) {
             throw new ResourceNotFoundException(id + " does not exists in DB");
         }
-        Role role = optionalRole.get();
+
+        Role oldRoleClone = SerializationUtils.clone(savedRole);
+        System.out.println("prefix user: " + oldRoleClone);
 
         DataResponse<RoleDto> response = super.update(roleDto, id);
 
@@ -81,7 +84,7 @@ public class RoleController extends BaseApiImpl<Role, RoleDto> {
                 .actionKey(id)
                 .actionObject(ActionObject.ROLE)
                 .actionName(ActionName.UPDATE)
-                .description(userLogService.writeUpdateLog(Role.class, role, roleMapper.dtoToEntity(response.getData()), true, 0))
+                .description(userLogService.writeUpdateLog(Role.class, oldRoleClone, roleMapper.dtoToEntity(response.getData()), true, 0))
                 .build();
 
         userLogService.addLog(userLog);

@@ -23,7 +23,9 @@ public enum ActionName {
 
     RESET_PASSWORD("Đặt lại mật khẩu"),
 
-    FORGET_PASSWORD("Quên mật khẩu");
+    FORGET_PASSWORD("Quên mật khẩu"),
+
+    ORDER("Đặt hàng");
 
     private final String value;
 }
