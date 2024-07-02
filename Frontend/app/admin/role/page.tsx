@@ -123,9 +123,9 @@ function RolePage() {
         {" "}
         <div className="flex gap-5 justify-around p-2 bg-slate-200 rounded-sm ">
           <div className="flex gap-2 text-center">
-            <p className="mb-2 text-sm font-medium text-gray-900 dark:text-white text-center flex items-center justify-center">
+            <div className="mb-2 text-sm font-medium text-gray-900 dark:text-white text-center flex items-center justify-center">
               Tên Quyền
-            </p>
+            </div>
             <input
               type="text"
               id="first_name"

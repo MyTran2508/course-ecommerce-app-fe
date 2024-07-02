@@ -40,7 +40,7 @@ export interface SearchCourseRequest {
 export interface SearchRequest {
   sortBy?: string;
   isDecrease?: boolean;
-  keyword?: string[];
+  keyword?: string[] | null[];
   searchChooseList?: SearchConditionDto[];
   pageIndex: number;
   pageSize: number;

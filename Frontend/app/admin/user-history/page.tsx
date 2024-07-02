@@ -51,9 +51,7 @@ function UserLogPage() {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [keyword, setKeyword] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: [""],
-    sortBy: "",
-    searchKeywordDtoList: [],
+    keyword: [null, null, null],
     isDecrease: true,
     pageIndex: 0,
     pageSize: 10,
@@ -63,8 +61,12 @@ function UserLogPage() {
     if (startDate && endDate) {
       setSearchQuery((prevSearchQuery) => ({
         ...prevSearchQuery,
-        startDate: startDate.getTime(),
-        endDate: endDate.getTime(),
+        pageIndex: 0,
+        keyword: [
+          keyword,
+          startDate?.getTime().toString(),
+          endDate?.getTime().toString(),
+        ],
       }));
     }
   }, [startDate, endDate]);
@@ -76,13 +78,14 @@ function UserLogPage() {
   const handleSearch = () => {
     const newSearchRequest = {
       ...searchQuery,
-      keyword: [keyword],
+      pageIndex: 0,
+      keyword: [keyword, null, null],
     };
-    setSearchQuery(newSearchRequest);
+    setSearchQuery(newSearchRequest as any);
   };
 
   const getUserLogs = async (query: SearchRequest) => {
-    await getUserLogBySearch(query)
+    await getUserLogBySearch(query as any)
       .unwrap()
       .then((fulfilled) => {
         setUserLogs(fulfilled.data as UserLog[]);
@@ -118,6 +121,7 @@ function UserLogPage() {
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date as Date)}
+            maxDate={endDate}
             className="border w-[100px] px-2 rounded-md"
             placeholderText="Start Date"
           />
@@ -127,6 +131,7 @@ function UserLogPage() {
           <DatePicker
             selected={endDate}
             onChange={(date) => setEndDate(date as Date)}
+            minDate={startDate}
             className="border w-[100px] px-2 rounded-md"
             placeholderText="End Date"
           />
@@ -246,4 +251,4 @@ function UserLogPage() {
   );
 }
 
-export default UserLogPage;
+export default withAuth(UserLogPage, ModuleName.USER);
