@@ -10,6 +10,7 @@ import FilterColumn from "./FilterColumn";
 import { Order } from "@/types/order.type";
 import { AssignmentHistory } from "@/types/assignment.type";
 import { convertMillisToDateTime, formatTime } from "@/utils/function";
+import { UserLog } from "@/types/userLog.type";
 
 export const userColumns: ColumnDef<User>[] = [
   // {
@@ -239,5 +240,60 @@ export const assignmentHistoryColumns: ColumnDef<AssignmentHistory>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => <ActionsCell assignmentHistory={row.original} />,
+  },
+];
+
+export const userLogColumns: ColumnDef<UserLog>[] = [
+  {
+    accessorKey: "userName",
+    header: "Username",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("userName")}</div>
+    ),
+  },
+  {
+    accessorKey: "actionObject",
+    header: "Action Object",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("actionObject") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "actionName",
+    header: "Action Name",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("actionName") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "actionKey",
+    header: "Action Key",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("actionKey") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("description") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "created",
+    header: "Time Start",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {convertMillisToDateTime(row.getValue("created") as number)}
+      </div>
+    ),
   },
 ];

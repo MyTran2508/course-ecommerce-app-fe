@@ -16,6 +16,7 @@ import { ForumLecture } from "./forumLecture";
 import { Roles, UserRoles } from "./roles.type";
 import { Order } from "./order.type";
 import { NotificationDTO } from "./notification.type";
+import { UserLog } from "./userLog.type";
 
 export interface DataResponse {
   timestamp: number;
@@ -58,7 +59,8 @@ export interface ListResponse {
     | Roles[]
     | RecentSearchHistoryDto[]
     | Order[]
-    | NotificationDTO[];
+    | NotificationDTO[]
+    | UserLog[];
 }
 
 export interface PageResponse {
