@@ -15,6 +15,9 @@ import lombok.*;
 )
 public class AssignmentHistory extends BaseModel {
 
+    @Column(name = "original_number")
+    private Integer originalNumber;
+
     @Column(name = "username")
     private String username;
 

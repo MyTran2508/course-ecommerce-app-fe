@@ -1,4 +1,7 @@
 "use client";
+import NotificationPopUp, {
+  sendNotification,
+} from "@/components/Notification/Notification";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import withAuth from "@/hoc/withAuth";
@@ -8,11 +11,16 @@ import {
 } from "@/redux/features/courseSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { useCreateCourseMutation } from "@/redux/services/courseApi";
+import {
+  useGetAllUsernameAdminQuery,
+  useLazyGetAllUsernameAdminQuery,
+} from "@/redux/services/userApi";
 import { Course } from "@/types/course.type";
 import { DataResponse } from "@/types/response.type";
 import { extractId } from "@/utils/function";
 import {
   ModuleName,
+  NotificationMessage,
   StatusCode,
   ToastMessage,
   ToastStatus,
@@ -30,6 +38,8 @@ function CreateCoursePage() {
   const [createCourse] = useCreateCourseMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { data: allUsernameAdmin, isSuccess: getAllUsernameAdminSuccess } =
+    useGetAllUsernameAdminQuery(null);
 
   const handleChangeRouteManageCourse = (courseId: string | undefined) => {
     dispatch(setParamCourseId(courseId as string));
@@ -57,6 +67,11 @@ function CreateCoursePage() {
       .then((fulfilled) => {
         console.log(fulfilled);
         handleToast(fulfilled);
+        sendNotification(
+          username,
+          allUsernameAdmin?.data as string[],
+          NotificationMessage.CREATE_COURSE
+        );
       })
       .catch((error) => {
         console.log(error);
@@ -81,7 +96,8 @@ function CreateCoursePage() {
               <Link href={"/"} className="text-2xl uppercase">
                 E-LEANING
               </Link>
-              <div>
+              <div className="flex gpa-2">
+                <NotificationPopUp />
                 <Link
                   href={"/instructor/courses"}
                   className="hover:text-orange-400 font-bold"

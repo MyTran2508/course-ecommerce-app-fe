@@ -52,4 +52,6 @@ public class CourseDto implements Serializable {
     private Boolean isAlreadyReviewed;
 
     private Map<Integer, Integer> ratingNumbersByStar;
+
+    private Long updated;
 }

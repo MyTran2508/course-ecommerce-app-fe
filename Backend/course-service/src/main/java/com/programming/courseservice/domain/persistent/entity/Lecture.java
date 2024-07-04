@@ -5,8 +5,6 @@ import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Table(
         name = "lecture"

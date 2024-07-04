@@ -1,6 +1,6 @@
 "use client";
 import Loading from "@/app/(root)/user/personal/loading";
-import CourseContentForm from "@/components/form/CourseContentForm";
+import CourseContentForm from "@/components/Form/CourseContentForm";
 import withAuth from "@/hoc/withAuth";
 import { setContentId } from "@/redux/features/contentSlice";
 import { setParamCourseId } from "@/redux/features/courseSlice";
@@ -12,6 +12,7 @@ import { Section } from "@/types/section.type";
 import { ModuleName } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import React from "react";
+import LayoutManage from "../LayoutManage";
 
 function CourseContentPage() {
   const param = useParams();
@@ -28,14 +29,19 @@ function CourseContentPage() {
   console.log((contentData?.data as Content).sections as Section[]);
 
   return (
-    <div className="mt-10 shadow-xl w-full mx-5 ">
-      <div className="my-5 mx-5 flex items-center font-bold text-xl">
-        Mô tả chi tiết khóa học
+    <LayoutManage>
+      <div className="mt-10 shadow-xl w-full mx-5 ">
+        <div className="my-5 mx-5 flex items-center font-bold text-xl">
+          Mô tả chi tiết khóa học
+        </div>
+        <hr />
+        <div className="mt-10 ml-10"></div>
+        <CourseContentForm
+          content={data?.data as Content}
+          courseId={courseId}
+        />
       </div>
-      <hr />
-      <div className="mt-10 ml-10"></div>
-      <CourseContentForm content={data?.data as Content} courseId={courseId} />
-    </div>
+    </LayoutManage>
   );
 }
 

@@ -1,11 +1,15 @@
 package com.programming.userservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 @Entity
 @AllArgsConstructor
@@ -15,7 +19,11 @@ import lombok.Setter;
 @Table(
         name = "role_details"
 )
-public class RoleDetail extends BaseModel {
+public class RoleDetail extends BaseModel implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "can_view")
     private Boolean canView;

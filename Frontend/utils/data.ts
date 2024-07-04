@@ -1,6 +1,7 @@
 export interface ComboBoxType {
   id?: string;
   name?: string;
+  img?: string;
 }
 
 export const Language: ComboBoxType[] = [
@@ -13,14 +14,14 @@ export const Price: ComboBoxType[] = [
   { id: "Free", name: "Free" },
 ];
 export const Topic: ComboBoxType[] = [
-  { id: "0", name: "Python" },
-  { id: "1", name: "Java" },
-  { id: "2", name: "HTML" },
-  { id: "3", name: "C++" },
-  { id: "4", name: "ReactJS" },
-  { id: "5", name: "Angular" },
-  { id: "6", name: "Android Development" },
-  { id: "7", name: "NodeJS" },
+  { id: "0", name: "Python", img: "./Python.jpg"},
+  { id: "1", name: "Java", img: "./Java.jpg"},
+  { id: "2", name: "HTML", img: "./html.jpg" },
+  { id: "3", name: "C++", img: "./C++.jpg" },
+  { id: "4", name: "ReactJS", img: "./ReactJS.jpg"},
+  { id: "5", name: "Angular", img: "./Angular.jpg"},
+  { id: "6", name: "Android Development", img: "./Android Development.jpg"},
+  { id: "7", name: "NodeJS", img: "./NodeJS.jpg"},
 ];
 
 export const Level: ComboBoxType[] = [
@@ -73,4 +74,9 @@ export const KeywordTypeSearchUser: KeywordTypeSearchType[] = [
 export const KeywordTypeSearchBill: KeywordTypeSearchType[] = [
   { id: "0", name: "Username", icon: "MdDriveFileRenameOutline" },
   { id: "1", name: "Price", icon: "FaMoneyBillWave" },
+];
+
+export const KeywordTypeSearchAssignmentHistory: KeywordTypeSearchType[] = [
+  { id: "0", name: "Username", icon: "MdDriveFileRenameOutline" },
+  { id: "1", name: "LectureName", icon: "MdOutlineEmail" },
 ];

@@ -11,10 +11,14 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import UserDialog from "./UserDialog";
 import { User } from "@/types/user.type";
-import { useUpdateUserAdminMutation } from "@/redux/services/userApi";
+import {
+  useGetAllUsernameAdminQuery,
+  useUpdateUserAdminMutation,
+} from "@/redux/services/userApi";
 import showToast from "@/utils/showToast";
 import {
   ModuleName,
+  NotificationMessage,
   PermissionName,
   Role,
   ToastMessage,
@@ -28,16 +32,24 @@ import { setManageCourse } from "@/redux/features/courseSlice";
 import { Order, OrderItem } from "@/types/order.type";
 import OrderDialog from "./OrderDialog";
 import { isPermissionGranted } from "@/utils/function";
+import { AssignmentHistory } from "@/types/assignment.type";
+import NotificationPopUp, {
+  sendNotification,
+} from "../Notification/Notification";
 
 interface ActionCellProps {
   user?: User;
   course?: Course;
   bill?: OrderItem[];
+  assignmentHistory?: AssignmentHistory;
 }
 
 const ActionsCell = (props: ActionCellProps) => {
   const router = useRouter();
-  const { user, course, bill } = props;
+  const { user, course, bill, assignmentHistory } = props;
+  const username = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.username
+  );
   const [isOpenUserDialog, setIsOpenUserDialog] = useState(false);
   const [isOpenOrderDialog, setIsOpenOrderDialog] = useState(false);
   const [updateUserAdmin] = useUpdateUserAdminMutation();
@@ -45,6 +57,9 @@ const ActionsCell = (props: ActionCellProps) => {
   const role = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.roles?.[0]
   );
+  const { data: allUsernameAdmin, isSuccess: getAllUsernameAdminSuccess } =
+    useGetAllUsernameAdminQuery(null);
+
   const roleDetail = role?.roleDetails;
 
   const handleUpdateUserAdmin = async (user: User) => {
@@ -54,6 +69,14 @@ const ActionsCell = (props: ActionCellProps) => {
         dispatch(updateUser());
         showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_USER_SUCCESS);
       });
+
+    sendNotification(
+      username,
+      (allUsernameAdmin?.data as string[]).filter(
+        (item) => item !== user.username
+      ),
+      NotificationMessage.UPDATE_USER
+    );
   };
 
   const handleEditUser = () => {
@@ -68,13 +91,27 @@ const ActionsCell = (props: ActionCellProps) => {
     router.push(`/instructor/courses/${course?.id}/manage/content`);
   };
 
+  const handleViewAssignment = () => {
+    router.push(`/instructor/assignment-history/${assignmentHistory?.id}`);
+  };
+
   const updateUserActivationStatus = (item: User) => {
     const user = { ...item, removed: !item.removed };
     handleUpdateUserAdmin(user);
+    sendNotification(
+      username,
+      (allUsernameAdmin?.data as string[]).filter(
+        (item) => item !== user.username
+      ),
+      user?.removed
+        ? NotificationMessage.DELETE_USER
+        : NotificationMessage.RESTORE_USER
+    );
   };
 
   return (
     <div>
+      <NotificationPopUp hidden={true} />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -127,6 +164,14 @@ const ActionsCell = (props: ActionCellProps) => {
           {bill ? (
             <Fragment>
               <DropdownMenuItem onClick={() => handleViewOrder()}>
+                Xem Chi Tiết
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </Fragment>
+          ) : null}
+          {assignmentHistory ? (
+            <Fragment>
+              <DropdownMenuItem onClick={() => handleViewAssignment()}>
                 Xem Chi Tiết
               </DropdownMenuItem>
               <DropdownMenuSeparator />

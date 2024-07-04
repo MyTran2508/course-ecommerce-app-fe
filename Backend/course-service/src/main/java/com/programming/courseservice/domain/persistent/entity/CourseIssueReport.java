@@ -2,7 +2,6 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.IssueType;
-import com.programming.courseservice.domain.persistent.enumrate.SeverityLevel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

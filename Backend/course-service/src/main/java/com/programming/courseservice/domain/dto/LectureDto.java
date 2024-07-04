@@ -1,13 +1,11 @@
 package com.programming.courseservice.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.programming.courseservice.domain.persistent.entity.Assignment;
 import com.programming.courseservice.domain.persistent.enumrate.LectureType;
 import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter

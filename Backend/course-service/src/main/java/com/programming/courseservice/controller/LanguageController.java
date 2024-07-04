@@ -9,7 +9,6 @@ import com.programming.courseservice.domain.dto.LanguageDto;
 import com.programming.courseservice.domain.persistent.entity.Language;
 import com.programming.courseservice.service.LanguageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,6 +41,7 @@ public class LanguageController extends BaseApiImpl<Language, LanguageDto> {
     @Override
     public ListResponse<LanguageDto> getAll() {
         List<LanguageDto> languageDto = super.getAll().getData();
+
         return ResponseMapper.toListResponseSuccess(languageDto.stream()
                 .sorted(Comparator.comparing(LanguageDto::getName))
                 .collect(Collectors.toList()));

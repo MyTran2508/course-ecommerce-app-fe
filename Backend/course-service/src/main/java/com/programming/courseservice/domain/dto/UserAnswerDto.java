@@ -1,7 +1,6 @@
 package com.programming.courseservice.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.programming.courseservice.domain.persistent.entity.UserQuiz;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

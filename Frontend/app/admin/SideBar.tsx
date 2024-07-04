@@ -15,6 +15,9 @@ import { SiOpenaccess, SiScikitlearn } from "react-icons/si";
 import { useLazyGetRolesByUserNameQuery } from "@/redux/services/roleApi";
 import { User } from "@/types/user.type";
 import { loadUser, setUser } from "@/redux/features/userSlice";
+import { CiLogout } from "react-icons/ci";
+import { MdDarkMode } from "react-icons/md";
+import NotificationPopUp from "@/components/Notification/Notification";
 
 function SideBar() {
   const path = usePathname();
@@ -60,14 +63,14 @@ function SideBar() {
   }
 
   return (
-    <div className="sticky top-0 flex flex-col bg-clip-border rounded-xl bg-orange-50 text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5 ">
-      <div className="mb-2 p-4 border border-orange-500 rounded-md">
-        <h5 className="flex-center gap-2 block antialiased tracking-normal font-sans text-xl font-semibold leading-snug text-gray-900">
+    <div className="sticky top-0 h-screen flex flex-col bg-clip-border bg-[#263238] text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[15rem]">
+      <div className="my-4 p-2 flex gap-2">
+        <h5 className="flex-center gap-2 block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-white">
           <SiScikitlearn className="text-3xl" />
-          E-LEARNING ADMIN
+          E-LEARNING
         </h5>
       </div>
-      <nav className="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-normal text-gray-700 ">
+      <nav className="flex flex-col h-full w-full min-w-240px font-sans text-base font-normal text-[#CFD8DC]">
         {role?.name === Role.ADMIN && (
           <Link href={Constant.ADMIN_DASHBOARD_PATH}>
             <div
@@ -75,8 +78,8 @@ function SideBar() {
               tabIndex={0}
               className={`${
                 path === Constant.ADMIN_DASHBOARD_PATH
-                  ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-                  : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  ? "bg-[#37474f] flex items-center p-4 w-full text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
+                  : "flex items-center w-full p-4 border-b-2 border-[#455A64] text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
               }`}
             >
               <div className="grid place-items-center mr-4">
@@ -110,8 +113,8 @@ function SideBar() {
               tabIndex={0}
               className={`${
                 path === Constant.ADMIN_COURSE_PATH
-                  ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-                  : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  ? "bg-[#37474f] flex items-center p-4 w-full text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
+                  : "flex items-center w-full p-4 border-b-2 border-[#455A64] text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
               }`}
             >
               <div className="grid place-items-center mr-4">
@@ -129,7 +132,7 @@ function SideBar() {
                   />
                 </svg>
               </div>
-              Quản lý khóa học
+              Quản Lý Khóa Học
             </div>
           </Link>
         )}
@@ -145,8 +148,8 @@ function SideBar() {
               tabIndex={0}
               className={`${
                 path === Constant.ADMIN_USER_PATH
-                  ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-                  : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  ? "bg-[#37474f] flex items-center p-4 w-full text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
+                  : "flex items-center w-full p-4 border-b-2 border-[#455A64] text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
               }`}
             >
               <div className="grid place-items-center mr-4">
@@ -164,7 +167,42 @@ function SideBar() {
                   />
                 </svg>
               </div>
-              Quản lý tài khoản
+              Quản Lý Tài Khoản
+            </div>
+          </Link>
+        )}
+        {(role?.name === Role.ADMIN ||
+          isPermissionGranted(
+            role?.roleDetails || [],
+            PermissionName.CAN_VIEW,
+            ModuleName.USER
+          )) && (
+          <Link href={Constant.ADMIN_USER_HISTORY_PATH}>
+            <div
+              role="button"
+              tabIndex={0}
+              className={`${
+                path === Constant.ADMIN_USER_HISTORY_PATH
+                  ? "bg-[#37474f] flex items-center p-4 w-full text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
+                  : "flex items-center w-full p-4 border-b-2 border-[#455A64] text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
+              }`}
+            >
+              <div className="grid place-items-center mr-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                  className="h-5 w-5"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18.685 19.097A9.723 9.723 0 0021.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 003.065 7.097A9.716 9.716 0 0012 21.75a9.716 9.716 0 006.685-2.653zm-12.54-1.285A7.486 7.486 0 0112 15a7.486 7.486 0 015.855 2.812A8.224 8.224 0 0112 20.25a8.224 8.224 0 01-5.855-2.438zM15.75 9a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              Lịch Sử Người Dùng
             </div>
           </Link>
         )}
@@ -180,14 +218,14 @@ function SideBar() {
               tabIndex={0}
               className={`${
                 path === Constant.ADMIN_ROLE_PATH
-                  ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-                  : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  ? "bg-[#37474f] flex items-center p-4 w-full text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
+                  : "flex items-center w-full p-4 border-b-2 border-[#455A64] text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
               }`}
             >
               <div className="grid place-items-center mr-4">
                 <SiOpenaccess className="text-lg" />
               </div>
-              Quản lý quyền
+              Quản Lý Quyền
             </div>
           </Link>
         )}
@@ -203,14 +241,14 @@ function SideBar() {
               tabIndex={0}
               className={`${
                 path === Constant.ADMIN_BILL_PATH
-                  ? "bg-blue-50 flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
-                  : "flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+                  ? "bg-[#37474f] flex items-center p-4 w-full text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
+                  : "flex items-center w-full p-4 text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
               }`}
             >
               <div className="grid place-items-center mr-4">
                 <CiMoneyBill className="text-lg" />
               </div>
-              Quản lý đơn hàng
+              Quản Lý Đơn Hàng
             </div>
           </Link>
         )}
@@ -219,7 +257,7 @@ function SideBar() {
           <div
             role="button"
             tabIndex={0}
-            className="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-blue-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none"
+            className="flex items-center w-full p-4 text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
           >
             <div className="grid place-items-center mr-4">
               <svg
@@ -239,6 +277,33 @@ function SideBar() {
             Trang Chủ
           </div>
         </Link>
+
+        <div className="flex-1 flex flex-col mb-8">
+          <Link href={"/"} className="mt-auto">
+            <div
+              role="button"
+              tabIndex={0}
+              className="flex items-center w-full p-4 text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-t-2 border-[#455A64]"
+            >
+              <div className="grid place-items-center mr-4">
+                <MdDarkMode className="text-lg" />
+              </div>
+              Chế Độ Tối
+            </div>
+          </Link>
+          <Link href={"/"} className="">
+            <div
+              role="button"
+              tabIndex={0}
+              className="flex items-center w-full p-4 text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
+            >
+              <div className="grid place-items-center mr-4">
+                <CiLogout className="text-lg" />
+              </div>
+              Đăng Xuất
+            </div>
+          </Link>
+        </div>
       </nav>
     </div>
   );

@@ -1,4 +1,4 @@
-package com.programming.userservice.domain.persistent.entity;
+package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import jakarta.persistence.Column;
@@ -19,12 +19,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class Notification extends BaseModel {
 
-    private String username;
+    private String sender;
+
+    private String recipient;
 
     private String content;
 
     private String link;
 
     @Column(name = "is_viewed")
-    private String isViewed;
+    private Boolean isViewed;
 }

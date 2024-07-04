@@ -1,6 +1,6 @@
 "use client";
 import Loading from "@/app/(root)/user/personal/loading";
-import CourseInforForm from "@/components/form/CourseInforForm";
+import CourseInforForm from "@/components/Form/CourseInforForm";
 import withAuth from "@/hoc/withAuth";
 import {
   setManageCourse,
@@ -12,6 +12,7 @@ import { Course } from "@/types/course.type";
 import { ModuleName } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import LayoutManage from "../LayoutManage";
 
 function BasicsPage() {
   const params = useParams();
@@ -21,15 +22,17 @@ function BasicsPage() {
   dispatch(setManageCourse(data?.data as Course));
   dispatch(setParamCourseId(params.id as string));
   return (
-    <div className="mt-10 shadow-xl w-full mx-5 ">
-      <div className="my-5 mx-5 flex items-center font-bold text-xl">
-        Thông Tin Cơ Bản
+    <LayoutManage>
+      <div className="mt-10 shadow-xl w-full mx-5 ">
+        <div className="my-5 mx-5 flex items-center font-bold text-xl">
+          Thông Tin Cơ Bản
+        </div>
+        <hr />
+        <div className="mt-10 ml-10">
+          <CourseInforForm course={data?.data as Course} />
+        </div>
       </div>
-      <hr />
-      <div className="mt-10 ml-10">
-        <CourseInforForm course={data?.data as Course} />
-      </div>
-    </div>
+    </LayoutManage>
   );
 }
 

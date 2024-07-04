@@ -1,6 +1,5 @@
 package com.programming.courseservice.domain.dto;
 
-import com.programming.courseservice.domain.persistent.entity.Question;
 import com.programming.courseservice.domain.persistent.enumrate.DifficultyType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

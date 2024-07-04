@@ -5,8 +5,16 @@ import Message from "./Message";
 import { Course } from "@/types/course.type";
 import { useUpdateApprovedMutation } from "@/redux/services/courseApi";
 import showToast from "@/utils/showToast";
-import { ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  NotificationMessage,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { setManageCourse, updateCourse } from "@/redux/features/courseSlice";
+import NotificationPopUp, {
+  sendNotification,
+} from "@/components/Notification/Notification";
+import { usePathname } from "next/navigation";
 
 interface ApprovedButtonProps {
   course: Course;
@@ -14,6 +22,7 @@ interface ApprovedButtonProps {
 
 function ApprovedButton(props: ApprovedButtonProps) {
   const { course } = props;
+  const path = usePathname();
   const [isOpen, setOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [updateApproveCourse] = useUpdateApprovedMutation();
@@ -35,9 +44,16 @@ function ApprovedButton(props: ApprovedButtonProps) {
         dispatch(setManageCourse({ ...(course as Course), isApproved: true }));
       });
     handleClickOpen();
+    sendNotification(
+      "SYSTEM",
+      [course?.authorName as string],
+      NotificationMessage.APPROVAL_COURSE,
+      path
+    );
   };
   return (
     <div>
+      <NotificationPopUp hidden={true} />
       {course && course.isAwaitingApproval && !course.isApproved ? (
         <Fragment>
           {isOpen ? (

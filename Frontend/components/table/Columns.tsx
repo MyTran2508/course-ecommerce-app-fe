@@ -1,13 +1,16 @@
 import { RoleType, User } from "@/types/user.type";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa";
-import ActionsCell from "@/components/dialog/ActionCell";
+import ActionsCell from "@/components/Dialog/ActionCell";
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/types/course.type";
 import FilterColumn from "./FilterColumn";
 import { Order } from "@/types/order.type";
+import { AssignmentHistory } from "@/types/assignment.type";
+import { convertMillisToDateTime, formatTime } from "@/utils/function";
+import { UserLog } from "@/types/userLog.type";
 
 export const userColumns: ColumnDef<User>[] = [
   // {
@@ -67,7 +70,7 @@ export const userColumns: ColumnDef<User>[] = [
     accessorKey: "removed",
     header: "Active",
     cell: ({ row }) => (
-      <div className="capitalize flex-center">
+      <div className="capitalize flex-start">
         {row.getValue("removed") ? (
           <FaRegTimesCircle className="text-lg text-red-500" />
         ) : (
@@ -186,5 +189,124 @@ export const billColumns: ColumnDef<Order>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => <ActionsCell bill={row.original.orderItems} />,
+  },
+];
+
+export const assignmentHistoryColumns: ColumnDef<AssignmentHistory>[] = [
+  {
+    accessorKey: "username",
+    header: "Username",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("username")}</div>
+    ),
+  },
+  {
+    accessorKey: "score",
+    header: "Score",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("score") || <i>None</i>}</div>
+    ),
+  },
+  {
+    accessorKey: "evaluation",
+    header: "Evaluation",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("evaluation") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "originalNumber",
+    header: "Original Number",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {(row.getValue("originalNumber") as number) + 1}
+      </div>
+    ),
+  },
+
+  {
+    accessorKey: "created",
+    header: "Time Start",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {convertMillisToDateTime(row.getValue("created") as number)}
+      </div>
+    ),
+  },
+
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => <ActionsCell assignmentHistory={row.original} />,
+  },
+];
+
+export const userLogColumns: ColumnDef<UserLog>[] = [
+  {
+    accessorKey: "userName",
+    header: "Username",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("userName")}</div>
+    ),
+  },
+  {
+    accessorKey: "actionObject",
+    header: "Action Object",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("actionObject") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "actionName",
+    header: "Action Name",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("actionName") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "actionKey",
+    header: "Action Key",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("actionKey") || <i>None</i>}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => {
+      const description = row.getValue("description");
+      if (description) {
+        return (
+          <div className="capitalize">
+            {(description as string).split("\\n").map((part, index) => (
+              <div key={index}>{part || <i>None</i>}</div>
+            ))}
+          </div>
+        );
+      }
+
+      return (
+        <div className="capitalize">
+          <i>None</i>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "created",
+    header: "Time",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {convertMillisToDateTime(row.getValue("created") as number)}
+      </div>
+    ),
   },
 ];

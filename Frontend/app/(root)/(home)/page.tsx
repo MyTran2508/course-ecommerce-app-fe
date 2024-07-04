@@ -15,6 +15,8 @@ import { ReactTyped } from "react-typed";
 import { Topic } from "@/utils/data";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import CampSite from "@/components/Home/CampSite";
+import PartnerBanner from "@/components/Home/PartnerBanner";
 
 export default function Home() {
   const router = useRouter();
@@ -66,27 +68,11 @@ export default function Home() {
     router.push("/course/search?topicId=" + topic.id);
   };
 
-  const renderCourse = (courseList: Course[], title: string) => {
+  const renderCourse = (courseList: Course[]) => {
     return (
       <Fragment>
         {courseList ? (
           <Fragment>
-            <div className="flex-between">
-              <h2 className="text-3xl font-bold ml-6 text-[#00df9a] ">
-                {title}
-              </h2>
-              <button
-                onClick={() => router.push("/course/search")}
-                style={{
-                  background:
-                    " linear-gradient(349deg, rgba(122,242,131,1) 0%, rgba(193,235,185,1) 18%, rgba(81,241,234,0.3031337535014006) 95%)",
-                }}
-                className="hover:cursor-pointer hover:text-orange-400 xs:mr-4 rounded-2xl text-white px-4 py-2 font-medium"
-              >
-                Xem thêm
-              </button>
-            </div>
-
             <div className="xs:justify-normal xs:items-start w-full xs:overflow-x-scroll xs:gap-5 mb-5 grid grid-cols-4 xs:flex xs:custom-scrollbar pl-3 mt-2">
               <Fragment>
                 {courseList.map((course) => (
@@ -101,7 +87,7 @@ export default function Home() {
   };
 
   return (
-    <main className=" max-w-screen-2xl w-full mx-auto flex-col">
+    <main className="max-w-screen-2xl w-full mx-auto flex-col">
       {/* <section className="nav-padding w-full flex-center">
         <div className="flex-center relative bg-banner bg-center bg-cover rounded-xl min-h-[300px] w-11/12 flex-col mb-8">
           <h1 className="sm:heading1 heading2 text-center text-white">
@@ -113,57 +99,38 @@ export default function Home() {
         </div>
       </section> */}
       <div
-        className="text-white relative flex mt-[-100px] lg:h-screen bg-[#F4EEFF]"
+        className="text-white relative flex lg:h-[500px] bg-white"
         // style={{
         //   background:
         //     " radial-gradient(circle, rgba(160,242,131,1) 0%, rgba(193,235,185,1) 44%, rgba(81,241,234,0.3031337535014006) 95%)",
         // }}
       >
-        <div className="max-w-[800px] w-full text-center flex flex-col justify-center z-10 ml-20 xs:ml-0 xs:min-h-[500px]">
-          <div className="xs:mt-[110px]">
-            <p
-              className="text-[#00df9a] font-bold p-2 text-5xl [animation-fill-mode:both] [animation-delay:500ms] xs:text-3xl"
-              data-aos="fade-up"
-            >
-              EXPERT LEARNING
-            </p>
-            <h1
-              className="md:text-7xl sm:text-6xl text-4xl font-bold md:py-6 animate-background-shine bg-[linear-gradient(110deg,#939393,45%,#1e293b,55%,#939393)] bg-[length:250%_100%] bg-clip-text  text-transparent"
-              data-aos="fade-up"
-            >
-              Grow with course
-            </h1>
-            <div className="flex justify-center items-center">
-              <ReactTyped
-                className="md:text-5xl sm:text-4xl text-xl font-bold md:pl-4 pl-2 xs:min-h-[60px]"
-                strings={[
-                  "We accompany you on your learning journey and personal development",
-                  "Become an expert in your field with high-quality courses.",
-                ]}
-                typeSpeed={50}
-                backSpeed={50}
-                loop
-              />
-            </div>
-            <p
-              className="md:text-2xl text-xl font-bold text-gray-500 [animation-fill-mode:both] [animation-delay:500ms] xs:hidden"
-              data-aos="fade-up"
-            >
-              Unleash unlimited knowledge with our online courses, invest in
-              your bright future today
-            </p>
-            <button className="bg-[#00df9a] w-[200px] rounded-md font-medium my-6 mx-auto py-3 text-black">
-              Get Started
-            </button>
+        <div className="bg-[#f7f9fa] h-full w-full xs:py-[20px] xs:px-0 px-10">
+          <div className="hide-scrollbar flex w-full items-start justify-start gap-8 overflow-x-auto h-full px-12">
+            <CampSite
+              backgroundImage="bg-bg-hero1"
+              title="Expert Learning"
+              subTitle="Invest in your future today, and embark on a journey of lifelong learning, opening doors to 
+              new opportunities and a brighter future"
+            />
           </div>
         </div>
-        <Image
-          className="w-[600px] mx-auto my-4 absolute right-0 top-20 xs:hidden"
-          src={"/hero.png"}
-          alt="/"
-          width={700}
-          height={300}
-        />
+      </div>
+      <div className="w-full bg-[#f7f9fa] mx-auto xs:ml-[10px]">
+        <PartnerBanner />
+      </div>
+      <div className="mx-10 xs:mx-0 mt-10 border-2 border-gray-300">
+        <div className="mx-12 my-4">
+          <h1 className="text-2xl text-black font-bold font-mono my-2">
+            Many popular course options
+          </h1>
+          <p>
+            Choose from over 220,000 online video courses with new additions
+            published every month
+          </p>
+        </div>
+
+        {renderCourse(coursePopular)}
       </div>
       <div className="max-w-[1240px] mx-auto grid lg:grid-cols-2 xs:ml-[10px]">
         <Image
@@ -175,63 +142,67 @@ export default function Home() {
           data-aos="fade-up"
         />
         <div className="flex flex-col justify-center">
-          <p className="text-[#00df9a] font-bold " data-aos="fade-up">
-            E-LEARNING
-          </p>
           <h1
-            className="md:text-4xl sm:text-3xl text-2xl font-bold py-2"
+            className="md:text-4xl sm:text-3xl text-2xl font-bold py-2 font-mono"
             data-aos="fade-left"
           >
             Empower Your Future: Centralized Data Analytics and Comprehensive
             Online Learning
           </h1>
-          <p data-aos="fade-right">
+          <p data-aos="fade-right" className="text- text-gray-500">
             Explore the vast expanse of knowledge and skills with our
             comprehensive online courses, tailored to suit your learning pace
             and style. Invest in your future today, and embark on a journey of
             lifelong learning, opening doors to new opportunities and a brighter
             future
           </p>
-          <button className="bg-black text-[#00df9a] w-[200px] rounded-md font-medium my-6 mx-auto md:mx-0 py-3">
+          <button className="text-white bg-black p-2 font-bold w-[200px] mt-4">
             Get Started
           </button>
         </div>
       </div>
 
-      <div className="mx-10 xs:mx-0">
-        {renderCourse(courseNewest, "NEW COURSES")}
-      </div>
-      <div className="w-full py-[10rem] xs:py-[20px] xs:px-0 px-10">
-        <h2 className="text-3xl font-bold ml-6 text-[#00df9a] ">Topic</h2>
+      <div className="mx-10 xs:mx-0 mt-10 border-2 border-gray-300">
+        <div className="mx-12 my-4">
+          <h1 className="text-2xl text-black font-bold font-mono my-2">
+            Many new course options
+          </h1>
+          <p>
+            Choose from over 220,000 online video courses with new additions
+            published every month
+          </p>
+        </div>
 
-        <div className="grid grid-cols-4 xs:grid-cols-2 gap-4 mx-10">
+        {renderCourse(courseNewest)}
+      </div>
+
+      <div className="w-full py-[2rem] xs:py-[20px] xs:px-0 px-10 mx-6 my-4">
+        <h1 className="text-2xl text-black font-bold font-mono my-2">
+          Top categories
+        </h1>
+        <div className="grid grid-cols-4 xs:grid-cols-2 gap-4">
           {Topic.map((topic, index) => (
             <div
               key={index}
-              className="w-full shadow-xl flex flex-col p-4 my-4 rounded-lg hover:scale-105 duration-300"
-              style={{
-                background:
-                  "linear-gradient(349deg, rgba(244,250,243,1) 31%, rgba(125,247,207,0.5188200280112045) 73%)",
-              }}
+              className="shadow-xl flex flex-col my-4 hover:scale-105 duration-300 w-[300px] group" // Thêm class group vào đây
               data-aos="zoom-in-up"
             >
-              <h2 className="text-2xl font-bold text-center py-8 xs:min-h-[130px] xs:text-[17px]">
-                {topic.name}
-              </h2>
-
-              <button
-                className="bg-[#00df9a] w-[100px] rounded-2xl font-medium my-3 mx-auto py-3"
+              <div
+                className="w-full bg-transparent cursor-pointer"
                 onClick={() => handleSearch(topic)}
               >
-                Get
-              </button>
+                <img
+                  src={topic.img}
+                  alt=""
+                  className="transform transition duration-300 ease-in-out group-hover:scale-110" // Áp dụng hiệu ứng zoom khi hover
+                />
+              </div>
+              <span className="mt-3 text-black font-bold text-lg font-mono flex justify-center mb-3">
+                {topic.name}
+              </span>
             </div>
           ))}
         </div>
-      </div>
-
-      <div className="mx-10 xs:mx-0">
-        {renderCourse(coursePopular, "POPULAR COURSES")}
       </div>
       <div className="flex-center">
         {/* <Paginate totalPage={4} key={"123123"} setPage={setPage} /> */}

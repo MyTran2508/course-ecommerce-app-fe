@@ -13,6 +13,7 @@ import { CiCircleQuestion } from "react-icons/ci";
 import { HiChevronUp } from "react-icons/hi";
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { MdLockOutline, MdOutlineOndemandVideo } from "react-icons/md";
+import { MdQuiz } from "react-icons/md";
 
 interface CourseContentLearningProps {
   section: Section;
@@ -126,6 +127,9 @@ function CourseContentLearning(props: CourseContentLearningProps) {
                               ) : lecture.lectureType ===
                                 LectureType.DOCUMENT ? (
                                 <IoDocumentTextSharp />
+                              ) : lecture.lectureType ===
+                                LectureType.ASSIGNMENT ? (
+                                <MdQuiz />
                               ) : (
                                 <CiCircleQuestion />
                               )}

@@ -175,6 +175,19 @@ export const userApi = createApi({
       },
       invalidatesTags: () => [{ type: "User" as const, id: "recent-search" }],
     }),
+    getAllUsernameAdmin: builder.query<DataResponse, null>({
+      query: () => `api/users/user/get-username-of-all-admin`,
+      providesTags: (result, error, arg) =>
+        result
+          ? [
+              ...(result.data as User[]).map(({ id }) => ({
+                type: "User" as const,
+                id,
+              })),
+              "User",
+            ]
+          : ["User"],
+    }),
   }),
 });
 
@@ -195,4 +208,6 @@ export const {
   useGetRecentSearchQuery,
   useDeleteRecentSearchMutation,
   useLazyGetRecentSearchQuery,
+  useLazyGetAllUsernameAdminQuery,
+  useGetAllUsernameAdminQuery,
 } = userApi;

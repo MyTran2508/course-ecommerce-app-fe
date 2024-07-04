@@ -74,7 +74,7 @@ function FileLecture(props: FileLectureProps) {
   }, [isDelete]);
 
   useEffect(() => {
-    console.log(description, data.description);
+    // console.log(description, data.description);
     if (description !== data.description) {
       data.description = description;
       handleUpdateLecture(data);

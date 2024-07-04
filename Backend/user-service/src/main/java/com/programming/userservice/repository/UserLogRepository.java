@@ -13,7 +13,6 @@ public interface UserLogRepository extends BaseRepository<UserLog> {
                 SELECT ul FROM UserLog ul
                 WHERE (:startTime IS NULL OR (ul.created >= :startTime AND ul.created <= :endTime))
                 AND (:userName IS NULL OR ul.userName LIKE %:userName%)
-                AND (:ip IS NULL OR ul.ip LIKE %:ip%)
             """)
-    Page<UserLog> filterUserLog(Long startTime, Long endTime, String userName, String ip, Pageable pageable);
+    Page<UserLog> filterUserLog(Long startTime, Long endTime, String userName, Pageable pageable);
 }

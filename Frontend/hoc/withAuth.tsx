@@ -13,16 +13,16 @@ export default function withAuth(
   const roleDetail = roles ? roles[0].roleDetails : [];
 
   function WithAuth(props: any) {
-    if (
-      !isPermissionGranted(
-        roleDetail as RoleDetail[],
-        PermissionName.CAN_VIEW,
-        moduleName
-      ) &&
-      roles?.[0].name !== Role.ADMIN
-    ) {
-      return <ForbiddenPage />;
-    }
+    // if (
+    //   !isPermissionGranted(
+    //     roleDetail as RoleDetail[],
+    //     PermissionName.CAN_VIEW,
+    //     moduleName
+    //   ) &&
+    //   roles?.[0].name !== Role.ADMIN
+    // ) {
+    //   return <ForbiddenPage />;
+    // }
 
     return <WrappedComponent {...props} />;
   }

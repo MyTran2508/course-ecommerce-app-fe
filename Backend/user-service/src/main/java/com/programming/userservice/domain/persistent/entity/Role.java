@@ -1,6 +1,7 @@
 package com.programming.userservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -20,8 +23,12 @@ import java.util.List;
                 @UniqueConstraint(columnNames = "name", name = "uq_role_name")
         }
 )
-@ToString(callSuper = true)
-public class Role extends BaseModel {
+@ToString
+public class Role extends BaseModel implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
 
     @Column(length = 64)
     private String name;
@@ -29,6 +36,10 @@ public class Role extends BaseModel {
     @Column(length = 512)
     @ExcludeFromComparisonField
     private String description;
+
+    @Column(name = "role_user")
+    @Enumerated(EnumType.STRING)
+    private RoleUser roleUser;
 
     @ManyToMany()
     @JoinTable(
@@ -45,6 +56,7 @@ public class Role extends BaseModel {
     @OneToMany(targetEntity = RoleDetail.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "fk_role_details_role"))
     @OrderBy("module.id DESC ")
+    @ExcludeFromComparisonField
     private List<RoleDetail> roleDetails;
 
     public Role(String id) {

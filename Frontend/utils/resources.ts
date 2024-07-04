@@ -1,3 +1,4 @@
+import { NotificationDTO } from "./../types/notification.type";
 // import { SECTION } from './resources';
 // import { Content } from '@/types/content.type';
 // import { User } from './../types/user.type';
@@ -9,6 +10,7 @@ export enum Constant {
   USER_PERSONAL_PATH = "/user/personal",
   USER_SECURITY_PATH = "/user/security",
   ADMIN_USER_PATH = "/admin/user",
+  ADMIN_USER_HISTORY_PATH = "/admin/user-history",
   ADMIN_COURSE_PATH = "/admin/courses",
   ADMIN_DASHBOARD_PATH = "/admin/overview",
   ADMIN_ROLE_PATH = "/admin/role",
@@ -17,11 +19,15 @@ export enum Constant {
   MANAGER_BASICS_PATH = "/manage/basics",
   MANAGER_CONTENT_PATH = "/manage/content",
   MANAGER_CURRICULUM_PATH = "/manage/curriculum",
+  MANAGER_PRACTICE_BASIC_PATH = "/manage/practice/basic-info",
+  MANAGER_PRACTICE_INSTRUCTION_PATH = "/manage/practice/instructions",
+  MANAGER_PRACTICE_SOLUTION_PATH = "/manage/practice/solutions",
+  MANAGER_PRACTICE_QUESTIONS_PATH = "/manage/practice/questions",
 }
 
 export const DEFAULT_PAGE_SIZE = 1000;
 export const DEFAULT_PAGE_INDEX = 0;
-export const DEFAULT_HISTORY_SEARCH = "History Search";
+export const DEFAULT_HISTORY_SEARCH = "Recent searches ";
 
 export enum Action {
   SENT_OTP = "SENT_OTP",
@@ -36,6 +42,7 @@ export enum Action {
   DISLIKE = "DISLIKE",
   SEARCH_COURSE_CLIENT = "SEARCH_COURSE_CLIENT",
   SEARCH_COURSE_ADMIN = "SEARCH_COURSE_ADMIN",
+  SEARCH_ASSIGNMENT_HISTORY = "SEARCH_ASSIGNMENT_HISTORY",
   SEARCH_BILL = "SEARCH_BILL",
   SEARCH_BY_HISTORY = "SEARCH_BY_HISTORY",
   SEARCH_USER = "SEARCH_USER",
@@ -56,6 +63,7 @@ export enum ToastStatus {
   SUCCESS = "success",
   WARNING = "warning",
   ERROR = "error",
+  INFO = "info",
 }
 
 export enum ToastMessage {
@@ -148,6 +156,7 @@ export enum LectureType {
   EXERCISE_CODING = "EXERCISE_CODING",
   EXERCISE_PRACTICAL = "EXERCISE_PRACTICAL",
   QUIZ_TEST = "QUIZ_TEST",
+  ASSIGNMENT = "ASSIGNMENT",
 }
 
 export enum CourseLectureField {
@@ -206,6 +215,11 @@ export enum Fields {
   NAME = "Name",
   Subtitle = "Subtitle",
   Price = "Price",
+  LectureName = "LectureName",
+  ASSIGNMENT_VIDEO_INSTRUCTIONS = "Assignment Video Instructions",
+  ASSIGNMENT_RESOURCE_INSTRUCTIONS = "Assignment Resource Instructions",
+  ASSIGNMENT_VIDEO_SOLUTION = "Assignment Video Solution",
+  ASSIGNMENT_FILE_SOLUTION = "Assignment File Solution",
 }
 export enum PermissionName {
   CAN_VIEW = "canView",
@@ -224,5 +238,22 @@ export enum ModuleSearch {
 
   ORDER = "ORDER",
 
+  ASSIGNMENT_HISTORY = "ASSIGNMENT_HISTORY",
+
   USER_LOG = "USER_LOG",
+}
+
+export enum NotificationLink {
+  TO_MANAGER_COURSE_CONTENT = "",
+}
+
+export enum NotificationMessage {
+  CREATE_COURSE = "Khóa Học Mới Đã Được Tạo",
+  REQUEST_APPROVAL = "Yêu Cầu Phê Duyệt Khóa Học",
+  APPROVAL_COURSE = "Khóa Học Đã Được Phê Duyệt",
+  REJECT_COURSE = "Khóa Học Đã Bị Từ Chối",
+  BUY_COURSE = "Khóa Học Đã Được Mua",
+  DELETE_USER = "Người Dùng Đã Bị Xóa",
+  RESTORE_USER = "Người Dùng Đã Được Khôi Phục",
+  UPDATE_USER = "Thông tin người dùng đã được cập nhật",
 }

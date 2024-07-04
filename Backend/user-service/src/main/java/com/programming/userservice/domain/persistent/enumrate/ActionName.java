@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ActionName {
+
     GET("Lấy dữ liệu"),
 
     CREATE("Tạo dữ liệu"),
@@ -22,7 +23,9 @@ public enum ActionName {
 
     RESET_PASSWORD("Đặt lại mật khẩu"),
 
-    FORGET_PASSWORD("Quên mật khẩu");
+    FORGET_PASSWORD("Quên mật khẩu"),
+
+    ORDER("Đặt hàng");
 
     private final String value;
 }

@@ -1,13 +1,10 @@
 package com.programming.courseservice.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.programming.courseservice.domain.persistent.entity.AssignmentHistory;
-import com.programming.courseservice.domain.persistent.entity.Lecture;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 public class AssignmentDto implements Serializable {
@@ -30,6 +27,8 @@ public class AssignmentDto implements Serializable {
     private String urlVideoSolution;
 
     private String urlFileSolution;
+
+    private String textSolution;
 
     @JsonBackReference
     private LectureDto lecture;

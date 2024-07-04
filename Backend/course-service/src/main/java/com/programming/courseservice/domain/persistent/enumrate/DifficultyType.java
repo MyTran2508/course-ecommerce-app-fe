@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum DifficultyType {
+
     EASY("Dễ"),
 
     MEDIUM("Vừa"),

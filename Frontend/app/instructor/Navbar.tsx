@@ -25,6 +25,7 @@ import { User } from "@/types/user.type";
 import { loadUser, removeUser, setUser } from "@/redux/features/userSlice";
 import { RoleDetail, Roles } from "@/types/roles.type";
 import { isPermissionGranted } from "@/utils/function";
+import NotificationPopUp from "@/components/Notification/Notification";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -102,9 +103,18 @@ function InstructorNavbar() {
               ) ||
                 role?.name == Role.ADMIN) && (
                 <Link href={"/instructor/courses/create"} className="xs:hidden">
-                  Tạo Khóa Học Mới
+                  Create New Course
                 </Link>
               )}
+
+              <Link
+                href={"/instructor/assignment-history"}
+                className="xs:hidden"
+              >
+                Feedback Assignment
+              </Link>
+
+              <NotificationPopUp />
 
               <div>
                 <Menu>

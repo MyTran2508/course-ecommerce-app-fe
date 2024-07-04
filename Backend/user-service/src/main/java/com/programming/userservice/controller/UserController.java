@@ -3,26 +3,27 @@ package com.programming.userservice.controller;
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.dto.SearchKeywordDto;
 import com.main.progamming.common.error.exception.NotPermissionException;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
 import com.main.progamming.common.util.SystemUtil;
 import com.programming.userservice.domain.dto.*;
+import com.programming.userservice.domain.mapper.UserMapper;
 import com.programming.userservice.domain.persistent.entity.User;
 import com.programming.userservice.domain.persistent.entity.UserLog;
 import com.programming.userservice.domain.persistent.enumrate.ActionName;
 import com.programming.userservice.domain.persistent.enumrate.ActionObject;
-import com.programming.userservice.domain.persistent.enumrate.RoleUser;
 import com.programming.userservice.repository.UserRepository;
 import com.programming.userservice.service.UserLogService;
 import com.programming.userservice.service.UserService;
 import com.programming.userservice.utilities.annotation.ShowOpenAPI;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.programming.userservice.utilities.constant.UserConstant;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -42,6 +45,8 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     private final UserService userService;
 
     private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -96,19 +101,62 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @ShowOpenAPI
 //    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     public DataResponse<UserDto> update(@Valid UserDto objectDTO, String id) {
+        User savedUser = userRepository.findById(id).orElse(null);
+        if (savedUser == null) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
 
-//        RoleDto role = new RoleDto(RoleUser.USER.getValue());
-//        objectDTO.setRoles(List.of(role));
+        User oldUserClone = SerializationUtils.clone(savedUser);
+        System.out.println("prefix user: " + oldUserClone);
+        DataResponse<UserDto> response = super.update(objectDTO, id);
 
-        return super.update(objectDTO, id);
+        // Add log
+        System.out.println("oldUserClone: " + oldUserClone);
+        System.out.println("response.getData(): " + userMapper.dtoToEntity(response.getData()));
+        String description = userLogService.writeUpdateLog(User.class, oldUserClone, userMapper.dtoToEntity(response.getData()), true, 0);
+        if (!Objects.equals(description, UserConstant.PREFIX_USER_LOG)) {
+            UserLog userLog = UserLog.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionKey(id)
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.UPDATE)
+                    .description(description)
+                    .build();
+            userLogService.addLog(userLog);
+        }
+        return response;
     }
 
     @ShowOpenAPI
     @PutMapping("/update-admin/{id}")
     public DataResponse<UserDto> updateAdminUser(@Valid @RequestBody UserDto userDto,
                                                     @PathVariable("id") String id) {
+        User savedUser = userRepository.findById(id).orElse(null);
+        if (savedUser == null) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
 
-        return userService.updateAdminUser(userDto, id);
+        User oldUserClone = SerializationUtils.clone(savedUser);
+        System.out.println("prefix user: " + oldUserClone);
+
+        DataResponse<UserDto> response = userService.updateAdminUser(userDto, id);
+
+        // Add log
+        String description = userLogService.writeUpdateLog(User.class, oldUserClone, userMapper.dtoToEntity(response.getData()), true, 0);
+        if (!Objects.equals(description, UserConstant.PREFIX_USER_LOG)) {
+            UserLog userLog = UserLog.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionKey(id)
+                    .actionObject(ActionObject.USER)
+                    .actionName(ActionName.UPDATE)
+                    .description(description)
+                    .build();
+            userLogService.addLog(userLog);
+        }
+
+        return response;
     }
 
     @PostMapping("/login")
@@ -281,5 +329,10 @@ public class UserController extends BaseApiImpl<User, UserDto> {
     @PostMapping("/set-user-is-author/{username}")
     public DataResponse<String> setUserIsAuthor(@PathVariable("username") String username) {
         return userService.setUserIsAuthor(username);
+    }
+
+    @GetMapping("/get-username-of-all-admin")
+    public DataResponse<List<String>> getUsernameOfAllAdmin() {
+        return userService.getUsernameOfAllAdmin();
     }
 }

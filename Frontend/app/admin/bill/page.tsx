@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table";
 import DatePicker from "react-datepicker";
 import { useState, useEffect } from "react";
-import { billColumns, userColumns } from "@/components/table/Columns";
+import { billColumns, userColumns } from "@/components/Table/Columns";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
 import { Action } from "@/utils/resources";
@@ -58,7 +58,7 @@ function BillPage() {
 
   useEffect(() => {
     if (getBillSuccess) {
-      setBillList(bills?.data || []);
+      setBillList((bills?.data as Order[]) || []);
       setTotalPage((bills?.totalPages as number) || 0);
     }
   }, [bills, getBillSuccess]);
@@ -95,12 +95,13 @@ function BillPage() {
 
   return (
     <div className="w-full px-10">
-      <div className="flex-end gap-2 z-20 mt-2">
+      <div className="flex-end gap-5 z-20 mt-2 mr-3">
         <div className="flex gap-2">
           <p>Start Day: </p>
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date as Date)}
+            maxDate={endDate}
             className="border w-[100px] px-2 rounded-md"
             placeholderText="Start Date"
           />
@@ -110,6 +111,7 @@ function BillPage() {
           <DatePicker
             selected={endDate}
             onChange={(date) => setEndDate(date as Date)}
+            minDate={startDate}
             className="border w-[100px] px-2 rounded-md"
             placeholderText="End Date"
           />

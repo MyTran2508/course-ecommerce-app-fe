@@ -96,10 +96,10 @@ function ReviewComponent(props: ReviewComponentProps) {
         </div>
       </div>
       <p className=" font-normal text-sm">{review.message}</p>
-      <span className="text-xs text-gray-500 italic my-3">
+      <span className="text-xs text-gray-500 italic my-3 ">
         Was this review helpful?
       </span>
-      <div className="flex gap-2 ">
+      <div className="flex gap-2 mt-1">
         <button
           className="flex items-center"
           onClick={() => handleReactionReview(Action.LIKE)}
@@ -111,7 +111,7 @@ function ReviewComponent(props: ReviewComponentProps) {
             <BiSolidLike />
           )}
 
-          <p className="text-sm">({review.likeAmount})</p>
+          <p className="ml-1 text-sm font-mono">Like ({review.likeAmount})</p>
         </button>
         <button
           className="flex items-center"
@@ -124,7 +124,7 @@ function ReviewComponent(props: ReviewComponentProps) {
             <BiSolidDislike />
           )}
 
-          <p className="text-sm">({review.disLikeAmount})</p>
+          <p className="ml-1 text-sm font-mono">Dislike ({review.disLikeAmount})</p>
         </button>
       </div>
       <hr className="my-2" />

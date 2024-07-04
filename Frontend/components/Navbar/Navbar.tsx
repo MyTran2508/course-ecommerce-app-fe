@@ -34,6 +34,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
 import { setKeywordSearchCourse } from "@/redux/features/courseSlice";
+import NotificationPopUp from "../Notification/Notification";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -126,7 +127,7 @@ function Navbar() {
       ? email.substring(0, MAX_TITLE_LENGTH) + "..."
       : email;
   return (
-    <div className="border-b bg-transparent w-full h-20 border-b-1 border-gray-200 text-black sticky top-0 z-30 shadow-md">
+    <div className="border-b bg-transparent w-full h-20 border-b-1 bg-white text-black relative top-0 z-30 shadow-md">
       <div className="max-w-screen-2xl h-full mx-auto flex items-center justify-between px-16 xs:px-5">
         <Link href={"/"} className="text-2xl flex items-center">
           <h1 className="text-2xl uppercase font-semibold tracking-wide text-gray-700">
@@ -215,6 +216,7 @@ function Navbar() {
                   <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
                 </div>
               )}
+              <NotificationPopUp />
 
               <div
                 className="flex relative hover:cursor-pointer"
@@ -339,15 +341,15 @@ function Navbar() {
               </div>
 
               <CustomButton
-                title="Login"
-                containerStyles=" xs:hidden bg-white-500 border-b-4 border-main-colors hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                title="Log in"
+                containerStyles="xs:hidden text-[13px] bg-white-500 hover:bg-gray-300 text-black font-bold py-2 px-4 duration-1000 border border-gray-700"
                 handleClick={() => {
                   router.push("/login");
                 }}
               ></CustomButton>
               <CustomButton
-                title="SignUp"
-                containerStyles="xs:hidden bg-white-500  border-b-4 border-main-colors hover:bg-blue-200 hover:scale-110 text-black font-bold py-2 px-4 rounded duration-1000"
+                title="Sign up"
+                containerStyles="xs:hidden text-[13px] bg-white-500 text-white font-bold py-2 px-4 duration-1000 bg-[#2d2f31] hover:bg-[#3e4143]"
                 handleClick={() => {
                   router.push("/signup");
                 }}

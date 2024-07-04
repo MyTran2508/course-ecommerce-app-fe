@@ -4,11 +4,12 @@ import { baseQueryWithToken } from "../baseQuery";
 import Content from "@/types/content.type";
 import { Lecture, Section } from "@/types/section.type";
 import { StatusCode } from "@/utils/resources";
+import { Assignment } from "@/types/assignment.type";
 
 export const contentApi = createApi({
   reducerPath: "contentApi",
   baseQuery: baseQueryWithToken,
-  tagTypes: ["Content"],
+  tagTypes: ["Content", "Lecture"],
   endpoints: (builder) => ({
     getContentByCourseId: builder.query<DataResponse, string>({
       query: (id: string) => {
@@ -129,8 +130,24 @@ export const contentApi = createApi({
       },
       invalidatesTags: (result, error, arg) => [
         { type: "Content" as const, id: arg.id },
+        { type: "Lecture" as const },
       ],
     }),
+    getLectureById: builder.query<DataResponse, string>({
+      query: (id: string) => {
+        return {
+          url: `/api/courses/lecture/get-by-id`,
+          params: {
+            id: id,
+          },
+        };
+      },
+      providesTags: (result, error, id) =>
+        result && result?.statusCode !== StatusCode.DATA_NOT_FOUND
+          ? [{ type: "Lecture" as const }]
+          : [],
+    }),
+
     addExQuiz: builder.mutation<DataResponse, { id: string; data: Lecture }>({
       query: ({ id, data }) => {
         return {
@@ -142,6 +159,26 @@ export const contentApi = createApi({
       invalidatesTags: (result, error, arg) => [
         { type: "Content" as const, id: arg.id },
       ],
+    }),
+    addAssignment: builder.mutation<DataResponse, Assignment>({
+      query: (data: Assignment) => {
+        return {
+          url: `/api/courses/assignment/add`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: "Lecture" as const }],
+    }),
+    updateAssignment: builder.mutation<DataResponse, Assignment>({
+      query: (data: Assignment) => {
+        return {
+          url: `/api/courses/assignment/update/${data.id}`,
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: (result, error, arg) => [{ type: "Lecture" as const }],
     }),
   }),
 });
@@ -157,4 +194,7 @@ export const {
   useUpdateLectureMutation,
   useAddExQuizMutation,
   useUpdateListSectionMutation,
+  useGetLectureByIdQuery,
+  useAddAssignmentMutation,
+  useUpdateAssignmentMutation,
 } = contentApi;

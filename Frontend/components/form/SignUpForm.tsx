@@ -462,7 +462,7 @@ function SignUpForm() {
             <div className="showcase-content-signup-text">
               Every new friend in a <br /> new adventure. <br />
               <p className="showcase-content-signup-text-second">
-                let's get connected
+                let&apos;s get connected
               </p>
             </div>
           </div>

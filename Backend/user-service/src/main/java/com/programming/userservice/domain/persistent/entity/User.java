@@ -10,6 +10,8 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,11 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @ToString(callSuper = true)
-public class User extends BaseModel {
+public class User extends BaseModel implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
 
     @Column(nullable = false)
     @ExcludeFromComparisonField
@@ -66,7 +72,7 @@ public class User extends BaseModel {
     )
     private List<Role> roles;
 
-    @OneToMany(targetEntity = Address.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Address.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_address_user"))
     private List<Address> addresses;
 
@@ -85,5 +91,10 @@ public class User extends BaseModel {
             }
         }
         roles.clear();
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

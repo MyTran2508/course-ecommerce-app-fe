@@ -58,7 +58,7 @@ public class OrderController extends BaseApiImpl<Order, OrderDto> {
                     .ip(SystemUtil.getUserIP())
                     .actionKey(orderId)
                     .actionObject(ActionObject.ORDER)
-                    .actionName(ActionName.CREATE)
+                    .actionName(ActionName.ORDER)
                     .description(userLogService.writePersistLog(Order.class, order, true, 0))
                     .build();
             userLogService.addLog(userLog);
