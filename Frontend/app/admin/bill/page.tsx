@@ -101,6 +101,7 @@ function BillPage() {
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date as Date)}
+            maxDate={endDate}
             className="border w-[100px] px-2 rounded-md"
             placeholderText="Start Date"
           />
@@ -110,6 +111,7 @@ function BillPage() {
           <DatePicker
             selected={endDate}
             onChange={(date) => setEndDate(date as Date)}
+            minDate={startDate}
             className="border w-[100px] px-2 rounded-md"
             placeholderText="End Date"
           />

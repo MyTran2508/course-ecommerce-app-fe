@@ -70,7 +70,7 @@ export const userColumns: ColumnDef<User>[] = [
     accessorKey: "removed",
     header: "Active",
     cell: ({ row }) => (
-      <div className="capitalize flex-center">
+      <div className="capitalize flex-start">
         {row.getValue("removed") ? (
           <FaRegTimesCircle className="text-lg text-red-500" />
         ) : (
@@ -281,15 +281,28 @@ export const userLogColumns: ColumnDef<UserLog>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.getValue("description") || <i>None</i>}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const description = row.getValue("description");
+      if (description) {
+        return (
+          <div className="capitalize">
+            {(description as string).split("\\n").map((part, index) => (
+              <div key={index}>{part || <i>None</i>}</div>
+            ))}
+          </div>
+        );
+      }
+
+      return (
+        <div className="capitalize">
+          <i>None</i>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "created",
-    header: "Time Start",
+    header: "Time",
     cell: ({ row }) => (
       <div className="capitalize">
         {convertMillisToDateTime(row.getValue("created") as number)}
