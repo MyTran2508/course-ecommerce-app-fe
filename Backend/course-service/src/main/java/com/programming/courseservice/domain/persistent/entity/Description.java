@@ -1,8 +1,12 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 @Entity
 @ToString
@@ -13,7 +17,11 @@ import lombok.*;
 @Table(
         name = "description"
 )
-public class Description extends BaseModel {
+public class Description extends BaseModel implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
 
     @Column(length = 1000)
     private String requirements;

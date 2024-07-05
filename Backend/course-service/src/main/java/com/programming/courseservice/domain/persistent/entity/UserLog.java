@@ -2,14 +2,17 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.programming.courseservice.domain.persistent.enumrate.ActionName;
 import com.programming.courseservice.domain.persistent.enumrate.ActionObject;
+import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @Builder
+@ToString
 public class UserLog implements Serializable {
 
     @Serial

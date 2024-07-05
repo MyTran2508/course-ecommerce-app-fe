@@ -25,7 +25,9 @@ public enum ActionName {
 
     FORGET_PASSWORD("Quên mật khẩu"),
 
-    ORDER("Đặt hàng");
+    ORDER("Đặt hàng"),
+
+    APPROVE_COURSE("Chấp thuận khóa học");
 
     private final String value;
 }

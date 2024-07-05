@@ -19,7 +19,15 @@ public enum ActionObject {
 
     COURSE_PROGRESS("Tiến độ khóa học"),
 
-    ASSIGNMENT("Bài tập Tự Luận");
+    SECTION("Chương Khóa Học"),
+
+    CONTENT("Nội dung"),
+
+    ASSIGNMENT("Bài tập Tự Luận"),
+
+    LECTURE("Bài giảng"),
+
+    EX_QUIZ("Bài kiểm tra trắc nghiệm");
 
     private final String value;
 }

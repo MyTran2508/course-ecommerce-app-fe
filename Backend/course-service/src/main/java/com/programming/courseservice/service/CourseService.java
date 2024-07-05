@@ -16,13 +16,13 @@ import com.programming.courseservice.domain.dto.*;
 import com.programming.courseservice.domain.mapper.CourseIssueReportMapper;
 import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.*;
-import com.programming.courseservice.domain.persistent.enumrate.FilterSortBy;
-import com.programming.courseservice.domain.persistent.enumrate.RatingsLevel;
-import com.programming.courseservice.domain.persistent.enumrate.VideoDuration;
+import com.programming.courseservice.domain.persistent.enumrate.*;
 import com.programming.courseservice.repository.*;
 import com.programming.courseservice.utilities.EnumUtils;
 import com.programming.courseservice.utilities.TimeUtils;
+import com.programming.courseservice.utilities.communication.UserApi;
 import com.programming.courseservice.utilities.constant.CourseConstrant;
+import com.programming.courseservice.utilities.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.*;
@@ -54,6 +54,10 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
     private final CourseIssueReportMapper courseIssueReportMapper;
 
     private final CourseReviewRepository courseReviewRepository;
+
+    private final UserLogService userLogService;
+
+    private final UserApi userApi;
 
     @Override
     protected BaseRepository<Course> getBaseRepository() {
@@ -341,6 +345,18 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         if(isApproved) {
             if(course.getIsCompletedContent() && course.getIsAwaitingApproval()) {
                 courseRepository.updateIsApproved(id, isApproved);
+
+                // add logs
+                // Add log
+                UserLogDto userLogDto = UserLogDto.builder()
+                        .userName(SystemUtil.getCurrentUsername())
+                        .ip(SystemUtil.getUserIP())
+                        .actionKey(id)
+                        .actionObject(ActionObject.COURSE)
+                        .actionName(ActionName.APPROVE_COURSE)
+                        .description(UserConstant.PREFIX_USER_LOG + "Đã chấp thuận khóa học")
+                        .build();
+                userApi.addLog(userLogDto);
                 return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPDATE_SUCCESS);
             } else {
                 return ResponseMapper.toDataResponse(CourseConstrant.ErrorConstrant.CONTENT_NOT_COMPLETE, StatusCode.DATA_NOT_MAP, StatusMessage.DATA_NOT_MAP);
@@ -354,6 +370,18 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
             courseIssueReports.forEach(System.out::println);
             course.setCourseIssueReports(courseIssueReports);
             course.setIsAwaitingApproval(false);
+
+            // Add log
+            UserLogDto userLogDto = UserLogDto.builder()
+                    .userName(SystemUtil.getCurrentUsername())
+                    .ip(SystemUtil.getUserIP())
+                    .actionKey(id)
+                    .actionObject(ActionObject.COURSE)
+                    .actionName(ActionName.DISAPPROVE_COURSE)
+                    .description(userLogService.writePersistLog(CourseIssueReport.class, courseIssueReport, true, 0))
+                    .build();
+            System.out.println(userLogDto);
+            userApi.addLog(userLogDto);
 
             courseRepository.save(course);
             return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPDATE_SUCCESS);

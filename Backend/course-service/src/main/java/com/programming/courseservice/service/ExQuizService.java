@@ -8,6 +8,7 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.main.progamming.common.util.CommonConstrant;
 import com.programming.courseservice.domain.dto.ExQuizDto;
 import com.programming.courseservice.domain.mapper.ExQuizMapper;
 import com.programming.courseservice.domain.persistent.entity.ExQuiz;
@@ -73,10 +74,11 @@ public class ExQuizService extends BaseServiceImpl<ExQuiz, ExQuizDto> {
             lecture.setExQuiz(exQuiz);
 
             // save lecture
-            lectureRepository.save(lecture);
+            Lecture saveLecture = lectureRepository.save(lecture);
+            String exQuizId = saveLecture.getExQuiz().getId();
 
             // return success response
-            return ResponseMapper.toDataResponseSuccess(StatusMessage.REQUEST_SUCCESS);
+            return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS + " ID: " + exQuizId);
         } else {
             // throw exception if lecture not found
             throw new DataNotFoundException(StatusMessage.DATA_NOT_FOUND);

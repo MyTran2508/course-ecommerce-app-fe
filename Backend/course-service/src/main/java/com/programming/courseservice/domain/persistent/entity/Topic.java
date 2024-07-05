@@ -1,9 +1,12 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
@@ -22,7 +25,12 @@ import java.util.List;
                 @Index(columnList = "category_id", name = "idx_topics_category_id")
         }
 )
-public class Topic extends BaseModel {
+public class Topic extends BaseModel implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
+
     @Column(nullable = false, length = 256)
     private String name;
 

@@ -1,11 +1,15 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +17,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "course_review")
-public class CourseReview extends BaseModel {
+public class CourseReview extends BaseModel implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
 
     @ManyToOne(targetEntity = Course.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_course_review_course"))

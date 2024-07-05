@@ -5,6 +5,9 @@ import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonF
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Entity
 @Getter
 @Setter
@@ -13,7 +16,11 @@ import lombok.*;
 @Table(
         name = "assignment"
 )
-public class Assignment extends BaseModel {
+public class Assignment extends BaseModel implements Serializable {
+
+    @Serial
+    @ExcludeFromComparisonField
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "questions", length = 3000)
     private String questions;
