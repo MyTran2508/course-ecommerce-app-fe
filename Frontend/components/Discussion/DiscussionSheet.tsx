@@ -91,8 +91,8 @@ function DiscussionSheet(props: DiscussionSheetProps) {
   };
 
   const connect = async () => {
-    // let Sock = new SockJS(process.env.NEXT_PUBLIC_END_POINT + "/ws/courses");
-    let Sock = new SockJS("http://localhost:8081/ws/courses");
+    let Sock = new SockJS(process.env.NEXT_PUBLIC_SOCKET_END_POINT as string);
+    // let Sock = new SockJS("http://localhost:8081/ws/courses");
     stompClient = await over(Sock);
     stompClient.connect({}, onConnected, onError);
   };
