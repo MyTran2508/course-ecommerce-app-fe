@@ -1,7 +1,8 @@
 package com.programming.courseservice.service;
 
-import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
+import com.main.progamming.common.util.ExcludeFromComparisonField;
 import com.programming.courseservice.utilities.constant.UserConstant;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -149,6 +150,27 @@ public class UserLogService {
                             }
                         }
                     }
+                    else if (field.isAnnotationPresent(Table.class)) {
+                        StringBuilder logFieldChild = new StringBuilder();
+                        result.append(field.getName().trim()).append(": {");
+                        for (Field fieldChild: field.getType().getDeclaredFields()) {
+                            fieldChild.setAccessible(true);
+                            Object newChildFieldValue = fieldChild.get(newObject);
+                            Object oldChildFieldValue = fieldChild.get(oldObject);
+                            if(!fieldChild.isAnnotationPresent(ExcludeFromComparisonField.class)) {
+                                 if (!Objects.equals(newChildFieldValue, oldChildFieldValue)) {
+                                     logFieldChild.append(fieldChild.getName().trim()).append("từ <")
+                                                .append(oldChildFieldValue == null ? "N/A" : oldChildFieldValue).append("> thành <")
+                                                .append(newChildFieldValue == null ? "N/A" : newChildFieldValue).append(">; ");
+                                 }
+                            }
+                        }
+                        if (logFieldChild.length() > 2) {
+                            logFieldChild.delete(logFieldChild.length() - 2, logFieldChild.length());
+                            result.append(logFieldChild);
+                            result.append("}; ");
+                        }
+                    }
                     else {
                         System.out.println(field.getName());
                         System.out.println(newFieldValue);
@@ -198,7 +220,24 @@ public class UserLogService {
                             }
                             result.append("]; ");
                         }
-                    } else {
+                    } else if (field.isAnnotationPresent(Table.class)) {
+                        StringBuilder logFieldChild = new StringBuilder();
+                        result.append(field.getName().trim()).append(": {");
+                        for (Field fieldChild: field.getType().getDeclaredFields()) {
+                            fieldChild.setAccessible(true);
+                            Object newChildFieldValue = fieldChild.get(newObject);
+                            if(!fieldChild.isAnnotationPresent(ExcludeFromComparisonField.class)) {
+                                logFieldChild.append(fieldChild.getName().trim()).append(": <")
+                                        .append(newChildFieldValue == null ? "N/A" : newChildFieldValue).append(">; ");
+                            }
+                        }
+                        if (logFieldChild.length() > 2) {
+                            logFieldChild.delete(logFieldChild.length() - 2, logFieldChild.length());
+                            result.append(logFieldChild);
+                            result.append("}; ");
+                        }
+                    }
+                    else {
                         result.append(field.getName().trim()).append(": <")
                                 .append(newFieldValue == null ? "N/A" : newFieldValue).append(">; ");
                     }

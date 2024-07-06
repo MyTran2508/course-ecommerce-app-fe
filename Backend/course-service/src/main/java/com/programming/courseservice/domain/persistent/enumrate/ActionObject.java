@@ -27,7 +27,9 @@ public enum ActionObject {
 
     LECTURE("Bài giảng"),
 
-    EX_QUIZ("Bài kiểm tra trắc nghiệm");
+    EX_QUIZ("Bài kiểm tra trắc nghiệm"),
+
+    COURSE_REVIEW("Đánh giá khóa học");
 
     private final String value;
 }

@@ -2,7 +2,6 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.IssueType;
-import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -23,7 +22,6 @@ import java.io.Serializable;
 public class CourseIssueReport extends BaseModel implements Serializable {
 
     @Serial
-    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     @Column(name = "issue_type")
@@ -37,6 +35,5 @@ public class CourseIssueReport extends BaseModel implements Serializable {
     @ManyToOne(targetEntity = Course.class)
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_course_issue_reports_course"))
     @ToString.Exclude
-    @ExcludeFromComparisonField
     private Course course;
 }

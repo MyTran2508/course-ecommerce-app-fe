@@ -354,7 +354,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
                         .actionKey(id)
                         .actionObject(ActionObject.COURSE)
                         .actionName(ActionName.APPROVE_COURSE)
-                        .description(UserConstant.PREFIX_USER_LOG + "Đã chấp thuận khóa học")
+                        .description(UserConstant.PREFIX_USER_LOG + UserConstant.APPROVE_COURSE)
                         .build();
                 userApi.addLog(userLogDto);
                 return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPDATE_SUCCESS);
@@ -399,6 +399,16 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         }
         course.setIsAwaitingApproval(isAwaitingApproval);
         courseRepository.save(course);
+        UserLogDto userLogDto = UserLogDto.builder()
+                .userName(SystemUtil.getCurrentUsername())
+                .ip(SystemUtil.getUserIP())
+                .actionKey(id)
+                .actionObject(ActionObject.COURSE)
+                .actionName(ActionName.APPROVAL_REQUEST)
+                .description(UserConstant.PREFIX_USER_LOG + UserConstant.APPROVAL_REQUEST)
+                .build();
+        System.out.println(userLogDto);
+        userApi.addLog(userLogDto);
         return ResponseMapper.toDataResponseSuccess(CourseConstrant.SuccessConstrant.UPDATE_SUCCESS);
     }
 

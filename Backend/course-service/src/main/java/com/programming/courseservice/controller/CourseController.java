@@ -2,14 +2,24 @@ package com.programming.courseservice.controller;
 
 import com.main.progamming.common.controller.BaseApiImpl;
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
+import com.main.progamming.common.util.SystemUtil;
 import com.programming.courseservice.domain.dto.*;
+import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.Course;
+import com.programming.courseservice.domain.persistent.entity.CourseReview;
+import com.programming.courseservice.domain.persistent.enumrate.ActionName;
+import com.programming.courseservice.domain.persistent.enumrate.ActionObject;
+import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.service.CourseService;
+import com.programming.courseservice.service.UserLogService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
+import com.programming.courseservice.utilities.communication.UserApi;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +33,14 @@ import java.util.List;
 public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     private final CourseService courseService;
+
+    private final CourseRepository courseRepository;
+
+    private final UserLogService userLogService;
+
+    private final CourseMapper courseMapper;
+
+    private final UserApi userApi;
 
     @Override
     protected BaseService<Course, CourseDto> getBaseService() {
@@ -43,7 +61,27 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @Override
     @ShowOpenAPI
     public DataResponse<String> add(CourseDto objectDTO) {
-        return super.add(objectDTO);
+
+        DataResponse<String> response = super.add(objectDTO);
+
+        String stResult = response.getData();
+        String courseId = stResult.split(": ")[1].trim();
+        Course entity = courseRepository.findById(courseId).orElse(null);
+
+        // Add log
+        UserLogDto userLogDto = UserLogDto.builder()
+                .userName(SystemUtil.getCurrentUsername())
+                .ip(SystemUtil.getUserIP())
+                .actionKey(courseId)
+                .actionObject(ActionObject.COURSE)
+                .actionName(ActionName.CREATE)
+                .description(userLogService.writePersistLog(Course.class, entity, true, 0))
+                .build();
+        System.out.println(userLogDto);
+        userApi.addLog(userLogDto);
+
+
+        return response;
     }
 
     @ShowOpenAPI
@@ -67,7 +105,28 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @Override
     @ShowOpenAPI
     public DataResponse<CourseDto> update(CourseDto objectDTO, String id) {
-        return super.update(objectDTO, id);
+        Course savedCourse = courseRepository.findById(id).orElse(null);
+        if (savedCourse == null) {
+            throw new ResourceNotFoundException(id + " does not exists in DB");
+        }
+
+        Course oldCourseClone = SerializationUtils.clone(savedCourse);
+        System.out.println("prefix user: " + oldCourseClone);
+
+        DataResponse<CourseDto> response =  super.update(objectDTO, id);
+        // Add log
+        UserLogDto userLogDto = UserLogDto.builder()
+                .userName(SystemUtil.getCurrentUsername())
+                .ip(SystemUtil.getUserIP())
+                .actionKey(id)
+                .actionObject(ActionObject.COURSE)
+                .actionName(ActionName.UPDATE)
+                .description(userLogService.writeUpdateLog(Course.class, oldCourseClone, courseMapper.dtoToEntity(response.getData()), true, 0))
+                .build();
+
+        userApi.addLog(userLogDto);
+
+        return response;
     }
 
     @GetMapping("/newest/{topic-id}/{size}")

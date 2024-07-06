@@ -2,7 +2,6 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.DifficultyType;
-import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +23,6 @@ import java.util.List;
 public class ExQuiz extends BaseModel implements Serializable {
 
     @Serial
-    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     @Column(length = 16)
@@ -45,6 +43,5 @@ public class ExQuiz extends BaseModel implements Serializable {
     @OneToMany(targetEntity = Question.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ex_quiz_id", foreignKey = @ForeignKey(name = "fk_question_ex_quiz_id"))
     @OrderBy("ordinalNumber ASC")
-    @ExcludeFromComparisonField
     private List<Question> questions;
 }

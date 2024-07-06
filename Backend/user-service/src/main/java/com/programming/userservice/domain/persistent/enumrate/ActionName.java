@@ -27,7 +27,11 @@ public enum ActionName {
 
     ORDER("Đặt hàng"),
 
-    APPROVE_COURSE("Chấp thuận khóa học");
+    APPROVE_COURSE("Chấp thuận khóa học"),
+
+    DISAPPROVE_COURSE("Không chấp thuận khóa học"),
+
+    APPROVAL_REQUEST("Yêu cầu xét duyệt khóa học");
 
     private final String value;
 }

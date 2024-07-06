@@ -1,7 +1,6 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
-import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -29,7 +28,6 @@ import java.util.List;
 public class Course extends BaseModel implements Serializable {
 
     @Serial
-    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     private String name;
@@ -48,7 +46,6 @@ public class Course extends BaseModel implements Serializable {
     private Language language;
 
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "course")
-    @ExcludeFromComparisonField
     private Content content;
 
     @Column(name = "url_course_images", length = 512)
@@ -59,38 +56,31 @@ public class Course extends BaseModel implements Serializable {
 
     @ManyToOne(targetEntity = Topic.class)
     @JoinColumn(name = "topic_id", foreignKey = @ForeignKey(name = "fk_course_topic"))
-    @ExcludeFromComparisonField
     private Topic topic;
 
     @Column(name = "author_name")
     private String authorName;
 
     @Column(columnDefinition="tinyint(1) default 0", name = "is_approved")
-    @ExcludeFromComparisonField
     private Boolean isApproved;
 
     @Column(columnDefinition="tinyint(1) default 0", name = "is_completed_content")
     private Boolean isCompletedContent;
 
     @Column(columnDefinition = "tinyint(1) default 0", name = "is_awaiting_approval")
-    @ExcludeFromComparisonField
     private Boolean isAwaitingApproval;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("created DESC")
-    @ExcludeFromComparisonField
     private List<CourseIssueReport> courseIssueReports;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    @ExcludeFromComparisonField
     private List<CourseReview> courseReviews;
 
     @Column(name = "average_rating")
-    @ExcludeFromComparisonField
     private Float averageRating;
 
     @Column(name = "total_ratings")
-    @ExcludeFromComparisonField
     private Integer totalRatings;
 
     @Override

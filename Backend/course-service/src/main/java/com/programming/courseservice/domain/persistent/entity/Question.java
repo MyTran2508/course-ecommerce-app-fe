@@ -2,7 +2,6 @@ package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
 import com.programming.courseservice.domain.persistent.enumrate.QuizType;
-import com.programming.courseservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +19,6 @@ import java.io.Serializable;
 public class Question extends BaseModel implements Serializable {
 
     @Serial
-    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     @Column(name = "ordinal_number")
