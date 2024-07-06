@@ -1,7 +1,7 @@
 package com.programming.userservice.domain.persistent.entity;
 
+import com.main.progamming.common.util.ExcludeFromComparisonField;
 import com.programming.userservice.domain.persistent.enumrate.ModuleName;
-import com.programming.userservice.utilities.annotation.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;

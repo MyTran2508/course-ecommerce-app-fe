@@ -1,6 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.main.progamming.common.util.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +20,7 @@ import java.io.Serializable;
 public class Description extends BaseModel implements Serializable {
 
     @Serial
+    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     @Column(length = 1000)
@@ -32,5 +34,6 @@ public class Description extends BaseModel implements Serializable {
 
     @OneToOne(mappedBy = "description")
     @ToString.Exclude
+    @ExcludeFromComparisonField
     private Content content;
 }

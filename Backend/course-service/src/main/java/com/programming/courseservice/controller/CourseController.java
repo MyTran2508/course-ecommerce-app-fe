@@ -9,11 +9,14 @@ import com.main.progamming.common.service.BaseService;
 import com.main.progamming.common.util.SystemUtil;
 import com.programming.courseservice.domain.dto.*;
 import com.programming.courseservice.domain.mapper.CourseMapper;
-import com.programming.courseservice.domain.persistent.entity.Course;
-import com.programming.courseservice.domain.persistent.entity.CourseReview;
+import com.programming.courseservice.domain.persistent.entity.*;
 import com.programming.courseservice.domain.persistent.enumrate.ActionName;
 import com.programming.courseservice.domain.persistent.enumrate.ActionObject;
+import com.programming.courseservice.domain.persistent.enumrate.LevelName;
 import com.programming.courseservice.repository.CourseRepository;
+import com.programming.courseservice.repository.LanguageRepository;
+import com.programming.courseservice.repository.LevelRepository;
+import com.programming.courseservice.repository.TopicRepository;
 import com.programming.courseservice.service.CourseService;
 import com.programming.courseservice.service.UserLogService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
@@ -36,9 +39,15 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     private final CourseRepository courseRepository;
 
+    private final LevelRepository levelRepository;
+
+    private final LanguageRepository languageRepository;
+
     private final UserLogService userLogService;
 
     private final CourseMapper courseMapper;
+
+    private final TopicRepository topicRepository;
 
     private final UserApi userApi;
 
@@ -67,6 +76,14 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         String stResult = response.getData();
         String courseId = stResult.split(": ")[1].trim();
         Course entity = courseRepository.findById(courseId).orElse(null);
+        Level level = levelRepository.findById(entity.getLevel().getId()).orElse(null);
+        Language language = languageRepository.findById(entity.getLanguage().getId()).orElse(null);
+        Topic topic = topicRepository.findById(entity.getTopic().getId()).orElse(null);
+        entity.getLevel().setName(level == null ? null : level.getName());
+        entity.getLanguage().setName(language == null ? "" : language.getName());
+        entity.getTopic().setName(topic == null ? "" : topic.getName());
+
+        System.out.println("prefix user: " + entity);
 
         // Add log
         UserLogDto userLogDto = UserLogDto.builder()
@@ -103,8 +120,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @Override
-    @ShowOpenAPI
     public DataResponse<CourseDto> update(CourseDto objectDTO, String id) {
+
         Course savedCourse = courseRepository.findById(id).orElse(null);
         if (savedCourse == null) {
             throw new ResourceNotFoundException(id + " does not exists in DB");
@@ -113,7 +130,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
         Course oldCourseClone = SerializationUtils.clone(savedCourse);
         System.out.println("prefix user: " + oldCourseClone);
 
-        DataResponse<CourseDto> response =  super.update(objectDTO, id);
+        DataResponse<CourseDto> response = super.update(objectDTO, id);
+
         // Add log
         UserLogDto userLogDto = UserLogDto.builder()
                 .userName(SystemUtil.getCurrentUsername())
@@ -125,7 +143,6 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
                 .build();
 
         userApi.addLog(userLogDto);
-
         return response;
     }
 

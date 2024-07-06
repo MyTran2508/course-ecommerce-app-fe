@@ -1,7 +1,10 @@
 package com.programming.courseservice.service;
 
+import com.main.progamming.common.util.ChildEntity;
 import com.main.progamming.common.util.ExcludeFromComparisonField;
 import com.programming.courseservice.utilities.constant.UserConstant;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -150,25 +153,31 @@ public class UserLogService {
                             }
                         }
                     }
-                    else if (field.isAnnotationPresent(Table.class)) {
+                    else if (field.isAnnotationPresent(ManyToOne.class) || field.isAnnotationPresent(OneToOne.class)) {
                         StringBuilder logFieldChild = new StringBuilder();
-                        result.append(field.getName().trim()).append(": {");
+                        logFieldChild.append(field.getName().trim()).append(": {");
+                        System.out.println("field: " + field.getName());
+                        boolean isEditFieldChild = false;
                         for (Field fieldChild: field.getType().getDeclaredFields()) {
                             fieldChild.setAccessible(true);
-                            Object newChildFieldValue = fieldChild.get(newObject);
-                            Object oldChildFieldValue = fieldChild.get(oldObject);
+                            Object newChildFieldValue = fieldChild.get(newFieldValue);
+                            Object oldChildFieldValue = fieldChild.get(oldFieldValue);
+                            System.out.println("new: " + newChildFieldValue);
+                            System.out.println("old: " + oldChildFieldValue);
                             if(!fieldChild.isAnnotationPresent(ExcludeFromComparisonField.class)) {
                                  if (!Objects.equals(newChildFieldValue, oldChildFieldValue)) {
-                                     logFieldChild.append(fieldChild.getName().trim()).append("từ <")
+                                     logFieldChild.append(fieldChild.getName().trim()).append(": từ <")
                                                 .append(oldChildFieldValue == null ? "N/A" : oldChildFieldValue).append("> thành <")
                                                 .append(newChildFieldValue == null ? "N/A" : newChildFieldValue).append(">; ");
+                                     isEditFieldChild = true;
                                  }
                             }
                         }
-                        if (logFieldChild.length() > 2) {
+                        if (isEditFieldChild) {
                             logFieldChild.delete(logFieldChild.length() - 2, logFieldChild.length());
-                            result.append(logFieldChild);
-                            result.append("}; ");
+                        }
+                        if (!logFieldChild.toString().equals(field.getName().trim() + ": {")) {
+                            result.append(logFieldChild).append("}; ");
                         }
                     }
                     else {
@@ -220,21 +229,26 @@ public class UserLogService {
                             }
                             result.append("]; ");
                         }
-                    } else if (field.isAnnotationPresent(Table.class)) {
+                    } else if (field.isAnnotationPresent(ManyToOne.class) || field.isAnnotationPresent(OneToOne.class)) {
+                        System.out.println("Table: " + field.getName());
                         StringBuilder logFieldChild = new StringBuilder();
-                        result.append(field.getName().trim()).append(": {");
+                        logFieldChild.append(field.getName().trim()).append(": {");
+                        boolean isEditFieldChild = false;
                         for (Field fieldChild: field.getType().getDeclaredFields()) {
                             fieldChild.setAccessible(true);
-                            Object newChildFieldValue = fieldChild.get(newObject);
+                            Object newChildFieldValue = fieldChild.get(newFieldValue);
                             if(!fieldChild.isAnnotationPresent(ExcludeFromComparisonField.class)) {
+                                System.out.println("Field: " + fieldChild.getName());
                                 logFieldChild.append(fieldChild.getName().trim()).append(": <")
                                         .append(newChildFieldValue == null ? "N/A" : newChildFieldValue).append(">; ");
+                                isEditFieldChild = true;
                             }
                         }
-                        if (logFieldChild.length() > 2) {
+                        if (isEditFieldChild) {
                             logFieldChild.delete(logFieldChild.length() - 2, logFieldChild.length());
-                            result.append(logFieldChild);
-                            result.append("}; ");
+                        }
+                        if (!logFieldChild.toString().equals(field.getName().trim() + ": {")) {
+                            result.append(logFieldChild).append("}; ");
                         }
                     }
                     else {

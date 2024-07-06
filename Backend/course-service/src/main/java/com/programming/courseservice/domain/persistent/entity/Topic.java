@@ -1,6 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.main.progamming.common.util.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class Topic extends BaseModel implements Serializable {
 
     @Serial
+    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     @Column(nullable = false, length = 256)
@@ -37,6 +39,7 @@ public class Topic extends BaseModel implements Serializable {
 
     @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
     @ToString.Exclude
+    @ExcludeFromComparisonField
     private List<Course> courses;
 
     public Topic(String name, String description) {

@@ -1,6 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.main.progamming.common.util.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,10 +21,12 @@ import java.util.List;
 public class Content extends BaseModel implements Serializable {
 
     @Serial
+    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     @OneToMany(mappedBy = "content", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OrderBy("ordinalNumber ASC")
+    @ExcludeFromComparisonField
     private List<Section> sections;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -33,5 +36,6 @@ public class Content extends BaseModel implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", foreignKey = @ForeignKey(name = "fk_content_course"))
     @ToString.Exclude
+    @ExcludeFromComparisonField
     private Course course;
 }

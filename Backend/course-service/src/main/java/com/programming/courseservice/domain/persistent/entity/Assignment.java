@@ -1,6 +1,7 @@
 package com.programming.courseservice.domain.persistent.entity;
 
 import com.main.progamming.common.model.BaseModel;
+import com.main.progamming.common.util.ExcludeFromComparisonField;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ import java.io.Serializable;
 public class Assignment extends BaseModel implements Serializable {
 
     @Serial
+    @ExcludeFromComparisonField
     private static final long serialVersionUID = 1L;
 
     @Column(name = "questions", length = 3000)
@@ -46,5 +48,6 @@ public class Assignment extends BaseModel implements Serializable {
 
     @OneToOne(targetEntity = Lecture.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", foreignKey = @ForeignKey(name = "fk_assignment_lecture_id"))
+    @ExcludeFromComparisonField
     private Lecture lecture;
 }
