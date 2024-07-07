@@ -19,6 +19,7 @@ import {
   LectureType,
   ModuleName,
   PermissionName,
+  RoleUser,
 } from "@/utils/resources";
 import { Lecture, Question, Section } from "@/types/section.type";
 import { isPermissionGranted } from "@/utils/function";
@@ -93,7 +94,8 @@ function Sortable(props: SortableProps) {
                 roleDetail as RoleDetail[],
                 PermissionName.CAN_UPDATE,
                 ModuleName.CONTENT
-              )
+              ) ||
+              role?.roleUser == RoleUser.MANAGER
             )
           }
         >

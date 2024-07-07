@@ -14,6 +14,7 @@ import {
   LectureType,
   ModuleName,
   PermissionName,
+  RoleUser,
   ToastMessage,
   ToastStatus,
 } from "@/utils/resources";
@@ -212,10 +213,12 @@ function FileLecture(props: FileLectureProps) {
                                   className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
                                   onClick={() => handleSelectType()}
                                   disabled={
-                                    !isPermissionGranted(
-                                      roleDetail as RoleDetail[],
-                                      PermissionName.CAN_UPDATE,
-                                      ModuleName.COURSE
+                                    !(
+                                      isPermissionGranted(
+                                        roleDetail as RoleDetail[],
+                                        PermissionName.CAN_UPDATE,
+                                        ModuleName.COURSE
+                                      ) || role?.roleUser == RoleUser.MANAGER
                                     )
                                   }
                                 >

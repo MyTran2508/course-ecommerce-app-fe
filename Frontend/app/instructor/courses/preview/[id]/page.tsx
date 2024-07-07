@@ -21,6 +21,7 @@ import Quiz from "@/components/Lecture/Quiz/Client/Quiz";
 import { useLazyGetExQuizByIdQuery } from "@/redux/services/quizApi";
 import withAuth from "@/hoc/withAuth";
 import AssignmentPractice from "@/components/Assignment/AssignmentPractice";
+import withAuthManager from "@/hoc/withAuthManager";
 
 function PreviewPage() {
   const param = useParams();
@@ -188,4 +189,4 @@ function PreviewPage() {
   );
 }
 
-export default withAuth(PreviewPage, ModuleName.COURSE_REVIEWS);
+export default withAuthManager(PreviewPage, ModuleName.COURSE_REVIEWS);

@@ -18,6 +18,7 @@ import {
   LectureType,
   ModuleName,
   PermissionName,
+  RoleUser,
   StatusCode,
   ToastMessage,
   ToastStatus,
@@ -66,7 +67,8 @@ function CourseSectionForm(props: CourseSectionProps) {
           roleDetail as RoleDetail[],
           PermissionName.CAN_UPDATE,
           ModuleName.CONTENT
-        )
+        ) ||
+        role?.roleUser == RoleUser.MANAGER
       )
     ) {
       showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);

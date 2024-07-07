@@ -16,6 +16,7 @@ import {
   QuizType,
   PermissionName,
   ModuleName,
+  RoleUser,
 } from "@/utils/resources";
 import { setTypeQuizCreate } from "@/redux/features/quizSlice";
 import Sortable from "../../DragAndDrop/Sorttable";
@@ -197,10 +198,12 @@ function AddQuiz(props: AddQuizProps) {
                                   className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
                                   onClick={() => handleSelectType()}
                                   disabled={
-                                    !isPermissionGranted(
-                                      roleDetail as RoleDetail[],
-                                      PermissionName.CAN_CREATE,
-                                      ModuleName.CONTENT
+                                    !(
+                                      isPermissionGranted(
+                                        roleDetail as RoleDetail[],
+                                        PermissionName.CAN_CREATE,
+                                        ModuleName.CONTENT
+                                      ) || role?.roleUser == RoleUser.MANAGER
                                     )
                                   }
                                 >
