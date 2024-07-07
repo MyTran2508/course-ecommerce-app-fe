@@ -1,4 +1,4 @@
-package com.programming.courseservice.utilities.annotation;
+package com.main.progamming.common.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

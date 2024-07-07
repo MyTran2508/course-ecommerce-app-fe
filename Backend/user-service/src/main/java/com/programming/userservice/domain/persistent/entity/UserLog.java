@@ -32,7 +32,7 @@ public class UserLog {
     @Enumerated(EnumType.STRING)
     private ActionName actionName;
 
-    @Column(name = "action_key", length = 64)
+    @Column(name = "action_key", length = 254)
     private String actionKey;
 
     @Lob

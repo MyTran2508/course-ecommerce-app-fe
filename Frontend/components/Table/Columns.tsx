@@ -11,6 +11,7 @@ import { Order } from "@/types/order.type";
 import { AssignmentHistory } from "@/types/assignment.type";
 import { convertMillisToDateTime, formatTime } from "@/utils/function";
 import { UserLog } from "@/types/userLog.type";
+import ShowAll from "./ShowAll";
 
 export const userColumns: ColumnDef<User>[] = [
   // {
@@ -139,6 +140,13 @@ export const courseColumns: ColumnDef<Course>[] = [
           <FaRegTimesCircle className="text-lg text-red-500" />
         )}
       </div>
+    ),
+  },
+  {
+    accessorKey: "authorName",
+    header: () => "Author",
+    cell: ({ row }) => (
+      <div className="italic">{row.getValue("authorName")}</div>
     ),
   },
 
@@ -281,24 +289,7 @@ export const userLogColumns: ColumnDef<UserLog>[] = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => {
-      const description = row.getValue("description");
-      if (description) {
-        return (
-          <div className="capitalize">
-            {(description as string).split("\\n").map((part, index) => (
-              <div key={index}>{part || <i>None</i>}</div>
-            ))}
-          </div>
-        );
-      }
-
-      return (
-        <div className="capitalize">
-          <i>None</i>
-        </div>
-      );
-    },
+    cell: ({ row }) => <ShowAll row={row} />,
   },
   {
     accessorKey: "created",

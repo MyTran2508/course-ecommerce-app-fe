@@ -103,6 +103,7 @@ function OverviewPage() {
   };
 
   useEffect(() => {
+    if (selectedYear === "" && selectedMonth == "") return;
     getMonthlySale(parseInt(selectedYear));
     getSalesByTopic(parseInt(selectedYear));
     getSalesSamePeriod(parseInt(selectedYear));
