@@ -14,6 +14,7 @@ import {
   ModuleName,
   PermissionName,
   Role,
+  RoleUser,
   ToastMessage,
   ToastStatus,
 } from "@/utils/resources";
@@ -23,12 +24,22 @@ import { FaPen } from "react-icons/fa";
 import { IoMdAddCircle } from "react-icons/io";
 import { IoReloadCircleOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function RolePage() {
   const [roleDetails, setRoleDetails] = useState<RoleDetail[]>([]);
   const [roleName, setRoleName] = useState<string>("");
   const [roleDescription, setRoleDescription] = useState<string>("");
   const [roleId, setRoleId] = useState<string>();
+  const [roleUser, setRoleUser] = useState<string>();
   const { data: roles, isSuccess: getAllRolesSuccess } = useGetAllRoleQuery();
   const [addRoles] = useAddRoleMutation();
   const [updateRoles] = useUpdateRoleMutation();
@@ -37,15 +48,12 @@ function RolePage() {
   );
   const roleDetail = role?.roleDetails;
 
-  useEffect(() => {
-    console.log(roles?.data as Roles[]);
-  }, [roles]);
-
   const handleRoleClick = (role: Roles) => {
     setRoleId(role.id as string);
     setRoleName(role.name as string);
     setRoleDescription(role.description as string);
     setRoleDetails(role.roleDetails as RoleDetail[]);
+    setRoleUser(role.roleUser as string);
   };
 
   const handleAction = (action: Action) => {
@@ -80,8 +88,8 @@ function RolePage() {
         name: roleName,
         description: roleDescription,
         roleDetails: roleDetails,
+        roleUser: roleUser,
       }).then((res) => {
-        console.log(res);
         if ("data" in res) {
           if (res.data.statusCode === 200) {
             showToast(ToastStatus.SUCCESS, ToastMessage.CREATE_ROLE_SUCCESS);
@@ -98,6 +106,7 @@ function RolePage() {
         name: roleName,
         description: roleDescription,
         roleDetails: roleDetails,
+        roleUser: roleUser,
       }).then((res) => {
         if ("data" in res) {
           if (res.data.statusCode === 200) {
@@ -115,40 +124,66 @@ function RolePage() {
     setRoleDescription("");
     setRoleDetails([]);
     setRoleId("");
+    setRoleUser("");
   };
 
   return (
     <div className="w-full px-10 flex gap-5 mt-5">
       <div>
-        {" "}
         <div className="flex gap-5 justify-around p-2 bg-slate-200 rounded-sm ">
-          <div className="flex gap-2 text-center">
-            <div className="mb-2 text-sm font-medium text-gray-900 dark:text-white text-center flex items-center justify-center">
+          <div className="flex gap-1 items-center">
+            <div className="text-sm font-medium text-gray-900 dark:text-white text-center flex items-center justify-center">
               Tên Quyền
             </div>
             <input
               type="text"
               id="first_name"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="py-[9px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Nhập tên quyền"
               value={roleName}
               onChange={(e) => setRoleName(e.target.value)}
               required
             />
           </div>
-          <div className="flex gap-2 text-center">
-            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white w-max">
+          <div className="flex gap-1 items-center">
+            <label className=" text-sm font-medium text-gray-900 dark:text-white w-max">
               Mô Tả
             </label>
             <input
               type="text"
               id="last_name"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="py-[9px] bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Nhập mô tả"
               value={roleDescription}
               onChange={(e) => setRoleDescription(e.target.value)}
               required
             />
+          </div>
+          <div className="flex gap-1 justify-center items-center">
+            <div className="text-sm font-medium text-gray-900 dark:text-white w-max">
+              Quyền
+            </div>
+            <Select
+              defaultValue={roleUser as string}
+              onValueChange={setRoleUser}
+            >
+              <SelectTrigger
+                className={`disabled:opacity-1 disabled:cursor-default w-[100px] `}
+              >
+                <SelectValue placeholder="Chọn quyền" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value={RoleUser.ADMIN}>
+                    {RoleUser.ADMIN}
+                  </SelectItem>
+                  <SelectItem value={RoleUser.MANAGER}>
+                    {RoleUser.MANAGER}
+                  </SelectItem>
+                  <SelectItem value={RoleUser.USER}>{RoleUser.USER}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <RoleDetails
@@ -191,61 +226,58 @@ function RolePage() {
           </div>
         </div>
       </div>
-      <div className="flex w-full border border-black rounded-sm flex-col p-2">
+      <div className="flex w-full border border-black rounded-sm flex-col p-2 m-2">
         <div className="flex justify-center">
           <h1 className="font-bold text-lg">Quyền</h1>
         </div>
-        <div>
-          <table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
-            <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 bg-gray-50 dark:bg-gray-800 w-1/2"
-                >
-                  Tên quyền
-                </th>
-                <th scope="col" className="px-6 py-3 bg-slate-300 w-1/2">
-                  Mô tả
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {getAllRolesSuccess &&
-                (roles?.data as Roles[])
-                  .filter(
-                    (role) => (role.roleDetails as RoleDetail[]).length > 0
-                  )
-                  .map((role) => (
-                    <tr
-                      key={role.id}
-                      className="border-b border-gray-200 dark:border-gray-700 cursor-pointer"
-                      onClick={() => handleRoleClick(role)}
+
+        <table className="text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
+          <thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+            <tr>
+              <th
+                scope="col"
+                className="px-6 py-3 bg-gray-50 dark:bg-gray-800 w-1/2"
+              >
+                Tên quyền
+              </th>
+              <th scope="col" className="px-6 py-3 bg-slate-300 w-1/2">
+                Mô tả
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {getAllRolesSuccess &&
+              (roles?.data as Roles[])
+                .filter((role) => (role.roleDetails as RoleDetail[]).length > 0)
+                .map((role) => (
+                  <tr
+                    key={role.id}
+                    className="border-b border-gray-200 dark:border-gray-700 cursor-pointer"
+                    onClick={() => handleRoleClick(role)}
+                  >
+                    <th
+                      scope="row"
+                      className={`${
+                        roleId === role.id
+                          ? "px-6 py-4 font-medium text-gray-900 bg-orange-200 dark:text-white dark:bg-gray-800"
+                          : "px-6 py-4 font-medium text-gray-900 bg-gray-50 dark:text-white dark:bg-gray-800"
+                      }`}
                     >
-                      <th
-                        scope="row"
-                        className={`${
-                          roleId === role.id
-                            ? "px-6 py-4 font-medium text-gray-900 bg-orange-200 dark:text-white dark:bg-gray-800"
-                            : "px-6 py-4 font-medium text-gray-900 bg-gray-50 dark:text-white dark:bg-gray-800"
-                        }`}
-                      >
-                        {role.name}
-                      </th>
-                      <td
-                        className={`${
-                          roleId === role.id
-                            ? "px-6 py-4 bg-orange-300"
-                            : "px-6 py-4 bg-slate-300"
-                        }`}
-                      >
-                        {role.description}
-                      </td>
-                    </tr>
-                  ))}
-            </tbody>
-          </table>
-        </div>
+                      {role.name}
+                    </th>
+                    <td
+                      className={`${
+                        roleId === role.id
+                          ? "px-6 py-4 bg-orange-300"
+                          : "px-6 py-4 bg-slate-300"
+                      }`}
+                    >
+                      {role.description}
+                    </td>
+                  </tr>
+                ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

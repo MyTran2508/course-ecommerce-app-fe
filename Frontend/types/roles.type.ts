@@ -15,6 +15,7 @@ export interface Roles {
   name?: string;
   description?: string;
   roleDetails?: RoleDetail[];
+  roleUser?: string;
 }
 
 export interface UserRoles {

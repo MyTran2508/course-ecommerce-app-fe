@@ -16,25 +16,17 @@ import { PiSealWarning } from "react-icons/pi";
 import { AiOutlineGlobal } from "react-icons/ai";
 import {
   NotificationMessage,
+  Role,
   ToastMessage,
   ToastStatus,
 } from "@/utils/resources";
 import { useParams, usePathname } from "next/navigation";
-import {
-  useGetCourseByIdQuery,
-  useLoadFileFromCloudQuery,
-} from "@/redux/services/courseApi";
-import Loading from "../../user/personal/loading";
 import { Course } from "@/types/course.type";
 import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
 import Content, { Description } from "@/types/content.type";
 import { Section } from "@/types/section.type";
 import { handleCountFieldsInSection } from "@/utils/function";
 import { useRouter } from "next/navigation";
-import {
-  useGetCourseAccessQuery,
-  useLazyGetCourseAccessQuery,
-} from "@/redux/services/courseProcessApi";
 import { IoCheckmarkDone } from "react-icons/io5";
 import { Order, OrderStatus, ShippingMethod } from "@/types/order.type";
 import { useAddOrderMutation } from "@/redux/services/orderApi";
@@ -45,6 +37,8 @@ import ReviewComponent from "@/components/Review/ReviewComponent";
 import Paginate from "@/components/Paginate/Paginate";
 import { sendNotification } from "@/components/Notification/Notification";
 import { useGetAllUsernameAdminQuery } from "@/redux/services/userApi";
+import { RoleType } from "@/types/user.type";
+import { Roles } from "@/types/roles.type";
 
 const initCourse: Course = {
   id: "0",
@@ -66,6 +60,10 @@ function CoursePage() {
   const path = usePathname();
   const username = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.username
+  );
+  const roleUser = useAppSelector(
+    (state) =>
+      (state.persistedReducer.userReducer.user.roles as Roles[])[0]?.roleUser
   );
   const [isOpenAllContent, setOpenAllContent] = useState<boolean>(false);
   const [course, setCourse] = useState(initCourse);
@@ -140,6 +138,10 @@ function CoursePage() {
   };
 
   const handleAddToCart = () => {
+    if (roleUser == "ADMIN" || roleUser == "MANAGER") {
+      showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
+      return;
+    }
     const newCart: Cart = {
       id: uuidv4().toString(),
       courseId: course.id as string,
@@ -174,6 +176,10 @@ function CoursePage() {
   };
 
   const handleRegisterCourseFree = () => {
+    if (roleUser == "ADMIN" || roleUser == "MANAGER") {
+      showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
+      return;
+    }
     if (user.id !== "") {
       const newOrder: Order = {
         totalPrice: 0,
@@ -203,9 +209,12 @@ function CoursePage() {
     <div className="xl:flex m-2 mt-10 gap-2 font-roboto">
       <Fragment>
         <div className="xl:w-2/3 ml-8 xs:m-6">
-          <div className="text-3xl font-bold mb-6 font-mono"> {course?.name}</div>
+          <div className="text-3xl font-bold mb-6 font-mono">
+            {" "}
+            {course?.name}
+          </div>
           <div className="text-xl mb-2 font-sans">{course?.subTitle}</div>
-          
+
           {course.averageRating ? (
             <Fragment>
               <div className="flex gap-1 items-center mb-2">
@@ -274,7 +283,12 @@ function CoursePage() {
               </div>
             </Fragment>
           )}
-          <p className="text-sm">Created by <span className="text-[#5022c3] underline">{course.authorName}</span></p>
+          <p className="text-sm">
+            Created by{" "}
+            <span className="text-[#5022c3] underline">
+              {course.authorName}
+            </span>
+          </p>
           <div className="flex items-center gap-4 mt-2">
             <div className="flex items-center gap-2">
               <PiSealWarning />
@@ -289,7 +303,9 @@ function CoursePage() {
           {renderTargetConsumers(description as Description)}
           <div className="">
             {/* sticky top-[80px] z-1 */}
-            <div className="text-2xl font-bold md-6 font-mono">Nội Dung Khóa Học</div>
+            <div className="text-2xl font-bold md-6 font-mono">
+              Nội Dung Khóa Học
+            </div>
             <div className="flex-between my-2 xs:text-[10px]">
               <div className="flex-start xl:gap-2 xs:gap-0.5">
                 <div>{sections?.length} chương</div>
@@ -490,7 +506,9 @@ export const renderRequirement = (description: Description) => {
     }
     return (
       <Fragment>
-        <div className="text-2xl font-bold md-6 mt-10 mb-5 font-mono">Yêu Cầu</div>
+        <div className="text-2xl font-bold md-6 mt-10 mb-5 font-mono">
+          Yêu Cầu
+        </div>
 
         {requirementsList.map((requirement, index) => {
           if (requirement !== "") {

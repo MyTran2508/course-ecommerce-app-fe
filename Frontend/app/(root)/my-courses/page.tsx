@@ -44,7 +44,7 @@ function MyCourses() {
 
   const renderCourse = () => {
     return (
-      <div className="grid grid-cols-4 xs:grid-cols-2 xs:gap-2 xs:mr-2">
+      <div className="grid grid-cols-4 xs:grid-cols-2 xs:gap-2 xs:mr-2 lg:gap-3 ">
         {courses.map((course) => (
           <div key={course.id}>
             <CourseCard myCourse={true} course={course} />

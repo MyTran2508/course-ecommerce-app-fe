@@ -140,6 +140,12 @@ export enum Role {
   GUEST = "ROLE_GUEST",
 }
 
+export enum RoleUser {
+  USER = "USER",
+  ADMIN = "ADMIN",
+  MANAGER = "MANAGER",
+}
+
 export enum ApiResource {}
 
 export enum CourseDescriptionField {
@@ -220,6 +226,8 @@ export enum Fields {
   ASSIGNMENT_RESOURCE_INSTRUCTIONS = "Assignment Resource Instructions",
   ASSIGNMENT_VIDEO_SOLUTION = "Assignment Video Solution",
   ASSIGNMENT_FILE_SOLUTION = "Assignment File Solution",
+  Description = "Description",
+  Action_Key = "Action Key",
 }
 export enum PermissionName {
   CAN_VIEW = "canView",

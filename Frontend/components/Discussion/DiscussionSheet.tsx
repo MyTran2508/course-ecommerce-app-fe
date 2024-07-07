@@ -115,7 +115,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
   };
 
   const onConnected = () => {
-    stompClient.subscribe(
+    stompClient && stompClient.subscribe(
       `/rt/response/courses/forum-lecture/${lectureId}`,
       onMessageReceived
     );

@@ -1,5 +1,6 @@
 package com.main.progamming.common.model;
 
+import com.main.progamming.common.util.ExcludeFromComparisonField;
 import com.main.progamming.common.util.SystemUtil;
 import lombok.*;
 
@@ -25,14 +26,19 @@ public class BaseModel {
     @Id
     private String id;
 
+    @ExcludeFromComparisonField
     private Long created;
 
+    @ExcludeFromComparisonField
     private String creator;
 
+    @ExcludeFromComparisonField
     private Long updated;
 
+    @ExcludeFromComparisonField
     private String modifier;
 
+    @ExcludeFromComparisonField
     private Boolean removed;
 
     @PrePersist

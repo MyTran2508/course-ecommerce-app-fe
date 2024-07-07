@@ -8,6 +8,7 @@ import com.main.progamming.common.repository.BaseRepository;
 import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.service.BaseServiceImpl;
+import com.main.progamming.common.util.CommonConstrant;
 import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.mapper.LectureMapper;
 import com.programming.courseservice.domain.persistent.entity.Lecture;
@@ -70,9 +71,15 @@ public class LectureService extends BaseServiceImpl<Lecture, LectureDto> {
             }
 
             // save section
-            sectionRepository.save(section);
+            Section savedSection = sectionRepository.save(section);
+            String lectureId = savedSection.getLectures().stream()
+                    .filter(item -> item.getOrdinalNumber() == lectureDto.getOrdinalNumber() && item.getName().equals(lectureDto.getName()))
+                    .findFirst()
+                    .get().getId();
 
-            return ResponseMapper.toDataResponseSuccess(StatusMessage.REQUEST_SUCCESS);
+            System.out.println(CommonConstrant.INSERT_SUCCESS + " ID: " + lectureId);
+
+            return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS + " ID: " + lectureId);
         } else {
 
             // throw exception if section is not found
