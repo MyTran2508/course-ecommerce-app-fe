@@ -62,12 +62,6 @@ function CourseCard(props: CourseProps) {
     }
   }, [isMyCourse, isRating]);
 
-  const MAX_TITLE_LENGTH = 22;
-  const truncatedTitle =
-    course.name.length > MAX_TITLE_LENGTH
-      ? course.name.substring(0, MAX_TITLE_LENGTH) + "..."
-      : course.name;
-
   const handleRating = () => {
     setIsRating(true);
   };
@@ -98,7 +92,7 @@ function CourseCard(props: CourseProps) {
   return (
     <Fragment>
       <Card
-        className="w-full max-w-fit hover:scale-105 duration-300 mb-8 mx-auto p-4 max-w-[240px]"
+        className="w-full hover:scale-105 duration-300 mb-8 mx-auto p-4 max-w-[350px]"
         key={course.id}
         // style={{
         //   background:
@@ -108,15 +102,15 @@ function CourseCard(props: CourseProps) {
       >
         <CardHeader className="flex flex-col gap-2 !p-0 hover:cursor-pointer">
           <div className="h-fit w-full relative">
-            <div className="group">
+            <div className="group flex justify-center text-center ">
               <Image
                 src={
                   imageBase64
                     ? `data:image/png;base64,${imageBase64}`
                     : "/banner.jpg"
                 }
-                className="w-60 h-32"
-                width={240}
+                className="w-[20rem] h-40"
+                width={300}
                 height={128}
                 alt={course.name}
               />
@@ -145,11 +139,11 @@ function CourseCard(props: CourseProps) {
             </div>
           </div>
 
-          <CardTitle className="text-black paragraph-semibold line-clamp-1 w-full text-left xs:text-[12px] font-serif">
-            {truncatedTitle}
+          <CardTitle className="text-black paragraph-semibold line-clamp-2 w-full text-left xs:text-[12px] font-serif min-h-[52px]">
+            {course.name}
           </CardTitle>
 
-          <div className="flex gap-1 justify-end items-end pr-2 pb-2 flex-col hover:cursor-pointer">
+          <div className="flex gap-1 justify-end items-end pr-2 flex-col hover:cursor-pointer">
             {isMyCourse && (
               <Fragment>
                 <div
@@ -216,7 +210,7 @@ function CourseCard(props: CourseProps) {
                   )}
                 </Fragment>
               )}
-              <p className="ml-1 text-gray-500">(50)</p>
+              <p className="ml-1 text-gray-500">({course.totalRatings ?? 0})</p>
             </div>
             <div className="mr-2">
               <div className="text-xl font-normal xs:text-sm">

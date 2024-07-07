@@ -49,7 +49,7 @@ function PageCheckout() {
             E-LEANING
           </Link>
           <div>
-            <div className="flex gap-5">
+            {/* <div className="flex gap-5">
               <Menu>
                 <Menu.Button
                   className=" animate-background-shine bg-[linear-gradient(110deg,#FF8C00,45%,#ffff99,55%,#FF8C00)] bg-[length:250%_100%] bg-clip-text text-transparent rounded-xl border py-1 px-2"
@@ -94,7 +94,7 @@ function PageCheckout() {
                   </div>
                 </Menu.Items>
               </Menu>
-            </div>
+            </div> */}
             <Link href={"/cart"} className="hover:text-orange-400 font-bold">
               Cancel
             </Link>

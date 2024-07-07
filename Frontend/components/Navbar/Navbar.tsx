@@ -33,8 +33,14 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "../ui/input";
-import { setKeywordSearchCourse } from "@/redux/features/courseSlice";
+import { course, setKeywordSearchCourse } from "@/redux/features/courseSlice";
 import NotificationPopUp from "../Notification/Notification";
+import {
+  useGetCourseByUserIdQuery,
+  useLazyGetCourseByUserIdQuery,
+} from "@/redux/services/courseApi";
+import { Course } from "@/types/course.type";
+import { setCart } from "@/redux/features/cartSlice";
 
 const links = [
   { href: "/login", label: "Login", icon: "BiLogIn" },
@@ -63,6 +69,11 @@ function Navbar() {
   const [getAvatar, { data: avatarData, isSuccess: avatarSuccess }] =
     useLazyGetAvatarQuery();
 
+  const [
+    getCourseByUserId,
+    { data: courseData, isSuccess: getCourseByUserIdSuccess },
+  ] = useLazyGetCourseByUserIdQuery();
+
   useEffect(() => {
     if (user.isActive) {
       getAvatar(user.username as string);
@@ -89,11 +100,26 @@ function Navbar() {
       dispatch(setUser(userState));
       dispatch(loadUser());
       setUserData(userNameData?.data as User);
+      getCourseByUserId({
+        id: (userNameData?.data as User).id,
+        pageIndex: 0,
+        pageSize: 100,
+      });
     }
     if (avatarSuccess) {
       setCurrentAvatar(avatarData.rawAvatar as string);
     }
   }, [userNameData, avatarData]);
+
+  useEffect(() => {
+    if (getCourseByUserIdSuccess) {
+      const courses = courseData?.data as Course[];
+      const checkCourseIsExisted = cart.filter(
+        (cart) => !courses.some((course) => course.id === cart.courseId)
+      );
+      dispatch(setCart(checkCourseIsExisted));
+    }
+  }, [courseData]);
 
   const handleLogout = () => {
     dispatch(removeUser());

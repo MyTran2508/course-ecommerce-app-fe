@@ -30,7 +30,7 @@ import { SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
-import { Action, ModuleName } from "@/utils/resources";
+import { Action, Fields, ModuleName } from "@/utils/resources";
 import withAuth from "@/hoc/withAuth";
 import { UserLog } from "@/types/userLog.type";
 import { useGetUserLogMutation } from "@/redux/services/userLogApi";
@@ -167,7 +167,15 @@ function UserLogPage() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className={`${
+                        header.column.columnDef.header == Fields.Description ||
+                        header.column.columnDef.header == Fields.Action_Key
+                          ? "w-[30%]"
+                          : ""
+                      }`}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(

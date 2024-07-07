@@ -85,10 +85,11 @@ function NotificationPopUp(props: NotificationPopUpProps) {
   };
 
   const onConnected = () => {
-    stompClient.subscribe(
-      `/rt/response/courses/notification/${username}`,
-      onMessageReceived
-    );
+    stompClient &&
+      stompClient.subscribe(
+        `/rt/response/courses/notification/${username}`,
+        onMessageReceived
+      );
   };
 
   const onError = (err: any) => {
