@@ -56,10 +56,12 @@ public class AssignmentController extends BaseApiImpl<Assignment, AssignmentDto>
         UserLogDto userLogDto = UserLogDto.builder()
                 .userName(SystemUtil.getCurrentUsername())
                 .ip(SystemUtil.getUserIP())
-                .actionKey("Lecture ID: " + savedAssignment.getLecture().getId() + "; Assignment ID: " + savedAssignment.getId())
+                .actionKey("Lecture ID: " + savedAssignment.getLecture().getId()
+                        + "; Assignment ID: " + savedAssignment.getId())
                 .actionObject(ActionObject.ASSIGNMENT)
                 .actionName(ActionName.UPDATE)
-                .description(userLogService.writeUpdateLog(Assignment.class, oldAssignmentClone, assignmentMapper.dtoToEntity(response.getData()), true, 0))
+                .description(userLogService.writeUpdateLog(Assignment.class, oldAssignmentClone,
+                        assignmentMapper.dtoToEntity(response.getData()), true, 0))
                 .build();
 
         userApi.addLog(userLogDto);

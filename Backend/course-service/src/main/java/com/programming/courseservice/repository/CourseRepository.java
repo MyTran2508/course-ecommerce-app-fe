@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CourseRepository extends BaseRepository<Course> {
@@ -154,4 +155,10 @@ public interface CourseRepository extends BaseRepository<Course> {
                 AND is_approved = true
             """, nativeQuery = true)
     List<Course> getCourseSearch(@Param("typeSearch") Integer typeSearch, @Param("keyword") String keyword);
+
+    @Query("""
+                SELECT c.id FROM Course c
+                WHERE c.content.id = :contentId
+            """)
+    String findCourseIdByContentId(String contentId);
 }
