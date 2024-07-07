@@ -8,6 +8,7 @@ import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.response.ResponseMapper;
 import com.main.progamming.common.util.ExcludeFromComparisonField;
 import com.programming.userservice.domain.persistent.entity.UserLog;
+import com.programming.userservice.domain.persistent.enumrate.ActionObject;
 import com.programming.userservice.repository.UserLogRepository;
 import com.programming.userservice.utilities.constant.UserConstant;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,11 @@ public class UserLogService {
                 : Long.valueOf(searchKeywordDto.getKeyword().get(1).trim());
         Long endTime = searchKeywordDto.getKeyword().get(2) == null ? null
                 : Long.valueOf(searchKeywordDto.getKeyword().get(2).trim());
+        ActionObject actionObject = searchKeywordDto.getKeyword().get(3) == null ? null
+                : ActionObject.valueOf(searchKeywordDto.getKeyword().get(3).trim());
+        String actionKey = searchKeywordDto.getKeyword().get(4) == null ? null
+                : searchKeywordDto.getKeyword().get(4).trim();
+
 
 
         // Check error
@@ -51,7 +57,9 @@ public class UserLogService {
         Pageable pageable = PageRequest.of(searchKeywordDto.getPageIndex(), searchKeywordDto.getPageSize(), sortBy);
 
         // Return response
-        return ResponseMapper.toPagingResponseSuccess(userLogRepository.filterUserLog(startTime, endTime, userName, pageable));
+        return ResponseMapper.toPagingResponseSuccess(
+                userLogRepository.filterUserLog(startTime, endTime, userName, actionObject, actionKey, pageable)
+        );
     }
 
     public String writeUpdateLog(Class<?> clazz, Object oldObject, Object newObject, boolean isPrimary, int merginCount) {
@@ -235,7 +243,7 @@ public class UserLogService {
                                 result.append("}; ");
                             }
                             if (result.length() > 3) {
-                                result.delete(result.length() - 3, result.length());
+                                result.delete(result.length() - 2, result.length());
                             }
                             result.append("]; ");
                         }

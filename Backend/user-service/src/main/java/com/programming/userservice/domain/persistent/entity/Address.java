@@ -36,21 +36,21 @@ public class Address extends BaseModel implements Serializable {
     @Column(name = "default_address", columnDefinition = "bit default 0 not null")
     private boolean defaultAddress;
 
-    @Column(name = "province_name", length = 32)
-    private String provinceName;
-
-    @Column(name = "province_name_en", length = 32)
-    private String provinceNameEn;
-
-    @Column(name = "district_name", length = 32)
-    private String districtName;
-
-    @Column(name = "district_name_en", length = 32)
-    private String districtNameEn;
-
-    @Column(name = "ward_name", length = 32)
-    private String wardName;
-
-    @Column(name = "ward_name_en", length = 32)
-    private String wardNameEn;
+//    @Column(name = "province_name", length = 32)
+//    private String provinceName;
+//
+//    @Column(name = "province_name_en", length = 32)
+//    private String provinceNameEn;
+//
+//    @Column(name = "district_name", length = 32)
+//    private String districtName;
+//
+//    @Column(name = "district_name_en", length = 32)
+//    private String districtNameEn;
+//
+//    @Column(name = "ward_name", length = 32)
+//    private String wardName;
+//
+//    @Column(name = "ward_name_en", length = 32)
+//    private String wardNameEn;
 }

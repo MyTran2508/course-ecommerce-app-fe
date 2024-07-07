@@ -206,7 +206,7 @@ function PersonalForm(props: PersonalProps) {
                       type="button"
                       onClick={() => handleClickEdit()}
                     >
-                      Chỉnh Sửa
+                      Edit
                     </Button>
                   </div>
                 )}
@@ -219,14 +219,14 @@ function PersonalForm(props: PersonalProps) {
                     type="button"
                     onClick={form.handleSubmit(onSubmit)}
                   >
-                    Lưu
+                    Save
                   </Button>
                   <Button
                     className=" bg-none rounded-3xl w-max"
                     type="button"
                     onClick={() => handleClickCancel()}
                   >
-                    Hủy
+                    Cancel
                   </Button>
                 </div>
               </Fragment>

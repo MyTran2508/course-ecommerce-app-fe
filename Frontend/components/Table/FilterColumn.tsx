@@ -30,10 +30,10 @@ const FilterColumn = (props: FilterColumnProps) => {
       searchQuery = null;
     }
     if (name === "isApproved") {
-      setColumnName("Đã");
+      setColumnName("Approved");
       dispatch(setIsApprovedSearch(searchQuery));
     } else {
-      setColumnName("Chờ");
+      setColumnName("Pending");
       dispatch(setIsAwaitingApprovalSearch(searchQuery));
     }
   }, [name, selected]);
@@ -44,7 +44,7 @@ const FilterColumn = (props: FilterColumnProps) => {
         <SelectTrigger
           className={`disabled:opacity-1 disabled:cursor-default w-[150px] border-none`}
         >
-          {columName} Phê Duyệt
+          {columName}
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

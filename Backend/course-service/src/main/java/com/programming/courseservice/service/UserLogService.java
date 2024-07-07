@@ -1,11 +1,9 @@
 package com.programming.courseservice.service;
 
-import com.main.progamming.common.util.ChildEntity;
 import com.main.progamming.common.util.ExcludeFromComparisonField;
 import com.programming.courseservice.utilities.constant.UserConstant;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -225,7 +223,7 @@ public class UserLogService {
                                 result.append("}; ");
                             }
                             if (result.length() > 3) {
-                                result.delete(result.length() - 3, result.length());
+                                result.delete(result.length() - 2, result.length());
                             }
                             result.append("]; ");
                         }

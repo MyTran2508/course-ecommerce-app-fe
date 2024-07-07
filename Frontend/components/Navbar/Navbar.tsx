@@ -229,17 +229,17 @@ function Navbar() {
                 <Fragment>
                   {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
                     <div className="xs:hidden">
-                      <Link href={"/admin/overview"}>Trang Admin</Link>
+                      <Link href={"/admin/overview"}>Admin Page</Link>
                     </div>
                   ) : (
                     <div className="xs:hidden">
-                      <Link href={"/instructor/courses"}>Quản lý khóa học</Link>
+                      <Link href={"/instructor/courses"}>Manage Courses</Link>
                     </div>
                   )}
                 </Fragment>
               ) : (
                 <div className="xs:hidden">
-                  <Link href={"/my-courses"}>Khóa Học Của Tôi</Link>
+                  <Link href={"/my-courses"}>My Courses</Link>
                 </div>
               )}
               <NotificationPopUp />
@@ -308,18 +308,18 @@ function Navbar() {
                               {(roles as RoleType[])[0]?.id === Role.ADMIN ? (
                                 <div className="lg:hidden">
                                   <Link href={"/admin/overview"}>
-                                    Trang Admin
+                                    Admin Page
                                   </Link>
                                   <hr className="my-4" />
                                 </div>
                               ) : (
                                 <div className="lg:hidden">
                                   <Link href={"/instructor/courses"}>
-                                    Quản lý khóa học
+                                    Manage Courses
                                   </Link>
                                   <hr className="my-4" />
                                   <Link href={"/instructor/courses/create"}>
-                                    Tạo khóa học
+                                    Create Course
                                   </Link>
                                   <hr className="my-4" />
                                 </div>
@@ -328,15 +328,13 @@ function Navbar() {
                           ) : (
                             <Fragment>
                               <div className="lg:hidden">
-                                <Link href={"/my-courses"}>
-                                  Khóa Học Của Tôi
-                                </Link>
+                                <Link href={"/my-courses"}>My Courses</Link>
                                 <hr className="my-4" />
                               </div>
                             </Fragment>
                           )}
                           <div>
-                            <Link href={"/user/personal"}>Trang Cá Nhân </Link>
+                            <Link href={"/user/personal"}>My Profile </Link>
                             <hr className="my-4" />
                           </div>
                           <div
@@ -345,7 +343,7 @@ function Navbar() {
                               handleLogout();
                             }}
                           >
-                            Đăng Xuất
+                            Logout
                           </div>
                         </div>
                       </Transition>
@@ -423,7 +421,7 @@ function Navbar() {
         <Dialog open={isOpenDialog} onOpenChange={() => setOpenDialog(false)}>
           <DialogContent className="">
             <DialogHeader>
-              <DialogTitle>Tìm Kiếm</DialogTitle>
+              <DialogTitle>Search...</DialogTitle>
             </DialogHeader>
             <Input
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -432,7 +430,7 @@ function Navbar() {
             />
             <DialogFooter>
               <Button type="submit" onClick={handleSearch}>
-                Xác Nhận
+                Submit
               </Button>
             </DialogFooter>
           </DialogContent>

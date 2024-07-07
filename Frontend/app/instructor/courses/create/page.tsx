@@ -5,6 +5,7 @@ import NotificationPopUp, {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import withAuth from "@/hoc/withAuth";
+import withAuthManager from "@/hoc/withAuthManager";
 import {
   setManageCourse,
   setParamCourseId,
@@ -108,9 +109,7 @@ function CreateCoursePage() {
             </div>
           </div>
           <div className="flex justify-center flex-col items-center w-1/2 mx-auto my-auto ">
-            <div className="text-2xl pb-10">
-              Hãy Đặt Tên Cho Khóa Học Của Bạn
-            </div>
+            <div className="text-2xl pb-10">Name Your Course</div>
             <Input
               className="rounded-none border-black h-16 text-lg"
               placeholder="Ví dụ: Khóa Học JavaScript"
@@ -123,7 +122,7 @@ function CreateCoursePage() {
               disabled={nameCourse ? false : true}
               onClick={() => handleCreateCourse()}
             >
-              Tạo Khóa Học
+              Submit
             </Button>
           </footer>
         </div>
@@ -132,4 +131,4 @@ function CreateCoursePage() {
   );
 }
 
-export default withAuth(CreateCoursePage, ModuleName.COURSE);
+export default withAuthManager(CreateCoursePage, ModuleName.COURSE);

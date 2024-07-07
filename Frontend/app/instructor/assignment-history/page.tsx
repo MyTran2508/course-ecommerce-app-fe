@@ -38,6 +38,7 @@ import { Action, ModuleName } from "@/utils/resources";
 import withAuth from "@/hoc/withAuth";
 import { useFilterAssignmentManagerMutation } from "@/redux/services/assignmentHistoryApi";
 import { AssignmentHistory } from "@/types/assignment.type";
+import withAuthManager from "@/hoc/withAuthManager";
 
 function AssignmentHistoryPage() {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -191,4 +192,4 @@ function AssignmentHistoryPage() {
     </div>
   );
 }
-export default withAuth(AssignmentHistoryPage, ModuleName.USER);
+export default withAuthManager(AssignmentHistoryPage, ModuleName.USER);

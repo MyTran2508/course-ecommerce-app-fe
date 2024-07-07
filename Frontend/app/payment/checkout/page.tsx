@@ -103,10 +103,8 @@ function PageCheckout() {
       </div>
       <div className="flex xs:flex-col">
         <div className="w-2/4 ml-40 p-10 xs:w-full xs:px-2 xs:ml-0">
-          <div className="text-2xl font-bold">Thanh Toán</div>
-          <div className="text-md font-bold mt-12 mb-4">
-            Phương Thức Thanh Toán
-          </div>
+          <div className="text-2xl font-bold">Checkout</div>
+          <div className="text-md font-bold mt-12 mb-4">Payment method</div>
           <div>
             <Disclosure>
               {() => (
@@ -135,16 +133,17 @@ function PageCheckout() {
                       <>
                         <div className="p-10 ">
                           <div>
-                            Để hoàn tất giao dịch của bạn, chúng tôi sẽ chuyển
-                            bạn đến máy chủ bảo mật của PayPal.
+                            In order to complete your transaction, we will
+                            transfer you over to PayPal`&apos;`s secure
+                            servers..
                           </div>
                           <div className="flex gap-1 my-5">
                             <GrStatusWarning className="text-3xl mt-2 mx-2" />
-                            Rất tiếc, PayPal không hỗ trợ thanh toán bằng VNĐ
-                            nên khoản thanh toán của bạn sẽ bằng USD.
+                            Unfortunately, PayPal does not support payments in
+                            VND therefore your payment will be in USD.
                           </div>
                           <div className="font-bold">
-                            Số tiền bạn sẽ phải trả bằng Paypal là ${" "}
+                            The amount you will be charged by Paypal is ${" "}
                             {totalPriceUSD}
                           </div>
                         </div>
@@ -157,19 +156,18 @@ function PageCheckout() {
           </div>
         </div>
         <div className="w-2/4 bg-orange-100 h-screen p-10 pr-40 xs:w-full xs:px-2">
-          <div className="font-bold text-2xl">Tóm Tắt</div>
+          <div className="font-bold text-2xl">Summary</div>
           <div className="flex-between mt-10 opacity-75 text-[12px] mb-10">
-            <div> Giá: </div>
+            <div> Original Price: </div>
             <div>₫{totalPriceVND.toLocaleString()}</div>
           </div>
           <hr className="border-black" />
           <div className="flex-between mt-5 opacity-75 text-[12px] mb-5 font-bold">
-            <div> Tổng cộng: </div>
+            <div> Total: </div>
             <div>₫{totalPriceVND.toLocaleString()}</div>
           </div>
           <div className="opacity-60 text-[12px]">
-            Bằng việc hoàn tất giao dịch mua, bạn đồng ý với các Điều khoản dịch
-            vụ này.
+            By completing your purchase you agree to these Terms of Service.
           </div>
           {open ? (
             <Checkout price={totalPriceUSD} />
@@ -178,7 +176,7 @@ function PageCheckout() {
               className="w-full h-14 flex items-center justify-center mt-4 rounded-sm"
               onClick={() => handleCheckout()}
             >
-              Hoàn Thành Thanh Toán
+              Complete
             </Button>
           )}
         </div>

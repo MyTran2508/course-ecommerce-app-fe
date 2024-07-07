@@ -12,7 +12,6 @@ import com.programming.courseservice.domain.mapper.CourseMapper;
 import com.programming.courseservice.domain.persistent.entity.*;
 import com.programming.courseservice.domain.persistent.enumrate.ActionName;
 import com.programming.courseservice.domain.persistent.enumrate.ActionObject;
-import com.programming.courseservice.domain.persistent.enumrate.LevelName;
 import com.programming.courseservice.repository.CourseRepository;
 import com.programming.courseservice.repository.LanguageRepository;
 import com.programming.courseservice.repository.LevelRepository;
@@ -139,7 +138,8 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
                 .actionKey(id)
                 .actionObject(ActionObject.COURSE)
                 .actionName(ActionName.UPDATE)
-                .description(userLogService.writeUpdateLog(Course.class, oldCourseClone, courseMapper.dtoToEntity(response.getData()), true, 0))
+                .description(userLogService.writeUpdateLog(Course.class, oldCourseClone,
+                        courseMapper.dtoToEntity(response.getData()), true, 0))
                 .build();
 
         userApi.addLog(userLogDto);
@@ -148,12 +148,18 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @GetMapping("/newest/{topic-id}/{size}")
     @ShowOpenAPI
-    public ListResponse<List<CourseDto>> getNewestCourse(@PathVariable("topic-id") String topicId, @PathVariable("size") Integer size) {
+    public ListResponse<List<CourseDto>> getNewestCourse(
+            @PathVariable("topic-id") String topicId,
+            @PathVariable("size") Integer size
+    ) {
         return courseService.getNewestCourse(topicId, size);
     }
 
     @GetMapping("/popular/{topic-id}/{size}")
-    public ListResponse<List<CourseDto>> getPopularCourse(@PathVariable("topic-id") String topicId, @PathVariable("size") Integer size) {
+    public ListResponse<List<CourseDto>> getPopularCourse(
+            @PathVariable("topic-id") String topicId,
+            @PathVariable("size") Integer size
+    ) {
         return courseService.getPopularCourse(topicId, size);
     }
 
@@ -198,17 +204,26 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     }
 
     @PostMapping("/get-total-approved-course")
-    public DataResponse<Integer> getTotalApprovedCourseByYearAndMonth(@RequestBody StatisticsRequest statisticsRequest) {
-        return courseService.getTotalApprovedCourseByYearAndMonth(statisticsRequest.getTargetYear(), statisticsRequest.getTargetMonth());
+    public DataResponse<Integer> getTotalApprovedCourseByYearAndMonth(
+            @RequestBody StatisticsRequest statisticsRequest
+    ) {
+        return courseService.getTotalApprovedCourseByYearAndMonth(
+                statisticsRequest.getTargetYear(),
+                statisticsRequest.getTargetMonth()
+        );
     }
 
     @GetMapping("/sales-by-topics")
-    public DataResponse<List<SalesByTopicResponse>> getSalesByTopics(@RequestParam("targetYear") Integer targetYear) {
+    public DataResponse<List<SalesByTopicResponse>> getSalesByTopics(
+            @RequestParam("targetYear") Integer targetYear
+    ) {
         return courseService.getSalesByTopics(targetYear);
     }
 
     @GetMapping("/sales-same-period-by-topics")
-    public DataResponse<List<SalesByTopicSamePeriodResponse>> getSalesSamePeriodByTopics(@RequestParam("targetYear") Integer targetYear) {
+    public DataResponse<List<SalesByTopicSamePeriodResponse>> getSalesSamePeriodByTopics(
+            @RequestParam("targetYear") Integer targetYear
+    ) {
         return courseService.getSalesSamePeriodByTopics(targetYear);
     }
 
