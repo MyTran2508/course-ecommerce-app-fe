@@ -21,15 +21,15 @@ public class AddressDto implements Serializable {
 
     private boolean defaultAddress;
 
-    private String provinceName;
-
-    private String provinceNameEn;
-
-    private String districtName;
-
-    private String districtNameEn;
-
-    private String wardName;
-
-    private String wardNameEn;
+//    private String provinceName;
+//
+//    private String provinceNameEn;
+//
+//    private String districtName;
+//
+//    private String districtNameEn;
+//
+//    private String wardName;
+//
+//    private String wardNameEn;
 }

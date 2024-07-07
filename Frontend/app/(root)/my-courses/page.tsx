@@ -62,7 +62,7 @@ function MyCourses() {
 
                     <div className="inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                       <div className="bg-orange-200 rounded-2xl py-2 px-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 ease-in-out">
-                        <Link href="/course/search">Thêm Khóa Học</Link>
+                        <Link href="/course/search">Create Courses</Link>
                       </div>
                     </div>
                   </div>
@@ -76,7 +76,7 @@ function MyCourses() {
   };
   return (
     <div className="container mt-20">
-      <div className="font-bold text-2xl xs:text-[15px]"> Khóa Học Của Tôi</div>
+      <div className="font-bold text-2xl xs:text-[15px]"> My Courses</div>
       {renderCourse()}
       <div>
         <div className="flex-center">

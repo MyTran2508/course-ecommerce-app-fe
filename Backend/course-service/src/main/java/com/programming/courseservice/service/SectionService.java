@@ -13,12 +13,14 @@ import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.dto.SectionDto;
 import com.programming.courseservice.domain.mapper.SectionMapper;
 import com.programming.courseservice.domain.persistent.entity.Content;
+import com.programming.courseservice.domain.persistent.entity.Course;
 import com.programming.courseservice.domain.persistent.entity.Section;
 import com.programming.courseservice.repository.ContentRepository;
 import com.programming.courseservice.repository.LectureRepository;
 import com.programming.courseservice.repository.SectionRepository;
 import com.programming.courseservice.utilities.FileUtils;
 import com.programming.courseservice.utilities.constant.CourseConstrant;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -46,6 +48,8 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
     private final FileUtils fileUtils;
 
     private final ContentRepository contentRepository;
+
+    private final EntityManager entityManager;
 
     @Override
     protected BaseRepository<Section> getBaseRepository() {
@@ -100,15 +104,33 @@ public class SectionService extends BaseServiceImpl<Section, SectionDto> {
     }
 
     public SectionDto updateSection(SectionDto sectionDto) {
-        for (LectureDto lectureDto: sectionDto.getLectures()) {
-            if(lectureDto.getOrdinalNumber() < 1) {
-                storageS3Service.deleteFile(lectureDto.getUrl());
-                lectureRepository.deleteById(lectureDto.getId());
-                sectionDto.getLectures().remove(lectureDto);
+        if (sectionDto.getLectures() != null) {
+            for (LectureDto lectureDto: sectionDto.getLectures()) {
+                if(lectureDto.getOrdinalNumber() < 1) {
+                    storageS3Service.deleteFile(lectureDto.getUrl());
+                    lectureRepository.deleteById(lectureDto.getId());
+                    sectionDto.getLectures().remove(lectureDto);
+                }
             }
         }
         return sectionDto;
     }
+
+//    @Override
+//    public DataResponse<SectionDto> update(String id, SectionDto dto) {
+//        Optional<Section> optionalSection = sectionRepository.findById(id);
+//        if(optionalSection.isEmpty()) {
+//            throw new ResourceNotFoundException(CourseConstrant.ErrorConstrant.ID_NOT_FOUND);
+//        }
+//
+//        Section section = optionalSection.get();
+//        entityManager.detach(section);
+//
+//        sectionMapper.dtoToEntity(dto, section);
+//        section.setId(id);
+//
+//        return ResponseMapper.toDataResponseSuccess(sectionMapper.entityToDto(sectionRepository.save(section)));
+//    }
 
     // update list section
     public DataResponse<String> updateList(List<SectionDto> sectionDtoList, String contentId) {

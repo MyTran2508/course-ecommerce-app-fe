@@ -13,6 +13,7 @@ import { ModuleName } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import LayoutManage from "../LayoutManage";
+import withAuthManager from "@/hoc/withAuthManager";
 
 function BasicsPage() {
   const params = useParams();
@@ -36,4 +37,4 @@ function BasicsPage() {
   );
 }
 
-export default withAuth(BasicsPage, ModuleName.CONTENT);
+export default withAuthManager(BasicsPage, ModuleName.CONTENT);

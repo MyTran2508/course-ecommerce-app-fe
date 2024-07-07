@@ -28,10 +28,12 @@ public class QuestionController extends BaseApiImpl<Question, QuestionDto> {
 
     @GetMapping("/get-by-ex-quiz-id/{userId}/{exQuizId}/{pageIndex}/{pageSize}")
     @ShowOpenAPI
-    public ListResponse<QuestionDto> getByExQuizId(@PathVariable("userId") String userId,
+    public ListResponse<QuestionDto> getByExQuizId(
+            @PathVariable("userId") String userId,
             @PathVariable("exQuizId") String exQuizId,
             @PathVariable("pageIndex") Integer pageIndex,
-            @PathVariable("pageSize") Integer pageSize) {
+            @PathVariable("pageSize") Integer pageSize
+    ) {
 
         return questionService.getByExQuizId(userId, exQuizId, pageIndex, pageSize);
     }
@@ -39,8 +41,11 @@ public class QuestionController extends BaseApiImpl<Question, QuestionDto> {
 
     @GetMapping("/manager/get-by-ex-quiz-id/{exQuizId}/{pageIndex}/{pageSize}")
     @ShowOpenAPI
-    public ListResponse<QuestionDto> getByExQuizIdManager(@PathVariable("exQuizId") String exQuizId, @PathVariable("pageIndex") Integer pageIndex,
-            @PathVariable("pageSize") Integer pageSize) {
+    public ListResponse<QuestionDto> getByExQuizIdManager(
+            @PathVariable("exQuizId") String exQuizId,
+            @PathVariable("pageIndex") Integer pageIndex,
+            @PathVariable("pageSize") Integer pageSize
+    ) {
 
         return questionService.getByExQuizIdManager(exQuizId, pageIndex, pageSize);
     }
@@ -60,14 +65,20 @@ public class QuestionController extends BaseApiImpl<Question, QuestionDto> {
 
     @PutMapping("update-list/{exQuizId}")
     @ShowOpenAPI
-    public DataResponse<String> updateList(@PathVariable("exQuizId") String exQuizId, @RequestBody List<QuestionDto> questionDtos) {
+    public DataResponse<String> updateList(
+            @PathVariable("exQuizId") String exQuizId,
+            @RequestBody List<QuestionDto> questionDtos
+    ) {
 
         return questionService.updateList(exQuizId, questionDtos);
     }
 
     @PostMapping("add-list/{exQuizId}")
     @ShowOpenAPI
-    public DataResponse<String> addList(@PathVariable("exQuizId") String exQuizId, @RequestBody List<QuestionDto> questionDtos) {
+    public DataResponse<String> addList(
+            @PathVariable("exQuizId") String exQuizId,
+            @RequestBody List<QuestionDto> questionDtos
+    ) {
         return questionService.addList(exQuizId, questionDtos);
     }
 }

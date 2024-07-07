@@ -7,14 +7,10 @@ import com.main.progamming.common.response.DataResponse;
 import com.main.progamming.common.response.ListResponse;
 import com.main.progamming.common.service.BaseService;
 import com.main.progamming.common.util.SystemUtil;
-import com.programming.courseservice.domain.dto.AssignmentDto;
 import com.programming.courseservice.domain.dto.CourseReviewDto;
 import com.programming.courseservice.domain.dto.UserLogDto;
 import com.programming.courseservice.domain.mapper.CourseReviewMapper;
-import com.programming.courseservice.domain.persistent.entity.Assignment;
 import com.programming.courseservice.domain.persistent.entity.CourseReview;
-import com.programming.courseservice.domain.persistent.entity.Lecture;
-import com.programming.courseservice.domain.persistent.entity.UserLog;
 import com.programming.courseservice.domain.persistent.enumrate.ActionName;
 import com.programming.courseservice.domain.persistent.enumrate.ActionObject;
 import com.programming.courseservice.repository.CourseReviewRepository;
@@ -87,10 +83,12 @@ public class CourseReviewController extends BaseApiImpl<CourseReview, CourseRevi
         UserLogDto userLogDto = UserLogDto.builder()
                 .userName(SystemUtil.getCurrentUsername())
                 .ip(SystemUtil.getUserIP())
-                .actionKey("Course ID: " + oldCourseReviewClone.getCourse().getId() + "; CourseReview ID: " + oldCourseReviewClone.getId())
+                .actionKey("Course ID: " + oldCourseReviewClone.getCourse().getId()
+                        + "; CourseReview ID: " + oldCourseReviewClone.getId())
                 .actionObject(ActionObject.COURSE_REVIEWS)
                 .actionName(ActionName.UPDATE)
-                .description(userLogService.writeUpdateLog(CourseReview.class, oldCourseReviewClone, courseReviewMapper.dtoToEntity(response.getData()), true, 0))
+                .description(userLogService.writeUpdateLog(CourseReview.class, oldCourseReviewClone,
+                        courseReviewMapper.dtoToEntity(response.getData()), true, 0))
                 .build();
 
         userApi.addLog(userLogDto);

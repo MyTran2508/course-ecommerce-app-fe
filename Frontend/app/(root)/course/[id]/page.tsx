@@ -429,13 +429,13 @@ function CoursePage() {
               <div className="flex justify-center mb-2 text-white xs:bg-red-950 xs:h-full ">
                 {course?.price === 0 ? (
                   <CustomButton
-                    title="Đăng Ký Học"
+                    title="Subscribe Free"
                     containerStyles="bg-orange-600 rounded-3xl py-2 px-4 xs:fixed xs:bottom-0 xs:w-full xs:mb-0 xs:rounded-sm xs:ml-[10px] "
                     handleClick={() => handleRegisterCourseFree()}
                   />
                 ) : (
                   <CustomButton
-                    title="Thêm vào giỏ hàng"
+                    title="Add to cart"
                     containerStyles="bg-orange-600 rounded-3xl py-2 px-4 xs:fixed xs:bottom-0 xs:w-full xs:mb-0 xs:rounded-sm xs:ml-[10px] "
                     handleClick={() => handleAddToCart()}
                   />

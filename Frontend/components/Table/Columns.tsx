@@ -113,7 +113,7 @@ export const courseColumns: ColumnDef<Course>[] = [
   // },
   {
     accessorKey: "name",
-    header: "Tên khóa học",
+    header: "Name Course",
     cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {

@@ -9,9 +9,7 @@ import com.main.progamming.common.util.SystemUtil;
 import com.programming.courseservice.domain.dto.LectureDto;
 import com.programming.courseservice.domain.dto.UserLogDto;
 import com.programming.courseservice.domain.mapper.LectureMapper;
-import com.programming.courseservice.domain.persistent.entity.Assignment;
 import com.programming.courseservice.domain.persistent.entity.Lecture;
-import com.programming.courseservice.domain.persistent.entity.UserLog;
 import com.programming.courseservice.domain.persistent.enumrate.ActionName;
 import com.programming.courseservice.domain.persistent.enumrate.ActionObject;
 import com.programming.courseservice.repository.LectureRepository;
@@ -72,7 +70,8 @@ public class LectureController extends BaseApiImpl<Lecture, LectureDto> {
                 .actionKey(id)
                 .actionObject(ActionObject.LECTURE)
                 .actionName(ActionName.UPDATE)
-                .description(userLogService.writeUpdateLog(Lecture.class, oldLectureClone, lectureMapper.dtoToEntity(response.getData()), true, 0))
+                .description(userLogService.writeUpdateLog(Lecture.class, oldLectureClone,
+                        lectureMapper.dtoToEntity(response.getData()), true, 0))
                 .build();
 
         userApi.addLog(userLogDto);

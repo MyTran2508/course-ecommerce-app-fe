@@ -1170,7 +1170,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
             className="border border-gray-300 rounded-md p-[8px] w-max flex gap-2 items-center"
             onClick={() => handleOpenSort()}
           >
-            Sắp xếp theo
+            Sort by
             <FaAngleDown />
           </button>
           {isOpenSort && (

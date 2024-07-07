@@ -171,7 +171,7 @@ function SearchPage() {
                 </div>
               </Fragment>
             )}
-            <div>{totalRecord} kết quả</div>
+            <div>{totalRecord} record</div>
           </div>
 
           <div className={`flex mt-2 xs:mt-0 ${isOpenFilter ? "gap-5" : ""}`}>
@@ -209,9 +209,7 @@ function SearchPage() {
                       })}
                     </Fragment>
                   ) : (
-                    <div className="text-2xl flex-center">
-                      Không tìm thấy kết quả phù hợp
-                    </div>
+                    <div className="text-2xl flex-center">Not Found</div>
                   )}
                   <div className="flex-center">
                     {coursesSearch.length !== 0 ? (
