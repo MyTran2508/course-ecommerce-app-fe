@@ -246,6 +246,7 @@ export const {
   useUpdateCourseByIdMutation,
   useGetNewestCourseQuery,
   useGetCourseByUserIdQuery,
+  useLazyGetCourseByUserIdQuery,
   useGetAllCourseQuery,
   useFilterCourseMutation,
   useUpdateApprovedMutation,

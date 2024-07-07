@@ -1,9 +1,10 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Course } from "@/types/course.type";
 import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 import Image from "next/image";
 import { BsDot, BsFillTagFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 interface CourseCardProps {
   course: Course;
@@ -35,7 +36,7 @@ function CourseCardSearch(props: CourseCardProps) {
                 : "/banner.jpg"
             }
             alt="course"
-            className="w-40 h-24 pb-2 xs:min-w-[160px]"
+            className="w-40 h-28 pb-2 xs:min-w-[160px]"
             width={40}
             height={24}
           />
@@ -49,6 +50,39 @@ function CourseCardSearch(props: CourseCardProps) {
               <div>{course.topic.name}</div>
               <BsDot className="text-[15px]" />
               <div>{course.level.name}</div>
+            </div>
+            <div className="flex items-center justify-start text-center">
+              <Fragment>
+                {course.averageRating ? (
+                  <Fragment>
+                    <div className="mr-1 font-bold">{course.averageRating}</div>
+                    {[...Array(5)].map((_, index) => {
+                      const star = Math.floor(course.averageRating as number);
+                      const halfStar = (course.averageRating as number) - star;
+                      if (index < star) {
+                        return <FaStar key={index} fill={"#ffd03f"} />;
+                      } else if (index === star && halfStar > 0) {
+                        return <FaStarHalfAlt key={index} fill={"#ffd03f"} />;
+                      } else {
+                        return <FaRegStar key={index} fill={"#ffd03f"} />;
+                      }
+                    })}
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <div className="mr-1 font-bold">0</div>
+                    {[...Array(5)].map((_, index) => {
+                      return <FaRegStar key={index} fill={"#ffd03f"} />;
+                    })}
+                  </Fragment>
+                )}
+              </Fragment>
+              <p className="ml-1 text-gray-500">({course.totalRatings ?? 0})</p>
+            </div>
+            <div>
+              <p className="text-[13px] text-gray-700 italic">
+                {course.authorName}
+              </p>
             </div>
           </div>
         </div>
