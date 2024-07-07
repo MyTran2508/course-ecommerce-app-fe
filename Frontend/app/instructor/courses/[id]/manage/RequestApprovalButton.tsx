@@ -29,6 +29,7 @@ function RequestApprovalButton(props: RequestApprovalProps) {
   const username = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.username
   );
+  const courseId = useAppSelector((state) => state.courseReducer.courseId);
   const [isOpen, setOpen] = useState(false);
   const [updateAwaitingApproval] = useUpdateAwaitingApprovalMutation();
   const { data: allUsernameAdmin, isSuccess: getAllUsernameAdminSuccess } =
@@ -39,9 +40,10 @@ function RequestApprovalButton(props: RequestApprovalProps) {
   };
   const handleClickUpdateAwaitingApproval = async () => {
     const request = {
-      courseId: course.id as string,
+      courseId: courseId as string,
       isAwaitingApproval: true,
     };
+    console.log(request);
     await updateAwaitingApproval(request)
       .unwrap()
       .then((fulfilled) => {

@@ -31,6 +31,7 @@ import showToast from "@/utils/showToast";
 import {
   ModuleName,
   PermissionName,
+  RoleUser,
   StatusCode,
   ToastMessage,
   ToastStatus,
@@ -218,10 +219,12 @@ function CourseInforForm(props: CourseInfoProps) {
                       className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"
                       {...field}
                       disabled={
-                        !isPermissionGranted(
-                          roleDetail as RoleDetail[],
-                          PermissionName.CAN_CREATE,
-                          ModuleName.COURSE
+                        !(
+                          isPermissionGranted(
+                            roleDetail as RoleDetail[],
+                            PermissionName.CAN_CREATE,
+                            ModuleName.COURSE
+                          ) || role?.roleUser == RoleUser.MANAGER
                         )
                       }
                     ></Input>
@@ -255,7 +258,8 @@ function CourseInforForm(props: CourseInfoProps) {
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_UPDATE,
                             ModuleName.COURSE
-                          )
+                          ) ||
+                          role?.roleUser == RoleUser.MANAGER
                         )
                       }
                     ></Input>
@@ -291,7 +295,8 @@ function CourseInforForm(props: CourseInfoProps) {
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_UPDATE,
                             ModuleName.COURSE
-                          )
+                          ) ||
+                          role?.roleUser == RoleUser.MANAGER
                         )
                       }
                     ></Input>
@@ -402,7 +407,8 @@ function CourseInforForm(props: CourseInfoProps) {
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_UPDATE,
                                 ModuleName.COURSE
-                              )
+                              ) ||
+                              role?.roleUser == RoleUser.MANAGER
                             )
                           }
                         />
@@ -458,7 +464,8 @@ function CourseInforForm(props: CourseInfoProps) {
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_UPDATE,
                                 ModuleName.COURSE
-                              )
+                              ) ||
+                              role?.roleUser == RoleUser.MANAGER
                             )
                           }
                         />

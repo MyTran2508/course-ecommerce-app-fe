@@ -5,7 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import SaveButton from "./SaveButton";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { RoleType } from "@/types/user.type";
-import { ModuleName, PermissionName, Role } from "@/utils/resources";
+import { ModuleName, PermissionName, Role, RoleUser } from "@/utils/resources";
 import ApprovedButton from "./ApprovedButton";
 import RequestApprovalButton from "./RequestApprovalButton";
 import {
@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import withAuth from "@/hoc/withAuth";
 import { RoleDetail } from "@/types/roles.type";
 import NotificationPopUp from "@/components/Notification/Notification";
+import withAuthManager from "@/hoc/withAuthManager";
 
 function CreateCourseNavBar() {
   const router = useRouter();
@@ -88,7 +89,9 @@ function CreateCourseNavBar() {
                       roleDetail as RoleDetail[],
                       PermissionName.CAN_VIEW,
                       ModuleName.COURSE_REVIEWS
-                    ) || role?.name == Role.ADMIN
+                    ) ||
+                    role?.name == Role.ADMIN ||
+                    role?.roleUser == RoleUser.MANAGER
                   )
                 }
               >
@@ -101,4 +104,4 @@ function CreateCourseNavBar() {
     </div>
   );
 }
-export default withAuth(CreateCourseNavBar, ModuleName.CONTENT);
+export default withAuthManager(CreateCourseNavBar, ModuleName.CONTENT);
