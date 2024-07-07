@@ -89,7 +89,7 @@ function PasswordForm() {
       <Form {...form}>
         <form className="mt-5 mx-4">
           <div className="flex justify-between sticky top-[120px]">
-            <div className="w-full "> Đổi Mật Khẩu</div>
+            <div className="w-full "> Change Password</div>
             {!allowInput ? (
               <Fragment>
                 <div className="flex justify-end">

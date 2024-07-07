@@ -13,6 +13,7 @@ import {
   ModuleName,
   PermissionName,
   Role,
+  RoleUser,
   ToastMessage,
   ToastStatus,
 } from "@/utils/resources";
@@ -101,7 +102,8 @@ function InstructorNavbar() {
                 PermissionName.CAN_CREATE,
                 ModuleName.COURSE
               ) ||
-                role?.name == Role.ADMIN) && (
+                role?.roleUser == RoleUser.MANAGER ||
+                role?.roleUser == RoleUser.ADMIN) && (
                 <Link href={"/instructor/courses/create"} className="xs:hidden">
                   Create New Course
                 </Link>

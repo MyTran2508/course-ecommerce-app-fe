@@ -116,9 +116,9 @@ function LoginForm() {
       dispatch(setCredential(auth));
       showToast(ToastStatus.SUCCESS, ToastMessage.LOGIN_SUCCESS);
       setIsLogin(true);
-    } else {
-      showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
+      return;
     }
+    showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL);
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -156,7 +156,7 @@ function LoginForm() {
               render={({ field }) => (
                 <FormItem className="mb-3 w-full">
                   <FormLabel className="text-back font-medium">
-                    Tên Tài Khoản
+                    Username
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -174,7 +174,7 @@ function LoginForm() {
               render={({ field }) => (
                 <FormItem className="w-full mt-2">
                   <FormLabel className="text-back font-medium">
-                    Mật Khẩu
+                    Password
                   </FormLabel>
                   <FormControl>
                     <div className="relative">
@@ -202,13 +202,13 @@ function LoginForm() {
               className="w-full hover:scale-110 transition duration-700 gap-2 mt-6 btn-login-form"
             >
               <FiLogIn />
-              Đăng Nhập
+              Log In
             </Button>
             <Link
               href={"forget-password"}
               className="hover:cursor-pointer text-back font-medium text-sm mt-4"
             >
-              Quên mật khẩu
+              Forgot Password
             </Link>
             <div className="flex gap-3 m-2 items-center justify-center w-3/5">
               <hr className="border-gray-400 flex-1" />
@@ -224,7 +224,7 @@ function LoginForm() {
             <div className="text-[12px] mt-2 flex-between xs:text-[10px]">
               <Link href={"/signup"}>
                 <button className="hover:scale-110 transition duration-700 secondary-btn btn-register">
-                  Đăng ký tài khoản mới
+                  Register
                 </button>
               </Link>
             </div>

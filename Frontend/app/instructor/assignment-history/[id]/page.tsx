@@ -70,22 +70,26 @@ function FeedbackPage() {
           )
         )
       );
-      setTextViewEvaluation(
-        EditorState.createWithContent(
-          convertFromRaw(
-            JSON.parse(
-              (assignmentHistoryData?.data as AssignmentHistory)
-                .evaluation as string
+      if ((assignmentHistoryData?.data as AssignmentHistory).evaluation) {
+        setTextViewEvaluation(
+          EditorState.createWithContent(
+            convertFromRaw(
+              JSON.parse(
+                (assignmentHistoryData?.data as AssignmentHistory)
+                  .evaluation as string
+              )
             )
           )
-        )
-      );
+        );
+      }
       setFeedBack(
         (assignmentHistoryData?.data as AssignmentHistory).evaluation as string
       );
-      setScore(
-        (assignmentHistoryData?.data as AssignmentHistory).score as number
-      );
+      if ((assignmentHistoryData?.data as AssignmentHistory).score) {
+        setScore(
+          (assignmentHistoryData?.data as AssignmentHistory).score as number
+        );
+      }
       if ((assignmentHistoryData?.data as AssignmentHistory).urlFileAnswer) {
         loadFile(
           (assignmentHistoryData?.data as AssignmentHistory)

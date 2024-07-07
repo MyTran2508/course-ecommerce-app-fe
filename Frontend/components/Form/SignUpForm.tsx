@@ -209,7 +209,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-3 w-full ">
                         <FormLabel className="text-back font-medium">
-                          Tên Tài Khoản
+                          Username
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -251,7 +251,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-3 w-full">
                         <FormLabel className="text-back font-medium">
-                          Mật Khẩu
+                          Password
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
@@ -280,7 +280,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-3 w-full">
                         <FormLabel className="text-back font-medium">
-                          Nhập Lại Mật Khẩu
+                          Confirm Password
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -328,7 +328,7 @@ function SignUpForm() {
                       render={({ field }) => (
                         <FormItem className="mb-1 ">
                           <FormLabel className="text-black xl:text-xs h-7">
-                            Tên
+                            First Name
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -348,7 +348,7 @@ function SignUpForm() {
                       render={({ field }) => (
                         <FormItem className="mb-1 ">
                           <FormLabel className="text-black xl:text-xs h-7">
-                            Họ
+                            Last Name
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -369,7 +369,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-1 ">
                         <FormLabel className="text-black xl:text-xs h-7">
-                          SĐT
+                          Phone Number
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -389,7 +389,7 @@ function SignUpForm() {
                     render={({ field }) => (
                       <FormItem className="mb-1 ">
                         <FormLabel className="text-black xl:text-xs h-7">
-                          Địa Chỉ
+                          Address
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -408,7 +408,7 @@ function SignUpForm() {
                     className="hover:scale-110 transition duration-700 gap-2 mt-1 w-full h-7"
                   >
                     <BsPencilSquare />
-                    Đăng Ký
+                    Register
                   </Button>
                   <div className="text-[12px] mt-2 flex-end xs:text-[10px]">
                     <CustomButton
@@ -424,7 +424,7 @@ function SignUpForm() {
             </>
           ) : (
             <div className="flex justify-center h-full flex-col">
-              <div className="flex-center text-md mb-6">Vui Lòng Nhập OTP</div>
+              <div className="flex-center text-md mb-6">Please Enter OTP</div>
               <div className="flex flex-center gap-2">
                 {[...Array(6)].fill(null).map((_, index) => (
                   <Input
@@ -443,7 +443,7 @@ function SignUpForm() {
                   className="bg-gray-100 w-[100px] mt-2 text-[10px] text-black hover:text-orange-600 underline hover:cursor-pointer"
                   onClick={() => handleRegister(newUser)}
                 >
-                  Gửi lại OTP
+                  Resent OTP
                 </div>
               </div>
               <Button
@@ -452,7 +452,7 @@ function SignUpForm() {
                 onClick={() => handleValidateOTP()}
               >
                 <HiOutlineArrowUpTray />
-                Gửi
+                Sent
               </Button>
             </div>
           )}

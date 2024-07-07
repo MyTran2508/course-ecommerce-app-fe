@@ -42,6 +42,7 @@ import InstructorNavbar from "../Navbar";
 import { Action, ModuleName } from "@/utils/resources";
 import withAuth from "@/hoc/withAuth";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
+import withAuthManager from "@/hoc/withAuthManager";
 
 function InstructorCourses() {
   const dispatch = useAppDispatch();
@@ -242,4 +243,4 @@ function InstructorCourses() {
     </div>
   );
 }
-export default withAuth(InstructorCourses, ModuleName.COURSE);
+export default withAuthManager(InstructorCourses, ModuleName.COURSE);

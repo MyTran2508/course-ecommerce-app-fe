@@ -23,7 +23,7 @@ function PagePersonal() {
     <div className="mt-10 mr-28 w-full">
       <div className="sticky top-[80px] h-10">
         <div className="font-bold">
-          <div className="flex-center">Thông Tin Cá Nhân </div>
+          <div className="flex-center">Your Profile </div>
         </div>
         <hr />
       </div>
