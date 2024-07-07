@@ -1,5 +1,6 @@
 "use client";
 import withAuth from "@/hoc/withAuth";
+import withAuthManager from "@/hoc/withAuthManager";
 import { setParamCourseId } from "@/redux/features/courseSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { Constant, ModuleName } from "@/utils/resources";
@@ -83,4 +84,4 @@ function SideBar() {
   );
 }
 
-export default withAuth(SideBar, ModuleName.CONTENT);
+export default withAuthManager(SideBar, ModuleName.CONTENT);
