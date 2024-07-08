@@ -7,8 +7,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(
         name = "category",
@@ -19,8 +17,9 @@ import java.util.List;
                 @Index(columnList = "name", name = "idx_categories_name")
         }
 )
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString(callSuper = true)
 @SuperBuilder(toBuilder = true)
 public class Category extends BaseModel {
