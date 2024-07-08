@@ -10,7 +10,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -30,7 +38,7 @@ import { SearchRequest } from "@/types/request.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
-import { Action, Fields, ModuleName } from "@/utils/resources";
+import { Action, ActionObject, Fields, ModuleName } from "@/utils/resources";
 import withAuth from "@/hoc/withAuth";
 import { UserLog } from "@/types/userLog.type";
 import { useGetUserLogMutation } from "@/redux/services/userLogApi";
@@ -50,8 +58,10 @@ function UserLogPage() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [keyword, setKeyword] = useState<string>("");
+  const [action, setAction] = useState<string>("");
+  const [actionKey, setActionKey] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<SearchRequest>({
-    keyword: [null, null, null],
+    keyword: [null, null, null, null, null],
     isDecrease: true,
     pageIndex: 0,
     pageSize: 10,
@@ -66,6 +76,8 @@ function UserLogPage() {
           keyword,
           startDate?.getTime().toString(),
           endDate?.getTime().toString(),
+          action,
+          actionKey,
         ],
       }));
     }
@@ -79,7 +91,13 @@ function UserLogPage() {
     const newSearchRequest = {
       ...searchQuery,
       pageIndex: 0,
-      keyword: [keyword, null, null],
+      keyword: [
+        keyword,
+        null,
+        null,
+        action !== "" ? action : null,
+        actionKey !== "" ? actionKey : null,
+      ],
     };
     setSearchQuery(newSearchRequest as any);
   };
@@ -137,24 +155,64 @@ function UserLogPage() {
           />
         </div>
       </div>
-      <div className="flex gap-1 my-2">
-        <div className="flex gap-1 border rounded-sm p-1 overflow-x-auto custom-scrollbar bg-white w-1/3">
-          <div className="flex items-center py-1 w-full">
-            <div className="relative w-full">
-              <input
-                className={
-                  "w-full placeholder:font-normal text-sm focus:outline-none min-w-[150px] px-2"
-                }
-                placeholder="Search..."
-                // value={handleSetValueInput()}
-                onChange={(e) => setKeyword(e.target.value)}
-                autoComplete="off"
-              ></input>
+      <div className="flex my-2 gap-5 items-end">
+        <div>
+          <label className="font-bold mb-2">Username </label>
+          <div className="flex gap-1 border rounded-sm p-1 overflow-x-auto custom-scrollbar bg-white">
+            <div className="flex items-center py-1 w-full">
+              <div className="relative w-full">
+                <input
+                  className={
+                    "w-full placeholder:font-normal text-sm focus:outline-none min-w-[200px] px-2"
+                  }
+                  placeholder="Search by Username..."
+                  // value={handleSetValueInput()}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  autoComplete="off"
+                ></input>
+              </div>
             </div>
           </div>
         </div>
+        <div>
+          <label className="font-bold mb-2">Action Key</label>
+          <div className="flex gap-1 border rounded-sm p-1 overflow-x-auto custom-scrollbar bg-white">
+            <div className="flex items-center py-1 w-full">
+              <div className="relative w-full">
+                <input
+                  className={
+                    "w-full placeholder:font-normal text-sm focus:outline-none min-w-[200px] px-2"
+                  }
+                  placeholder="Search by ActionKey..."
+                  // value={handleSetValueInput()}
+                  onChange={(e) => setActionKey(e.target.value)}
+                  autoComplete="off"
+                ></input>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label className="font-bold mb-2">Action</label>
+          <Select defaultValue={action as string} onValueChange={setAction}>
+            <SelectTrigger
+              className={`disabled:opacity-1 disabled:cursor-default w-[200px] `}
+            >
+              <SelectValue placeholder="Select Action" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {Object.keys(ActionObject).map((key) => (
+                  <SelectItem value={key} key={key}>
+                    {key}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
         <div
-          className="right-0 flex justify-center items-center hover:cursor-pointer py-1 px-2 rounded-sm bg-gray-400 h-[40px]"
+          className="right-0 flex justify-center items-center hover:cursor-pointer py-1 px-3 rounded-sm bg-gray-400 h-[44px]"
           onClick={() => handleSearch()}
         >
           <BiSearchAlt className="text-2xl text-right" />

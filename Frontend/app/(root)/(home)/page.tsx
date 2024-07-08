@@ -156,7 +156,10 @@ export default function Home() {
             lifelong learning, opening doors to new opportunities and a brighter
             future
           </p>
-          <button className="text-white bg-black p-2 font-bold w-[200px] mt-4">
+          <button
+            className="text-white bg-black p-2 font-bold w-[200px] mt-4"
+            onClick={() => router.push("course/search?q=")}
+          >
             Get Started
           </button>
         </div>
