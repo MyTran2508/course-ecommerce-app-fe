@@ -253,7 +253,9 @@ function OverviewPage() {
     <div className="w-full px-10 mt-10  custom-scrollbar overflow-y-scroll h-[800px]">
       <div className="flex gap-5">
         <div>
-          <div className="text-[12px] italic">Vui lòng chọn tháng năm</div>
+          <div className="text-[12px] italic">
+            Please select the month and year.
+          </div>
           <DatePicker
             showIcon
             selected={selectedDate}
@@ -261,7 +263,7 @@ function OverviewPage() {
             dateFormat="yyyy"
             className="border rounded-sm pl-4 items-center w-44 h-10 mb-2"
             showYearPicker
-            placeholderText="Chọn năm"
+            placeholderText="Select Year"
           />
         </div>
         <div className="relative inline-block w-44 ">
@@ -274,11 +276,11 @@ function OverviewPage() {
             className="w-full h-10 pl-0 pr-8 text-center border rounded-sm appearance-none mt-[18px]"
           >
             <option value="" className="text-gray-300 text-center">
-              Chọn tháng
+              Select Month
             </option>
             {[...Array(12)].map((_, index) => (
               <option key={index + 1} value={String(index + 1)}>
-                Tháng {index + 1}
+                {index + 1}
               </option>
             ))}
           </select>
@@ -288,7 +290,7 @@ function OverviewPage() {
       {selectedYear ? (
         <Fragment>
           <h5 className="flex-center text-2xl font-bold mb-10">
-            Thống Kê {selectedMonth ? `Tháng ${selectedMonth}` : null} Năm{" "}
+            Statistics {selectedMonth ? `Month ${selectedMonth}` : null} Year{" "}
             {selectedYear}
           </h5>
 
@@ -298,7 +300,7 @@ function OverviewPage() {
                 className={`block p-6 w-60 bg-red-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col`}
               >
                 <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Khóa Học Đã Duyệt
+                  Approved Courses
                 </h5>
                 <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
                   {statisticsData?.totalApprovedCourse}
@@ -306,7 +308,7 @@ function OverviewPage() {
               </div>
               <div className="block p-6 w-60 bg-yellow-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col">
                 <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Khóa Học Đã Đăng Ký
+                  Registered Courses
                 </h5>
                 <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
                   {statisticsData?.totalRegisteredCourse}
@@ -314,7 +316,7 @@ function OverviewPage() {
               </div>
               <div className="block p-6 w-60 bg-blue-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col">
                 <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Số User
+                  Number of Users
                 </h5>
                 <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
                   {statisticsData?.totalRegisteredUser}
@@ -322,7 +324,7 @@ function OverviewPage() {
               </div>
               <div className="block p-6 w-60 bg-green-300 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-center flex-col">
                 <h5 className="mb-2 w-max text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  Doanh Thu (VNĐ)
+                  Revenue (VND)
                 </h5>
                 <div className="font-normal text-gray-700 dark:text-gray-400 text-2xl">
                   {statisticsData?.totalRevenue}
@@ -331,7 +333,7 @@ function OverviewPage() {
             </div>
           ) : null}
 
-          <div className="my-5 text-2xl font-bold">Doanh Thu Theo Tháng</div>
+          <div className="my-5 text-2xl font-bold">Monthly Revenue</div>
           <div className="flex gap-5">
             <div className="w-1/2 h-[400px] border my-5 px-2 py-2 rounded-sm flex gap-5">
               <Bar data={renderMonthlySales()} options={options("Doanh Số ")} />
@@ -343,7 +345,7 @@ function OverviewPage() {
               />
             </div>
           </div>
-          <div className="my-5 text-2xl font-bold">Doanh Thu Theo Chủ Đề</div>
+          <div className="my-5 text-2xl font-bold">Revenue by Topic</div>
           <div className="gap-5">
             <div className="w-full h-[400px] border my-5 px-2 py-2 rounded-sm flex gap-5">
               <Bar

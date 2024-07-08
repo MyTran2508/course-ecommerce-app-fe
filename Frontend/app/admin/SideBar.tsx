@@ -63,7 +63,7 @@ function SideBar() {
   }
 
   return (
-    <div className="sticky top-0 h-screen flex flex-col bg-clip-border bg-[#263238] text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[15rem]">
+    <div className="sticky top-0 h-screen flex flex-col bg-clip-border bg-[#263238] text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[16rem]">
       <div className="my-4 p-2 flex gap-2">
         <h5 className="flex-center gap-2 block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-white">
           <SiScikitlearn className="text-3xl" />
@@ -97,7 +97,7 @@ function SideBar() {
                   />
                 </svg>
               </div>
-              Thống Kê
+              Statistics
             </div>
           </Link>
         )}
@@ -132,7 +132,7 @@ function SideBar() {
                   />
                 </svg>
               </div>
-              Quản Lý Khóa Học
+              Course management
             </div>
           </Link>
         )}
@@ -167,7 +167,7 @@ function SideBar() {
                   />
                 </svg>
               </div>
-              Quản Lý Tài Khoản
+              Account management
             </div>
           </Link>
         )}
@@ -202,7 +202,7 @@ function SideBar() {
                   />
                 </svg>
               </div>
-              Lịch Sử Người Dùng
+              User history
             </div>
           </Link>
         )}
@@ -225,7 +225,7 @@ function SideBar() {
               <div className="grid place-items-center mr-4">
                 <SiOpenaccess className="text-lg" />
               </div>
-              Quản Lý Quyền
+              Permission management
             </div>
           </Link>
         )}
@@ -248,7 +248,7 @@ function SideBar() {
               <div className="grid place-items-center mr-4">
                 <CiMoneyBill className="text-lg" />
               </div>
-              Quản Lý Đơn Hàng
+              Order management
             </div>
           </Link>
         )}
@@ -274,12 +274,12 @@ function SideBar() {
                 />
               </svg>
             </div>
-            Trang Chủ
+            Home
           </div>
         </Link>
 
         <div className="flex-1 flex flex-col mb-8">
-          <Link href={"/"} className="mt-auto">
+          {/* <Link href={"/"} className="mt-auto">
             <div
               role="button"
               tabIndex={0}
@@ -290,8 +290,8 @@ function SideBar() {
               </div>
               Chế Độ Tối
             </div>
-          </Link>
-          <Link href={"/"} className="">
+          </Link> */}
+          <Link href={"/"} className="mt-auto">
             <div
               role="button"
               tabIndex={0}
@@ -300,7 +300,7 @@ function SideBar() {
               <div className="grid place-items-center mr-4">
                 <CiLogout className="text-lg" />
               </div>
-              Đăng Xuất
+              Logout
             </div>
           </Link>
         </div>

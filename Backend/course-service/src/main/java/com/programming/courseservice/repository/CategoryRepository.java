@@ -10,6 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends BaseRepository<Category> {
+
     Optional<Category> findByName(String name);
+
     List<Category> findByNameOrderByIdDesc(String categoryName);
 }

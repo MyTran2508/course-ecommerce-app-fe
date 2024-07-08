@@ -26,16 +26,16 @@ public class Question extends BaseModel implements Serializable {
     @Column(name = "ordinal_number")
     private Integer ordinalNumber;
 
-    @Column(length = 256)
+    @Column(length = 512)
     private String title;
 
-    @Column(length = 512)
+    @Column(length = 3000)
     private String options;
 
     @Column(length = 16, name = "right_answer")
     private String rightAnswer;
 
-    @Column(name = "answer_explanation")
+    @Column(name = "answer_explanation", length = 5000)
     private String answerExplanation;
 
     @Column(name = "quiz_type")

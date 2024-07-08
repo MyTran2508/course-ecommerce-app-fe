@@ -70,22 +70,22 @@ function Footer() {
               <Link href={"/"}>About us</Link>
             </li>
             <li>
-              <Link href={"/"}>Get started</Link>
+              <Link href={"/course/search?q="}>Get started</Link>
             </li>
           </ul>
           <ul className="body__box">
             <li>Courses</li>
             <li>
-              <Link href={"/"}>Game Development</Link>
+              <Link href={"/"}>Python</Link>
             </li>
             <li>
-              <Link href={"/"}>Web Development</Link>
+              <Link href={"/"}>Java</Link>
             </li>
             <li>
-              <Link href={"/"}>Mobile Development</Link>
+              <Link href={"/"}>NodeJS</Link>
             </li>
             <li>
-              <Link href={"/"}>Software Testing</Link>
+              <Link href={"/"}>HTML</Link>
             </li>
           </ul>
           <ul className="body__box">
