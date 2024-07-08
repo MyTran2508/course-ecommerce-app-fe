@@ -13,6 +13,7 @@ import { ModuleName } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import React from "react";
 import LayoutManage from "../LayoutManage";
+import withAuthManager from "@/hoc/withAuthManager";
 
 function CourseContentPage() {
   const param = useParams();
@@ -26,7 +27,6 @@ function CourseContentPage() {
   if (isLoading && isContentLoading) return <Loading />;
   dispatch(setContentId((data?.data as Content).id as string));
   dispatch(setSections((contentData?.data as Content).sections as Section[]));
-  console.log((contentData?.data as Content).sections as Section[]);
 
   return (
     <LayoutManage>
@@ -45,4 +45,4 @@ function CourseContentPage() {
   );
 }
 
-export default withAuth(CourseContentPage, ModuleName.CONTENT);
+export default withAuthManager(CourseContentPage, ModuleName.CONTENT);

@@ -6,6 +6,8 @@ import {
   LectureType,
   ModuleName,
   PermissionName,
+  Role,
+  RoleUser,
 } from "@/utils/resources";
 import AddQuestion from "../Quiz/Instructor/AddQuestion";
 import SectionComponent from "../../Section/Section";
@@ -31,16 +33,18 @@ export function SortableItem(props: SortableItemProp) {
     (state) => state.persistedReducer.userReducer.user.roles?.[0]
   );
   const roleDetail = role?.roleDetails;
-  const canCreate = isPermissionGranted(
-    roleDetail as RoleDetail[],
-    PermissionName.CAN_CREATE,
-    ModuleName.CONTENT
-  );
-  const canUpdate = isPermissionGranted(
-    roleDetail as RoleDetail[],
-    PermissionName.CAN_UPDATE,
-    ModuleName.CONTENT
-  );
+  const canCreate =
+    isPermissionGranted(
+      roleDetail as RoleDetail[],
+      PermissionName.CAN_CREATE,
+      ModuleName.CONTENT
+    ) || role?.name == Role.MANAGER;
+  const canUpdate =
+    isPermissionGranted(
+      roleDetail as RoleDetail[],
+      PermissionName.CAN_UPDATE,
+      ModuleName.CONTENT
+    ) || role?.name == Role.MANAGER;
 
   const style = {
     // transform: CSS.Transform.toString(transform),

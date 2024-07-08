@@ -13,14 +13,26 @@ import { ModuleName } from "@/utils/resources";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import LayoutManage from "../LayoutManage";
+import withAuthManager from "@/hoc/withAuthManager";
+import { useGetContentByCourseIdQuery } from "@/redux/services/contentApi";
+import { Section } from "@/types/section.type";
+import { setContentId } from "@/redux/features/contentSlice";
+import { setSections } from "@/redux/features/sectionSlice";
+import Content from "@/types/content.type";
 
 function BasicsPage() {
   const params = useParams();
   const dispatch = useAppDispatch();
   const { data, isLoading } = useGetCourseByIdQuery(params.id as string);
-  if (isLoading) return <Loading />;
+  const courseId = params.id as string;
+  const { data: contentData, isLoading: isContentLoading } =
+    useGetContentByCourseIdQuery(courseId);
+
+  if (isLoading || isContentLoading) return <Loading />;
   dispatch(setManageCourse(data?.data as Course));
   dispatch(setParamCourseId(params.id as string));
+  dispatch(setContentId((data?.data as Content).id as string));
+  dispatch(setSections((contentData?.data as Content)?.sections as Section[]));
   return (
     <LayoutManage>
       <div className="mt-10 shadow-xl w-full mx-5 ">
@@ -36,4 +48,4 @@ function BasicsPage() {
   );
 }
 
-export default withAuth(BasicsPage, ModuleName.CONTENT);
+export default withAuthManager(BasicsPage, ModuleName.CONTENT);

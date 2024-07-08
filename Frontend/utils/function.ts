@@ -128,7 +128,7 @@ export function extractId(message: string) {
 
 export const getCurrentTimeInMillisecondsFromAPI = async () => {
   const response = await fetch(
-    "http://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh"
+    "https://worldtimeapi.org/api/timezone/Asia/Ho_Chi_Minh"
   );
   const data = await response.json();
   const date = new Date(data.datetime);
@@ -162,7 +162,10 @@ export function isPermissionGranted(
   permission: string,
   moduleName: string
 ) {
-  if(moduleName === ModuleName.ADMIN_PAGE && roleDetail?.find(role => role.canView === true)) {
+  if (
+    moduleName === ModuleName.ADMIN_PAGE &&
+    roleDetail?.find((role) => role.canView === true)
+  ) {
     return true;
   }
   const findModule = roleDetail?.find(

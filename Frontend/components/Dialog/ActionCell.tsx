@@ -21,6 +21,7 @@ import {
   NotificationMessage,
   PermissionName,
   Role,
+  RoleUser,
   ToastMessage,
   ToastStatus,
 } from "@/utils/resources";
@@ -148,7 +149,8 @@ const ActionsCell = (props: ActionCellProps) => {
                 PermissionName.CAN_VIEW,
                 ModuleName.CONTENT
               ) ||
-                role?.name == Role.ADMIN) && (
+                role?.name == Role.ADMIN ||
+                role?.name == Role.MANAGER) && (
                 <DropdownMenuItem onClick={() => handleViewCourse()}>
                   Xem Chi Tiết
                 </DropdownMenuItem>

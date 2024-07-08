@@ -14,6 +14,7 @@ import { setSections } from "@/redux/features/sectionSlice";
 import TimePicker from "react-time-picker";
 import withAuth from "@/hoc/withAuth";
 import LayoutManage from "../LayoutManage";
+import withAuthManager from "@/hoc/withAuthManager";
 
 function CurriculumPage() {
   const router = useRouter();
@@ -67,4 +68,4 @@ function CurriculumPage() {
   );
 }
 
-export default withAuth(CurriculumPage, ModuleName.CONTENT);
+export default withAuthManager(CurriculumPage, ModuleName.CONTENT);

@@ -45,7 +45,7 @@ function SideBar() {
                       className="lg:hidden"
                     />
                   </div>
-                  <nav className="flex flex-col w-max text-md">
+                  <nav className="flex flex-col w-[150px] text-md">
                     <Link
                       href="/user/personal"
                       className={`p-2 hover:bg-gray-300 flex gap-2 mb-2 hover:rounded-md py-3 ${
@@ -59,7 +59,7 @@ function SideBar() {
                     >
                       <div className="flex items-center gap-2">
                         <BsFillFilePersonFill />
-                        Trang thông tin cá nhân
+                        Profile
                       </div>
                     </Link>
 
@@ -76,7 +76,7 @@ function SideBar() {
                     >
                       <div className="flex items-center gap-2">
                         <GrShieldSecurity />
-                        Trang bảo mật
+                        Security
                       </div>
                     </Link>
                   </nav>
