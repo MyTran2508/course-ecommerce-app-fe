@@ -91,7 +91,7 @@ function CreateCourseNavBar() {
                       ModuleName.COURSE_REVIEWS
                     ) ||
                     role?.name == Role.ADMIN ||
-                    role?.roleUser == RoleUser.MANAGER
+                    role?.name == Role.MANAGER
                   )
                 }
               >

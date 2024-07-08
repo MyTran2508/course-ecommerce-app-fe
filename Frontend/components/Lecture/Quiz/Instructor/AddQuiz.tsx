@@ -17,6 +17,7 @@ import {
   PermissionName,
   ModuleName,
   RoleUser,
+  Role,
 } from "@/utils/resources";
 import { setTypeQuizCreate } from "@/redux/features/quizSlice";
 import Sortable from "../../DragAndDrop/Sorttable";
@@ -203,7 +204,7 @@ function AddQuiz(props: AddQuizProps) {
                                         roleDetail as RoleDetail[],
                                         PermissionName.CAN_CREATE,
                                         ModuleName.CONTENT
-                                      ) || role?.roleUser == RoleUser.MANAGER
+                                      ) || role?.name == Role.MANAGER
                                     )
                                   }
                                 >

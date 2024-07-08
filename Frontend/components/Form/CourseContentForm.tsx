@@ -21,6 +21,7 @@ import {
   CourseDescriptionField,
   ModuleName,
   PermissionName,
+  Role,
   RoleUser,
   StatusCode,
   ToastMessage,
@@ -196,7 +197,7 @@ function CourseContentForm(props: ContentProps) {
           PermissionName.CAN_UPDATE,
           ModuleName.COURSE
         ) ||
-        role?.roleUser == RoleUser.MANAGER
+        role?.name == Role.MANAGER
       )
     ) {
       showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
@@ -330,7 +331,7 @@ function CourseContentForm(props: ContentProps) {
                                 PermissionName.CAN_UPDATE,
                                 ModuleName.COURSE
                               ) ||
-                              role?.roleUser == RoleUser.MANAGER
+                              role?.name == Role.MANAGER
                             )
                           }
                         />
@@ -406,7 +407,7 @@ function CourseContentForm(props: ContentProps) {
                                 PermissionName.CAN_UPDATE,
                                 ModuleName.COURSE
                               ) ||
-                              role?.roleUser == RoleUser.MANAGER
+                              role?.name == Role.MANAGER
                             )
                           }
                         />
@@ -480,7 +481,7 @@ function CourseContentForm(props: ContentProps) {
                                 PermissionName.CAN_UPDATE,
                                 ModuleName.COURSE
                               ) ||
-                              role?.roleUser == RoleUser.MANAGER
+                              role?.name == Role.MANAGER
                             )
                           }
                         />

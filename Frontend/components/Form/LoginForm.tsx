@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,13 @@ import { DataResponse } from "@/types/response.type";
 import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { setCredential } from "@/redux/features/authSlice";
 import showToast from "@/utils/showToast";
-import { Constant, Role, ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  Constant,
+  Role,
+  RoleUser,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { formLoginSchema } from "@/utils/formSchema";
 import "../../components/style/loginForm.scss";
 import { Roles, UserRoles } from "@/types/roles.type";
@@ -57,14 +63,16 @@ function LoginForm() {
     if (redirect) {
       route.push(redirect);
     } else {
-      if (getRolesSuccess && roles) {
-        const userRole: UserRoles = roles.data as UserRoles;
+      // if (getRolesSuccess && roles) {
+      if (userNameSuccess && userNameData) {
+        const user: User = userNameData.data as User;
+        console.log(user);
 
-        if ((userRole.roles as Roles[])[0].name == Role.ADMIN) {
+        if ((user.roles as Roles[])[0].roleUser == RoleUser.ADMIN) {
           route.push(Constant.ADMIN_DASHBOARD_PATH);
           return;
         }
-        if ((userRole.roles as Roles[])[0].name == Role.MANAGER) {
+        if ((user.roles as Roles[])[0].roleUser == RoleUser.MANAGER) {
           route.push(Constant.MANAGER_COURSE_PATH);
           return;
         }
@@ -72,7 +80,7 @@ function LoginForm() {
         route.push("/");
       }
     }
-  }, [roles, isLogin, getRolesSuccess]);
+  }, [userNameSuccess, isLogin, userNameData]);
 
   useEffect(() => {
     if (userNameSuccess) {
@@ -101,9 +109,9 @@ function LoginForm() {
       .then((fulfilled) => {
         handleSaveToken(fulfilled, data.username);
       });
-    await getRoles(data.username);
     await getByUserName(data.username);
     await getAvatar(data.username);
+    // await getRoles(data.username);
   };
 
   const handleSaveToken = (dataResult: DataResponse, user: string) => {

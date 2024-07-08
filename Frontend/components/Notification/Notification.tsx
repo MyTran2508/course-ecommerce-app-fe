@@ -204,7 +204,6 @@ export const sendNotification = (
   message: string,
   link?: string
 ) => {
-  console.log(chanel);
   if (stompClient) {
     if (chanel?.length > 1 && chanel) {
       const listNotification: NotificationDTO[] = [];
