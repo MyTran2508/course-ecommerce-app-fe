@@ -68,7 +68,7 @@ function CourseSectionForm(props: CourseSectionProps) {
           PermissionName.CAN_UPDATE,
           ModuleName.CONTENT
         ) ||
-        role?.roleUser == RoleUser.MANAGER
+        role?.name == Role.MANAGER
       )
     ) {
       showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);

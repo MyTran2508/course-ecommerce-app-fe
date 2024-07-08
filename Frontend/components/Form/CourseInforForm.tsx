@@ -31,6 +31,7 @@ import showToast from "@/utils/showToast";
 import {
   ModuleName,
   PermissionName,
+  Role,
   RoleUser,
   StatusCode,
   ToastMessage,
@@ -227,7 +228,7 @@ function CourseInforForm(props: CourseInfoProps) {
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_CREATE,
                             ModuleName.COURSE
-                          ) || role?.roleUser == RoleUser.MANAGER
+                          ) || role?.name == Role.MANAGER
                         )
                       }
                     ></Input>
@@ -262,7 +263,7 @@ function CourseInforForm(props: CourseInfoProps) {
                             PermissionName.CAN_UPDATE,
                             ModuleName.COURSE
                           ) ||
-                          role?.roleUser == RoleUser.MANAGER
+                          role?.name == Role.MANAGER
                         )
                       }
                     ></Input>
@@ -299,7 +300,7 @@ function CourseInforForm(props: CourseInfoProps) {
                             PermissionName.CAN_UPDATE,
                             ModuleName.COURSE
                           ) ||
-                          role?.roleUser == RoleUser.MANAGER
+                          role?.name == Role.MANAGER
                         )
                       }
                     ></Input>
@@ -411,7 +412,7 @@ function CourseInforForm(props: CourseInfoProps) {
                                 PermissionName.CAN_UPDATE,
                                 ModuleName.COURSE
                               ) ||
-                              role?.roleUser == RoleUser.MANAGER
+                              role?.name == Role.MANAGER
                             )
                           }
                         />
@@ -468,7 +469,7 @@ function CourseInforForm(props: CourseInfoProps) {
                                 PermissionName.CAN_UPDATE,
                                 ModuleName.COURSE
                               ) ||
-                              role?.roleUser == RoleUser.MANAGER
+                              role?.name == Role.MANAGER
                             )
                           }
                         />

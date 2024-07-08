@@ -149,8 +149,8 @@ const ActionsCell = (props: ActionCellProps) => {
                 PermissionName.CAN_VIEW,
                 ModuleName.CONTENT
               ) ||
-                role?.roleUser == RoleUser.ADMIN ||
-                role?.roleUser == RoleUser.MANAGER) && (
+                role?.name == Role.ADMIN ||
+                role?.name == Role.MANAGER) && (
                 <DropdownMenuItem onClick={() => handleViewCourse()}>
                   Xem Chi Tiết
                 </DropdownMenuItem>

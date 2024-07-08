@@ -142,6 +142,7 @@ function PageLearning() {
   useEffect(() => {
     if (quizIsComplete) {
       const progress = calculateProgress(lecture?.id as string, sections);
+      console.log(progress, (courseProcess as CourseProcess).currentProgress);
       if (progress > (courseProcess as CourseProcess).currentProgress) {
         handleUpdateCourseProcess();
         setQuizIsComplete(false);
