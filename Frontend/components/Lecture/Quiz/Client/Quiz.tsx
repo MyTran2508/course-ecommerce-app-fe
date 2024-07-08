@@ -229,9 +229,7 @@ const Answer = (props: AnswerProps) => {
   }, [userAnswer]);
 
   useEffect(() => {
-    console.log("123123");
     if (userQuizData?.statusCode === StatusCode.REQUEST_SUCCESS) {
-      console.log("123123");
       const listUserQuizHistory = userQuizData.data as UserQuiz[];
       listUserQuizHistory.forEach((userQuiz) => {
         if (userQuiz.isCompleted && setQuizIsCompleted) {

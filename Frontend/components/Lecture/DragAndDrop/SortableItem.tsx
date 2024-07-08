@@ -6,6 +6,7 @@ import {
   LectureType,
   ModuleName,
   PermissionName,
+  Role,
   RoleUser,
 } from "@/utils/resources";
 import AddQuestion from "../Quiz/Instructor/AddQuestion";
@@ -37,13 +38,13 @@ export function SortableItem(props: SortableItemProp) {
       roleDetail as RoleDetail[],
       PermissionName.CAN_CREATE,
       ModuleName.CONTENT
-    ) || role?.roleUser == RoleUser.MANAGER;
+    ) || role?.name == Role.MANAGER;
   const canUpdate =
     isPermissionGranted(
       roleDetail as RoleDetail[],
       PermissionName.CAN_UPDATE,
       ModuleName.CONTENT
-    ) || role?.roleUser == RoleUser.MANAGER;
+    ) || role?.name == Role.MANAGER;
 
   const style = {
     // transform: CSS.Transform.toString(transform),

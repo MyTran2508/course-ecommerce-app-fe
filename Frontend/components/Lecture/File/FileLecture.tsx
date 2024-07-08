@@ -14,6 +14,7 @@ import {
   LectureType,
   ModuleName,
   PermissionName,
+  Role,
   RoleUser,
   ToastMessage,
   ToastStatus,
@@ -218,7 +219,7 @@ function FileLecture(props: FileLectureProps) {
                                         roleDetail as RoleDetail[],
                                         PermissionName.CAN_UPDATE,
                                         ModuleName.COURSE
-                                      ) || role?.roleUser == RoleUser.MANAGER
+                                      ) || role?.name == Role.MANAGER
                                     )
                                   }
                                 >

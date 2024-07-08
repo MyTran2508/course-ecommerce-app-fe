@@ -102,8 +102,8 @@ function InstructorNavbar() {
                 PermissionName.CAN_CREATE,
                 ModuleName.COURSE
               ) ||
-                role?.roleUser == RoleUser.MANAGER ||
-                role?.roleUser == RoleUser.ADMIN) && (
+                role?.name == Role.MANAGER ||
+                role?.name == Role.ADMIN) && (
                 <Link href={"/instructor/courses/create"} className="xs:hidden">
                   Create New Course
                 </Link>

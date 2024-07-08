@@ -19,15 +19,8 @@ export default function withAuthManager(
         PermissionName.CAN_VIEW,
         moduleName
       ) &&
-      roles?.[0].roleUser == RoleUser.USER
+      roles?.[0].name == Role.USER
     ) {
-      console.log(
-        !isPermissionGranted(
-          roleDetail as RoleDetail[],
-          PermissionName.CAN_VIEW,
-          moduleName
-        ) && roles?.[0].roleUser == RoleUser.USER
-      );
       return <ForbiddenPage />;
     }
 
