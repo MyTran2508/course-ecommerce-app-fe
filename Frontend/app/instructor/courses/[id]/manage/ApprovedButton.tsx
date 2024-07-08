@@ -26,6 +26,7 @@ function ApprovedButton(props: ApprovedButtonProps) {
   const [isOpen, setOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [updateApproveCourse] = useUpdateApprovedMutation();
+  console.log(course);
 
   const handleClickOpen = () => {
     setOpen(!isOpen);

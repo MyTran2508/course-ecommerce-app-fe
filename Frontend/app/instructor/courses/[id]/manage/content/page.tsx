@@ -27,7 +27,6 @@ function CourseContentPage() {
   if (isLoading && isContentLoading) return <Loading />;
   dispatch(setContentId((data?.data as Content).id as string));
   dispatch(setSections((contentData?.data as Content).sections as Section[]));
-  console.log((contentData?.data as Content).sections as Section[]);
 
   return (
     <LayoutManage>
