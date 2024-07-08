@@ -14,9 +14,8 @@ public interface UserLogRepository extends BaseRepository<UserLog> {
                 SELECT ul FROM UserLog ul
                 WHERE (:startTime IS NULL OR (ul.created >= :startTime AND ul.created <= :endTime))
                 AND (:userName IS NULL OR ul.userName LIKE %:userName%)
-                AND (:actionObject IS NULL
-                    OR (ul.actionObject = :actionObject AND ul.actionKey LIKE %:actionKey%)
-                )
+                AND (:actionObject IS NULL OR ul.actionObject = :actionObject)
+                AND (:actionKey IS NULL OR ul.actionKey LIKE %:actionKey%)
             """)
     Page<UserLog> filterUserLog(
             Long startTime,
