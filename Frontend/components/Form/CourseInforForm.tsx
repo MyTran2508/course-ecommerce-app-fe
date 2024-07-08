@@ -74,6 +74,9 @@ function CourseInforForm(props: CourseInfoProps) {
   const email = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.email
   );
+  const username = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.username
+  );
   const role = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.roles?.[0]
   );
@@ -195,7 +198,7 @@ function CourseInforForm(props: CourseInfoProps) {
         newUrlCourseVideo.length !== 0
           ? newUrlCourseVideo
           : course.urlPromotionVideos,
-      authorName: email,
+      authorName: username,
     };
     handleUpdateCourse(updateCourse);
   };
