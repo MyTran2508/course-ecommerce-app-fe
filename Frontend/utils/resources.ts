@@ -265,3 +265,17 @@ export enum NotificationMessage {
   RESTORE_USER = "Người Dùng Đã Được Khôi Phục",
   UPDATE_USER = "Thông tin người dùng đã được cập nhật",
 }
+
+export enum ActionObject {
+  USER = "USER",
+  ORDER = "ORDER",
+  COURSE = "COURSE",
+  COURSE_REVIEWS = "COURSE_REVIEWS",
+  COURSE_PROGRESS = "COURSE_PROGRESS",
+  SECTION = "SECTION",
+  CONTENT = "CONTENT",
+  ASSIGNMENT = "ASSIGNMENT",
+  LECTURE = "LECTURE",
+  EX_QUIZ = "EX_QUIZ",
+  COURSE_REVIEW = "COURSE_REVIEW",
+}

@@ -10,7 +10,7 @@ import { iconMap } from "@/utils/map";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { setCredential, logout } from "@/redux/features/authSlice";
 import Image from "next/image";
-import { Role, ToastMessage, ToastStatus } from "@/utils/resources";
+import { Role, RoleUser, ToastMessage, ToastStatus } from "@/utils/resources";
 import showToast from "@/utils/showToast";
 import { FiShoppingCart } from "react-icons/fi";
 import {
@@ -244,15 +244,17 @@ function Navbar() {
               )}
               <NotificationPopUp />
 
-              <div
-                className="flex relative hover:cursor-pointer"
-                onClick={() => handleChangeRouteCart()}
-              >
-                <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
-                  {cart.length}
-                </span>
-                <FiShoppingCart className="text-2xl" />
-              </div>
+              {roles && roles[0]?.roleUser == RoleUser.USER && (
+                <div
+                  className="flex relative hover:cursor-pointer"
+                  onClick={() => handleChangeRouteCart()}
+                >
+                  <span className="absolute bg-orange-400 rounded-full text-xs text-white ml-4 px-1">
+                    {cart.length}
+                  </span>
+                  <FiShoppingCart className="text-2xl" />
+                </div>
+              )}
 
               <div>
                 <Menu>
@@ -354,6 +356,7 @@ function Navbar() {
             </div>
           ) : (
             <div className="lg:inline-flex gap-3 flex">
+              {}
               <div
                 className="flex relative hover:cursor-pointer flex-center mr-3"
                 onClick={() => handleChangeRouteCart()}
