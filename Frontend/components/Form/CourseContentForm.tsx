@@ -190,12 +190,12 @@ function CourseContentForm(props: ContentProps) {
         isPermissionGranted(
           roleDetail as RoleDetail[],
           PermissionName.CAN_CREATE,
-          ModuleName.COURSE
+          ModuleName.COURSE_MANAGER
         ) ||
         isPermissionGranted(
           roleDetail as RoleDetail[],
           PermissionName.CAN_UPDATE,
-          ModuleName.COURSE
+          ModuleName.COURSE_MANAGER
         ) ||
         role?.name == Role.MANAGER
       )
@@ -232,6 +232,18 @@ function CourseContentForm(props: ContentProps) {
   };
 
   const handleRemoveField = (fieldName: string, fieldType: string) => {
+    if (
+      !(isPermissionGranted(
+          roleDetail as RoleDetail[],
+          PermissionName.CAN_REMOVE,
+          ModuleName.COURSE_MANAGER
+        ) ||
+        role?.name == Role.MANAGER
+      )
+    ) {
+      showToast(ToastStatus.WARNING, ToastMessage.NO_PERMISSION);
+      return;
+    }
     let updatedFields: string[] = [];
 
     if (_.isEqual(fieldType, CourseDescriptionField.REQUIREMENT)) {
@@ -324,12 +336,12 @@ function CourseContentForm(props: ContentProps) {
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_CREATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_UPDATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               role?.name == Role.MANAGER
                             )
@@ -400,12 +412,12 @@ function CourseContentForm(props: ContentProps) {
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_CREATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_UPDATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               role?.name == Role.MANAGER
                             )
@@ -474,12 +486,12 @@ function CourseContentForm(props: ContentProps) {
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_CREATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_UPDATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               role?.name == Role.MANAGER
                             )

@@ -59,7 +59,12 @@ function CreateCourseNavBar() {
             <div>Quay Lại</div>
           </div>
           <div className="flex gap-10 xs:gap-1 xs:mr-1 mr-10 items-center">
-            {role?.name === Role.ADMIN ? (
+            {role?.name === Role.ADMIN ||
+            isPermissionGranted(
+              roleDetail as RoleDetail[],
+              PermissionName.CAN_APPROVE_COURSE,
+              ModuleName.COURSE_ADMIN
+            ) ? (
               <ApprovedButton course={courseData as Course} />
             ) : (
               <Fragment>
@@ -88,7 +93,7 @@ function CreateCourseNavBar() {
                     isPermissionGranted(
                       roleDetail as RoleDetail[],
                       PermissionName.CAN_VIEW,
-                      ModuleName.COURSE_REVIEWS
+                      ModuleName.COURSE_MANAGER
                     ) ||
                     role?.name == Role.ADMIN ||
                     role?.name == Role.MANAGER
@@ -104,4 +109,4 @@ function CreateCourseNavBar() {
     </div>
   );
 }
-export default withAuthManager(CreateCourseNavBar, ModuleName.CONTENT);
+export default withAuthManager(CreateCourseNavBar, ModuleName.COURSE_MANAGER);

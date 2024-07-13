@@ -4,7 +4,8 @@ export interface RoleDetail {
   canCreate?: boolean;
   canRemove?: boolean;
   canUpdate?: boolean;
-  canStatistics?: boolean;
+  canApproveCourse?: boolean;
+  canAssignment?: boolean;
   module?: {
     id?: number;
     moduleName?: string;

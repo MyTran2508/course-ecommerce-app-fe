@@ -37,13 +37,13 @@ export function SortableItem(props: SortableItemProp) {
     isPermissionGranted(
       roleDetail as RoleDetail[],
       PermissionName.CAN_CREATE,
-      ModuleName.CONTENT
+      ModuleName.COURSE_MANAGER
     ) || role?.name == Role.MANAGER;
   const canUpdate =
     isPermissionGranted(
       roleDetail as RoleDetail[],
       PermissionName.CAN_UPDATE,
-      ModuleName.CONTENT
+      ModuleName.COURSE_MANAGER
     ) || role?.name == Role.MANAGER;
 
   const style = {

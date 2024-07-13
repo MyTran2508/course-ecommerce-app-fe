@@ -61,10 +61,10 @@ function CoursePage() {
   const username = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.username
   );
-  const roleUser = useAppSelector(
-    (state) =>
-      (state.persistedReducer.userReducer.user.roles as Roles[])[0]?.roleUser
-  );
+  const roleUser = useAppSelector((state) => {
+    const roles = state.persistedReducer.userReducer.user.roles as Roles[];
+    return roles?.[0]?.roleUser;
+  });
   const [isOpenAllContent, setOpenAllContent] = useState<boolean>(false);
   const [course, setCourse] = useState(initCourse);
   const [video, setVideo] = useState("");

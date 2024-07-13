@@ -414,9 +414,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
         };
       });
       dispatch(setKeywordSearchCourse(listKeywordTypeSearch as any));
-      if (listKeywordTypeSearch.length > 0) {
-        router.push("/course/search?q=");
-      }
+      router.push("/course/search?q=");
     }
 
     if (
@@ -889,7 +887,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                                   src={
                                     user.photos
                                       ? `data:image/jpeg;base64,${user.photos}`
-                                      : "/banner.jpg"
+                                      : "/avatar.png"
                                   }
                                   width={400}
                                   height={400}

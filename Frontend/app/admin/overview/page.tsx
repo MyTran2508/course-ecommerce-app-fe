@@ -366,4 +366,4 @@ function OverviewPage() {
   );
 }
 
-export default withAuth(OverviewPage, ModuleName.OVERVIEW_PAGE);
+export default withAuth(OverviewPage, ModuleName.STATISTIC);

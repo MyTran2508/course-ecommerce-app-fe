@@ -224,7 +224,7 @@ function Comment(props: CommentProps) {
           src={
             data.rawAvatar
               ? `data:image/png;base64,${data.rawAvatar}`
-              : "/banner.jpg"
+              : "/avatar.png"
           }
           alt="avatar"
           width={70}
@@ -322,7 +322,7 @@ function Comment(props: CommentProps) {
       {isOpenReply && (
         <div className="flex gap-2 items-center my-10">
           <Image
-            src={avatar ? `data:image/png;base64,${avatar}` : "/banner.jpg"}
+            src={avatar ? `data:image/png;base64,${avatar}` : "/avatar.png"}
             alt="avatar"
             width={50}
             height={50}

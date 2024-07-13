@@ -317,4 +317,4 @@ function UserLogPage() {
   );
 }
 
-export default withAuth(UserLogPage, ModuleName.USER);
+export default withAuth(UserLogPage, ModuleName.USER_LOG);

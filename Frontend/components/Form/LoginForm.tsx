@@ -108,7 +108,9 @@ function LoginForm() {
       .unwrap()
       .then((fulfilled) => {
         handleSaveToken(fulfilled, data.username);
-      });
+      }).catch((rejected) => {
+        showToast(ToastStatus.ERROR, ToastMessage.LOGIN_FAIL)
+        });
     await getByUserName(data.username);
     await getAvatar(data.username);
     // await getRoles(data.username);
