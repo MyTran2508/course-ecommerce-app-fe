@@ -218,7 +218,7 @@ function FileLecture(props: FileLectureProps) {
                                       isPermissionGranted(
                                         roleDetail as RoleDetail[],
                                         PermissionName.CAN_UPDATE,
-                                        ModuleName.COURSE
+                                        ModuleName.COURSE_MANAGER
                                       ) || role?.name == Role.MANAGER
                                     )
                                   }

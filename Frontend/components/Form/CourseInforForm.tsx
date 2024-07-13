@@ -227,7 +227,7 @@ function CourseInforForm(props: CourseInfoProps) {
                           isPermissionGranted(
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_CREATE,
-                            ModuleName.COURSE
+                            ModuleName.COURSE_MANAGER
                           ) || role?.name == Role.MANAGER
                         )
                       }
@@ -256,12 +256,12 @@ function CourseInforForm(props: CourseInfoProps) {
                           isPermissionGranted(
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_CREATE,
-                            ModuleName.COURSE
+                            ModuleName.COURSE_MANAGER
                           ) ||
                           isPermissionGranted(
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_UPDATE,
-                            ModuleName.COURSE
+                            ModuleName.COURSE_MANAGER
                           ) ||
                           role?.name == Role.MANAGER
                         )
@@ -293,12 +293,12 @@ function CourseInforForm(props: CourseInfoProps) {
                           isPermissionGranted(
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_CREATE,
-                            ModuleName.COURSE
+                            ModuleName.COURSE_MANAGER
                           ) ||
                           isPermissionGranted(
                             roleDetail as RoleDetail[],
                             PermissionName.CAN_UPDATE,
-                            ModuleName.COURSE
+                            ModuleName.COURSE_MANAGER
                           ) ||
                           role?.name == Role.MANAGER
                         )
@@ -405,12 +405,12 @@ function CourseInforForm(props: CourseInfoProps) {
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_CREATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_UPDATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               role?.name == Role.MANAGER
                             )
@@ -462,12 +462,12 @@ function CourseInforForm(props: CourseInfoProps) {
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_CREATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               isPermissionGranted(
                                 roleDetail as RoleDetail[],
                                 PermissionName.CAN_UPDATE,
-                                ModuleName.COURSE
+                                ModuleName.COURSE_MANAGER
                               ) ||
                               role?.name == Role.MANAGER
                             )

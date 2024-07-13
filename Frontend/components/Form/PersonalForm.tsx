@@ -59,24 +59,6 @@ const handleSetDefaultValueFrom = (value: Omit<User, "re_password">) => {
   };
 };
 
-const role: Roles = {
-  id: "21bebc5e-2138-43bf-a635-b7df57b6385e",
-  name: "ROLE_MANAGER1",
-  description: "Role quản lý cấp 2",
-  roleDetails: [
-    {
-      canView: true,
-      canCreate: true,
-      canUpdate: false,
-      canRemove: false,
-      canStatistics: false,
-      module: {
-        id: 0,
-        moduleName: "USER",
-      },
-    },
-  ],
-};
 
 function PersonalForm(props: PersonalProps) {
   const { userInfor, isAdmin } = props;
@@ -435,7 +417,7 @@ function PersonalForm(props: PersonalProps) {
                       src={
                         currentAvatar !== "Error"
                           ? `data:image/png;base64,${currentAvatar}`
-                          : "/banner.jpg"
+                          : "/avatar.png"
                       }
                       width={100}
                       height={100}
@@ -449,7 +431,7 @@ function PersonalForm(props: PersonalProps) {
                       src={
                         currentAvatar !== "Error"
                           ? `data:image/png;base64,${currentAvatar}`
-                          : "/banner.jpg"
+                          : "/avatar.png"
                       }
                       width={100}
                       height={100}

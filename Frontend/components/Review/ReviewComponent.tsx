@@ -75,7 +75,7 @@ function ReviewComponent(props: ReviewComponentProps) {
           src={
             review.userAvatar
               ? `data:image/png;base64,${review.userAvatar}`
-              : "/banner.jpg"
+              : "/avatar.png"
           }
           width={400}
           height={400}

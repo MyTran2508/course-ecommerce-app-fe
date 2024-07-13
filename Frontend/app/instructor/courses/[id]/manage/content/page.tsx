@@ -45,4 +45,4 @@ function CourseContentPage() {
   );
 }
 
-export default withAuthManager(CourseContentPage, ModuleName.CONTENT);
+export default withAuthManager(CourseContentPage, ModuleName.COURSE_MANAGER);

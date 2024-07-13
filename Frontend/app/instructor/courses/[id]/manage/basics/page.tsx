@@ -48,4 +48,4 @@ function BasicsPage() {
   );
 }
 
-export default withAuthManager(BasicsPage, ModuleName.CONTENT);
+export default withAuthManager(BasicsPage, ModuleName.COURSE_MANAGER);

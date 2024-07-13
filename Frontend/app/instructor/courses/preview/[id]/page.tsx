@@ -189,4 +189,4 @@ function PreviewPage() {
   );
 }
 
-export default withAuthManager(PreviewPage, ModuleName.COURSE_REVIEWS);
+export default withAuthManager(PreviewPage, ModuleName.COURSE_ADMIN);

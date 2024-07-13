@@ -12,7 +12,8 @@ export enum Constant {
   ADMIN_USER_PATH = "/admin/user",
   ADMIN_USER_HISTORY_PATH = "/admin/user-history",
   ADMIN_COURSE_PATH = "/admin/courses",
-  ADMIN_DASHBOARD_PATH = "/admin/overview",
+  ADMIN_DASHBOARD_PATH = "/admin",
+  ADMIN_STATISTIC_PATH = "/admin/overview",
   ADMIN_ROLE_PATH = "/admin/role",
   ADMIN_BILL_PATH = "/admin/bill",
   MANAGER_COURSE_PATH = "/instructor/courses",
@@ -196,19 +197,11 @@ export enum QuizType {
 export enum ModuleName {
   USER = "Người Dùng",
   ROLE = "Phân Quyền",
-  COURSE = "Khóa Học",
-  COURSE_REVIEWS = "Đánh giá khóa học",
-  CONTENT = "Nội Dung Khóa Học",
-  ADMIN_PAGE = "Trang Quản Trị",
-  OVERVIEW_PAGE = "Trang Tổng Quan",
-}
-
-export enum Permission {
-  CAN_VIEW = "canView",
-  CAN_CREATE = "canCreate",
-  CAN_UPDATE = "canUpdate",
-  CAN_REMOVE = "canRemove",
-  CAN_STATISTICS = "canStatistics",
+  COURSE_MANAGER = "Quản Lý Khóa Học Cấp Quản Lý",
+  COURSE_ADMIN = "Quản Lý Khóa Học Cấp Admin",
+  ORDER = "Lịch Sử Mua Hàng",
+  USER_LOG = "Lịch Sử Người Dùng",
+  STATISTIC = "Trang Thống Kê",
 }
 
 export enum Fields {
@@ -234,7 +227,8 @@ export enum PermissionName {
   CAN_CREATE = "canCreate",
   CAN_UPDATE = "canUpdate",
   CAN_REMOVE = "canRemove",
-  CAN_STATISTICS = "canStatistics",
+  CAN_ASSIGNMENT = "canAssignment",
+  CAN_APPROVE_COURSE = "canApproveCourse",
 }
 
 export enum ModuleSearch {
