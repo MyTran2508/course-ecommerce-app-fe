@@ -37,8 +37,11 @@ public class RoleDetail extends BaseModel implements Serializable {
     @Column(name = "can_remove")
     private Boolean canRemove;
 
-    @Column(name = "can_statistics")
-    private Boolean canStatistics;
+    @Column(name = "can_approve_course")
+    private Boolean canApproveCourse;
+
+    @Column(name = "can_assignment")
+    private Boolean canAssignment;
 
     @ManyToOne(targetEntity = Module.class)
     @JoinColumn(name = "module_id", foreignKey = @ForeignKey(name = "fk_role_details_module"))

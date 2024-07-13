@@ -345,7 +345,7 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
         return ResponseMapper.toPagingResponseSuccess(courseDtos);
     }
 
-    public DataResponse<String> updateIsApproved(String id, boolean isApproved, CourseIssueReportDto courseIssueReportDto) {
+    public DataResponse<String>  updateIsApproved(String id, boolean isApproved, CourseIssueReportDto courseIssueReportDto) {
         Optional<Course> optionalCourse = courseRepository.findById(id);
 
         if(optionalCourse.isEmpty()) {

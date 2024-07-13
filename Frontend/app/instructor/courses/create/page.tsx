@@ -131,4 +131,4 @@ function CreateCoursePage() {
   );
 }
 
-export default withAuthManager(CreateCoursePage, ModuleName.COURSE);
+export default withAuthManager(CreateCoursePage, ModuleName.COURSE_MANAGER);

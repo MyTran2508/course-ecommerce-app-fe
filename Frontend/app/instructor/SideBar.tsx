@@ -84,4 +84,4 @@ function SideBar() {
   );
 }
 
-export default withAuthManager(SideBar, ModuleName.CONTENT);
+export default withAuthManager(SideBar, ModuleName.COURSE_MANAGER);

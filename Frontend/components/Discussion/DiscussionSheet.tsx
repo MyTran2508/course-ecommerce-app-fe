@@ -176,7 +176,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
 
         <div className="flex gap-2 items-center mt-10">
           <Image
-            src={avatar ? `data:image/png;base64,${avatar}` : "/banner.jpg"}
+            src={avatar ? `data:image/png;base64,${avatar}` : "/avatar.png"}
             alt="avatar"
             width={50}
             height={50}

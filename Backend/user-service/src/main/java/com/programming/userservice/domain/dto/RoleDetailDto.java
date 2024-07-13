@@ -26,7 +26,9 @@ public class RoleDetailDto implements Serializable {
 
     private Boolean canRemove;
 
-    private Boolean canStatistics;
+    private Boolean canApproveCourse;
+
+    private Boolean canAssignment;
 
     private ModuleDto module;
 }

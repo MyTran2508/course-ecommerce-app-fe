@@ -89,12 +89,12 @@ function Sortable(props: SortableProps) {
               isPermissionGranted(
                 roleDetail as RoleDetail[],
                 PermissionName.CAN_CREATE,
-                ModuleName.CONTENT
+                ModuleName.COURSE_MANAGER
               ) ||
               isPermissionGranted(
                 roleDetail as RoleDetail[],
                 PermissionName.CAN_UPDATE,
-                ModuleName.CONTENT
+                ModuleName.COURSE_MANAGER
               ) ||
               role?.name == Role.MANAGER
             )

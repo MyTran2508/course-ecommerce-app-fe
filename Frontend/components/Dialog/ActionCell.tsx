@@ -147,8 +147,13 @@ const ActionsCell = (props: ActionCellProps) => {
               {(isPermissionGranted(
                 roleDetail || [],
                 PermissionName.CAN_VIEW,
-                ModuleName.CONTENT
+                ModuleName.COURSE_ADMIN
               ) ||
+                isPermissionGranted(
+                  roleDetail || [],
+                  PermissionName.CAN_APPROVE_COURSE,
+                  ModuleName.COURSE_ADMIN
+                ) ||
                 role?.name == Role.ADMIN ||
                 role?.name == Role.MANAGER) && (
                 <DropdownMenuItem onClick={() => handleViewCourse()}>

@@ -39,7 +39,7 @@ function RolePage() {
   const [roleName, setRoleName] = useState<string>("");
   const [roleDescription, setRoleDescription] = useState<string>("");
   const [roleId, setRoleId] = useState<string>();
-  const [roleUser, setRoleUser] = useState<string>();
+  const [roleUser, setRoleUser] = useState<string>("");
   const { data: roles, isSuccess: getAllRolesSuccess } = useGetAllRoleQuery();
   const [addRoles] = useAddRoleMutation();
   const [updateRoles] = useUpdateRoleMutation();
@@ -47,6 +47,12 @@ function RolePage() {
     (state) => state.persistedReducer.userReducer.user.roles?.[0]
   );
   const roleDetail = role?.roleDetails;
+
+  useEffect(() => {
+    if (roleUser == " ") {
+      setRoleDetails([]);
+    }
+  }, [roleUser]);
 
   const handleRoleClick = (role: Roles) => {
     setRoleId(role.id as string);
@@ -70,7 +76,12 @@ function RolePage() {
       return;
     }
 
-    if (roleName === "" && roleDescription === "" && roleDetails.length === 0) {
+    if (
+      roleName === "" ||
+      roleDescription === "" ||
+      roleDetails.length === 0 ||
+      roleUser === " "
+    ) {
       showToast(ToastStatus.WARNING, ToastMessage.PLEASE_SELECT_PERMISSION);
       return;
     }
@@ -124,7 +135,7 @@ function RolePage() {
     setRoleDescription("");
     setRoleDetails([]);
     setRoleId("");
-    setRoleUser("");
+    setRoleUser(" ");
   };
 
   return (
@@ -165,6 +176,7 @@ function RolePage() {
             </div>
             <Select
               defaultValue={roleUser as string}
+              value={roleUser as string}
               onValueChange={setRoleUser}
             >
               <SelectTrigger
@@ -174,19 +186,22 @@ function RolePage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  <SelectItem value=" " className="hidden">
+                    Chưa chọn
+                  </SelectItem>
                   <SelectItem value={RoleUser.ADMIN}>
                     {RoleUser.ADMIN}
                   </SelectItem>
                   <SelectItem value={RoleUser.MANAGER}>
                     {RoleUser.MANAGER}
                   </SelectItem>
-                  <SelectItem value={RoleUser.USER}>{RoleUser.USER}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
         </div>
         <RoleDetails
+          selectRoleParent={roleUser}
           roleDetails={roleDetails}
           setRoleDetails={setRoleDetails}
           action={Action.CREATE}

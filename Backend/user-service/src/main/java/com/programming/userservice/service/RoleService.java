@@ -93,8 +93,11 @@ public class RoleService extends BaseServiceImpl<Role, RoleDto> {
                  if (roleDetail.getCanRemove()) {
                      listUserRoleString.add("canRemove");
                  }
-                 if (roleDetail.getCanStatistics()) {
-                     listUserRoleString.add("canStatistics");
+                 if (roleDetail.getCanApproveCourse()) {
+                     listUserRoleString.add("canApproveCourse");
+                 }
+                 if (roleDetail.getCanAssignment()) {
+                     listUserRoleString.add("canAssignment");
                  }
                  roleDetailDtoMap.put(roleDetail.getModule().getModuleName(), listUserRoleString);
              }
@@ -119,8 +122,11 @@ public class RoleService extends BaseServiceImpl<Role, RoleDto> {
                 if (roleString.equals("canRemove")) {
                     roleDetailDto.setCanRemove(true);
                 }
-                if (roleString.equals("canStatistics")) {
-                    roleDetailDto.setCanStatistics(true);
+                if (roleString.equals("canApproveCourse")) {
+                    roleDetailDto.setCanApproveCourse(true);
+                }
+                if (roleString.equals("canAssignment")) {
+                    roleDetailDto.setCanAssignment(true);
                 }
             }
              roleDetailDtos.add(roleDetailDto);
