@@ -6,8 +6,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum OrderStatus {
+
     CANCELED("Canceled"),
+
     PAID("Paid"),
+
     UNPAID("Unpaid");
+
     private final String value;
 }

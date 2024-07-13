@@ -11,11 +11,15 @@ public enum ModuleName {
 
     ROLE("Phân Quyền"),
 
-    COURSE("Khóa Học"),
+    COURSE_MANAGER("Quản Lý Khóa Học Cấp Quản Lý"),
 
-    COURSE_REVIEWS("Đánh giá khóa học"),
+    COURSE_ADMIN("Quản Lý Khóa Học Cấp Admin"),
 
-    CONTENT("Nội Dung Khóa Học");
+    ORDER("Đơn Hàng"),
+
+    USER_LOG("Lịch Sử Người Dùng"),
+
+    STATISTIC("Thống Kê");
 
     private final String value;
 }
