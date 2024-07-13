@@ -100,6 +100,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
     useState<boolean>(false);
   const [listKeywordTypeSearchRequest, setListKeywordTypeSearchRequest] =
     useState<KeywordTypeSearchRequest[]>([]);
+  const [isClickSearch, setIsClickSearch] = useState<boolean>(false);
   //sort
   const [isOpenSort, setIsOpenSort] = useState<boolean>(false);
   const [sort, setSort] = useState<string>("created");
@@ -216,6 +217,12 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
   useEffect(() => {
     handleSearch();
   }, [sort, isDecrease, searchCourseAdmin]);
+
+  useEffect(() => {
+    if (isClickSearch) {
+      handleSearch();
+    }
+  }, [isClickSearch]);
 
   useEffect(() => {
     if (isSearchByHistory) {
@@ -414,7 +421,10 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
         };
       });
       dispatch(setKeywordSearchCourse(listKeywordTypeSearch as any));
-      router.push("/course/search?q=");
+      if (isClickSearch) {
+        router.push("/course/search?q=");
+        setIsClickSearch(false);
+      }
     }
 
     if (
@@ -1155,7 +1165,9 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
           </div>
           <div
             className="right-0 flex justify-center items-center hover:cursor-pointer py-1 px-2 rounded-sm bg-gray-400 h-[40px]"
-            onClick={() => handleSearch()}
+            onClick={() => {
+              setIsClickSearch(true);
+            }}
           >
             <BiSearchAlt className="text-2xl text-right" />
           </div>
