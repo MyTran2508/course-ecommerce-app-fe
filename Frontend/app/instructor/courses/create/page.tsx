@@ -98,7 +98,7 @@ function CreateCoursePage() {
                 E-LEANING
               </Link>
               <div className="flex gpa-2">
-                <NotificationPopUp />
+                <NotificationPopUp hidden={true}/>
                 <Link
                   href={"/instructor/courses"}
                   className="hover:text-orange-400 font-bold"

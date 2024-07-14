@@ -42,12 +42,14 @@ public class Course extends BaseModel implements Serializable {
 
     private Double price;
 
-    @ManyToOne(targetEntity = Level.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Level.class)
     @JoinColumn(name = "level_id", foreignKey = @ForeignKey(name = "fk_courses_level"))
+    @ExcludeFromComparisonField
     private Level level;
 
-    @ManyToOne(targetEntity = Language.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Language.class)
     @JoinColumn(name = "language_id", foreignKey = @ForeignKey(name = "fk_courses_language"))
+    @ExcludeFromComparisonField
     private Language language;
 
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "course")

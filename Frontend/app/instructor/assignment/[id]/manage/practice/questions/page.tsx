@@ -76,7 +76,7 @@ function QuestionPage() {
   return (
     <div>
       <div className="mb-10 mt-3">
-        <label className="text-black font-bold">Add Questions</label>
+        <label className="text-black font-bold text-2xl font-mono">Add Questions</label>
         {(isOpenInputEditor || !lecture?.assignment?.questions) && (
           <InputEditor
             text={questions}
@@ -91,6 +91,7 @@ function QuestionPage() {
               dangerouslySetInnerHTML={{
                 __html: stateToHTML(textView.getCurrentContent()),
               }}
+              className="my-4"
             />
             <Button onClick={() => setIsOpenInputEditor(true)}>Edit</Button>
           </div>
