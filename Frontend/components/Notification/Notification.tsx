@@ -131,9 +131,9 @@ function NotificationPopUp(props: NotificationPopUpProps) {
         <Menu.Items
           className={`absolute mt-1 ${
             isAdmin ? "right-5" : "right-56"
-          }  w-[400px] origin-top-right divide-x divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none p-2`}
+          }  w-[400px] origin-top-right divide-x divide-gray-100 rounded-md bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none`}
         >
-          <div className="px-1 py-1 h-[400px] custom-scrollbar overflow-y-auto">
+          <div className="h-[400px] custom-scrollbar overflow-y-auto">
             <Transition
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"
@@ -143,7 +143,7 @@ function NotificationPopUp(props: NotificationPopUpProps) {
               leaveTo="transform opacity-0 scale-95"
             >
               <div>
-                <h1 className="text-lg font-bold">Notifications</h1>
+                <h1 className="text-[1.3rem] font-medium font-sans px-4 py-[4px] font-mono">Notifications</h1>
                 {notifications ? (
                   <div>
                     {notifications?.map((notification) => (
@@ -151,9 +151,9 @@ function NotificationPopUp(props: NotificationPopUpProps) {
                         key={notification.id}
                         className={`${
                           !notification?.isViewed
-                            ? "bg-orange-200 "
+                            ? "bg-[#1618230d]"
                             : "hover:bg-slate-300"
-                        } hover:cursor-pointer rounded-lg flex py-2 px-2 items-center gap-4 mb-2`}
+                        } hover:cursor-pointer hover:bg-[#1618230d] rounded-lg flex py-2 px-2 items-center gap-4 mb-2 mx-2`}
                         onClick={async () => {
                           await updateIsViewed(notification?.id as string);
                           await getNotifications({
@@ -170,14 +170,14 @@ function NotificationPopUp(props: NotificationPopUpProps) {
                       >
                         <Image
                           src={"/banner.jpg"}
-                          width={400}
-                          height={400}
+                          width={350}
+                          height={350}
                           className="w-12 h-12 rounded-full"
                           alt="avatar"
                         />
                         <div>
-                          <h1 className="font-bold">{notification?.sender}</h1>
-                          <p className="text-sm">{notification?.content}</p>
+                          <p className="font-normal">{notification?.content}</p>
+                          <h1 className="text-sm font-light">{notification?.sender}</h1>
                         </div>
                       </div>
                     ))}

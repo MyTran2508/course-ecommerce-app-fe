@@ -225,7 +225,8 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
         Page<Course> courses = null;
         if(searchCourseDto.getFilterSortBy() != null && searchCourseDto.getFilterSortBy() == FilterSortBy.POPULAR) {
-            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, minRatingValue, keywordName, isEmptyKeywordAuthors, keywordAuthors, keywordSubTitle, pageable);
+            courses = courseRepository.filterCoursePopular(levelIds, languageIds, topicIds, isFree, minRatingValue, keywordName,
+                    isEmptyKeywordAuthors, keywordAuthors, keywordSubTitle, pageable);
         } else {
             System.out.println("normal search");
             courses = courseRepository.filterCourse(levelIds, languageIds, topicIds, isFree, minRatingValue, keywordName,

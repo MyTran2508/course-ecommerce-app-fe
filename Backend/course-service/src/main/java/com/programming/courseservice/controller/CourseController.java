@@ -69,35 +69,22 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     @Override
     @ShowOpenAPI
     public DataResponse<String> add(CourseDto objectDTO) {
-
-        DataResponse<String> response = super.add(objectDTO);
-
-        String stResult = response.getData();
-        String courseId = stResult.split(": ")[1].trim();
-        Course entity = courseRepository.findById(courseId).orElse(null);
-        Level level = levelRepository.findById(entity.getLevel().getId()).orElse(null);
-        Language language = languageRepository.findById(entity.getLanguage().getId()).orElse(null);
-        Topic topic = topicRepository.findById(entity.getTopic().getId()).orElse(null);
-        entity.getLevel().setName(level == null ? null : level.getName());
-        entity.getLanguage().setName(language == null ? "" : language.getName());
-        entity.getTopic().setName(topic == null ? "" : topic.getName());
-
-        System.out.println("prefix user: " + entity);
-
-        // Add log
-        UserLogDto userLogDto = UserLogDto.builder()
-                .userName(SystemUtil.getCurrentUsername())
-                .ip(SystemUtil.getUserIP())
-                .actionKey(courseId)
-                .actionObject(ActionObject.COURSE)
-                .actionName(ActionName.CREATE)
-                .description(userLogService.writePersistLog(Course.class, entity, true, 0))
-                .build();
-        System.out.println(userLogDto);
-        userApi.addLog(userLogDto);
-
-
-        return response;
+        return super.add(objectDTO);
+//        DataResponse<String> response = super.add(objectDTO);
+//
+//        String stResult = response.getData();
+//        String courseId = stResult.split(": ")[1].trim();
+//        Course entity = courseRepository.findById(courseId).orElse(null);
+//        Level level = levelRepository.findById(entity.getLevel().getId()).orElse(null);
+//        Language language = languageRepository.findById(entity.getLanguage().getId()).orElse(null);
+//        Topic topic = topicRepository.findById(entity.getTopic().getId()).orElse(null);
+//        entity.getLevel().setName(level == null ? null : level.getName());
+//        entity.getLanguage().setName(language == null ? "" : language.getName());
+//        entity.getTopic().setName(topic == null ? "" : topic.getName());
+//
+//        System.out.println("prefix user: " + entity);
+//
+//        return response;
     }
 
     @ShowOpenAPI

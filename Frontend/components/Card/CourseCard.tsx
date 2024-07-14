@@ -167,7 +167,7 @@ function CourseCard(props: CourseProps) {
                         : "You rated this course"}
                     </p>
                   ) : (
-                    <p className="text-[10px]">Leaving a rating</p>
+                    <p className="text-[10px] mt-1">Leaving a rating</p>
                   )}
                 </div>
               </Fragment>
