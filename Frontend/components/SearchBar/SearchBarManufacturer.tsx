@@ -28,6 +28,7 @@ import {
   KeywordTypeSearchAssignmentHistory,
   KeywordTypeSearchBill,
   KeywordTypeSearchCourse,
+  KeywordTypeSearchCourseAdmin,
   KeywordTypeSearchType,
   KeywordTypeSearchUser,
 } from "@/utils/data";
@@ -221,6 +222,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
   useEffect(() => {
     if (isClickSearch) {
       handleSearch();
+      setIsClickSearch(false);
     }
   }, [isClickSearch]);
 
@@ -549,7 +551,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                                   );
                                 }
                                 if (action === Action.SEARCH_COURSE_ADMIN) {
-                                  return KeywordTypeSearchCourse.find(
+                                  return KeywordTypeSearchCourseAdmin.find(
                                     (item) => item.id == i.keywordType
                                   );
                                 }
@@ -587,7 +589,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                                 );
                               }
                               if (action === Action.SEARCH_COURSE_ADMIN) {
-                                return KeywordTypeSearchCourse.find(
+                                return KeywordTypeSearchCourseAdmin.find(
                                   (item) => item.id == i.keywordType
                                 );
                               }
@@ -740,10 +742,31 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                     ))}
                   </Fragment>
                 )}
-                {(action === Action.SEARCH_COURSE_CLIENT ||
-                  action === Action.SEARCH_COURSE_ADMIN) && (
+                {action === Action.SEARCH_COURSE_CLIENT && (
                   <Fragment>
                     {KeywordTypeSearchCourse.map((item) => (
+                      <div
+                        key={item.name}
+                        className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 "
+                        onClick={() => {
+                          // setIsSelectKeywordTypeSearchCourse(false);
+                          setKeywordTypeSearchRequest(item);
+                          setProcessCreateSearch(processCreateSearch + 2);
+                        }}
+                      >
+                        {item.icon &&
+                          React.createElement(iconMap[item.icon], {
+                            className: "mr-2 text-lg",
+                          })}
+
+                        {item.name}
+                      </div>
+                    ))}
+                  </Fragment>
+                )}
+                {action === Action.SEARCH_COURSE_ADMIN && (
+                  <Fragment>
+                    {KeywordTypeSearchCourseAdmin.map((item) => (
                       <div
                         key={item.name}
                         className="cursor-pointer py-2 px-4 hover:bg-gray-300 flex text-center gap-2 "
@@ -989,7 +1012,7 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                                       handleRefresh();
                                       router.push(`/course/${course.id}`);
                                     } else {
-                                      setKeyword(course.name as string);
+                                      setKeyword(course.subTitle as string);
                                       setProcessCreateSearch(
                                         processCreateSearch + 1
                                       );
