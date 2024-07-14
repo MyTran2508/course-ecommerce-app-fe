@@ -15,7 +15,6 @@ import java.io.Serializable;
 )
 @Getter
 @Setter
-@ToString(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Lecture extends BaseModel implements Serializable {

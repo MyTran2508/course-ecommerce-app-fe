@@ -77,8 +77,8 @@ function AssignmentBasicInfoForm(props: AssignmentBasicInfoFormProps) {
     let assignment: Assignment = {};
     if (lecture?.assignment) {
       assignment = { ...lecture.assignment };
-      assignment.estimatedDuration = values.estimatedDuration;
-      if (assignment.estimatedDuration !== values.estimatedDuration) {
+      if (assignment.estimatedDuration !== values.estimatedDuration || !assignment.estimatedDuration) {
+        assignment.estimatedDuration = values.estimatedDuration;
         updateAssignment(assignment as Assignment);
       }
     } else {
