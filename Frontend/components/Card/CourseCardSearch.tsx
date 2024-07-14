@@ -44,7 +44,7 @@ function CourseCardSearch(props: CourseCardProps) {
             <div className="text-[20px] font-bold mb-1 xs:text-[13px] xs:w-full">
               {course.name}
             </div>
-            <div className="flex-start xl:gap-2 xs:gap-0.5 opacity-50 xs:hidden">
+            <div className="flex-start xl:gap-2 xs:gap-0.5 opacity-50 xs:hidden items-center">
               <div>{course.language.name}</div>
               <BsDot className="text-[15px]" />
               <div>{course.topic.name}</div>

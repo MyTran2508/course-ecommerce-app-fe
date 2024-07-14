@@ -82,7 +82,7 @@ public interface CourseRepository extends BaseRepository<Course> {
                                       @Param("minRatingValue") Float minRatingValue,
                                       @Param("keywordName") String keywordName,
                                       @Param("isEmptyKeywordAuthors") Boolean isEmptyKeywordAuthors,
-                                      @Param("keywordAuthor") List<String> keywordAuthors,
+                                      @Param("keywordAuthors") List<String> keywordAuthors,
                                       @Param("keywordSubTitle") String keywordSubTitle,
                                       Pageable pageable);
     @Query("select c from Course c, CourseProgress as cg where cg.userId = :userId and c.id = cg.course.id and cg.course.isApproved = true")
