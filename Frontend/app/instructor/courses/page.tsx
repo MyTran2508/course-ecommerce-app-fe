@@ -243,4 +243,4 @@ function InstructorCourses() {
     </div>
   );
 }
-export default withAuthManager(InstructorCourses, ModuleName.COURSE);
+export default withAuthManager(InstructorCourses, ModuleName.COURSE_MANAGER);

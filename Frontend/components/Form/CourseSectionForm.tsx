@@ -18,6 +18,7 @@ import {
   LectureType,
   ModuleName,
   PermissionName,
+  Role,
   RoleUser,
   StatusCode,
   ToastMessage,
@@ -61,12 +62,12 @@ function CourseSectionForm(props: CourseSectionProps) {
         isPermissionGranted(
           roleDetail as RoleDetail[],
           PermissionName.CAN_CREATE,
-          ModuleName.CONTENT
+          ModuleName.COURSE_MANAGER
         ) ||
         isPermissionGranted(
           roleDetail as RoleDetail[],
           PermissionName.CAN_UPDATE,
-          ModuleName.CONTENT
+          ModuleName.COURSE_MANAGER
         ) ||
         role?.name == Role.MANAGER
       )

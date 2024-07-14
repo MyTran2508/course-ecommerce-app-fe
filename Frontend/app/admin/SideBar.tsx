@@ -71,13 +71,18 @@ function SideBar() {
         </h5>
       </div>
       <nav className="flex flex-col h-full w-full min-w-240px font-sans text-base font-normal text-[#CFD8DC]">
-        {role?.name === Role.ADMIN && (
-          <Link href={Constant.ADMIN_DASHBOARD_PATH}>
+        {(role?.name === Role.ADMIN ||
+          isPermissionGranted(
+            role?.roleDetails || [],
+            PermissionName.CAN_VIEW,
+            ModuleName.STATISTIC
+          )) &&  (
+          <Link href={Constant.ADMIN_STATISTIC_PATH}>
             <div
               role="button"
               tabIndex={0}
               className={`${
-                path === Constant.ADMIN_DASHBOARD_PATH
+                path === Constant.ADMIN_STATISTIC_PATH
                   ? "bg-[#37474f] flex items-center p-4 w-full text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none border-b-2 border-[#455A64]"
                   : "flex items-center w-full p-4 border-b-2 border-[#455A64] text-start leading-tight transition-all hover:bg-opacity-80 hover:text-[#ECEFF1] focus:[#ECEFF1] active:[#ECEFF1] outline-none"
               }`}
@@ -105,7 +110,7 @@ function SideBar() {
           isPermissionGranted(
             role?.roleDetails || [],
             PermissionName.CAN_VIEW,
-            ModuleName.COURSE
+            ModuleName.COURSE_ADMIN
           )) && (
           <Link href={Constant.ADMIN_COURSE_PATH}>
             <div
@@ -175,7 +180,7 @@ function SideBar() {
           isPermissionGranted(
             role?.roleDetails || [],
             PermissionName.CAN_VIEW,
-            ModuleName.USER
+            ModuleName.USER_LOG
           )) && (
           <Link href={Constant.ADMIN_USER_HISTORY_PATH}>
             <div
@@ -229,12 +234,12 @@ function SideBar() {
             </div>
           </Link>
         )}
-        {role?.name === Role.ADMIN && (
-          // ||
-          //   isPermissionGranted(
-          //     role?.roleDetails || [],
-          //     PermissionName.CAN_VIEW,
-          //     ModuleName.COURSE)
+        {(role?.name === Role.ADMIN ||
+          isPermissionGranted(
+            role?.roleDetails || [],
+            PermissionName.CAN_VIEW,
+            ModuleName.ORDER
+          )) && (
           <Link href={Constant.ADMIN_BILL_PATH}>
             <div
               role="button"

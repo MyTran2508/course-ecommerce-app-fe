@@ -1,5 +1,10 @@
 import { RoleDetail } from "@/types/roles.type";
-import { Action, ModuleName, Permission } from "@/utils/resources";
+import {
+  Action,
+  ModuleName,
+  PermissionName,
+  RoleUser,
+} from "@/utils/resources";
 import React, { useEffect, useState } from "react";
 
 interface RoleDetailsProps {
@@ -7,11 +12,12 @@ interface RoleDetailsProps {
   setRoleDetails: (roleDetails: any) => void;
   action: Action;
   isCreate: boolean;
+  selectRoleParent?: string;
 }
 
 function RoleDetails(props: RoleDetailsProps) {
-  const { roleDetails, setRoleDetails, action, isCreate } = props;
-  //   const [roleDetails, setRoleDetails] = useState<RoleDetail[]>(roleDetails);
+  const { roleDetails, setRoleDetails, action, isCreate, selectRoleParent } =
+    props;
 
   useEffect(() => {
     setRoleDetails(roleDetails);
@@ -41,9 +47,11 @@ function RoleDetails(props: RoleDetailsProps) {
             {
               canCreate: false,
               canDelete: false,
-              canStatistic: false,
+              canApproveCourse: false,
+              canAssignment: false,
               canUpdate: false,
               canView: false,
+              canRemove: false,
               module: {
                 id: value,
               },
@@ -62,6 +70,15 @@ function RoleDetails(props: RoleDetailsProps) {
               <table className="min-w-full text-left text-sm font-light text-surface dark:text-white">
                 <tbody>
                   {Object.values(ModuleName).map((value, index) => {
+                    let isUserRoleManager = false;
+                    if (
+                      selectRoleParent &&
+                      selectRoleParent == RoleUser.MANAGER &&
+                      (value === ModuleName.ROLE || value == ModuleName.USER)
+                    ) {
+                      isUserRoleManager = true;
+                    }
+
                     return (
                       <tr
                         key={value}
@@ -73,7 +90,7 @@ function RoleDetails(props: RoleDetailsProps) {
                         <td className="whitespace-nowrap px-6 py-4">
                           <div className="flex gap-2">
                             <input
-                              id={Permission.CAN_VIEW + value}
+                              id={PermissionName.CAN_VIEW + value}
                               type="checkbox"
                               checked={
                                 roleDetails.find(
@@ -82,114 +99,201 @@ function RoleDetails(props: RoleDetailsProps) {
                               }
                               onChange={handleCheckboxChange(
                                 index,
-                                Permission.CAN_VIEW
+                                PermissionName.CAN_VIEW
                               )}
-                              disabled={!isCreate}
+                              disabled={
+                                !isCreate ||
+                                isUserRoleManager ||
+                                selectRoleParent == " "
+                              }
                             />
                             <label
-                              htmlFor={Permission.CAN_VIEW + value}
+                              htmlFor={PermissionName.CAN_VIEW + value}
                               className="hover:cursor-pointer"
                             >
                               Xem
                             </label>
                           </div>
                         </td>
-                        <td className="whitespace-nowrap px-6 py-4 ">
-                          <div className="flex gap-2">
-                            <input
-                              id={Permission.CAN_CREATE + value}
-                              type="checkbox"
-                              checked={
-                                roleDetails.find(
-                                  (roleDetail) => roleDetail.module?.id == index
-                                )?.canCreate || false
-                              }
-                              disabled={!isCreate}
-                              onChange={handleCheckboxChange(
-                                index,
-                                Permission.CAN_CREATE
-                              )}
-                            />
-                            <label
-                              htmlFor={Permission.CAN_UPDATE + value}
-                              className="hover:cursor-pointer"
-                            >
-                              Thêm
-                            </label>
+                        {!(
+                          value == ModuleName.ORDER ||
+                          value == ModuleName.STATISTIC ||
+                          value == ModuleName.USER_LOG
+                        ) && (
+                          <div className="flex">
+                            {value == ModuleName.COURSE_ADMIN ? (
+                              <div>
+                                <td className="whitespace-nowrap px-6 py-4 pr-[32px]">
+                                  <div className="flex gap-2">
+                                    <input
+                                      id={
+                                        PermissionName.CAN_APPROVE_COURSE +
+                                        value
+                                      }
+                                      type="checkbox"
+                                      checked={
+                                        roleDetails.find(
+                                          (roleDetail) =>
+                                            roleDetail.module?.id == index
+                                        )?.canApproveCourse || false
+                                      }
+                                      disabled={
+                                        !isCreate ||
+                                        isUserRoleManager ||
+                                        selectRoleParent == " "
+                                      }
+                                      onChange={handleCheckboxChange(
+                                        index,
+                                        PermissionName.CAN_APPROVE_COURSE
+                                      )}
+                                    />
+                                    <label
+                                      htmlFor={
+                                        PermissionName.CAN_APPROVE_COURSE +
+                                        value
+                                      }
+                                      className="hover:cursor-pointer"
+                                    >
+                                      Phê duyệt khóa học
+                                    </label>
+                                  </div>
+                                </td>
+                              </div>
+                            ) : (
+                              <div className="flex">
+                                <td className="whitespace-nowrap px-6 py-4 ">
+                                  <div className="flex gap-2">
+                                    <input
+                                      id={PermissionName.CAN_CREATE + value}
+                                      type="checkbox"
+                                      checked={
+                                        roleDetails.find(
+                                          (roleDetail) =>
+                                            roleDetail.module?.id == index
+                                        )?.canCreate || false
+                                      }
+                                      disabled={
+                                        !isCreate ||
+                                        isUserRoleManager ||
+                                        selectRoleParent == " "
+                                      }
+                                      onChange={handleCheckboxChange(
+                                        index,
+                                        PermissionName.CAN_CREATE
+                                      )}
+                                    />
+                                    <label
+                                      htmlFor={
+                                        PermissionName.CAN_CREATE + value
+                                      }
+                                      className="hover:cursor-pointer"
+                                    >
+                                      Thêm
+                                    </label>
+                                  </div>
+                                </td>
+                                <td className="whitespace-nowrap px-6 py-4 ">
+                                  <div className="flex gap-2">
+                                    <input
+                                      id={PermissionName.CAN_UPDATE + value}
+                                      type="checkbox"
+                                      checked={
+                                        roleDetails.find(
+                                          (roleDetail) =>
+                                            roleDetail.module?.id == index
+                                        )?.canUpdate || false
+                                      }
+                                      disabled={
+                                        !isCreate ||
+                                        isUserRoleManager ||
+                                        selectRoleParent == " "
+                                      }
+                                      onChange={handleCheckboxChange(
+                                        index,
+                                        PermissionName.CAN_UPDATE
+                                      )}
+                                    />
+                                    <label
+                                      htmlFor={
+                                        PermissionName.CAN_UPDATE + value
+                                      }
+                                      className="hover:cursor-pointer"
+                                    >
+                                      Sửa
+                                    </label>
+                                  </div>
+                                </td>
+                              </div>
+                            )}
+                            {value == ModuleName.COURSE_MANAGER && (
+                              <td className="whitespace-nowrap px-6 py-4">
+                                <div className="flex gap-2">
+                                  <input
+                                    id={PermissionName.CAN_ASSIGNMENT + value}
+                                    type="checkbox"
+                                    checked={
+                                      roleDetails.find(
+                                        (roleDetail) =>
+                                          roleDetail.module?.id == index
+                                      )?.canAssignment || false
+                                    }
+                                    disabled={
+                                      !isCreate ||
+                                      isUserRoleManager ||
+                                      selectRoleParent == " "
+                                    }
+                                    onChange={handleCheckboxChange(
+                                      index,
+                                      PermissionName.CAN_ASSIGNMENT
+                                    )}
+                                  />
+                                  <label
+                                    htmlFor={
+                                      PermissionName.CAN_ASSIGNMENT + value
+                                    }
+                                    className="hover:cursor-pointer"
+                                  >
+                                    Chấm bài tự luận
+                                  </label>
+                                </div>
+                              </td>
+                            )}
+                            {!(
+                              value == ModuleName.COURSE_ADMIN ||
+                              value == ModuleName.COURSE_MANAGER
+                            ) && (
+                              <td className="whitespace-nowrap px-6 py-4">
+                                <div className="flex gap-2">
+                                  <input
+                                    id={PermissionName.CAN_REMOVE + value}
+                                    type="checkbox"
+                                    checked={
+                                      roleDetails.find(
+                                        (roleDetail) =>
+                                          roleDetail.module?.id == index
+                                      )?.canRemove || false
+                                    }
+                                    disabled={
+                                      !isCreate ||
+                                      isUserRoleManager ||
+                                      selectRoleParent == " "
+                                    }
+                                    onChange={handleCheckboxChange(
+                                      index,
+                                      PermissionName.CAN_REMOVE
+                                    )}
+                                  />
+                                  <label
+                                    htmlFor={PermissionName.CAN_REMOVE + value}
+                                    className="hover:cursor-pointer"
+                                  >
+                                    Xóa
+                                  </label>
+                                </div>
+                              </td>
+                            )}
                           </div>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4">
-                          <div className="flex gap-2">
-                            <input
-                              id={Permission.CAN_REMOVE + value}
-                              type="checkbox"
-                              checked={
-                                roleDetails.find(
-                                  (roleDetail) => roleDetail.module?.id == index
-                                )?.canRemove || false
-                              }
-                              disabled={!isCreate}
-                              onChange={handleCheckboxChange(
-                                index,
-                                Permission.CAN_REMOVE
-                              )}
-                            />
-                            <label
-                              htmlFor={Permission.CAN_REMOVE + value}
-                              className="hover:cursor-pointer"
-                            >
-                              Xóa
-                            </label>
-                          </div>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 ">
-                          <div className="flex gap-2">
-                            <input
-                              id={Permission.CAN_UPDATE + value}
-                              type="checkbox"
-                              checked={
-                                roleDetails.find(
-                                  (roleDetail) => roleDetail.module?.id == index
-                                )?.canUpdate || false
-                              }
-                              disabled={!isCreate}
-                              onChange={handleCheckboxChange(
-                                index,
-                                Permission.CAN_UPDATE
-                              )}
-                            />
-                            <label
-                              htmlFor={Permission.CAN_UPDATE + value}
-                              className="hover:cursor-pointer"
-                            >
-                              Sửa
-                            </label>
-                          </div>
-                        </td>
-                        <td className="whitespace-nowrap px-6 py-4 ">
-                          <div className="flex gap-2">
-                            <input
-                              id={Permission.CAN_STATISTICS + value}
-                              type="checkbox"
-                              checked={
-                                roleDetails.find(
-                                  (roleDetail) => roleDetail.module?.id == index
-                                )?.canStatistics || false
-                              }
-                              disabled={!isCreate}
-                              onChange={handleCheckboxChange(
-                                index,
-                                Permission.CAN_STATISTICS
-                              )}
-                            />
-                            <label
-                              htmlFor={Permission.CAN_STATISTICS + value}
-                              className="hover:cursor-pointer"
-                            >
-                              Thống kê
-                            </label>
-                          </div>
-                        </td>
+                        )}
                       </tr>
                     );
                   })}

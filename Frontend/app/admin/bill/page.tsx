@@ -25,11 +25,12 @@ import { useState, useEffect } from "react";
 import { billColumns, userColumns } from "@/components/Table/Columns";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import SearchBarManufacturer from "@/components/SearchBar/SearchBarManufacturer";
-import { Action } from "@/utils/resources";
+import { Action, ModuleName } from "@/utils/resources";
 import { Order, SearchOrderDto } from "@/types/order.type";
 import { useFilterOrderMutation } from "@/redux/services/orderApi";
 import "react-datepicker/dist/react-datepicker.css";
 import { convertToMilliseconds } from "@/utils/function";
+import withAuth from "@/hoc/withAuth";
 
 function BillPage() {
   const dispatch = useAppDispatch();
@@ -219,4 +220,4 @@ function BillPage() {
     </div>
   );
 }
-export default BillPage;
+export default withAuth(BillPage,ModuleName.ORDER);

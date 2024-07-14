@@ -68,4 +68,4 @@ function CurriculumPage() {
   );
 }
 
-export default withAuthManager(CurriculumPage, ModuleName.CONTENT);
+export default withAuthManager(CurriculumPage, ModuleName.COURSE_MANAGER);

@@ -203,7 +203,7 @@ function AddQuiz(props: AddQuizProps) {
                                       isPermissionGranted(
                                         roleDetail as RoleDetail[],
                                         PermissionName.CAN_CREATE,
-                                        ModuleName.CONTENT
+                                        ModuleName.COURSE_MANAGER
                                       ) || role?.name == Role.MANAGER
                                     )
                                   }

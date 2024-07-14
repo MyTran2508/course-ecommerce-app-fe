@@ -79,7 +79,7 @@ function CommentRep(props: CommentReplyProps) {
           src={
             data.rawAvatar
               ? `data:image/png;base64,${data.rawAvatar}`
-              : "/banner.jpg"
+              : "/avatar.png"
           }
           alt="avatar"
           width={70}

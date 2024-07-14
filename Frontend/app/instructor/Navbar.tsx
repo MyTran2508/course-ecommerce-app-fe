@@ -100,21 +100,26 @@ function InstructorNavbar() {
               {(isPermissionGranted(
                 role?.roleDetails as RoleDetail[],
                 PermissionName.CAN_CREATE,
-                ModuleName.COURSE
+                ModuleName.COURSE_MANAGER
               ) ||
-                role?.name == Role.MANAGER ||
-                role?.name == Role.ADMIN) && (
+                role?.name == Role.MANAGER) && (
                 <Link href={"/instructor/courses/create"} className="xs:hidden">
                   Create New Course
                 </Link>
               )}
-
-              <Link
-                href={"/instructor/assignment-history"}
-                className="xs:hidden"
-              >
-                Feedback Assignment
-              </Link>
+              {(isPermissionGranted(
+                role?.roleDetails as RoleDetail[],
+                PermissionName.CAN_ASSIGNMENT,
+                ModuleName.COURSE_MANAGER
+              ) ||
+                role?.name == Role.MANAGER) && (
+                <Link
+                  href={"/instructor/assignment-history"}
+                  className="xs:hidden"
+                >
+                  Feedback Assignment
+                </Link>
+              )}
 
               <NotificationPopUp />
 
@@ -125,7 +130,7 @@ function InstructorNavbar() {
                       src={
                         currentAvatar !== "Error"
                           ? `data:image/png;base64,${currentAvatar}`
-                          : "/banner.jpg"
+                          : "/avatar.png"
                       }
                       width={400}
                       height={400}
@@ -148,7 +153,7 @@ function InstructorNavbar() {
                             src={
                               currentAvatar !== "Error"
                                 ? `data:image/png;base64,${currentAvatar}`
-                                : "/banner.jpg"
+                                : "/avatar.png"
                             }
                             width={400}
                             height={400}

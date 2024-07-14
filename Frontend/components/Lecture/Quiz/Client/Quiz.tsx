@@ -43,7 +43,7 @@ const Answer = (props: AnswerProps) => {
   const dispatch = useAppDispatch();
   const quizState = useAppSelector(
     (state) => state.persistedReducer.quizReducer.quiz
-  )?.find((q) => q.exQuizId === exQuiz.id);
+  )?.find((q) => q.exQuizId === exQuiz?.id);
   const [getUserAnswerByUserIdAndExQuizId, { data: userAnswersData }] =
     useLazyGetUserQuizByUserIdAndQuizIdQuery();
 
@@ -58,7 +58,7 @@ const Answer = (props: AnswerProps) => {
     []
   );
   const [isShowResult, setIsShowResult] = useState<boolean>(false);
-  const [timeLeft, setTimeLeft] = useState((exQuiz.limitTime as number) / 1000);
+  const [timeLeft, setTimeLeft] = useState((exQuiz?.limitTime as number) / 1000);
   const userId = useAppSelector(
     (state) => state.persistedReducer.userReducer.user.id
   );
@@ -70,7 +70,7 @@ const Answer = (props: AnswerProps) => {
     (userAnswers.filter(
       (userAnswer) => (userAnswer.currentAnswer?.length as number) > 0
     ).length /
-      (exQuiz.totalQuestion as number)) *
+      (exQuiz?.totalQuestion as number)) *
     100;
 
   const swalWithBootstrapButtons = Swal.mixin({
@@ -92,21 +92,21 @@ const Answer = (props: AnswerProps) => {
   const handleStartQuiz = async () => {
     if (
       (listUserQuizHistory.length as number) <
-      (exQuiz.maxAttemptNumber as number)
+      (exQuiz?.maxAttemptNumber as number)
     ) {
       const userQuiz = await handleAddUserQuiz({
         userId: userId as string,
         startTime: await getCurrentTimeInMillisecondsFromAPI(),
-        limitTime: exQuiz.limitTime,
-        exQuizId: exQuiz.id as string,
+        limitTime: exQuiz?.limitTime,
+        exQuizId: exQuiz?.id as string,
       });
       setUserQuizId((userQuiz as UserQuiz).id as string);
       setUserAnswers((userQuiz as UserQuiz).userAnswers as UserAnswer[]);
       dispatch(
         setUserQuiz({
-          exQuizId: exQuiz.id as string,
+          exQuizId: exQuiz?.id as string,
           userQuizId: (userQuiz as UserQuiz).id as string,
-          expiryTime: exQuiz.limitTime as number,
+          expiryTime: exQuiz?.limitTime as number,
           attemptNumber: (userQuiz as UserQuiz).attemptNumber as number,
         })
       );
@@ -131,7 +131,7 @@ const Answer = (props: AnswerProps) => {
             title: "Submit!",
             icon: "success",
           });
-          dispatch(deleteUserQuiz(exQuiz.id as string));
+          dispatch(deleteUserQuiz(exQuiz?.id as string));
           handleUpsertUserQuiz(userQuizId, true, userAnswers);
           setIsShowResult(true);
           setStartQuiz(false);
@@ -150,7 +150,7 @@ const Answer = (props: AnswerProps) => {
       setStartQuiz(true);
       getUserAnswerByUserIdAndExQuizId({
         userId: userId as string,
-        exQuizId: exQuiz.id as string,
+        exQuizId: exQuiz?.id as string,
         attemptNumber: quizState?.attemptNumber as number,
       });
     } else {
@@ -159,12 +159,12 @@ const Answer = (props: AnswerProps) => {
     }
     getAllUserQuizByUserIdAndQuizId({
       userId: userId as string,
-      exQuizId: exQuiz.id as string,
+      exQuizId: exQuiz?.id as string,
     });
     setUserAnswers([]);
     setListUserQuizHistory([]);
     setQuestionIndex(0);
-  }, [quizState, exQuiz.id]);
+  }, [quizState, exQuiz?.id]);
 
   useEffect(() => {
     if (
@@ -175,7 +175,7 @@ const Answer = (props: AnswerProps) => {
       return;
     }
     if (timeLeft < 2) {
-      dispatch(deleteUserQuiz(exQuiz.id as string));
+      dispatch(deleteUserQuiz(exQuiz?.id as string));
       handleUpsertUserQuiz(userQuizId, true, userAnswers);
       showToast(ToastStatus.SUCCESS, ToastMessage.SUBMIT_SUCCESS);
     }
@@ -196,7 +196,7 @@ const Answer = (props: AnswerProps) => {
           );
         }
         const startTime = (userAnswersData.data as UserQuiz).startTime;
-        const limitTime = exQuiz.limitTime;
+        const limitTime = exQuiz?.limitTime;
         if (startTime && limitTime) {
           const timeQuiz =
             startTime +
@@ -207,7 +207,7 @@ const Answer = (props: AnswerProps) => {
           } else {
             setTimeLeft(0);
             setUserAnswers([]);
-            dispatch(deleteUserQuiz(exQuiz.id as string));
+            dispatch(deleteUserQuiz(exQuiz?.id as string));
           }
         }
       };
@@ -248,26 +248,26 @@ const Answer = (props: AnswerProps) => {
           <div className="flex items-center justify-end gap-3 xs:flex-col">
             <p>
               {" "}
-              <strong>Sô điểm cần đạt:</strong> {exQuiz.requiredScore}
+              <strong>Sô điểm cần đạt:</strong> {exQuiz?.requiredScore}
             </p>
             <p>
-              <strong>Sô lần làm tối đa:</strong> {exQuiz.maxAttemptNumber}
+              <strong>Sô lần làm tối đa:</strong> {exQuiz?.maxAttemptNumber}
             </p>
             <p>
               <strong> Thời gian: </strong>
 
               {convertLongToTime(
-                (exQuiz.limitTime as number) / 1000,
+                (exQuiz?.limitTime as number) / 1000,
                 true,
                 true
               )}
             </p>
             <p>
               {" "}
-              <strong>Số lượng câu hỏi:</strong> {exQuiz.totalQuestion}
+              <strong>Số lượng câu hỏi:</strong> {exQuiz?.totalQuestion}
             </p>
             {(listUserQuizHistory.length as number) <
-              (exQuiz.maxAttemptNumber as number) && (
+              (exQuiz?.maxAttemptNumber as number) && (
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => handleStartQuiz()}
@@ -300,7 +300,7 @@ const Answer = (props: AnswerProps) => {
                         onClick={() => {
                           getUserAnswerByUserIdAndExQuizId({
                             userId: userId as string,
-                            exQuizId: exQuiz.id as string,
+                            exQuizId: exQuiz?.id as string,
                             attemptNumber: userQuiz.attemptNumber as number,
                           });
                           setIsShowResult(true);
@@ -339,7 +339,7 @@ const Answer = (props: AnswerProps) => {
                       (answer) => (answer.currentAnswer?.length as number) > 0
                     ).length
                   }
-                  /{exQuiz.totalQuestion}
+                  /{exQuiz?.totalQuestion}
                 </div>
                 <div className="w-full flex">
                   <div
@@ -375,7 +375,7 @@ const Answer = (props: AnswerProps) => {
                 </button>
                 <button
                   disabled={
-                    (exQuiz.totalQuestion as number) === questionIndex + 1
+                    (exQuiz?.totalQuestion as number) === questionIndex + 1
                       ? true
                       : false
                   }

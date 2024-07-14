@@ -200,4 +200,4 @@ function CoursesAdmin() {
     </div>
   );
 }
-export default withAuth(CoursesAdmin, ModuleName.COURSE);
+export default withAuth(CoursesAdmin, ModuleName.COURSE_ADMIN);
