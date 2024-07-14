@@ -261,25 +261,37 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
 
     @Override
     public DataResponse<CourseDto> update(String id, CourseDto dto) {
+        courseRepository.updateCourse(id, dto.getLevel().getId(), dto.getTopic().getId(), dto.getLanguage().getId());
+
         Optional<Course> optionalCourse = courseRepository.findById(id);
         if(optionalCourse.isEmpty()) {
             throw new ResourceNotFoundException(CourseConstrant.ErrorConstrant.ID_NOT_FOUND);
         }
 
         Course course = optionalCourse.get();
-        entityManager.detach(course);
-
         courseMapper.dtoToEntity(dto, course);
         course.setId(id);
-        Level level = levelRepository.findById(dto.getLevel().getId()).orElse(null);
-        Language language = languageRepository.findById(dto.getLanguage().getId()).orElse(null);
-        Topic topic = topicRepository.findById(dto.getTopic().getId()).orElse(null);
-        course.setLevel(level);
-        course.setLanguage(language);
-        course.setTopic(topic);
-
 
         return ResponseMapper.toDataResponseSuccess(courseMapper.entityToDto(courseRepository.save(course)));
+//        Optional<Course> optionalCourse = courseRepository.findById(id);
+//        if(optionalCourse.isEmpty()) {
+//            throw new ResourceNotFoundException(CourseConstrant.ErrorConstrant.ID_NOT_FOUND);
+//        }
+//
+//        Course course = optionalCourse.get();
+//        entityManager.detach(course);
+//
+//        courseMapper.dtoToEntity(dto, course);
+//        course.setId(id);
+//        Level level = levelRepository.findById(dto.getLevel().getId()).orElse(null);
+//        Language language = languageRepository.findById(dto.getLanguage().getId()).orElse(null);
+//        Topic topic = topicRepository.findById(dto.getTopic().getId()).orElse(null);
+//        course.setLevel(level);
+//        course.setLanguage(language);
+//        course.setTopic(topic);
+//
+//
+//        return ResponseMapper.toDataResponseSuccess(courseMapper.entityToDto(courseRepository.save(course)));
     }
 
     public DataResponse<String> uploadCourseImage(MultipartFile file) {

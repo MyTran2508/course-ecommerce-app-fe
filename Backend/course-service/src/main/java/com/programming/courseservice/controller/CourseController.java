@@ -107,30 +107,30 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
 
     @Override
     public DataResponse<CourseDto> update(CourseDto objectDTO, String id) {
-
-        Course savedCourse = courseRepository.findById(id).orElse(null);
-        if (savedCourse == null) {
-            throw new ResourceNotFoundException(id + " does not exists in DB");
-        }
-
-        Course oldCourseClone = SerializationUtils.clone(savedCourse);
-        System.out.println("prefix user: " + oldCourseClone);
-
-        DataResponse<CourseDto> response = super.update(objectDTO, id);
-
-        // Add log
-        UserLogDto userLogDto = UserLogDto.builder()
-                .userName(SystemUtil.getCurrentUsername())
-                .ip(SystemUtil.getUserIP())
-                .actionKey(id)
-                .actionObject(ActionObject.COURSE)
-                .actionName(ActionName.UPDATE)
-                .description(userLogService.writeUpdateLog(Course.class, oldCourseClone,
-                        courseMapper.dtoToEntity(response.getData()), true, 0))
-                .build();
-
-        userApi.addLog(userLogDto);
-        return response;
+        return super.update(objectDTO, id);
+//        Course savedCourse = courseRepository.findById(id).orElse(null);
+//        if (savedCourse == null) {
+//            throw new ResourceNotFoundException(id + " does not exists in DB");
+//        }
+//
+//        Course oldCourseClone = SerializationUtils.clone(savedCourse);
+//        System.out.println("prefix user: " + oldCourseClone);
+//
+//        DataResponse<CourseDto> response = super.update(objectDTO, id);
+//
+//        // Add log
+//        UserLogDto userLogDto = UserLogDto.builder()
+//                .userName(SystemUtil.getCurrentUsername())
+//                .ip(SystemUtil.getUserIP())
+//                .actionKey(id)
+//                .actionObject(ActionObject.COURSE)
+//                .actionName(ActionName.UPDATE)
+//                .description(userLogService.writeUpdateLog(Course.class, oldCourseClone,
+//                        courseMapper.dtoToEntity(response.getData()), true, 0))
+//                .build();
+//
+//        userApi.addLog(userLogDto);
+//        return response;
     }
 
     @GetMapping("/newest/{topic-id}/{size}")
