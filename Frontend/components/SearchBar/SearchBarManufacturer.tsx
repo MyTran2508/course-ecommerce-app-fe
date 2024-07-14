@@ -1012,7 +1012,11 @@ function SearchBarManufacturer(props: SearchBarManufacturerProps) {
                                       handleRefresh();
                                       router.push(`/course/${course.id}`);
                                     } else {
-                                      setKeyword(course.subTitle as string);
+                                      if(keywordTypeSearchRequest?.name === "Subtitle"){
+                                        setKeyword(course.subTitle as string);
+                                      } else {
+                                        setKeyword(course.name as string);
+                                      }
                                       setProcessCreateSearch(
                                         processCreateSearch + 1
                                       );
