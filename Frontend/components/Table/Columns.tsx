@@ -215,15 +215,26 @@ export const assignmentHistoryColumns: ColumnDef<AssignmentHistory>[] = [
       <div className="capitalize">{row.getValue("score") || <i>None</i>}</div>
     ),
   },
-  {
-    accessorKey: "evaluation",
-    header: "Evaluation",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.getValue("evaluation") || <i>None</i>}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "evaluation",
+  //   header: "Evaluation",
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">
+  //       {(() => {
+  //         try {
+  //           const evaluation = row.getValue("evaluation");
+  //           if (!evaluation)
+  //             throw new Error("Evaluation is null or undefined.");
+  //           const parsed = JSON.parse(evaluation as string);
+  //           console.log(parsed?.blocks);
+  //           return parsed?.Blocks || <i>None</i>;
+  //         } catch (error) {
+  //           return <i>None</i>;
+  //         }
+  //       })()}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "originalNumber",
     header: "Original Number",

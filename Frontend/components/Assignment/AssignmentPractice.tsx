@@ -25,6 +25,7 @@ import { useParams } from "next/navigation";
 import { convertMillisToDateTime } from "@/utils/function";
 import Link from "next/link";
 import { set } from "lodash";
+import { useLazyLoadFileDocumentFromCloudQuery } from "@/redux/services/sectionApi";
 
 interface AssignmentPracticeProps {
   lecture: Lecture;
@@ -79,6 +80,12 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
     username: username,
     lectureId: lecture?.id as string,
   });
+  const [fileURL, setFileUrl] = useState("");
+  const [fileURLAnswer, setFileUrlAnswer] = useState("");
+  const [loadFile, { data: fileBase64, isSuccess: loadFileSuccess }] =
+    useLazyLoadFileDocumentFromCloudQuery();
+    const [loadFileAnswer, { data: fileBase64Answer, isSuccess: loadFileAnswerSuccess }] =
+    useLazyLoadFileDocumentFromCloudQuery();
 
   useEffect(() => {
     if (getAssignmentHistorySuccess) {
@@ -119,6 +126,42 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
     }
   }, [isStart, answer]);
 
+  useEffect(() => {
+    const handleLoadFileSuccess = (fileBase64: string, setFileUrl: React.Dispatch<React.SetStateAction<string>>) => {
+      const byteCharacters = atob(fileBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const file = new Blob([byteArray], { type: "application/pdf" });
+      const fileURL = URL.createObjectURL(file);
+      setFileUrl(fileURL);
+    };
+
+    if (loadFileSuccess) {
+      handleLoadFileSuccess(fileBase64, setFileUrl);
+    }
+  }, [loadFileSuccess]);
+
+  useEffect(() => {
+    const handleLoadFileAnswerSuccess = (fileBase64Answer: string, setFileUrlAnswer: React.Dispatch<React.SetStateAction<string>>) => {
+      const byteCharacters = atob(fileBase64Answer);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const file = new Blob([byteArray], { type: "application/pdf" });
+      const fileURL = URL.createObjectURL(file);
+      setFileUrlAnswer(fileURL);
+    };
+
+    if (loadFileAnswerSuccess) {
+      handleLoadFileAnswerSuccess(fileBase64Answer, setFileUrlAnswer);
+    }
+  }, [loadFileAnswerSuccess]);
+
   const handleReviewAssignment = (assignment: AssignmentHistory) => {
     setAssignmentHistory(assignment);
     setAnswer(assignment?.textAnswer as string);
@@ -127,6 +170,12 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
         convertFromRaw(JSON.parse(assignment?.textAnswer as string))
       )
     );
+    if (lecture?.assignment?.urlFileResource) {
+      loadFile(lecture?.assignment?.urlFileResource as string);
+    }
+    if (assignment?.urlFileAnswer) {
+      loadFileAnswer(assignment?.urlFileAnswer as string);
+    }
     setIsStart(true);
     setIsReview(true);
     setIsChangeAssignment(false);
@@ -165,6 +214,7 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
 
   const handleStart = () => {
     setIsStart(true);
+    loadFile(lecture?.assignment?.urlFileResource as string);
   };
 
   const handleUploadFile = async (file: File) => {
@@ -261,9 +311,7 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
               <div className="flex-1 h-1 bg-gray-300 mx-2"></div>
               <div
                 className={`w-4 h-4  rounded-full ${
-                  progress === 3 && assignmentHistory
-                    ? "bg-purple-600"
-                    : "bg-gray-300"
+                  progress === 3 ? "bg-purple-600" : "bg-gray-300"
                 }`}
                 onClick={() => setProgress(3)}
               ></div>
@@ -307,12 +355,18 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                     </div>
                     <div>
                       <strong>Download resource files:</strong>
-                      <a className="flex gap-1" href="">
-                        <FaFolderOpen className="text-xl" />
-                        <p>
-                          {lecture?.assignment?.urlFileResource?.split("_")[1]}
-                        </p>
-                      </a>
+                      {fileURL && (
+                        <a className="flex gap-1" href={fileURL} download={"resourceFile.pdf"}>
+                          <FaFolderOpen className="text-xl" />
+                          <p>
+                            {
+                              lecture?.assignment?.urlFileResource?.split(
+                                "_"
+                              )[1]
+                            }
+                          </p>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -377,12 +431,12 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                       <strong>Upload File Resource:</strong>
                       {assignmentHistory?.urlFileAnswer &&
                       !isChangeAssignment ? (
-                        <div className="flex gap-2 items-center">
+                        <a className="flex gap-2 items-center" href={fileURLAnswer} download={"answerFileResource.pdf"}>
                           <IoMdDownload />
-                          {(lecture?.assignment?.urlFileResource as string)
+                          {(assignmentHistory?.urlFileAnswer as string)
                             .split("_")
                             .pop()}
-                        </div>
+                        </a>
                       ) : (
                         <Fragment>
                           {!assignmentHistory || isChangeAssignment ? (
@@ -473,12 +527,18 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                     )}
                     <div>
                       <strong>Download resource files:</strong>
-                      <a className="flex gap-1" href="">
-                        <FaFolderOpen className="text-xl" />
-                        <p>
-                          {lecture?.assignment?.urlFileResource?.split("_")[1]}{" "}
-                        </p>
-                      </a>
+                      {fileURL && (
+                        <a className="flex gap-1" href={fileURL} download={"resourceFile.pdf"}>
+                          <FaFolderOpen className="text-xl" />
+                          <p>
+                            {
+                              lecture?.assignment?.urlFileResource?.split(
+                                "_"
+                              )[1]
+                            }
+                          </p>
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -496,12 +556,12 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                     <div className="space-y-1">
                       <strong>Upload File Resource:</strong>
                       {assignmentHistory?.urlFileAnswer ? (
-                        <div className="flex gap-2 items-center">
-                          <IoMdDownload />
-                          {(lecture?.assignment?.urlFileResource as string)
-                            .split("_")
-                            .pop()}
-                        </div>
+                        <a className="flex gap-2 items-center" href={fileURLAnswer} download={"answerFileResource.pdf"}>
+                        <IoMdDownload />
+                        {(assignmentHistory?.urlFileAnswer as string)
+                          .split("_")
+                          .pop()}
+                      </a>
                       ) : (
                         <Fragment>
                           {!assignmentHistory ? (
@@ -549,12 +609,12 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
           <div className="flex-end gap-4 items-center pr-5 border-y-2 border-gray-400 py-1 sticky bottom-0 bg-white">
             {!isStart && !assignmentHistory ? (
               <div className="flex gap-4">
-                <button
+                {/* <button
                   className="bg-gray-200 text-black px-2 py-2"
                   // onClick={() => setIsOpenInputEditor(false)}
                 >
                   Skip assignment
-                </button>
+                </button> */}
                 <Button onClick={() => handleStart()} className="rounded-none">
                   Start assignment
                 </Button>
