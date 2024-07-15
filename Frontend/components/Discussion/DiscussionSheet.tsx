@@ -167,7 +167,8 @@ function DiscussionSheet(props: DiscussionSheetProps) {
       >
         <SheetHeader className="flex-start flex-col ml-2">
           <SheetTitle>
-            {forumLectureData?.totalRecords as number} Bình Luận
+            {/* {forumLectureData?.totalRecords as number}  */}
+            Bình Luận
           </SheetTitle>
           <SheetDescription className="font-sans">
             (Hãy bình luận nếu có thắc mắc)

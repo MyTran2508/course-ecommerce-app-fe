@@ -63,8 +63,8 @@ function SideBar() {
   }
 
   return (
-    <div className="sticky top-0 h-screen flex flex-col bg-clip-border bg-[#263238] text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[16rem]">
-      <div className="my-4 p-2 flex gap-2">
+    <div className="sticky top-0 h-screen flex flex-col bg-clip-border bg-[#263238] text-gray-700 h-[calc(100vh-2rem)] w-full max-w-[17rem]">
+      <div className="my-4 p-2 flex-between gap-2">
         <h5 className="flex-center gap-2 block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-white">
           <SiScikitlearn className="text-3xl" />
           E-LEARNING
@@ -76,7 +76,7 @@ function SideBar() {
             role?.roleDetails || [],
             PermissionName.CAN_VIEW,
             ModuleName.STATISTIC
-          )) &&  (
+          )) && (
           <Link href={Constant.ADMIN_STATISTIC_PATH}>
             <div
               role="button"
@@ -296,6 +296,18 @@ function SideBar() {
               Chế Độ Tối
             </div>
           </Link> */}
+          <div className="m-auto">
+            {userNameSuccess && (
+              <div className="p-4 rounded-lg shadow-md border border-gray-500">
+                <p className="text-white text-lg">
+                  Hello{" "}
+                  <span className="font-bold">
+                    {(userNameData?.data as User)?.username as string}
+                  </span>
+                </p>
+              </div>
+            )}
+          </div>
           <Link href={"/"} className="mt-auto">
             <div
               role="button"

@@ -59,7 +59,8 @@ export const KeywordTypeSearchCourse: KeywordTypeSearchType[] = [
 
 export const KeywordTypeSearchCourseAdmin: KeywordTypeSearchType[] = [
   { id: "0", name: "Name", icon: "MdDriveFileRenameOutline" },
-  { id: "1", name: "Subtitle", icon: "MdOutlineSubtitles" },
+  { id: "1", name: "Author", icon: "CiUser" },
+  { id: "2", name: "Subtitle", icon: "MdOutlineSubtitles" },
 ];
 
 export const ComparisonOperators: KeywordTypeSearchType[] = [

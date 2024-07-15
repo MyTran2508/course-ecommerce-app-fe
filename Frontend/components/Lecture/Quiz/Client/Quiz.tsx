@@ -164,7 +164,9 @@ const Answer = (props: AnswerProps) => {
     setUserAnswers([]);
     setListUserQuizHistory([]);
     setQuestionIndex(0);
-  }, [quizState, exQuiz?.id]);
+  }, [quizState, exQuiz?.id, isShowResult]);
+
+
 
   useEffect(() => {
     if (
