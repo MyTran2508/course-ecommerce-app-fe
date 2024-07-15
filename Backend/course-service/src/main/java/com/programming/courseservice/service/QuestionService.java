@@ -1,6 +1,7 @@
 package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.DataConflictException;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusMessage;
 import com.main.progamming.common.model.BaseMapper;
@@ -100,10 +101,19 @@ public class QuestionService extends BaseServiceImpl<Question, QuestionDto> {
     // create a new question
     public DataResponse<String> add(String exQuizId, QuestionDto questionDto) {
         ExQuiz exQuiz = exQuizRepository.findById(exQuizId).orElse(null);
+        List<Question> questionList = exQuiz.getQuestions();
 
         if (exQuiz != null) {
             // convert dto to entity
             Question question = questionMapper.dtoToEntity(questionDto);
+
+            for (Question q: questionList) {
+                String savedTitle = q.getTitle().replaceAll("\\s+", "");
+                String newTitle = question.getTitle().replaceAll("\\s+", "");
+                if (savedTitle.equals(newTitle)) {
+                    throw new DataConflictException(StatusMessage.DATA_CONFLICT);
+                }
+            }
 
             // set exQuiz for question
             exQuiz.getQuestions().add(question);

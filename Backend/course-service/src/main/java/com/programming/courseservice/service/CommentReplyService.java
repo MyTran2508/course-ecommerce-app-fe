@@ -99,6 +99,9 @@ public class CommentReplyService extends BaseServiceImpl<CommentReply, CommentRe
         // save comment reply
         CommentReply savedCommentReply = commentReplyRepository.save(commentReply);
 
+        forumLecture.setCountReplyComment(forumLecture.getCountReplyComment() + 1);
+        forumLectureRepository.save(forumLecture);
+
         // return success response
         return ResponseMapper.toDataResponseSuccess("ID: " + savedCommentReply.getId());
     }
