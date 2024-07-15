@@ -63,6 +63,8 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
         )
       : EditorState.createEmpty()
   );
+  const [textViewEvaluation, setTextViewEvaluation] = useState<EditorState>(EditorState.createEmpty()
+  );
 
   const [assignmentHistory, setAssignmentHistory] =
     useState<AssignmentHistory>();
@@ -176,6 +178,13 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
     if (assignment?.urlFileAnswer) {
       loadFileAnswer(assignment?.urlFileAnswer as string);
     }
+    setTextViewEvaluation(
+      assignment?.evaluation
+      ? EditorState.createWithContent(
+          convertFromRaw(JSON.parse(assignment?.evaluation || ""))
+        )
+      : EditorState.createEmpty()
+    )
     setIsStart(true);
     setIsReview(true);
     setIsChangeAssignment(false);
@@ -334,7 +343,7 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                       <Fragment>
                         <video
                           src={
-                            "https://d34hiv0gs6ovcj.cloudfront.net/course/lecture/1718461458442_meo.mp4"
+                            lecture?.assignment?.urlVideoInstructions
                           }
                           controls
                           className="w-full h-[500px] object-cover"
@@ -389,10 +398,14 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                       </p>
                       <p>
                         <strong>Evaluation:</strong>{" "}
-                        {assignmentHistory?.evaluation}
+                        <p
+                          dangerouslySetInnerHTML={{
+                            __html: stateToHTML(textViewEvaluation.getCurrentContent()),
+                          }}
+                        />
                       </p>
                     </div>
-                    <label className="italic mr-2">You can submit again</label>
+                    {/* <label className="italic mr-2">You can submit again</label>
                     {isChangeAssignment ? (
                       <div>
                         <button
@@ -414,7 +427,7 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                       >
                         Change
                       </Button>
-                    )}
+                    )} */}
                   </div>
                 )}
                 <div className="shadow-xl w-full border">
@@ -517,7 +530,7 @@ function AssignmentPractice(props: AssignmentPracticeProps) {
                       <Fragment>
                         <video
                           src={
-                            "https://d34hiv0gs6ovcj.cloudfront.net/course/lecture/1718461458442_meo.mp4"
+                            lecture?.assignment?.urlVideoInstructions
                           }
                           controls
                           className="w-full h-[500px] object-cover"
