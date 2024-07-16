@@ -11,6 +11,7 @@ import com.programming.courseservice.service.QuestionService;
 import com.programming.courseservice.utilities.annotation.ShowOpenAPI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -80,5 +81,13 @@ public class QuestionController extends BaseApiImpl<Question, QuestionDto> {
             @RequestBody List<QuestionDto> questionDtos
     ) {
         return questionService.addList(exQuizId, questionDtos);
+    }
+
+    @PostMapping("/add-excel/{exQuizId}")
+    public DataResponse<String> addExcel(
+        @PathVariable("exQuizId") String exQuizId,
+        @RequestParam("file") MultipartFile file
+    ) {
+        return questionService.addExcel(exQuizId, file);
     }
 }

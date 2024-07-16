@@ -17,17 +17,26 @@ import com.programming.courseservice.domain.mapper.QuestionMapper;
 import com.programming.courseservice.domain.persistent.entity.ExQuiz;
 import com.programming.courseservice.domain.persistent.entity.Lecture;
 import com.programming.courseservice.domain.persistent.entity.Question;
+import com.programming.courseservice.domain.persistent.enumrate.QuizType;
 import com.programming.courseservice.repository.ExQuizRepository;
 import com.programming.courseservice.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -170,6 +179,61 @@ public class QuestionService extends BaseServiceImpl<Question, QuestionDto> {
             return ResponseMapper.toDataResponseSuccess(CommonConstrant.INSERT_SUCCESS);
         } else {
             throw new ResourceNotFoundException(StatusMessage.DATA_NOT_FOUND);
+        }
+    }
+
+    public DataResponse<String> addExcel(String exQuizId, MultipartFile file) {
+        try {
+            System.out.println("exQuizId: " + exQuizId);
+            List<Question> questionList = new ArrayList<>();
+            Workbook workbook = new XSSFWorkbook(file.getInputStream());
+            Sheet sheet = workbook.getSheetAt(0);
+            Iterator<Row> rows = sheet.iterator();
+
+            // Lấy header row
+            Row headerRow = rows.next();
+            List<String> headers = new ArrayList<>();
+            headerRow.forEach(cell -> headers.add(cell.getStringCellValue()));
+
+            while (rows.hasNext()) {
+                Row currentRow = rows.next();
+                Question question = new Question();
+
+                for (int i = 0; i < headers.size(); i++) {
+                    System.out.println("i: " + i);
+                    Cell currentCell = currentRow.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                    switch (headers.get(i)) {
+                        case "ordinalNumber":
+                            question.setOrdinalNumber((int) currentCell.getNumericCellValue());
+                            break;
+                        case "title":
+                            question.setTitle(currentCell.getStringCellValue());
+                            break;
+                        case "options":
+                            question.setOptions(
+                                    (question.getOptions() == null ? "" : question.getOptions() + "\n") + currentCell.getStringCellValue());
+                            break;
+                        case "rightAnswer":
+                            question.setRightAnswer(currentCell.getStringCellValue());
+                            break;
+                        case "answerExplanation":
+                            question.setAnswerExplanation(currentCell.getStringCellValue());
+                            break;
+                        case "quizType":
+                            question.setQuizType(QuizType.valueOf(currentCell.getStringCellValue()));
+                        default:
+                            break;
+                    }
+                }
+
+                questionList.add(question);
+            }
+
+            workbook.close();
+            List<QuestionDto> questionDtos = questionList.stream().map(questionMapper::entityToDto).collect(Collectors.toList());
+            return ResponseMapper.toDataResponseSuccess(questionDtos);
+        } catch (Exception e) {
+            throw new DataConflictException(e.getMessage());
         }
     }
 }
