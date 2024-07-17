@@ -18,6 +18,9 @@ import {
   ModuleName,
   RoleUser,
   Role,
+  StatusCode,
+  ToastMessage,
+  ToastStatus,
 } from "@/utils/resources";
 import { setTypeQuizCreate } from "@/redux/features/quizSlice";
 import Sortable from "../../DragAndDrop/Sorttable";
@@ -25,7 +28,10 @@ import { ExQuiz, Lecture, Question } from "@/types/section.type";
 import ActionButtons from "../../ActionButtons";
 import { v4 as uuidv4 } from "uuid";
 import { useExQuizHooks } from "@/redux/hooks/courseHooks/quizHooks";
-import { useAddQuestionWithFileMutation, useGetExQuizByIdQuery } from "@/redux/services/quizApi";
+import {
+  useAddQuestionWithFileMutation,
+  useGetExQuizByIdQuery,
+} from "@/redux/services/quizApi";
 import _ from "lodash";
 import { useLectureHooks } from "@/redux/hooks/courseHooks/lectureHooks";
 import CreateTitle from "../../CreateTitle";
@@ -35,6 +41,8 @@ import { stateToHTML } from "draft-js-export-html";
 import { isPermissionGranted } from "@/utils/function";
 import { RoleDetail } from "@/types/roles.type";
 import { Input } from "@/components/ui/input";
+import { FaFolderOpen } from "react-icons/fa";
+import showToast from "@/utils/showToast";
 
 interface AddQuizProps {
   lecture: Lecture;
@@ -112,7 +120,15 @@ function AddQuiz(props: AddQuizProps) {
       addQuestionWithFile({
         id: lecture.exQuiz?.id as string,
         data: fileQuestion,
-      });
+      })
+        .unwrap()
+        .then((fulfilled) => {
+          if (fulfilled.statusCode == StatusCode.DATA_CONFLICT) {
+            showToast(ToastStatus.ERROR, fulfilled.data as string);
+          }
+          setFileQuestion(undefined);
+          setIsOpenInputFile(false);
+        });
     }
   }, [fileQuestion]);
 
@@ -209,7 +225,7 @@ function AddQuiz(props: AddQuizProps) {
                         ) : (
                           <Fragment>
                             <div className="mb-2">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 mb-2">
                                 <h1>Câu hỏi:</h1>
                                 <Button
                                   className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
@@ -227,13 +243,36 @@ function AddQuiz(props: AddQuizProps) {
                                   Thêm Câu Hỏi
                                 </Button>
                               </div>
-
+                              <hr />
                               {isOpenInputFile ? (
-                                <div>
+                                <div className="my-2">
+                                  <a
+                                    className="flex gap-1"
+                                    href={"/fileExample.xlsx"}
+                                    download={"fileExample.xlsx"}
+                                  >
+                                    <FaFolderOpen className="text-xl" />
+                                    <p>File Example</p>
+                                  </a>
                                   <Input
-                                     onChange={(e) => setFileQuestion(e.target.files?.[0])}
-                                      type="file"
-                                      className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"/>
+                                    onChange={(e) =>
+                                      setFileQuestion(e.target.files?.[0])
+                                    }
+                                    type="file"
+                                    className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black my-2"
+                                  />
+                                  <Button
+                                    className="bg-white hover:bg-slate-200 text-black rounded-none border border-black"
+                                    onClick={() => setFileQuestion(undefined)}
+                                  >
+                                    Xóa File
+                                  </Button>
+                                  <Button
+                                    className="bg-white hover:bg-slate-200 text-black rounded-none border border-black ml-2"
+                                    onClick={() => setIsOpenInputFile(false)}
+                                  >
+                                    Cancel
+                                  </Button>
                                 </div>
                               ) : (
                                 <div className="flex items-center gap-2">
