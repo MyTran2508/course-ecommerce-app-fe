@@ -34,6 +34,10 @@ public class ForumLectureDto implements Serializable {
 
     private Boolean isUserDislike;
 
+    private Integer likeAmount;
+
+    private Integer disLikeAmount;
+
     private Long created;
 
     private Long updated;
