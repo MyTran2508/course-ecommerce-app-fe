@@ -153,11 +153,8 @@ function LoginForm() {
       >
         <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16 left-login-form">
           <div className="font-mono mb-2 flex-center flex-col logo-login-form ">
-            <div>
-              <img
-                src="/mediafire-logo-transparent.png"
-                className="w-80 mb-12"
-              />
+            <div className="text-2xl font-bold">
+            LOGIN
             </div>
           </div>
           <div className="mb-2 w-4/5 flex flex-col justify-center items-center m-auto">

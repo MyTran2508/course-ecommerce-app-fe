@@ -1,7 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { CiCircleQuestion, CiSquarePlus } from "react-icons/ci";
 import { v4 as uuidv4 } from "uuid";
-import { Action, QuizType, ToastMessage, ToastStatus } from "@/utils/resources";
+import {
+  Action,
+  QuizType,
+  StatusCode,
+  ToastMessage,
+  ToastStatus,
+} from "@/utils/resources";
 import { useAppDispatch } from "@/redux/hooks/reduxHooks";
 import { setTypeQuizCreate } from "@/redux/features/quizSlice";
 import showToast from "@/utils/showToast";
@@ -9,6 +15,10 @@ import { Button } from "@/components/ui/button";
 import { MdDelete } from "react-icons/md";
 import { useExQuizHooks } from "@/redux/hooks/courseHooks/quizHooks";
 import { Question } from "@/types/section.type";
+import {
+  useAddQuestionMutation,
+  useUpdateQuestionMutation,
+} from "@/redux/services/quizApi";
 
 interface SelectTypeQuizProps {
   ordinalNumber?: number;
@@ -24,6 +34,9 @@ function SelectTypeQuiz(props: SelectTypeQuizProps) {
   const [isChoiceTypeQuestion, setIsChoiceTypeQuestion] = useState(
     action === Action.UPDATE ? true : false
   );
+  const [addQuestion, { isLoading: isAddingQuestion }] =
+    useAddQuestionMutation();
+  const [updateQuestion] = useUpdateQuestionMutation();
 
   const [answers, setAnswers] = useState(
     questionData
@@ -51,7 +64,6 @@ function SelectTypeQuiz(props: SelectTypeQuizProps) {
       ? (questionData && questionData.options?.split("\n").length) || 1
       : 1
   );
-  const { handleAddQuestion, handleUpdateQuestion } = useExQuizHooks();
 
   const handleChoiceTypeQuestion = (type: QuizType) => {
     setIsChoiceTypeQuestion(true);
@@ -167,17 +179,37 @@ function SelectTypeQuiz(props: SelectTypeQuizProps) {
       answerExplanation: answerExplanation,
     };
 
+    let isQuestionNotConflict = false;
     if (action === Action.UPDATE) {
       newQuestion.id = questionData?.id;
       const updatedQuestion = { ...questionData, ...newQuestion };
-      handleUpdateQuestion(updatedQuestion);
+      await updateQuestion(updatedQuestion)
+        .unwrap()
+        .then((fulfilled) => {
+          isQuestionNotConflict =
+            fulfilled.statusCode !== StatusCode.DATA_CONFLICT;
+          if(fulfilled.statusCode == StatusCode.DATA_CONFLICT){
+              showToast(ToastStatus.ERROR, "Câu hỏi đã tồn tại");
+            }
+        });
     } else {
       newQuestion.ordinalNumber = ordinalNumber;
       newQuestion.quizType = typeQuestion as QuizType;
-      handleAddQuestion(exQuizId as string, newQuestion);
+      await addQuestion({
+        id: exQuizId as string,
+        data: newQuestion,
+      })
+        .unwrap()
+        .then((fulfilled) => {
+          isQuestionNotConflict =
+            fulfilled.statusCode !== StatusCode.DATA_CONFLICT;
+          if(fulfilled.statusCode == StatusCode.DATA_CONFLICT){
+            showToast(ToastStatus.ERROR, "Câu hỏi đã tồn tại");
+          }
+        });
     }
 
-    handleOpen && handleOpen(false);
+    isQuestionNotConflict && handleOpen && handleOpen(false);
   };
 
   return (

@@ -44,6 +44,32 @@ public class ForumLectureChatController {
         }
     }
 
+    @MessageMapping("/forum-lecture/set-like/{lectureId}/{id}/{userName}/{isCancel}")
+    public void setLike(
+            @Payload ForumLectureDto forumLectureDto,
+            @DestinationVariable String lectureId,
+            @DestinationVariable String id,
+            @DestinationVariable String userName,
+            @DestinationVariable boolean isCancel
+    ) {
+        DataResponse<ForumLectureDto> response = forumLectureService.setLike(id, userName, isCancel);
+        response.getData().setRawAvatar(forumLectureDto.getRawAvatar());
+        simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId, response);
+    }
+
+    @MessageMapping("/forum-lecture/set-dislike/{lectureId}/{id}/{userName}/{isCancel}")
+    public void setDisLike(
+            @Payload ForumLectureDto forumLectureDto,
+            @DestinationVariable String lectureId,
+            @DestinationVariable String id,
+            @DestinationVariable String userName,
+            @DestinationVariable boolean isCancel
+    ) {
+        DataResponse<ForumLectureDto> response = forumLectureService.setDislike(id, userName, isCancel);
+        response.getData().setRawAvatar(forumLectureDto.getRawAvatar());
+        simpMessagingTemplate.convertAndSend("/rt/response/courses/forum-lecture/" + lectureId, response);
+    }
+
     @MessageMapping("/forum-lecture/update/{lectureId}")
     public void update(@Payload ForumLectureDto forumLectureDto, @DestinationVariable String lectureId) {
         DataResponse<ForumLectureDto> response = forumLectureService.update(forumLectureDto.getId(), forumLectureDto);

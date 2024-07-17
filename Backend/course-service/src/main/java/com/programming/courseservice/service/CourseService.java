@@ -2,6 +2,7 @@ package com.programming.courseservice.service;
 
 import com.main.progamming.common.dto.SearchConditionDto;
 import com.main.progamming.common.dto.SearchKeywordDto;
+import com.main.progamming.common.error.exception.DataNotFoundException;
 import com.main.progamming.common.error.exception.ResourceNotFoundException;
 import com.main.progamming.common.message.StatusCode;
 import com.main.progamming.common.message.StatusMessage;
@@ -528,5 +529,18 @@ public class CourseService extends BaseServiceImpl<Course, CourseDto> {
                         .toList();
 
         return ResponseMapper.toListResponseSuccess(courseDtoList);
+    }
+
+    public DataResponse<String> updateApprovedCourse(String courseId) {
+
+        Course course = courseRepository.findById(courseId).orElse(null);
+
+        if (course == null) {
+            throw new DataNotFoundException("Course not found");
+        }
+        course.setIsApproved(false);
+        course.setIsAwaitingApproval(false);
+        courseRepository.save(course);
+        return ResponseMapper.toDataResponseSuccess("Update success");
     }
 }

@@ -191,11 +191,8 @@ function SignUpForm() {
       >
         <div className="h-1/2 p-5 my-1 w-2/5 lg:w-1/2 2xs:text-[10px] xl:text-sm mt-16 xs:w-full xs:h-full">
           <div className="font-mono mb-2 flex-center flex-col logo-login-form ">
-            <div>
-              <img
-                src="/mediafire-logo-transparent.png"
-                className="w-80 mb-12"
-              />
+            <div className="text-2xl font-bold my-5">
+              SIGN UP
             </div>
           </div>
           {isSendOTP === false ? (

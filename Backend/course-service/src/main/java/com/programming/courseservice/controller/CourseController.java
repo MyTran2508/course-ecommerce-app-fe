@@ -221,4 +221,10 @@ public class CourseController extends BaseApiImpl<Course, CourseDto> {
     ) {
         return courseService.getCourseSearch(typeSearch, keyword);
     }
+
+    @PostMapping("/update-approved-course/{id}")
+    public DataResponse<String> updateApprovedCourse(@PathVariable("id") String courseId) {
+
+        return courseService.updateApprovedCourse(courseId);
+    }
 }
