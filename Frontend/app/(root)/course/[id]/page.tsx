@@ -224,7 +224,7 @@ function CoursePage() {
                     color: "#ffaa00",
                   }}
                 >
-                  {course.averageRating}
+                  {Math.round(course.averageRating * 10) / 10}
                 </div>
                 {[...Array(5)].map((_, index) => {
                   const star = Math.floor(course.averageRating as number);
@@ -333,7 +333,7 @@ function CoursePage() {
               <Fragment>
                 <div className="flex gap-2 items-center mb-5">
                   <div className="mr-1 font-bold text-yellow-400 text-xl">
-                    {course.averageRating}
+                  {Math.round(course.averageRating * 10) / 10}
                   </div>
                   <div className="flex gap-1 text-xl">
                     {[...Array(5)].map((_, index) => {

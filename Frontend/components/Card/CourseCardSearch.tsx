@@ -1,10 +1,12 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import { Course } from "@/types/course.type";
 import { useLoadFileFromCloudQuery } from "@/redux/services/courseApi";
 import Image from "next/image";
 import { BsDot, BsFillTagFill } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { useLazyGetCourseAccessQuery } from "@/redux/services/courseProcessApi";
+import { useAppSelector } from "@/redux/hooks/reduxHooks";
 
 interface CourseCardProps {
   course: Course;
@@ -16,16 +18,38 @@ function CourseCardSearch(props: CourseCardProps) {
   const { data: imageBase64 } = useLoadFileFromCloudQuery(
     course ? (course.urlCourseImages as string) : ""
   );
+  const userId = useAppSelector(
+    (state) => state.persistedReducer.userReducer.user.id
+  );
+  const [
+    getCourseAccess,
+    { data: courseAccess, isSuccess: getCourseAccessSuccess },
+  ] = useLazyGetCourseAccessQuery();
 
-  const handleChangRoute = () => {
-    const url = `/course/${course.id}`;
-    router.push(url);
+  const handleRedirectCourse = () => {
+    if (userId.length === 0) {
+      router.push(`/course/${course.id as string}`);
+    } else {
+      getCourseAccess({
+        userId: userId as string,
+        courseId: course.id as string,
+      });
+    }
   };
+  useEffect(() => {
+    if (getCourseAccessSuccess) {
+      if ((courseAccess?.data as string) === "True") {
+        router.push(`/learning/${course.id as string}`);
+      } else {
+        router.push(`/course/${course.id as string}`);
+      }
+    }
+  }, [courseAccess]);
 
   return (
     <div
       className="my-2 hover:cursor-pointer"
-      onClick={() => handleChangRoute()}
+      onClick={() => handleRedirectCourse()}
     >
       <div className="flex justify-between">
         <div className="flex gap-4">
@@ -55,7 +79,7 @@ function CourseCardSearch(props: CourseCardProps) {
               <Fragment>
                 {course.averageRating ? (
                   <Fragment>
-                    <div className="mr-1 font-bold">{course.averageRating}</div>
+                    <div className="mr-1 font-bold">{Math.round(course.averageRating * 10) / 10}</div>
                     {[...Array(5)].map((_, index) => {
                       const star = Math.floor(course.averageRating as number);
                       const halfStar = (course.averageRating as number) - star;

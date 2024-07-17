@@ -74,6 +74,24 @@ export const forumApi = createApi({
         };
       },
     }),
+    setLike: builder.mutation<DataResponse, { id: string, username: string, isCancel:boolean }>({
+      query: ({ id, username, isCancel }) => {
+        return {
+          url: `/api/courses/forum-lecture/set-like`,
+          method: "POST",
+          params: { id, username, isCancel },
+        };
+      },
+    }),
+    setDislike: builder.mutation<DataResponse, { id: string, username: string, isCancel:boolean }>({
+      query: ({ id, username, isCancel }) => {
+        return {
+          url: `/api/courses/forum-lecture/set-dislike`,
+          method: "POST",
+          params: { id, username, isCancel },
+        };
+      },
+    }),
   }),
 });
 
@@ -84,4 +102,6 @@ export const {
   useAddCommentReplyMutation,
   useUpdateCommentReplyMutation,
   useGetCommentReplyByCommentIdMutation,
+  useSetLikeMutation,
+  useSetDislikeMutation,
 } = forumApi;

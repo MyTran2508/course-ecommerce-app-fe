@@ -106,8 +106,9 @@ function InputEditor(props: InputEditorProps) {
           userName: user.username,
         });
         setIsCreateComment && setIsCreateComment(true);
-        setIsOpenInputEditor(false);
+        // setIsOpenInputEditor(false);
       }
+      setIsOpenInputEditor(false);
     }
   };
 

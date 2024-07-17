@@ -185,7 +185,7 @@ function CourseCard(props: CourseProps) {
                   {course.averageRating ? (
                     <Fragment>
                       <div className="mr-1 font-bold">
-                        {course.averageRating}
+                        {Math.round(course.averageRating * 10) / 10}
                       </div>
                       {[...Array(5)].map((_, index) => {
                         const star = Math.floor(course.averageRating as number);

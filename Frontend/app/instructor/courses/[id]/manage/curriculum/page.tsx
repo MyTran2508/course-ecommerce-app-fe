@@ -26,7 +26,7 @@ function CurriculumPage() {
   let sections: Section[] = [];
   if (isContentLoading) return <Loading />;
 
-  if (!(contentData?.data as Content).id) {
+  if (!(contentData?.data as Content)?.id) {
     showToast(ToastStatus.WARNING, ToastMessage.CHECK_CREATE_CONTENT);
     router.push(`/instructor/courses/${courseId}/manage/content`);
   } else {
