@@ -25,7 +25,7 @@ import { ExQuiz, Lecture, Question } from "@/types/section.type";
 import ActionButtons from "../../ActionButtons";
 import { v4 as uuidv4 } from "uuid";
 import { useExQuizHooks } from "@/redux/hooks/courseHooks/quizHooks";
-import { useGetExQuizByIdQuery } from "@/redux/services/quizApi";
+import { useAddQuestionWithFileMutation, useGetExQuizByIdQuery } from "@/redux/services/quizApi";
 import _ from "lodash";
 import { useLectureHooks } from "@/redux/hooks/courseHooks/lectureHooks";
 import CreateTitle from "../../CreateTitle";
@@ -34,6 +34,7 @@ import { EditorState, convertFromRaw } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 import { isPermissionGranted } from "@/utils/function";
 import { RoleDetail } from "@/types/roles.type";
+import { Input } from "@/components/ui/input";
 
 interface AddQuizProps {
   lecture: Lecture;
@@ -58,6 +59,8 @@ function AddQuiz(props: AddQuizProps) {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isEdit, setEdit] = useState(false);
   const [isDelete, setDelete] = useState(false);
+  const [isOpenInputFile, setIsOpenInputFile] = useState(false);
+  const [fileQuestion, setFileQuestion] = useState<File>();
   const quizType = useAppSelector(
     (state) => state.persistedReducer.quizReducer.typeQuizCreate
   );
@@ -67,6 +70,7 @@ function AddQuiz(props: AddQuizProps) {
   const roleDetail = role?.roleDetails;
   const { handleUpdateListQuestion } = useExQuizHooks();
   const { handleUpdateLecture } = useLectureHooks();
+  const [addQuestionWithFile] = useAddQuestionWithFileMutation();
 
   const handleSelectType = (close: boolean = false) => {
     setSelectTypeQuestion(!isSelectTypeQuestion);
@@ -103,8 +107,20 @@ function AddQuiz(props: AddQuizProps) {
     }
   }, [description]);
 
+  useEffect(() => {
+    if (fileQuestion) {
+      addQuestionWithFile({
+        id: lecture.exQuiz?.id as string,
+        data: fileQuestion,
+      });
+    }
+  }, [fileQuestion]);
+
   const handleCreateDescription = () => {
     setIsOpenInputEditor(true);
+  };
+  const handleOpenInputFile = () => {
+    setIsOpenInputFile(true);
   };
 
   return (
@@ -211,6 +227,34 @@ function AddQuiz(props: AddQuizProps) {
                                   Thêm Câu Hỏi
                                 </Button>
                               </div>
+
+                              {isOpenInputFile ? (
+                                <div>
+                                  <Input
+                                     onChange={(e) => setFileQuestion(e.target.files?.[0])}
+                                      type="file"
+                                      className="rounded-none focus-visible:ring-0 disabled:opacity-1 disabled:cursor-default border-black"/>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2">
+                                  <h1>Câu hỏi:</h1>
+                                  <Button
+                                    className="bg-white hover:bg-slate-200 text-black rounded-none border border-black my-2"
+                                    onClick={() => handleOpenInputFile()}
+                                    disabled={
+                                      !(
+                                        isPermissionGranted(
+                                          roleDetail as RoleDetail[],
+                                          PermissionName.CAN_CREATE,
+                                          ModuleName.COURSE_MANAGER
+                                        ) || role?.name == Role.MANAGER
+                                      )
+                                    }
+                                  >
+                                    Thêm Câu Hỏi Bằng File
+                                  </Button>
+                                </div>
+                              )}
                             </div>
                             <Sortable
                               data={questions}

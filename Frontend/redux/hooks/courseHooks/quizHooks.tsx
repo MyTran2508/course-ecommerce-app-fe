@@ -5,6 +5,8 @@ import {
   useUpdateQuestionMutation,
 } from "@/redux/services/quizApi";
 import { ExQuiz, Question } from "@/types/section.type";
+import { StatusCode, ToastStatus } from "@/utils/resources";
+import showToast from "@/utils/showToast";
 
 export function useExQuizHooks() {
   const [
@@ -41,7 +43,12 @@ export function useExQuizHooks() {
     await addQuestion({ id: exQuizId, data: data })
       .unwrap()
       .then((fulfilled) => {
-        console.log(fulfilled);
+        if(fulfilled.statusCode == StatusCode.DATA_CONFLICT){
+          showToast(ToastStatus.ERROR, "Câu hỏi đã tồn tại");
+          return false;
+        }else{
+          return true;
+        }
       });
   };
 
@@ -52,7 +59,12 @@ export function useExQuizHooks() {
     await updateListQuestion({ id: exQuizId, data: data })
       .unwrap()
       .then((fulfilled) => {
-        console.log(fulfilled);
+        if(fulfilled.statusCode == StatusCode.DATA_CONFLICT){
+          showToast(ToastStatus.ERROR, "Câu hỏi đã tồn tại");
+          return false;
+        }else{
+          return true;
+        }
       });
   };
 

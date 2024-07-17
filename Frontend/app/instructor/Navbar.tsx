@@ -4,7 +4,7 @@ import React, { Fragment, use, useEffect, useState } from "react";
 import CustomButton from "../../components/CustomButton";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Menu, Transition } from "@headlessui/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { iconMap } from "@/utils/map";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { setCredential, logout } from "@/redux/features/authSlice";
@@ -36,6 +36,7 @@ const links = [
 function InstructorNavbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const path = usePathname();
   const [userData, setUserData] = useState<User>();
   const [isLogout, setLogout] = useState(false);
   const [currentAvatar, setCurrentAvatar] = useState<string>();
@@ -115,7 +116,7 @@ function InstructorNavbar() {
                 role?.name == Role.MANAGER) && (
                 <Link
                   href={"/instructor/assignment-history"}
-                  className="xs:hidden"
+                  className={`xs:hidden ${path === "/instructor/assignment-history" ? "text-orange-500" : ""}`}
                 >
                   Feedback Assignment
                 </Link>

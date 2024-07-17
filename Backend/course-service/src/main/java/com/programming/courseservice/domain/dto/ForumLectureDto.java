@@ -1,5 +1,6 @@
 package com.programming.courseservice.domain.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,10 @@ public class ForumLectureDto implements Serializable {
     private String rawAvatar;
 
     private String comment;
+
+    private Boolean isUserLike;
+
+    private Boolean isUserDislike;
 
     private Long created;
 
