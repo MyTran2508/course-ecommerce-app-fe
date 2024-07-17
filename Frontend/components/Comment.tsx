@@ -333,9 +333,9 @@ function Comment(props: CommentProps) {
             handleClick={() => handleOpenInputEditor(Action.UPDATE)}
           />
         )}
-         <div className="flex gap-2 mt-1 justify-center items-center">
+         <div className="flex gap-2  justify-center items-center mx-2 mt-[7px]">
           <button
-            className="flex items-center"
+            className="flex items-center mx-2"
             onClick={() => handleReactionComment(Action.LIKE)}
             disabled={isButtonDisabled}
           >
@@ -374,7 +374,7 @@ function Comment(props: CommentProps) {
       {!isOpenReply && commentReply.length > 0 && (
         <Fragment>
           <div
-            className="ml-[64px] text-sm font-bold hover:cursor-pointer flex gap-1"
+            className="ml-[64px] text-sm font-bold hover:cursor-pointer flex gap-1 mt-1"
             onClick={() => handleOpenCommentReply()}
           >
             {isOpenCommentReply ? "Ẩn" : `Xem các phản hồi`}
