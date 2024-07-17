@@ -46,6 +46,7 @@ function DiscussionSheet(props: DiscussionSheetProps) {
   const [isLoadMore, setIsLoadMore] = useState(false);
   const [isOpenInputEditor, setIsOpenInputEditor] = useState(false);
   const [newComment, setNewComment] = useState<string>("");
+  const [openForum, setOpenForum] = useState(false);
 
   useEffect(() => {
     setForumLecture([]);
@@ -59,6 +60,21 @@ function DiscussionSheet(props: DiscussionSheetProps) {
     });
     connect();
   }, [lectureId, pageIndex, getForumLectureById]);
+
+  useEffect(() => {
+    if (openForum) {
+      setForumLecture([]);
+      setPageIndex(0);
+      getForumLectureById({
+        keyword: [lectureId],
+        pageIndex: pageIndex,
+        pageSize: 10,
+        isDecrease: true,
+        sortBy: "created",
+      });
+      setOpenForum(false);
+    }
+  }, [openForum]);
 
   useEffect(() => {
     if (
@@ -142,13 +158,15 @@ function DiscussionSheet(props: DiscussionSheetProps) {
     }
   };
 
+
+
   return (
     <Sheet>
       <SheetTrigger
         asChild
         className="fixed bottom-0 right-1/4 mr-5 mb-5 rounded-3xl gap-1 text-orange-500 xs:hidden z-20"
       >
-        <Button variant="outline">
+        <Button variant="outline" onClick={()=>setOpenForum(true)} >
           <AiFillWechat />
           Hỏi đáp
         </Button>

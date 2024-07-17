@@ -7,10 +7,12 @@ import { useAppSelector } from "@/redux/hooks/reduxHooks";
 import { EditorState, convertFromRaw } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
 import { CommentReply, ForumLecture } from "@/types/forumLecture";
-import { Action, Constant } from "@/utils/resources";
+import { Action, Constant, ToastMessage, ToastStatus } from "@/utils/resources";
 import {
   useAddCommentReplyMutation,
   useGetCommentReplyByCommentIdMutation,
+  useSetDislikeMutation,
+  useSetLikeMutation,
   useUpdateForumLectureMutation,
 } from "@/redux/services/forumApi";
 import { is } from "immutable";
@@ -20,6 +22,9 @@ import CommentRep from "./CommentReply";
 import { over } from "stompjs";
 import SockJS from "sockjs-client";
 import { DataResponse } from "@/types/response.type";
+import { BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import showToast from "@/utils/showToast";
+import { set } from "lodash";
 
 interface CommentProps {
   data: ForumLecture;
@@ -27,6 +32,9 @@ interface CommentProps {
   lectureId: string;
 }
 var stompClientForCommentReply: any = null;
+var stompClientForLike: any = null;
+var stompClientForDislike: any = null;
+
 function Comment(props: CommentProps) {
   const { data, stompClient: stompClientForForumLecture, lectureId } = props;
   const userId = useAppSelector(
@@ -50,13 +58,31 @@ function Comment(props: CommentProps) {
   const [isOpenReply, setIsOpenReply] = useState(false);
   const [replyText, setReplyText] = useState<string>("");
   const [pageIndex, setPageIndex] = useState(0);
+  const [commentData, setCommentData] = useState<ForumLecture>({...data});
   const [
     getCommentReplyByCommentId,
     { data: commentReplyData, isSuccess: getCommentReplySuccess },
   ] = useGetCommentReplyByCommentIdMutation();
 
   const [commentReply, setCommentReply] = useState<CommentReply[]>([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isOpenCommentReply, setIsOpenCommentReply] = useState(false);
+  const [setLike, {data: like, isSuccess: setLikeSuccess}] = useSetLikeMutation();
+  const [setDisLike, {data: dislike, isSuccess: setDisLikeSuccess}] = useSetDislikeMutation();
+
+  useEffect(()=>{
+    if(setDisLikeSuccess){
+      const newDisLike = dislike?.data as ForumLecture;
+      setCommentData(newDisLike);
+    }
+  },[dislike])
+
+  useEffect(()=>{
+    if(setLikeSuccess){
+      const newLike = like?.data as ForumLecture;
+      setCommentData(newLike);
+    }
+  },[like])
 
   useEffect(() => {
     if (updateText !== data.comment) {
@@ -217,6 +243,46 @@ function Comment(props: CommentProps) {
     }
   };
 
+  const handleReactionComment = (action: Action) => {
+    if (isButtonDisabled) {
+      showToast(ToastStatus.WARNING, ToastMessage.PLEASE_WAIT);
+      return;
+    }
+    setIsButtonDisabled(true);
+
+    if (action === Action.LIKE) {
+      if (data.isUserLike) {
+        setLike({
+          id: data.id as string,
+          username: userName,
+          isCancel: true,
+        });
+      } else {
+        setLike({
+          id: data.id as string,
+          username: userName,
+          isCancel: false,
+        });
+      }
+    } else {
+      if (data.isUserDislike) {
+        setDisLike({
+          id: data.id as string,
+          username: userName,
+          isCancel: true,
+        });
+      } else {
+        setDisLike({
+          id: data.id as string,
+          username: userName,
+          isCancel: false,
+        });
+      }
+    }
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    }, 2000);
+  };
   return (
     <div className="flex flex-col mb-4">
       <div className="flex">
@@ -267,6 +333,34 @@ function Comment(props: CommentProps) {
             handleClick={() => handleOpenInputEditor(Action.UPDATE)}
           />
         )}
+         <div className="flex gap-2 mt-1 justify-center items-center">
+          <button
+            className="flex items-center"
+            onClick={() => handleReactionComment(Action.LIKE)}
+            disabled={isButtonDisabled}
+          >
+            {commentData?.isUserLike ? (
+              <BiSolidLike fill="#3182ce" />
+            ) : (
+              <BiSolidLike />
+            )}
+
+            <p className="ml-1 text-sm font-mono">Like ({commentData?.likeAmount})</p>
+          </button>
+          <button
+            className="flex items-center"
+            onClick={() => handleReactionComment(Action.DISLIKE)}
+            disabled={isButtonDisabled}
+          >
+            {commentData?.isUserDislike ? (
+              <BiSolidDislike color="#3182ce" />
+            ) : (
+              <BiSolidDislike />
+            )}
+
+            <p className="ml-1 text-sm font-mono">Dislike ({commentData?.disLikeAmount})</p>
+          </button>
+      </div>
         {data.updated ? (
           <p className="italic text-xs ml-2 mt-2 opacity-80">
             {convertMillisToDateTime(data.updated as number)} (Đã chỉnh sửa)

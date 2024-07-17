@@ -40,7 +40,7 @@ function DiscussionFilter(props: DiscussionFilterProps) {
   return (
     <div>
       <Disclosure
-        defaultOpen={selectedList?.length !== 0 && selectedList ? true : false}
+        defaultOpen={(selectedList?.length !== 0 && selectedList) || label == "Ratings" || label =="Language" ? true : false}
       >
         {({ open }) => (
           <>
