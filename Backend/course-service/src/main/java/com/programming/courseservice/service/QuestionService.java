@@ -184,7 +184,9 @@ public class QuestionService extends BaseServiceImpl<Question, QuestionDto> {
 
     public DataResponse<String> addExcel(String exQuizId, MultipartFile file) {
         try {
-            System.out.println("exQuizId: " + exQuizId);
+            ExQuiz exQuiz = exQuizRepository.findById(exQuizId).orElse(null);
+            List<Question> savedQuestion = exQuiz.getQuestions();
+            List<Question> mergedList = new ArrayList<>(savedQuestion);
             List<Question> questionList = new ArrayList<>();
             Workbook workbook = new XSSFWorkbook(file.getInputStream());
             Sheet sheet = workbook.getSheetAt(0);
@@ -194,7 +196,7 @@ public class QuestionService extends BaseServiceImpl<Question, QuestionDto> {
             Row headerRow = rows.next();
             List<String> headers = new ArrayList<>();
             headerRow.forEach(cell -> headers.add(cell.getStringCellValue()));
-
+            int index = 1;
             while (rows.hasNext()) {
                 Row currentRow = rows.next();
                 Question question = new Question();
@@ -226,10 +228,49 @@ public class QuestionService extends BaseServiceImpl<Question, QuestionDto> {
                     }
                 }
 
+                // check validate
+                if(question.getOrdinalNumber() == null) {
+                    throw new DataConflictException("Row " + index + ": " + "Ordinal Number is required");
+                }
+                if(question.getTitle() == null || question.getTitle().isEmpty()) {
+                    throw new DataConflictException("Row " + index + ": " + "Title is required");
+                }
+                if(question.getOptions() == null || question.getOptions().isEmpty()) {
+                    throw new DataConflictException("Row " + index + ": " + "Options is required");
+                }
+                if (question.getOptions().split("\n").length < 2) {
+                    throw new DataConflictException("Row " + index + ": " + "Options must have at least 2 values");
+                }
+                if(question.getRightAnswer() == null || question.getRightAnswer().isEmpty()) {
+                    throw new DataConflictException("Row " + index + ": " + "Right Answer is required");
+                }
+                if(question.getAnswerExplanation() == null || question.getAnswerExplanation().isEmpty()) {
+                    throw new DataConflictException("Row " + index + ": " + "Answer Explanation is required");
+                }
+                if(question.getQuizType() == null) {
+                    throw new DataConflictException("Row " + index + ": " + "Quiz Type is required");
+                }
+
                 questionList.add(question);
+                for (Question q: mergedList) {
+                    String savedTitle = q.getTitle().replaceAll("\\s+", "");
+                    String newTitle = question.getTitle().replaceAll("\\s+", "");
+                    if (savedTitle.equals(newTitle)) {
+                        throw new DataConflictException("Row " + index + ": " + "Question is duplicated");
+                    }
+                }
+
+                mergedList.add(question);
+                index++;
             }
 
             workbook.close();
+            for (Question newQuestion: questionList) {
+                // set exQuiz for question
+                exQuiz.getQuestions().add(newQuestion);
+            }
+
+            exQuizRepository.save(exQuiz);
             List<QuestionDto> questionDtos = questionList.stream().map(questionMapper::entityToDto).collect(Collectors.toList());
             return ResponseMapper.toDataResponseSuccess(questionDtos);
         } catch (Exception e) {
