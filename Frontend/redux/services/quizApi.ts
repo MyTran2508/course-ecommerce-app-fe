@@ -41,6 +41,24 @@ export const quizApi = createApi({
         invalidatesTags: () => [{ type: "Quiz" as const, id: "Quiz" }],
       }
     ),
+    addQuestionWithFile: builder.mutation<
+      DataResponse,
+      {
+        id: string;
+        data: File;
+      }
+    >({
+      query: ({ id, data }) => {
+        var bodyFormData = new FormData();
+        bodyFormData.append("file", data);
+        return {
+          url: `/api/courses/question/add-excel/${id}`,
+          method: "POST",
+          body: bodyFormData,
+        };
+      },
+      invalidatesTags: () => [{ type: "Quiz" as const, id: "Quiz" }],
+    }),
     updateQuestion: builder.mutation<DataResponse, Question>({
       query: (data: Question) => {
         return {
@@ -75,4 +93,5 @@ export const {
   useAddQuestionMutation,
   useUpdateListQuestionMutation,
   useUpdateQuestionMutation,
+  useAddQuestionWithFileMutation,
 } = quizApi;
