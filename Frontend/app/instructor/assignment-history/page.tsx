@@ -39,8 +39,11 @@ import withAuth from "@/hoc/withAuth";
 import { useFilterAssignmentManagerMutation } from "@/redux/services/assignmentHistoryApi";
 import { AssignmentHistory } from "@/types/assignment.type";
 import withAuthManager from "@/hoc/withAuthManager";
+import InstructorNavbar from "../Navbar";
+import { useRouter } from "next/navigation";
 
 function AssignmentHistoryPage() {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -93,7 +96,16 @@ function AssignmentHistoryPage() {
   });
 
   return (
-    <div className="px-10">
+    <div className="">
+      <InstructorNavbar />
+      <div className="flex-end">
+        <Button
+          className="my-2"
+          onClick={() => router.push("/instructor/courses")}
+        >
+          Back
+        </Button>
+      </div>
       <div className="flex items-center py-4 w-full">
         <div className="flex gap-2 w-[600px]">
           <SearchBarManufacturer

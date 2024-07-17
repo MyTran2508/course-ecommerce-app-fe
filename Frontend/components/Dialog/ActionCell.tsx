@@ -29,7 +29,7 @@ import { Course } from "@/types/course.type";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks/reduxHooks";
 import { updateUser } from "@/redux/features/userSlice";
 import { useRouter } from "next/navigation";
-import { setManageCourse } from "@/redux/features/courseSlice";
+import { setManageCourse, updateCourse } from "@/redux/features/courseSlice";
 import { Order, OrderItem } from "@/types/order.type";
 import OrderDialog from "./OrderDialog";
 import { isPermissionGranted } from "@/utils/function";
@@ -37,6 +37,7 @@ import { AssignmentHistory } from "@/types/assignment.type";
 import NotificationPopUp, {
   sendNotification,
 } from "../Notification/Notification";
+import { useRejectApprovedCourseMutation, useUpdateApprovedMutation } from "@/redux/services/courseApi";
 
 interface ActionCellProps {
   user?: User;
@@ -62,6 +63,7 @@ const ActionsCell = (props: ActionCellProps) => {
     useGetAllUsernameAdminQuery(null);
 
   const roleDetail = role?.roleDetails;
+  const [updateApproveCourse] = useRejectApprovedCourseMutation();
 
   const handleUpdateUserAdmin = async (user: User) => {
     await updateUserAdmin(user)
@@ -109,6 +111,22 @@ const ActionsCell = (props: ActionCellProps) => {
         : NotificationMessage.RESTORE_USER
     );
   };
+  const handleUnApproveCourse = async() => {
+    await updateApproveCourse(course?.id as string)
+    .unwrap()
+    .then((fulfilled) => {
+      showToast(ToastStatus.SUCCESS, ToastMessage.UPDATE_COURSE_SUCCESS);
+      dispatch(
+        setManageCourse({ ...(course as Course), isAwaitingApproval: false })
+      );
+    });
+    sendNotification(
+      "SYSTEM",
+      [course?.authorName as string],
+      NotificationMessage.REJECT_COURSE
+    );
+    dispatch(updateCourse()); 
+  }
 
   return (
     <div>
@@ -166,6 +184,13 @@ const ActionsCell = (props: ActionCellProps) => {
               >
                 {user.removed ? "Khôi Phục Tài Khoản" : "Xóa Tài Khoản"}
               </DropdownMenuItem> */}
+              {role?.name == Role.ADMIN &&
+                course?.isApproved &&(
+                <DropdownMenuItem onClick={() => handleUnApproveCourse()}>
+                  Hoàn Tác Xét Duyệt
+                </DropdownMenuItem>
+                )
+              }
             </Fragment>
           ) : null}
           {bill ? (

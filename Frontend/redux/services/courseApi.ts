@@ -169,6 +169,15 @@ export const courseApi = createApi({
       },
       invalidatesTags: () => [{ type: "Course", id: "course" }],
     }),
+    rejectApprovedCourse: builder.mutation<DataResponse, string>({
+      query: (id: string) => {
+        return {
+          url: `/api/courses/course/update-approved-course/${id}`,
+          method: "POST",
+        };
+      },
+      invalidatesTags: () => [{ type: "Course", id: "course" }],
+    }),
     updateAwaitingApproval: builder.mutation<
       DataResponse,
       { courseId: string; isAwaitingApproval: boolean }
@@ -259,4 +268,5 @@ export const {
   useLazySaleByTopicsQuery,
   useLazyGetCourseSearchQuery,
   useLazyGetCourseByIdQuery,
+  useRejectApprovedCourseMutation,
 } = courseApi;
